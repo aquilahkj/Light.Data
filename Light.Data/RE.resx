@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AggregateFunctionFieldIsExists" xml:space="preserve">
+    <value>聚合函数字段{0}已存在</value>
+  </data>
+  <data name="AggregateTypeIsNotSpecifyType" xml:space="preserve">
+    <value>汇总类型非指定的类型{0}</value>
+  </data>
+  <data name="AggregationFieldIsInvaild" xml:space="preserve">
+    <value>统计字段类型不合法</value>
+  </data>
+  <data name="AggregationFieldsIsNotExists" xml:space="preserve">
+    <value>统计映射表中没有统计字段</value>
+  </data>
+  <data name="AggregationMappingCanNotSelectSingle" xml:space="preserve">
+    <value>统计映射不能进行单列查询操作</value>
+  </data>
+  <data name="AggregationMappingRelateError" xml:space="preserve">
+    <value>统计表关联错误</value>
+  </data>
+  <data name="AggregationResultIsNull" xml:space="preserve">
+    <value>统计结果为空</value>
+  </data>
+  <data name="ComplexFieldHaveNotSubFields" xml:space="preserve">
+    <value>复合字段没有子字段</value>
+  </data>
+  <data name="ConfigDataFieldIsNotExists" xml:space="preserve">
+    <value>"{0}"的数据字段"{1}"不存在</value>
+  </data>
+  <data name="ConfigDataFieldNameIsEmpty" xml:space="preserve">
+    <value>"{0}"的数据字段名为空值</value>
+  </data>
+  <data name="ConfigDataLoadError" xml:space="preserve">
+    <value>配置数据读取出错,数据节点并非"{0}"</value>
+  </data>
+  <data name="ConfigDataTypeValueIsEmpty" xml:space="preserve">
+    <value>配置数据类型{0}的值为空</value>
+  </data>
+  <data name="ConnectionSettingIsNotExists" xml:space="preserve">
+    <value>数据库连接配置不存在</value>
+  </data>
+  <data name="DataBaseNotSupportInnerPage" xml:space="preserve">
+    <value>该数据库不支持内分页</value>
+  </data>
+  <data name="DataContextIsNotExists" xml:space="preserve">
+    <value>数据连接上下文不存在</value>
+  </data>
+  <data name="DataFieldsIsNotExists" xml:space="preserve">
+    <value>数据映射表中没设定数据字段</value>
+  </data>
+  <data name="DataMappingIsNotMatchAggregateField" xml:space="preserve">
+    <value>数据表与统计字段不匹配</value>
+  </data>
+  <data name="DataMappingIsNotMatchAggregationExpression" xml:space="preserve">
+    <value>指定的查询表与统计表达式不匹配</value>
+  </data>
+  <data name="DataMappingIsNotMatchOrderExpression" xml:space="preserve">
+    <value>指定的查询表与排序表达式不匹配</value>
+  </data>
+  <data name="DataMappingIsNotMatchQueryExpression" xml:space="preserve">
+    <value>指定的查询表与查询表达式不匹配</value>
+  </data>
+  <data name="DataMappingOfExpressionIsNotMatch" xml:space="preserve">
+    <value>表达式的查询表不一致</value>
+  </data>
+  <data name="DataTableNotAllowMoreIdentityField" xml:space="preserve">
+    <value>数据表不允许多少自增字段</value>
+  </data>
+  <data name="DataTableNotIdentityField" xml:space="preserve">
+    <value>数据表没有指定自增ID</value>
+  </data>
+  <data name="DataValueIsNotAllowEmply" xml:space="preserve">
+    <value>{0}的值不能为空值</value>
+  </data>
+  <data name="DynamicAggregateFieldIsNotExists" xml:space="preserve">
+    <value>动态汇总字段不存在</value>
+  </data>
+  <data name="EnumerableLengthNotAllowIsZero" xml:space="preserve">
+    <value>数据枚举值不允许为0</value>
+  </data>
+  <data name="FieldIsNotMatchDataMapping" xml:space="preserve">
+    <value>字段数据映射类型不匹配</value>
+  </data>
+  <data name="FieldMappingIsNotExists" xml:space="preserve">
+    <value>映射字段{0}不存在</value>
+  </data>
+  <data name="FieldNameIsInvalid" xml:space="preserve">
+    <value>字段名称"{0}"不合法</value>
+  </data>
+  <data name="GroupNameFieldIsExists" xml:space="preserve">
+    <value>分组字段名{0}已存在</value>
+  </data>
+  <data name="InputValueIsNotAllowNull" xml:space="preserve">
+    <value>输入值不允许为空值</value>
+  </data>
+  <data name="LoadDataTableConfigFaild" xml:space="preserve">
+    <value>加载数据表配置失败</value>
+  </data>
+  <data name="NotDefineDataMappingAttribute" xml:space="preserve">
+    <value>无定义数据映射特性</value>
+  </data>
+  <data name="OnlyPrimitiveFieldCanSelectSingle" xml:space="preserve">
+    <value>非原始字段不能使用单列查询</value>
+  </data>
+  <data name="RandomOrderFieldIsNotExists" xml:space="preserve">
+    <value>随机排序字段不存在</value>
+  </data>
+  <data name="RandomOrderForbitCatch" xml:space="preserve">
+    <value>随机排序不允许做排序组合</value>
+  </data>
+  <data name="RegionSizeInvaild" xml:space="preserve">
+    <value>取值范围数量值不合法</value>
+  </data>
+  <data name="RegionStartInvaild" xml:space="preserve">
+    <value>取值范围开始值不合法</value>
+  </data>
+  <data name="RelationKeyIsNotPrimitiveField" xml:space="preserve">
+    <value>关联键值{0}并非原始数据字段</value>
+  </data>
+  <data name="RelationMappingIsNotExists" xml:space="preserve">
+    <value>关联映射{0}不存在</value>
+  </data>
+  <data name="RelationMasterKeyIsExists" xml:space="preserve">
+    <value>关联映射主键已存在</value>
+  </data>
+  <data name="SingleFieldSelectTypeError" xml:space="preserve">
+    <value>单列查询类型错误</value>
+  </data>
+  <data name="TheDataMappingIsNotAggregationMapping" xml:space="preserve">
+    <value>指定的类型并非统计表类型</value>
+  </data>
+  <data name="TheDataMappingIsNotDataEntityMapping" xml:space="preserve">
+    <value>指定的类型并非实体表类型</value>
+  </data>
+  <data name="TheDataMappingIsNotDataTableMapping" xml:space="preserve">
+    <value>指定的类型并非数据表类型</value>
+  </data>
+  <data name="TheDataMappingNotAllowDeleteMass" xml:space="preserve">
+    <value>指定表并非数据表,不能批量删除</value>
+  </data>
+  <data name="TheNumberOfPrimaryKeysIsNotMatch" xml:space="preserve">
+    <value>主键数目不匹配</value>
+  </data>
+  <data name="TheRelationTypeNotIList" xml:space="preserve">
+    <value>关联类的集合类型非IList&lt;T&gt;</value>
+  </data>
+  <data name="TheTypeOfAggregationFieldIsNotRight" xml:space="preserve">
+    <value>统计汇总字段类型不正确</value>
+  </data>
+  <data name="TheTypeOfDataFieldIsNotRight" xml:space="preserve">
+    <value>字段类型不正确</value>
+  </data>
+  <data name="TheTypeOfIdentityFieldError" xml:space="preserve">
+    <value>表的自增字段类型必须为Int32和Int64</value>
+  </data>
+  <data name="TypeInheritError" xml:space="preserve">
+    <value>数据类型{0}继承错误</value>
+  </data>
+  <data name="TypeNotInheritFromSpecialType" xml:space="preserve">
+    <value>数据类型{0}继承错误,并非继承自{1}</value>
+  </data>
+  <data name="TypfOfDataFieldIsNotString" xml:space="preserve">
+    <value>字段{0}非字符类型</value>
+  </data>
+  <data name="UnsupportDateFormat" xml:space="preserve">
+    <value>不支持日期格式{0}</value>
+  </data>
+  <data name="UnSupportPredicate" xml:space="preserve">
+    <value>不支持谓词{0}的查询</value>
+  </data>
+  <data name="UpdateFieldIsNotExists" xml:space="preserve">
+    <value>更新字段不存在</value>
+  </data>
+  <data name="UpdateFieldTypeIsError" xml:space="preserve">
+    <value>更新字段类型出错,</value>
+  </data>
+  <data name="ValueNotInEnumType" xml:space="preserve">
+    <value>数值"{0}"不存在与枚举集合{1}中</value>
+  </data>
+  <data name="NotExistsAggregateField" xml:space="preserve">
+    <value>不在汇总字段中</value>
+  </data>
+  <data name="TypeUnsupportTheTransform" xml:space="preserve">
+    <value>该类型字段不支持{0}转换</value>
+  </data>
+  <data name="UnknowOrderType" xml:space="preserve">
+    <value>未知的排序格式</value>
+  </data>
+  <data name="TypeIsNotDatabase" xml:space="preserve">
+    <value>类型{0}并非数据库类型</value>
+  </data>
+  <data name="ConnectionSettingNameIsNotExists" xml:space="preserve">
+    <value>数据库连接配置名"{0}"不存在</value>
+  </data>
+  <data name="PrimaryKeyIsNotExist" xml:space="preserve">
+    <value>主键字段不存在</value>
+  </data>
+</root>

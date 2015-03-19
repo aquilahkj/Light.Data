@@ -1,0 +1,322 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AB57F3CC-2F20-4FCC-BDE7-E6ED904B68DB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Light.Data</RootNamespace>
+    <AssemblyName>Light.Data</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Light.Data.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Light.Data.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\Light.Data.XML</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Light.Data.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\Light.Data.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Light.Data.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\Light.Data.XML</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Light.Data.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\Light.Data.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Light.Data.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessCommandFactory.cs" />
+    <Compile Include="Attributes\DataTableAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Config\AggregateFieldConfig.cs" />
+    <Compile Include="Config\Configurator.cs" />
+    <Compile Include="Config\ConfigManager.cs" />
+    <Compile Include="Config\AggregateTableConfig.cs" />
+    <Compile Include="Config\DataFieldConfig.cs" />
+    <Compile Include="Config\DataTableConfig.cs" />
+    <Compile Include="Config\IAggregateFieldConfig.cs" />
+    <Compile Include="Config\IAggregateTableConfig.cs" />
+    <Compile Include="Config\IDataFieldConfig.cs" />
+    <Compile Include="Config\IDataTableConfig.cs" />
+    <Compile Include="Config\IConfiguratorFieldConfig.cs" />
+    <Compile Include="Config\IgnoraFieldConfig.cs" />
+    <Compile Include="Config\IRelationFieldConfig.cs" />
+    <Compile Include="Config\LightDataConfig.cs" />
+    <Compile Include="Config\LightDataConfigurationSectionHandler.cs" />
+    <Compile Include="Config\RelationFieldConfig.cs" />
+    <Compile Include="Config\RelationKey.cs" />
+    <Compile Include="Config\TableConfig.cs" />
+    <Compile Include="Config\XmlConfiguratorAttribute.cs" />
+    <Compile Include="DataField\DatePartDataFieldInfo.cs" />
+    <Compile Include="DataField\DatePart.cs" />
+    <Compile Include="DataField\MathFunctionDataFieldInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataField\MathCalculateDataFieldInfo.cs" />
+    <Compile Include="DataField\MathFunction.cs" />
+    <Compile Include="DataField\MathOperator.cs" />
+    <Compile Include="MssqlCommandFactory_2000.cs" />
+    <Compile Include="DataField\ExtendDataFieldInfo.cs" />
+    <Compile Include="DataTableAlias.cs" />
+    <Compile Include="DataField\DateDataFieldInfo.cs" />
+    <Compile Include="DataField\LengthDataFieldInfo.cs" />
+    <Compile Include="DataField\MatchDataFieldInfo.cs" />
+    <Compile Include="DataField\SubStringDataFieldInfo.cs" />
+    <Compile Include="Handler\TypeHelper.cs" />
+    <Compile Include="Expressions\AggregateHavingExpression.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Expressions\AggregateOrderExpression.cs" />
+    <Compile Include="Expressions\BetweenParamsAggregateExpression.cs" />
+    <Compile Include="Expressions\ExistsQueryExpression.cs" />
+    <Compile Include="Expressions\RandomOrderExpression.cs" />
+    <Compile Include="Expressions\DataFieldQueryExpression.cs" />
+    <Compile Include="Expressions\SingleParamAggregateExpression.cs" />
+    <Compile Include="Expressions\CollectionParamsAggregateExpression.cs" />
+    <Compile Include="Expressions\NullAggregateExpression.cs" />
+    <Compile Include="Expressions\SubQueryExpression.cs" />
+    <Compile Include="Expressions\SubAggregateExpression.cs" />
+    <Compile Include="ExtendParamsCollection.cs" />
+    <Compile Include="Function\AggregateFunction.cs" />
+    <Compile Include="AggregateType.cs" />
+    <Compile Include="Attributes\AggregateFieldAttribute.cs" />
+    <Compile Include="Attributes\AggregateTableAttribute.cs" />
+    <Compile Include="Attributes\DataFieldAttribute.cs" />
+    <Compile Include="Attributes\RelationAttribute.cs" />
+    <Compile Include="Attributes\RelationPropertyAttribute.cs" />
+    <Compile Include="Expressions\BetweenParamsQueryExpression.cs" />
+    <Compile Include="Expressions\BooleanQueryExpression.cs" />
+    <Compile Include="Expressions\CatchOperatorType.cs" />
+    <Compile Include="Expressions\CollectionParamsQueryExpression.cs" />
+    <Compile Include="CommandFactory.cs" />
+    <Compile Include="DataContext.cs" />
+    <Compile Include="DataContextCollection.cs" />
+    <Compile Include="DataContextConfiguration.cs" />
+    <Compile Include="DataEntity.cs" />
+    <Compile Include="DataParameter.cs" />
+    <Compile Include="DataField\DataFieldInfo.cs" />
+    <Compile Include="DataField\BasicFieldInfo.cs" />
+    <Compile Include="AggregateTable.cs" />
+    <Compile Include="Expressions\CollectionMatchQueryExpression.cs" />
+    <Compile Include="Expressions\FieldOrderExpression.cs" />
+    <Compile Include="Expressions\NullQueryExpression.cs" />
+    <Compile Include="Expressions\OrderType.cs" />
+    <Compile Include="Expressions\SingleParamQueryExpression.cs" />
+    <Compile Include="Function\ConditionCountFunction.cs" />
+    <Compile Include="Function\ConditionSumFunction.cs" />
+    <Compile Include="Function\CountAllFunction.cs" />
+    <Compile Include="Function\CountFunction.cs" />
+    <Compile Include="Function\MinFunction.cs" />
+    <Compile Include="Function\SumFunction.cs" />
+    <Compile Include="Function\AvgFunction.cs" />
+    <Compile Include="Function\ConditionAvgFunction.cs" />
+    <Compile Include="Function\MaxFunction.cs" />
+    <Compile Include="Handler\AttributeCore.cs" />
+    <Compile Include="Handler\PropertyHandler.cs" />
+    <Compile Include="Handler\ReflectionHandlerFactory.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="Mappings\DataDefine.cs" />
+    <Compile Include="Mappings\EnumDataDefine.cs" />
+    <Compile Include="Mappings\EnumFieldType.cs" />
+    <Compile Include="Mappings\IDataDefine.cs" />
+    <Compile Include="MssqlCommandFactory_2008.cs" />
+    <Compile Include="Mappings\PrimitiveDataDefine.cs" />
+    <Compile Include="SafeLevel.cs" />
+    <Compile Include="LEnumerable.cs" />
+    <Compile Include="Mappings\AggregateFieldMapping.cs" />
+    <Compile Include="Mappings\AggregateTableMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\ComplexFieldMapping.cs" />
+    <Compile Include="Mappings\CustomFieldMapping.cs" />
+    <Compile Include="Mappings\DataEntityMapping.cs" />
+    <Compile Include="Mappings\DataFieldMapping.cs" />
+    <Compile Include="Mappings\DataMapping.cs" />
+    <Compile Include="Mappings\DataTableEntityMapping.cs" />
+    <Compile Include="Mappings\EnumFieldMapping.cs" />
+    <Compile Include="Mappings\FieldMapping.cs" />
+    <Compile Include="Mappings\IFieldCollection.cs" />
+    <Compile Include="Mappings\PrimitiveFieldMapping.cs" />
+    <Compile Include="Mappings\RelationFieldMapping.cs" />
+    <Compile Include="Mappings\SpecifiedFieldMapping.cs" />
+    <Compile Include="Mssql.cs" />
+    <Compile Include="Access.cs" />
+    <Compile Include="MssqlCommandFactory.cs" />
+    <Compile Include="Mysql.cs" />
+    <Compile Include="MysqlCommandFactory.cs" />
+    <Compile Include="Oracle.cs" />
+    <Compile Include="OracleCommandFactory.cs" />
+    <Compile Include="Expressions\OrderExpression.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Expressions\QueryExpression.cs" />
+    <Compile Include="QueryPredicate.cs" />
+    <Compile Include="RE.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RE.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Region.cs" />
+    <Compile Include="LightDataException.cs" />
+    <Compile Include="SqlExecutor.cs" />
+    <Compile Include="DataTableEntity.cs" />
+    <Compile Include="TransactionConnection.cs" />
+    <Compile Include="TransDataContext.cs" />
+    <Compile Include="UpdateSetValue.cs" />
+    <Compile Include="Utility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RE.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RE.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
