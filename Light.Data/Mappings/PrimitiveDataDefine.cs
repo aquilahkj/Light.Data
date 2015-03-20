@@ -7,14 +7,6 @@ namespace Light.Data.Mappings
 {
 	class PrimitiveDataDefine : DataDefine
 	{
-		const sbyte MIN_SBYTE = 0;
-
-		const byte MIN_BYTE = 0;
-
-		const short MIN_SHORT = 0;
-
-		const ushort MIN_USHORT = 0;
-
 		static Dictionary<Type, bool> DefineList = new Dictionary<Type, bool> ();
 
 		static PrimitiveDataDefine ()
@@ -68,9 +60,10 @@ namespace Light.Data.Mappings
 		private static PrimitiveDataDefine CreateType (Type type)
 		{
 			PrimitiveDataDefine mapping = null;
-			if (DefineList.ContainsKey (type)) {
+			bool isnullable;
+			if (DefineList.TryGetValue (type, out isnullable)) {
 				mapping = new PrimitiveDataDefine (type);
-				mapping.IsNullable = DefineList [type];
+				mapping.IsNullable = isnullable;
 				return mapping;
 			}
 			if (type == typeof(string)) {
@@ -110,7 +103,7 @@ namespace Light.Data.Mappings
 			_typeCode = Type.GetTypeCode (type);
 		}
 
-		TypeCode _typeCode = TypeCode.Empty;
+		TypeCode _typeCode;
 
 		/// <summary>
 		/// 
@@ -148,67 +141,11 @@ namespace Light.Data.Mappings
 			return GetValue (obj);
 		}
 
-		object GetDefaultValue ()
-		{
-			object obj;
-			switch (_typeCode) {
-				case TypeCode.String:
-					obj = string.Empty;
-					break;
-				case TypeCode.Boolean:
-					obj = false;
-					break;
-				case TypeCode.Char:
-					obj = Char.MinValue;
-					break;
-				case TypeCode.SByte:
-					obj = MIN_SBYTE;
-					break;
-				case TypeCode.Byte:
-					obj = MIN_BYTE;
-					break;
-				case TypeCode.Int16:
-					obj = MIN_SHORT;
-					break;
-				case TypeCode.UInt16:
-					obj = MIN_USHORT;
-					break;
-				case TypeCode.Int32:
-					obj = 0;
-					break;
-				case TypeCode.UInt32:
-					obj = 0u;
-					break;
-				case TypeCode.Int64:
-					obj = 0L;
-					break;
-				case TypeCode.UInt64:
-					obj = 0uL;
-					break;
-				case TypeCode.Single:
-					obj = 0f;
-					break;
-				case TypeCode.Double:
-					obj = 0d;
-					break;
-				case TypeCode.Decimal:
-					obj = 0m;
-					break;
-				case TypeCode.DateTime:
-					obj = DateTime.MinValue;
-					break;
-				default:
-					obj = 0;
-					break;
-			}
-			return obj;
-		}
-
 		object GetValue (object obj)
 		{
 			if (Object.Equals (obj, DBNull.Value)) {
 				if (!IsNullable) {
-					return GetDefaultValue ();
+					return Utility.GetDefaultValue (_typeCode);
 				}
 				else {
 					return null;
