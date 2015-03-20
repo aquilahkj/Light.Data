@@ -4,58 +4,37 @@ using System.Text;
 
 namespace Light.Data.Expressions
 {
-    class ExistsQueryExpression : QueryExpression
-    {
-        QueryExpression _queryExpression = null;
+	class ExistsQueryExpression : QueryExpression
+	{
+		QueryExpression _queryExpression = null;
 
-        bool _isNot = false;
+		bool _isNot = false;
 
-        public ExistsQueryExpression(QueryExpression expression, bool isNot)
-            : base(expression.TableMapping)
-        {
-            _queryExpression = expression;
-            _isNot = isNot;
-            IgnoreConsistency = true;
-        }
+		public ExistsQueryExpression (QueryExpression expression, bool isNot)
+			: base (expression.TableMapping)
+		{
+			_queryExpression = expression;
+			_isNot = isNot;
+			IgnoreConsistency = true;
+		}
 
 
-        internal override string CreateSqlString(CommandFactory factory, out DataParameter[] dataParameters)
-        {
-            string queryString = _queryExpression.CreateSqlString(factory, out dataParameters);
-            return factory.CreateExistsQuerySql(factory.CreateDataTableSql(_queryExpression.TableMapping), queryString, _isNot);
-        }
+		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		{
+			string queryString = _queryExpression.CreateSqlString (factory, out dataParameters);
+			return factory.CreateExistsQuerySql (factory.CreateDataTableSql (_queryExpression.TableMapping), queryString, _isNot);
+		}
 
-        protected override bool EqualsDetail(QueryExpression expression)
-        {
-            if (base.EqualsDetail(expression))
-            {
-                ExistsQueryExpression target = expression as ExistsQueryExpression;
-                return this._queryExpression.Equals(target._queryExpression)
-                && this._isNot == target._isNot;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        //public override bool Equals(object obj)
-        //{
-        //    bool result = base.Equals(obj);
-        //    if (!result)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        ExistsQueryExpression target = obj as ExistsQueryExpression;
-        //        if (Object.Equals(target, null))
-        //        {
-        //            return false;
-        //        }
-        //        return Object.Equals(this._queryExpression, target._queryExpression)
-        //        && this._isNot == target._isNot;
-        //    }
-        //}
-    }
+		protected override bool EqualsDetail (QueryExpression expression)
+		{
+			if (base.EqualsDetail (expression)) {
+				ExistsQueryExpression target = expression as ExistsQueryExpression;
+				return this._queryExpression.Equals (target._queryExpression)
+				&& this._isNot == target._isNot;
+			}
+			else {
+				return false;
+			}
+		}
+	}
 }

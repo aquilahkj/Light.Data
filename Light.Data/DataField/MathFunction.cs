@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Light.Data.DataField
 {
-    enum MathFunction
-    {
-        Abs,
-        Log,
-        Exp,
-        Sin,
-        Cos,
-        Tan,
-        Atan
-    }
+	enum MathFunction
+	{
+		Abs,
+		Log,
+		Exp,
+		Sin,
+		Cos,
+		Tan,
+		Atan
+	}
 }

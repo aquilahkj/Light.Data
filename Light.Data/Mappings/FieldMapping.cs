@@ -5,233 +5,201 @@ using Light.Data.Handler;
 
 namespace Light.Data.Mappings
 {
-    abstract class FieldMapping
-    {
-        protected static readonly string _fieldRegex = @"^([a-zA-Z][a-z0-9A-Z_]*)$";
+	abstract class FieldMapping
+	{
+		protected static readonly string _fieldRegex = @"^([a-zA-Z][a-z0-9A-Z_]*)$";
 
-        #region 私有变量
-        string _dBType = null;
+		#region 私有变量
 
-        bool _isNullable = false;
+		string _dbType = null;
 
-        Type _objectType = null;
+		bool _isNullable = false;
 
-        string _name = null;
+		Type _objectType = null;
 
-        int? _dataOrder = null;
+		string _name = null;
 
-        string _indexName = null;
+		int? _dataOrder = null;
 
-        DataMapping _typeMapping = null;
+		string _indexName = null;
 
-        PropertyHandler _handler = null;
+		DataMapping _typeMapping = null;
 
-        object _defaultValue = null;
+		PropertyHandler _handler = null;
 
-        TypeCode _typeCode = TypeCode.Empty;
+		object _defaultValue = null;
 
-        #endregion
+		TypeCode _typeCode = TypeCode.Empty;
 
-        #region 公共属性
-        public virtual string DBType
-        {
-            get
-            {
-                return _dBType;
-            }
-            protected set
-            {
-                _dBType = value;
-            }
-        }
+		#endregion
 
-        public virtual bool IsNullable
-        {
-            get
-            {
-                return _isNullable;
-            }
-            protected set
-            {
-                _isNullable = value;
-            }
-        }
+		#region 公共属性
 
-        public Type ObjectType
-        {
-            get
-            {
-                return _objectType;
-            }
-            protected set
-            {
-                _objectType = value;
-                _typeCode = Type.GetTypeCode(ObjectType);
+		public virtual string DBType {
+			get {
+				return _dbType;
+			}
+//			protected set {
+//				_dBType = value;
+//			}
+		}
 
-            }
-        }
+		public virtual bool IsNullable {
+			get {
+				return _isNullable;
+			}
+//			protected set {
+//				_isNullable = value;
+//			}
+		}
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            protected set
-            {
-                _name = value;
-            }
-        }
+		public Type ObjectType {
+			get {
+				return _objectType;
+			}
+//			protected set {
+//				_objectType = value;
+//				_typeCode = Type.GetTypeCode (ObjectType);
+//			}
+		}
 
-        public int? DataOrder
-        {
-            get
-            {
-                return _dataOrder;
-            }
-            protected set
-            {
-                _dataOrder = value;
-            }
-        }
+		public string Name {
+			get {
+				return _name;
+			}
+//			protected set {
+//				_name = value;
+//			}
+		}
 
-        public string IndexName
-        {
-            get
-            {
-                return _indexName;
-            }
-            protected set
-            {
-                _indexName = value;
-            }
-        }
+		public int? DataOrder {
+			get {
+				return _dataOrder;
+			}
+			protected set {
+				_dataOrder = value;
+			}
+		}
 
-        public DataMapping TypeMapping
-        {
-            get
-            {
-                return _typeMapping;
-            }
-            protected set
-            {
-                _typeMapping = value;
-            }
-        }
+		public string IndexName {
+			get {
+				return _indexName;
+			}
+//			protected set {
+//				_indexName = value;
+//			}
+		}
 
-        public PropertyHandler Handler
-        {
-            get
-            {
-                return _handler;
-            }
-            set
-            {
-                _handler = value;
-            }
-        }
+		public DataMapping TypeMapping {
+			get {
+				return _typeMapping;
+			}
+//			protected set {
+//				_typeMapping = value;
+//			}
+		}
 
-        public object DefaultValue
-        {
-            get
-            {
-                return _defaultValue;
-            }
-            set
-            {
-                _defaultValue = value;
-            }
-        }
-        #endregion
+		public PropertyHandler Handler {
+			get {
+				return _handler;
+			}
+			set {
+				_handler = value;
+			}
+		}
 
-        #region 公共方法
-        public virtual object ToProperty(object value)
-        {
-            if (Object.Equals(value, null) || Object.Equals(value, DBNull.Value))
-            {
-                TypeCode code = Type.GetTypeCode(ObjectType);
-                if (code == TypeCode.String)
-                {
-                    if (IsNullable)
-                        return null;
-                    else
-                        return string.Empty;
-                }
-                else if (code == TypeCode.Boolean)
-                {
-                    return false;
-                }
-                else if (code == TypeCode.DateTime)
-                {
-                    return DateTime.MinValue;
-                }
-                else if (code == TypeCode.Char)
-                {
-                    return Char.MinValue;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            else
-            {
-                if (ObjectType != null && value.GetType() != ObjectType)
-                {
-                    value = Convert.ChangeType(value, ObjectType);
-                }
-                return value;
-            }
+		public object DefaultValue {
+			get {
+				return _defaultValue;
+			}
+			set {
+				_defaultValue = value;
+			}
+		}
 
-        }
+		#endregion
 
-        public virtual object ToColumn(object value)
-        {
-            if (Object.Equals(value, null))
-            {
-                if (IsNullable)
-                {
-                    return null;
-                }
-                else
-                {
-                    if (_typeCode == TypeCode.Object || _typeCode == TypeCode.Empty || _typeCode == TypeCode.DBNull)
-                    {
-                        return null;
-                    }
-                    if (_typeCode == TypeCode.String)
-                    {
-                        return string.Empty;
-                    }
-                    else if (_typeCode == TypeCode.Boolean)
-                    {
-                        return false;
-                    }
-                    else if (_typeCode == TypeCode.DateTime)
-                    {
-                        return DateTime.MinValue;
-                    }
-                    else if (_typeCode == TypeCode.Char)
-                    {
-                        return Char.MinValue;
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
-            }
-            else
-            {
-                if (ObjectType != null && value.GetType() != ObjectType)
-                {
-                    value = Convert.ChangeType(value, ObjectType);
-                }
-                return value;
-            }
-        }
-        #endregion
+		#region 公共方法
 
+		public FieldMapping (Type objectType, string name, string indexName, DataMapping typeMapping, bool isNullable, string dbType)
+		{
+			this._objectType = objectType;
+			if (objectType != null) {
+				this._typeCode = Type.GetTypeCode (objectType);
+			}
+			this._name = name;
+			this._indexName = indexName;
+			this._typeMapping = typeMapping;
+			this._isNullable = isNullable;
+			this._dbType = dbType;
+		}
 
-    }
+		public virtual object ToProperty (object value)
+		{
+			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
+				TypeCode code = Type.GetTypeCode (ObjectType);
+				if (code == TypeCode.String) {
+					if (IsNullable)
+						return null;
+					else
+						return string.Empty;
+				}
+				else if (code == TypeCode.Boolean) {
+					return false;
+				}
+				else if (code == TypeCode.DateTime) {
+					return DateTime.MinValue;
+				}
+				else if (code == TypeCode.Char) {
+					return Char.MinValue;
+				}
+				else {
+					return 0;
+				}
+			}
+			else {
+				if (ObjectType != null && value.GetType () != ObjectType) {
+					value = Convert.ChangeType (value, ObjectType);
+				}
+				return value;
+			}
+		}
+
+		public virtual object ToColumn (object value)
+		{
+			if (Object.Equals (value, null)) {
+				if (IsNullable) {
+					return null;
+				}
+				else {
+					if (_typeCode == TypeCode.Object || _typeCode == TypeCode.Empty || _typeCode == TypeCode.DBNull) {
+						return null;
+					}
+					if (_typeCode == TypeCode.String) {
+						return string.Empty;
+					}
+					else if (_typeCode == TypeCode.Boolean) {
+						return false;
+					}
+					else if (_typeCode == TypeCode.DateTime) {
+						return DateTime.MinValue;
+					}
+					else if (_typeCode == TypeCode.Char) {
+						return Char.MinValue;
+					}
+					else {
+						return 0;
+					}
+				}
+			}
+			else {
+				if (ObjectType != null && value.GetType () != ObjectType) {
+					value = Convert.ChangeType (value, ObjectType);
+				}
+				return value;
+			}
+		}
+
+		#endregion
+	}
 }

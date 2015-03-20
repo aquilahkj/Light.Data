@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.Data.Mappings;
-using Light.Data.Expressions;
 using Light.Data.DataField;
+using Light.Data.Expressions;
+using Light.Data.Mappings;
 
 namespace Light.Data
 {
@@ -24,7 +24,6 @@ namespace Light.Data
             {
                 throw new ArgumentNullException("name");
             }
-            Type type = typeof(T);
             return new DataFieldInfo<T>(name);
         }
 

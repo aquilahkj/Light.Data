@@ -4,15 +4,15 @@ using System.Text;
 
 namespace Light.Data.DataField
 {
-    enum DatePart
-    {
-        Year,
-        Month,
-        Day,
-        Hour,
-        Minute,
-        Second,
-        Week,
-        WeekDay
-    }
+	enum DatePart
+	{
+		Year,
+		Month,
+		Day,
+		Hour,
+		Minute,
+		Second,
+		Week,
+		WeekDay
+	}
 }

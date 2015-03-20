@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System.Collections;
 
 namespace Light.Data.Expressions
 {
@@ -72,30 +72,5 @@ namespace Light.Data.Expressions
                 return false;
             }
         }
-
-        //public override bool Equals(object obj)
-        //{
-        //    bool result = base.Equals(obj);
-        //    if (!result)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        CollectionParamsAggregateExpression target = obj as CollectionParamsAggregateExpression;
-        //        if (Object.Equals(target, null))
-        //        {
-        //            return false;
-        //        }
-        //        return Object.Equals(this._function, target._function)
-        //        && this._predicate == target._predicate
-        //        && Utility.EnumableObjectEquals(this._values, target._values);
-        //    }
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    return _function.GetHashCode() ^ _predicate.GetHashCode() ^ Utility.EnumableHashCode(_values);
-        //}
     }
 }

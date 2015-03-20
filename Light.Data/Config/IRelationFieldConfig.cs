@@ -6,16 +6,12 @@ namespace Light.Data.Config
 {
     interface IRelationFieldConfig
     {
-        ///// <summary>
-        ///// 关联键值字典
-        ///// </summary>
-        //Dictionary<string, string> RelationKeys
-        //{
-        //    get;
-        //}
-
         IEnumerable<RelationKey> GetRelationKeys();
 
+		/// <summary>
+		/// 关联数据表对应字段数
+		/// </summary>
+		/// <value>The relation key count.</value>
         int RelationKeyCount
         {
             get;

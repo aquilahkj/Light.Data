@@ -36,24 +36,5 @@ namespace Light.Data.Expressions
                 return false;
             }
         }
-
-        //public override bool Equals(object obj)
-        //{
-        //    bool result = base.Equals(obj);
-        //    if (!result)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        BooleanQueryExpression target = obj as BooleanQueryExpression;
-        //        if (Object.Equals(target, null))
-        //        {
-        //            return false;
-        //        }
-        //        return Object.Equals(this._fieldInfo, target._fieldInfo)
-        //        && this._isTrue == target._isTrue;
-        //    }
-        //}
     }
 }

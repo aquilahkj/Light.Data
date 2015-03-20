@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
+using System.Text;
 
 namespace Light.Data
 {
@@ -110,20 +110,21 @@ namespace Light.Data
             {
                 //在这里加入清理"托管资源"的代码
                 //DisposeCache();
+				if (_connection != null)
+				{
+					//_connection.Close();
+					_connection.Dispose();
+					_connection = null;
+				}
+				if (_transaction != null)
+				{
+					_transaction.Dispose();
+					_transaction = null;
+				}
             }
 
             // 在这里加入清理"非托管资源"的代码
-            if (_connection != null)
-            {
-                //_connection.Close();
-                _connection.Dispose();
-                _connection = null;
-            }
-            if (_transaction != null)
-            {
-                _transaction.Dispose();
-                _transaction = null;
-            }
+           
 
             _isDisposed = true;
         }

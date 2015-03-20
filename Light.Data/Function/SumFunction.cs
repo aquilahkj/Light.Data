@@ -7,7 +7,6 @@ namespace Light.Data.Function
 {
     class SumFunction : AggregateFunction
     {
-        //string _fieldName = null;
         DataFieldInfo _fieldinfo = null;
 
         bool _isDistinct = false;
@@ -16,7 +15,6 @@ namespace Light.Data.Function
             : base(mapping)
         {
             _fieldinfo = fieldInfo;
-            //_fieldName = fieldName;
             _isDistinct = isDistinct;
         }
 
@@ -38,31 +36,5 @@ namespace Light.Data.Function
                 return false;
             }
         }
-
-        //public override bool Equals(object obj)
-        //{
-        //    bool result = base.Equals(obj);
-        //    if (!result)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        SumFunction target = obj as SumFunction;
-        //        if (Object.Equals(target, null))
-        //        {
-        //            return false;
-        //        }
-        //        return Object.Equals(this._fieldinfo, target._fieldinfo) && this._isDistinct == target._isDistinct;
-        //    }
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    int hash = base.GetHashCode();
-        //    hash ^= _fieldinfo.GetHashCode();
-        //    hash ^= _isDistinct.GetHashCode();
-        //    return hash;
-        //}
     }
 }

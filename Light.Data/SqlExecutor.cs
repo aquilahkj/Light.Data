@@ -27,17 +27,6 @@ namespace Light.Data
         /// </summary>
         SafeLevel _level = SafeLevel.Default;
 
-        ///// <summary>
-        ///// 安全模式
-        ///// </summary>
-        ///// <param name="level">安全级别</param>
-        ///// <returns>SQL语句执行器</returns>
-        //public SqlExecutor SafeMode(SafeLevel level)
-        //{
-        //    _level = level;
-        //    return this;
-        //}
-
         /// <summary>
         /// 设置命令超时
         /// </summary>

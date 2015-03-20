@@ -7,14 +7,11 @@ namespace Light.Data.Function
 {
     class MinFunction : AggregateFunction
     {
-        //string _fieldName = null;
-
         DataFieldInfo _fieldinfo = null;
 
         internal MinFunction(DataEntityMapping mapping, DataFieldInfo fieldInfo)
             : base(mapping)
         {
-            //_fieldName = fieldName;
             _fieldinfo = fieldInfo;
         }
 
@@ -37,30 +34,5 @@ namespace Light.Data.Function
                 return false;
             }
         }
-
-        //public override bool Equals(object obj)
-        //{
-        //    bool result = base.Equals(obj);
-        //    if (!result)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        MinFunction target = obj as MinFunction;
-        //        if (Object.Equals(target, null))
-        //        {
-        //            return false;
-        //        }
-        //        return Object.Equals(this._fieldinfo, target._fieldinfo);
-        //    }
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    int hash = base.GetHashCode();
-        //    hash ^= _fieldinfo.GetHashCode();
-        //    return hash;
-        //}
     }
 }

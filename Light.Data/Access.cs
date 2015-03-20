@@ -82,7 +82,6 @@ namespace Light.Data
 
         #endregion
 
-
         bool ParseOleDbType(string dbType, out OleDbType type)
         {
             type = OleDbType.VarChar;
@@ -117,8 +116,6 @@ namespace Light.Data
                 return false;
             }
         }
-
-        
 
         public override void SetExtentArguments(string arguments)
         {

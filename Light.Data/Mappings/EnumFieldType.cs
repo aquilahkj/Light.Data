@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Light.Data.Mappings
 {
-    enum EnumFieldType
-    {
-        EnumToInt,
-        EnumToString
-    }
+	enum EnumFieldType
+	{
+		EnumToInt,
+		EnumToString
+	}
 }

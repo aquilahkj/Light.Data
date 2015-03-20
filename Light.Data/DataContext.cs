@@ -472,7 +472,7 @@ namespace Light.Data
         /// 批量插入数据
         /// </summary>
         /// <param name="datas">数据数组</param>
-        /// <returns>返回插入数据数量</returns>
+        /// <returns>返回处理行数</returns>
         public int BulkInsert(Array datas)
         {
             if (datas == null)
@@ -490,7 +490,7 @@ namespace Light.Data
             {
                 command.Dispose();
             }
-            return datas.Length;
+			return result;
         }
 
         /// <summary>

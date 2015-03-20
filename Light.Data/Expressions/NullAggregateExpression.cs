@@ -48,24 +48,5 @@ namespace Light.Data.Expressions
                 return false;
             }
         }
-
-        //public override bool Equals(object obj)
-        //{
-        //    bool result = base.Equals(obj);
-        //    if (!result)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        NullAggregateExpression target = obj as NullAggregateExpression;
-        //        if (Object.Equals(target, null))
-        //        {
-        //            return false;
-        //        }
-        //        return Object.Equals(this._function, target._function)
-        //        && this._isNull == target._isNull;
-        //    }
-        //}
     }
 }

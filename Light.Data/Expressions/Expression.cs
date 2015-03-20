@@ -26,33 +26,5 @@ namespace Light.Data
         }
 
         internal abstract string CreateSqlString(CommandFactory factory, out DataParameter[] dataParameters);
-
-        //public virtual bool Equals(Expression target)
-        //{
-        //    if (Object.Equals(target, null))
-        //    {
-        //        return false;
-        //    }
-        //    if (Object.ReferenceEquals(this, target))
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        if (this.GetType() == target.GetType())
-        //        {
-        //            return EqualsDetail(target);
-        //        }
-        //        else
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //}
-
-        //protected virtual bool EqualsDetail(Expression expression)
-        //{
-        //    return Object.Equals(this.TableMapping, expression.TableMapping);
-        //}
     }
 }

@@ -15,6 +15,9 @@ namespace Light.Data.Config
             set;
         }
 
+		/// <summary>
+		/// 字段排序
+		/// </summary>
         int DataOrder
         {
             get;

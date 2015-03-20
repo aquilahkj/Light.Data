@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.Data.Mappings;
 using Light.Data.Expressions;
+using Light.Data.Mappings;
 
 namespace Light.Data
 {
-
     /// <summary>
     /// 排序表达式
     /// </summary>
@@ -121,15 +120,6 @@ namespace Light.Data
             dataParameters = list.ToArray();
 
             return factory.CreateCatchExpressionSql(array);
-            //throw new NotImplementedException();
-            //string[] array = new string[_orderExpressions.Count];
-            //dataParameters = null;
-            //int len = array.Length;
-            //for (int i = 0; i < len; i++)
-            //{
-            //    array[i] = _orderExpressions[i].CreateSqlString(factory, out dataParameters);
-            //}
-            //return factory.CreateCatchExpressionSql(array);
         }
 
         internal virtual string CreateSqlString(CommandFactory factory, out DataParameter[] dataParameters, GetAliasHandler handler)
@@ -147,11 +137,13 @@ namespace Light.Data
             dataParameters = list.ToArray();
             return factory.CreateCatchExpressionSql(array);
         }
-        /// <summary>
-        /// 匹配对象是否相等
-        /// </summary>
-        /// <param name="target">匹配对象</param>
-        /// <returns></returns>
+
+		/// <summary>
+		/// Determines whether the specified <see cref="Light.Data.OrderExpression"/> is equal to the current <see cref="Light.Data.OrderExpression"/>.
+		/// </summary>
+		/// <param name="target">The <see cref="Light.Data.OrderExpression"/> to compare with the current <see cref="Light.Data.OrderExpression"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="Light.Data.OrderExpression"/> is equal to the current
+		/// <see cref="Light.Data.OrderExpression"/>; otherwise, <c>false</c>.</returns>
         public virtual bool Equals(OrderExpression target)
         {
             if (Object.Equals(target, null))
@@ -196,48 +188,5 @@ namespace Light.Data
                 }
             }
         }
-
-        //public override bool Equals(object obj)
-        //{
-        //    bool result = base.Equals(obj);
-        //    if (result)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        if (this.GetType() == obj.GetType())
-        //        {
-        //            OrderExpression target = obj as OrderExpression;
-        //            if (Object.Equals(this._orderExpressions, target._orderExpressions))
-        //            {
-        //                return true;
-        //            }
-        //            else
-        //            {
-        //                if (this._orderExpressions.Count == target._orderExpressions.Count)
-        //                {
-        //                    int len = this._orderExpressions.Count;
-        //                    for (int i = 0; i < len; i++)
-        //                    {
-        //                        if (!Object.Equals(this._orderExpressions[i], target._orderExpressions[i]))
-        //                        {
-        //                            return false;
-        //                        }
-        //                    }
-        //                    return true;
-        //                }
-        //                else
-        //                {
-        //                    return false;
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //}
     }
 }

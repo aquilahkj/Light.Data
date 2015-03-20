@@ -25,12 +25,17 @@ namespace Light.Data.Config
         /// <summary>
         /// 查询别名
         /// </summary>
+        /// <value>The name.</value>
         public string Name
         {
             get;
             set;
         }
 
+		/// <summary>
+		/// 配置字段名
+		/// </summary>
+		/// <value>The name of the field.</value>
         public string FieldName
         {
             get;

@@ -5,48 +5,41 @@ using Light.Data.Mappings;
 
 namespace Light.Data
 {
-    /// <summary>
-    /// 基本字段信息
-    /// </summary>
-    public abstract class BasicFieldInfo
-    {
-        DataFieldMapping _dataField = null;
+	/// <summary>
+	/// 基本字段信息
+	/// </summary>
+	public abstract class BasicFieldInfo
+	{
+		DataFieldMapping _dataField = null;
 
-        internal DataFieldMapping DataField
-        {
-            get
-            {
-                return _dataField;
-            }
-            set
-            {
-                _dataField = value;
-            }
-        }
+		internal DataFieldMapping DataField {
+			get {
+				return _dataField;
+			}
+			set {
+				_dataField = value;
+			}
+		}
 
-        DataEntityMapping _tableMapping = null;
+		DataEntityMapping _tableMapping = null;
 
-        internal DataEntityMapping TableMapping
-        {
-            get
-            {
-                return _tableMapping;
-            }
-            set
-            {
-                _tableMapping = value;
-            }
-        }
-        /// <summary>
-        /// 获取字段名称
-        /// </summary>
-        public string FieldName
-        {
-            get
-            {
-                return DataField.Name;
-            }
-        }
+		internal DataEntityMapping TableMapping {
+			get {
+				return _tableMapping;
+			}
+			set {
+				_tableMapping = value;
+			}
+		}
 
-    }
+		/// <summary>
+		/// 获取字段名称
+		/// </summary>
+		public string FieldName {
+			get {
+				return DataField.Name;
+			}
+		}
+
+	}
 }

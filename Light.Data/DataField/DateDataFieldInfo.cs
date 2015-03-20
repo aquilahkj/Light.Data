@@ -5,91 +5,41 @@ using Light.Data.Mappings;
 
 namespace Light.Data.DataField
 {
-    /// <summary>
-    /// 日期格式数据字段
-    /// </summary>
-    class DateDataFieldInfo : ExtendDataFieldInfo
-    {
-        string _format = null;
+	/// <summary>
+	/// 日期格式数据字段
+	/// </summary>
+	class DateDataFieldInfo : ExtendDataFieldInfo
+	{
+		string _format = null;
 
-        internal DateDataFieldInfo(DataFieldInfo info, string format)
-            : base(info)
-        {
-            DataFieldMapping fieldMapping = info.DataField;
-            //if (!(info is ExtendDataFieldInfo) && fieldMapping.ObjectType != typeof(DateTime))
-            //{
-            //    throw new LightDataException(string.Format(RE.TypeUnsupportTheTransform, fieldMapping.ObjectType));
-            //}
-            _format = format;
-        }
+		internal DateDataFieldInfo (DataFieldInfo info, string format)
+			: base (info)
+		{
+			DataFieldMapping fieldMapping = info.DataField;
+			_format = format;
+		}
 
-        //internal DateDataFieldInfo(DataFieldMapping fieldMapping, string format)
-        //    : base(fieldMapping)
-        //{
-        //    if (fieldMapping.ObjectType != typeof(DateTime))
-        //    {
-        //        throw new LightDataException(string.Format(RE.TypeUnsupportTheTransform, fieldMapping.ObjectType));
-        //    }
-        //    _format = format;
-        //}
+		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		{
+			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+			return factory.CreateDateSql (field, _format);
+		}
 
-        internal override string CreateDataFieldSql(CommandFactory factory, bool isFullName)
-        {
-            string field = BaseFieldInfo.CreateDataFieldSql(factory, isFullName);
-            return factory.CreateDateSql(field, _format);
-        }
+		internal override string DBType {
+			get {
+				return string.Empty;
+			}
+		}
 
-        internal override string DBType
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        protected override bool EqualsDetail(DataFieldInfo info)
-        {
-            if (base.EqualsDetail(info))
-            {
-                DateDataFieldInfo target = info as DateDataFieldInfo;
-                return this._format == target._format;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        //public override bool Equals(object obj)
-        //{
-        //    if (Object.ReferenceEquals(this, obj))
-        //    {
-        //        return true;
-        //    }
-        //    bool result = base.Equals(obj);
-        //    if (!result)
-        //    {
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        DateDataFieldInfo target = obj as DateDataFieldInfo;
-        //        //if (Object.Equals(target, null))
-        //        //{
-        //        //    return false;
-        //        //}
-        //        return this._format == target._format;
-        //    }
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    int hash = base.GetHashCode();
-        //    if (_format != null)
-        //    {
-        //        hash ^= _format.GetHashCode();
-        //    }
-        //    return hash;
-        //}
-    }
+		protected override bool EqualsDetail (DataFieldInfo info)
+		{
+			if (base.EqualsDetail (info)) {
+				DateDataFieldInfo target = info as DateDataFieldInfo;
+				return this._format == target._format;
+			}
+			else {
+				return false;
+			}
+		}
+	}
 }

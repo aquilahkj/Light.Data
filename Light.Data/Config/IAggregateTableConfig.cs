@@ -4,23 +4,21 @@ using System.Text;
 
 namespace Light.Data.Config
 {
-    interface IAggregateTableConfig
-    {
-        /// <summary>
-        /// 关联表类型
-        /// </summary>
-        Type RelateType
-        {
-            get;
-        }
+	interface IAggregateTableConfig
+	{
+		/// <summary>
+		/// 关联表类型
+		/// </summary>
+		Type RelateType {
+			get;
+		}
 
-        /// <summary>
-        /// 扩展参数
-        /// </summary>
-        string ExtendParams
-        {
-            get;
-            set;
-        }
-    }
+		/// <summary>
+		/// 扩展参数
+		/// </summary>
+		string ExtendParams {
+			get;
+			set;
+		}
+	}
 }

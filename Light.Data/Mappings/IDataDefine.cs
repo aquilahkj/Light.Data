@@ -5,10 +5,10 @@ using System.Data;
 
 namespace Light.Data.Mappings
 {
-    interface IDataDefine
-    {
-        object LoadData(DataContext context, IDataReader datareader);
+	interface IDataDefine
+	{
+		object LoadData (DataContext context, IDataReader datareader);
 
-        object LoadData(DataContext context, DataRow datarow);
-    }
+		object LoadData (DataContext context, DataRow datarow);
+	}
 }

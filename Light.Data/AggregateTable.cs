@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Collections;
-using Light.Data.Mappings;
+using System.Collections.Generic;
 using System.Data;
+using System.Text;
+using Light.Data.Mappings;
 
 namespace Light.Data
 {
@@ -28,8 +28,6 @@ namespace Light.Data
         Dictionary<string, DataFieldInfo> _dataFieldInfoDictionary = new Dictionary<string, DataFieldInfo>();
 
         Dictionary<string, AggregateFunction> _aggregateFunctionDictionary = new Dictionary<string, AggregateFunction>();
-
-        //bool _needlast = false;
 
         internal AggregateTable(DataContext dataContext)
         {

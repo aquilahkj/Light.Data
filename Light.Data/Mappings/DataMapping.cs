@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Light.Data.Handler;
-using Light.Data;
 using System.Data;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using Light.Data;
 using Light.Data.Config;
+using Light.Data.Handler;
 
 namespace Light.Data.Mappings
 {
@@ -56,6 +56,7 @@ namespace Light.Data.Mappings
             }
             return mappings[type];
         }
+
         /// <summary>
         /// 获取数据表映射图
         /// </summary>
@@ -142,13 +143,9 @@ namespace Light.Data.Mappings
 
         #endregion
 
-
-        object _syncObj = new object();
-
         public DataMapping(Type type)
         {
             ObjectType = type;
-            //InitialDataFieldMapping();
         }
 
         /// <summary>
@@ -202,11 +199,6 @@ namespace Light.Data.Mappings
             }
             return list.ToArray();
         }
-
-        ///// <summary>
-        ///// 初始化数据字段
-        ///// </summary>
-        //protected abstract void InitialDataFieldMapping();
 
         #region IFieldCollection 成员
 

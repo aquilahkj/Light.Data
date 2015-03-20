@@ -15,20 +15,12 @@ namespace Light.Data.Config
                 throw new ArgumentNullException("FieldName");
             }
             FieldName = fieldName;
-            //RelationKeys = new Dictionary<string, string>();
         }
 
         public void AddRelationKeys(string masterKey, string relateKey)
         {
             _relationKeys.Add(new RelationKey(masterKey, relateKey));
-            //RelationKeys.Add(masterKey, relationKey);
         }
-
-        //public Dictionary<string, string> RelationKeys
-        //{
-        //    get;
-        //    private set;
-        //}
 
         public string PropertyName
         {
@@ -49,7 +41,6 @@ namespace Light.Data.Config
                 yield return key;
             }
         }
-
 
         public int RelationKeyCount
         {

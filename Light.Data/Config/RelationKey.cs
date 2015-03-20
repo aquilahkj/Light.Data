@@ -31,7 +31,5 @@ namespace Light.Data.Config
             get;
             set;
         }
-
-
     }
 }
