@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Data.Test", "Light.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Data.Extend", "Light.Data.Extend\Light.Data.Extend.csproj", "{52EB0EE4-6398-440C-88E5-4F8C02D6D66A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Data.MysqlAdapter", "Light.Data.MysqlAdapter\Light.Data.MysqlAdapter.csproj", "{F2798589-B359-4CC1-BD0F-F5E58C416F71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,18 @@ Global
 		{CA69E06C-4F69-4259-AF9A-57CEF8013ADC}.Release|x64.Build.0 = Release|Any CPU
 		{CA69E06C-4F69-4259-AF9A-57CEF8013ADC}.Release|x86.ActiveCfg = Release|Any CPU
 		{CA69E06C-4F69-4259-AF9A-57CEF8013ADC}.Release|x86.Build.0 = Release|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Debug|x64.Build.0 = Debug|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Debug|x86.Build.0 = Debug|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Release|x64.ActiveCfg = Release|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Release|x64.Build.0 = Release|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Release|x86.ActiveCfg = Release|Any CPU
+		{F2798589-B359-4CC1-BD0F-F5E58C416F71}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
