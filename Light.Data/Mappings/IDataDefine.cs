@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 
-namespace Light.Data.Mappings
+namespace Light.Data
 {
 	interface IDataDefine
 	{

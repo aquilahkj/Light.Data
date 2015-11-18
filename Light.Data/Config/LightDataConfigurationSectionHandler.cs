@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 
-namespace Light.Data.Config
+namespace Light.Data
 {
     /// <summary>
     /// 配置节点处理类

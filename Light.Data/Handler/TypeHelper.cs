@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Handler
+namespace Light.Data
 {
 	static class TypeHelper
 	{

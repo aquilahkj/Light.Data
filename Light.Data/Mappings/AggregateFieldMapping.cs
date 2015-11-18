@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Light.Data.Mappings
+namespace Light.Data
 {
 	class AggregateFieldMapping : FieldMapping
 	{

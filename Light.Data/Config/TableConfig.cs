@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
-namespace Light.Data.Config
+namespace Light.Data
 {
 	abstract class TableConfig : IEnumerable<IConfiguratorFieldConfig>
 	{

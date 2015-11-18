@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Expressions
+namespace Light.Data
 {
 	/// <summary>
 	/// 排序类型

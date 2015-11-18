@@ -5,8 +5,6 @@ using System.Text;
 using System.Configuration;
 using System.Reflection;
 using System.Data;
-using Light.Data.Mappings;
-using Light.Data.Handler;
 
 namespace Light.Data
 {

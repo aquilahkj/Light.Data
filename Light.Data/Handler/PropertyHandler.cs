@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Light.Data.Handler
+namespace Light.Data
 {
 	delegate void SetValueHandler (object source, object value);
 	delegate object GetValueHandler (object source);

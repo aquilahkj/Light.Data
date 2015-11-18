@@ -4,7 +4,6 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using System.Text.RegularExpressions;
-using Light.Data.Mappings;
 
 namespace Light.Data
 {

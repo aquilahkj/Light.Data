@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.Data.Handler;
 using System.Reflection;
 using System.Xml;
 using System.IO;
 using System.Configuration;
 
-namespace Light.Data.Config
+namespace Light.Data
 {
 	class Configurator
 	{

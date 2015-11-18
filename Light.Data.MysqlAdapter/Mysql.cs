@@ -1,50 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.OracleClient;
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace Light.Data
+using MySql.Data.MySqlClient;
+ 
+namespace Light.Data.MysqlAdapter
 {
-	class Oracle : Database
+	class Mysql : Database
 	{
-		public Oracle ()
+		public Mysql ()
 		{
-			_factory = new OracleCommandFactory (this);
+			_factory = new MysqlCommandFactory (this);
 		}
 
 		#region IDatabase 成员
 
 		public override IDbConnection CreateConnection ()
 		{
-			return new OracleConnection ();
+			return new MySqlConnection (); 
 		}
 
 		public override IDbConnection CreateConnection (string connectionString)
 		{
-			return new OracleConnection (connectionString);
+			return new MySqlConnection (connectionString);
 		}
 
 		public override IDbDataAdapter CreateDataAdapter (IDbCommand cmd)
 		{
-			OracleDataAdapter da = new OracleDataAdapter ();
-			da.SelectCommand = (OracleCommand)cmd;
+			MySqlDataAdapter da = new MySqlDataAdapter ();
+			da.SelectCommand = (MySqlCommand)cmd;
 			return da;
 		}
 
 		public override IDbCommand CreateCommand (string sql)
 		{
-			OracleCommand command = new OracleCommand ();
+			MySqlCommand command = new MySqlCommand ();
 			command.CommandText = sql;
 			command.CommandTimeout = _commandTimeOut;
 			return command;
 		}
 
-
 		public override IDbCommand CreateCommand ()
 		{
-			OracleCommand command = new OracleCommand ();
+			MySqlCommand command = new MySqlCommand ();
 			command.CommandTimeout = _commandTimeOut;
 			return command;
 		}
@@ -52,19 +48,19 @@ namespace Light.Data
 		public override IDataParameter CreateParameter (string name, object value, string dbType, ParameterDirection direction)
 		{
 			string parameterName = name;
-			if (!parameterName.StartsWith (":")) {
-				parameterName = ":" + parameterName;
+			if (!parameterName.StartsWith ("?")) {
+				parameterName = "?" + parameterName;
 			}
-			OracleParameter sp = new OracleParameter (parameterName, value);
+			MySqlParameter sp = new MySqlParameter (parameterName, value);
 			if (value == null)
 				sp.Value = DBNull.Value;
 			sp.Direction = direction;
-			OracleType oracletype;
+			MySqlDbType sqltype;
 			DbType dType;
 			int size;
 			if (!string.IsNullOrEmpty (dbType)) {
-				if (ParseOracleType (dbType, out oracletype)) {
-					sp.OracleType = oracletype;
+				if (ParseSqlDbType (dbType, out sqltype)) {
+					sp.MySqlDbType = sqltype;
 				}
 				else if (Utility.ParseDbType (dbType, out dType)) {
 					sp.DbType = dType;
@@ -78,17 +74,16 @@ namespace Light.Data
 
 		public override void FormatStoredProcedureParameter (IDataParameter dataParmeter)
 		{
-			if (dataParmeter.ParameterName.StartsWith (":")) {
+			if (dataParmeter.ParameterName.StartsWith ("?")) {
 				dataParmeter.ParameterName = dataParmeter.ParameterName.Substring (1);
 			}
 		}
 
 		#endregion
 
-
-		bool ParseOracleType (string dbType, out OracleType type)
+		bool ParseSqlDbType (string dbType, out MySqlDbType type)
 		{
-			type = OracleType.VarChar;
+			type = MySqlDbType.VarChar;
 			int index = dbType.IndexOf ('(');
 			string typeString = string.Empty;
 			if (index < 0) {
@@ -101,7 +96,7 @@ namespace Light.Data
 				typeString = dbType.Substring (0, index);
 			}
 			try {
-				type = (OracleType)Enum.Parse (typeof(OracleType), typeString, true);
+				type = (MySqlDbType)Enum.Parse (typeof(MySqlDbType), typeString, true);
 				return true;
 			}
 			catch {
@@ -124,14 +119,7 @@ namespace Light.Data
 					CommandTimeOut = timeout;
 				}
 			}
-
-			if (extendParams ["RoundScale"] != null) {
-				byte roundScale;
-				if (byte.TryParse (extendParams ["RoundScale"], out roundScale)) {
-					OracleCommandFactory oracleFactory = _factory as OracleCommandFactory;
-					oracleFactory.SetRoundScale (roundScale);
-				}
-			}
 		}
 	}
 }
+

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.Data.Handler;
 
-namespace Light.Data.Mappings
+namespace Light.Data
 {
 	class SpecifiedFieldMapping
 	{

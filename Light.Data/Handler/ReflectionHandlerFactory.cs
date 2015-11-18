@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Light.Data.Handler
+namespace Light.Data
 {
-	class ReflectionHandlerFactory
+	static class ReflectionHandlerFactory
 	{
 		private static Dictionary<FieldInfo, GetValueHandler> mFieldGetHandlers = new Dictionary<FieldInfo, GetValueHandler> ();
 		private static Dictionary<FieldInfo, SetValueHandler> mFieldSetHandlers = new Dictionary<FieldInfo, SetValueHandler> ();

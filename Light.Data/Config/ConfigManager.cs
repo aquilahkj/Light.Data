@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using Light.Data.Handler;
 
-namespace Light.Data.Config
+namespace Light.Data
 {
     static class ConfigManager
     {

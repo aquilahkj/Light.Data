@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
-using Light.Data.Expressions;
-using Light.Data.Mappings;
 
 namespace Light.Data
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Config
+namespace Light.Data
 {
 	class DataFieldConfig : IDataFieldConfig, IConfiguratorFieldConfig
 	{

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Expressions
+namespace Light.Data
 {
     class CollectionParamsAggregateExpression : AggregateHavingExpression
     {

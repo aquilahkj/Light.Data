@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 
-namespace Light.Data.Config
+namespace Light.Data
 {
     class LightDataConfig : IConfig
     {

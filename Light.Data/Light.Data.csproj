@@ -268,11 +268,6 @@
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
     <Compile Include="QueryPredicate.cs" />
-    <Compile Include="RE.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RE.resx</DependentUpon>
-    </Compile>
     <Compile Include="Region.cs" />
     <Compile Include="LightDataException.cs" />
     <Compile Include="SqlExecutor.cs" />
@@ -281,13 +276,7 @@
     <Compile Include="TransDataContext.cs" />
     <Compile Include="UpdateSetValue.cs" />
     <Compile Include="Utility.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="RE.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>RE.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <Compile Include="RE.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

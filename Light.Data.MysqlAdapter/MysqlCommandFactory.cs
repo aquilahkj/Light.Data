@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace Light.Data.Extend
+namespace Light.Data.MysqlAdapter
 {
 	class MysqlCommandFactory : CommandFactory
 	{

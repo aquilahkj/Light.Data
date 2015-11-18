@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using Light.Data.Expressions;
-using Light.Data.Mappings;
 
 namespace Light.Data
 {
@@ -113,7 +111,7 @@ namespace Light.Data
 				}
 			}
 			if (string.IsNullOrEmpty (field)) {
-				throw new LightDataException (RE.TypfOfDataFieldIsNotString);
+				throw new LightDataException (RE.DataFieldIsNotStringType);
 			}
 			return string.Format ("rnd({0}*{1})", intRandomNumber, field);
 		}

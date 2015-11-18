@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Mappings
+namespace Light.Data
 {
 	abstract class DataDefine : IDataDefine
 	{

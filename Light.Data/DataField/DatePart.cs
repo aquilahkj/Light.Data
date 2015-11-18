@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.DataField
+namespace Light.Data
 {
 	enum DatePart
 	{

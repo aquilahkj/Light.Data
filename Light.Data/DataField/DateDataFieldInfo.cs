@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.Data.Mappings;
 
-namespace Light.Data.DataField
+namespace Light.Data
 {
 	/// <summary>
 	/// 日期格式数据字段

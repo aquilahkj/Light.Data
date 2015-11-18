@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
 using System.Text;
-using Light.Data.Config;
-using Light.Data.Handler;
 
-namespace Light.Data.Mappings
+namespace Light.Data
 {
 	class ComplexFieldMapping : DataFieldMapping, IFieldCollection
 	{

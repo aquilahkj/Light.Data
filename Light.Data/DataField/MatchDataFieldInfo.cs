@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Light.Data.Mappings;
-using Light.Data.Expressions;
 
-namespace Light.Data.DataField
+namespace Light.Data
 {
 	/// <summary>
 	/// 模糊匹配字段

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Threading;
-using Light.Data.Mappings;
 
 namespace Light.Data
 {

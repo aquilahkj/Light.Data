@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using Light.Data.Handler;
 
-namespace Light.Data.Mappings
+namespace Light.Data
 {
 	/// <summary>
 	/// 关联映射表

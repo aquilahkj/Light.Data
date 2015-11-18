@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Light.Data.Mappings
+namespace Light.Data
 {
 	/// <summary>
 	/// 自定义字段类型，用于建立没有在数据表字段映射的字段信息(DataFieldInfo)
