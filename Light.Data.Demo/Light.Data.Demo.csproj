@@ -42,10 +42,15 @@
       <Project>{AB57F3CC-2F20-4FCC-BDE7-E6ED904B68DB}</Project>
       <Name>Light.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Light.Data.MysqlAdapter\Light.Data.MysqlAdapter.csproj">
+      <Project>{F2798589-B359-4CC1-BD0F-F5E58C416F71}</Project>
+      <Name>Light.Data.MysqlAdapter</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Re.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="app.config" />
   </ItemGroup>
 </Project>

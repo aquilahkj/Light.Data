@@ -260,7 +260,6 @@
     <Compile Include="Mssql.cs" />
     <Compile Include="Access.cs" />
     <Compile Include="MssqlCommandFactory.cs" />
-    <Compile Include="MysqlCommandFactory.cs" />
     <Compile Include="Oracle.cs" />
     <Compile Include="OracleCommandFactory.cs" />
     <Compile Include="Expressions\OrderExpression.cs" />
@@ -277,6 +276,7 @@
     <Compile Include="UpdateSetValue.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="RE.cs" />
+    <Compile Include="ICommandOutput.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

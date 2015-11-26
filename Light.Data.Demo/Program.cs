@@ -9,6 +9,13 @@ namespace Light.Data.Demo
 	{
 		public static void Main (string[] args)
 		{
+			DataContext context = DataContextConfiguration.Default;
+			context.LQuery<MainClass> ();
+			context.BulkInsert (null, batchCount: 30);
+		}
+
+		static void ReadXml ()
+		{
 			XmlDocument doc = new XmlDocument ();
 			StringBuilder sb = new StringBuilder ();
 			doc.Load ("Re.xml");

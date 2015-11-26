@@ -193,7 +193,7 @@ namespace Light.Data
 		/// </summary>
 		public const string TheNumberOfPrimaryKeysIsNotMatch = "the number of primary keys is not match";
 		/// <summary>
-		/// 关联类的集合类型非IList<T>
+		/// 关联类的集合类型非IList
 		/// </summary>
 		public const string TheRelationTypeNotIList = "the relation type not IList";
 		/// <summary>
@@ -264,7 +264,10 @@ namespace Light.Data
 		/// 主键字段不存在
 		/// </summary>
 		public const string PrimaryKeyIsNotExist = "primary key is not exist";
-
+		/// <summary>
+		/// "select"字段数与"insert"字段数不相等.
+		/// </summary>
+		public const string SelectFiledsCountNotEquidInsertFiledCount = "select fileds count not equid insert filed count";
 	}
 }
 

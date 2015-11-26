@@ -73,23 +73,23 @@ namespace Light.Data
 
 		public string TableName {
 			get {
-				if (_aliasName != null) {
-					return _aliasName;
-				}
-				else {
+//				if (_aliasName != null) {
+//					return _aliasName;
+//				}
+//				else {
 					return _tableName;
-				}
+//				}
 			}
 
 		}
 
 		[ThreadStatic]
-		string _aliasName = null;
+		static string _aliasName = null;
 
 		public void SetAliasName (string name)
 		{
 			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("AliasName");
+				throw new ArgumentNullException ("name");
 			}
 			_aliasName = name;
 		}

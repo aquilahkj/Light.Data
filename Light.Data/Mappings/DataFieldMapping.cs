@@ -120,7 +120,7 @@ namespace Light.Data
 
 		PropertyHandler _specifiedHandler;
 
-		public DataFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
+		protected DataFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
 

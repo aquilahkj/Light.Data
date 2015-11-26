@@ -55,14 +55,15 @@ namespace Light.Data.MysqlAdapter
 				fields.Remove (mapping.IdentityField);
 			}
 			StringBuilder values = new StringBuilder ();
-			StringBuilder insert = new StringBuilder ();
-
 
 			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
+			string[] insertList = new string[paramList.Count];
+			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
-				insert.AppendFormat ("{0},", CreateDataFieldSql (dataParameter.ParameterName));
+				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
+				index++;
 			}
-			insert.Remove (insert.Length - 1, 1);
+			string insert = string.Join (",", insertList);
 			string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
 
 			int createCount = 0;
@@ -73,19 +74,21 @@ namespace Light.Data.MysqlAdapter
 			List<IDbCommand> commands = new List<IDbCommand> ();
 			foreach (object entity in entitys) {
 				paramList = GetDataParameters (fields, entity);
-				StringBuilder value = new StringBuilder ();
+				string[] valueList = new string[paramList.Count];
+				int vindex = 0;
 				foreach (DataParameter dataParameter in paramList) {
 					IDataParameter param = _database.CreateParameter ("P" + paramCount, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-					value.AppendFormat ("{0},", param.ParameterName);
 					command.Parameters.Add (param);
+					valueList [vindex] = param.ParameterName;
 					paramCount++;
+					vindex++;
 				}
-				value.Remove (value.Length - 1, 1);
-				values.AppendFormat ("({0}),", value);
+				string value = string.Join (",", valueList);
+				values.AppendFormat ("({0})", value);
 				createCount++;
 				totalCreateCount++;
 				if (createCount == batchCount || totalCreateCount == totalCount) {
-					values.Remove (values.Length - 1, 1);
+					values.Append (";");
 					command.CommandText = string.Format ("{0}values{1}", insertsql, values);
 					commands.Add (command);
 					if (totalCreateCount == totalCount) {
@@ -95,6 +98,9 @@ namespace Light.Data.MysqlAdapter
 					createCount = 0;
 					paramCount = 0;
 					values = new StringBuilder ();
+				}
+				else {
+					values.Append (",");
 				}
 			}
 			return commands.ToArray ();

@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Light.Data.MysqlAdapter</RootNamespace>
     <AssemblyName>Light.Data.MysqlAdapter</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +47,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
 </Project>

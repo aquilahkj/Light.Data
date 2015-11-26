@@ -38,37 +38,24 @@ namespace Light.Data
 			get {
 				return _dbType;
 			}
-//			protected set {
-//				_dBType = value;
-//			}
 		}
 
 		public virtual bool IsNullable {
 			get {
 				return _isNullable;
 			}
-//			protected set {
-//				_isNullable = value;
-//			}
 		}
 
 		public Type ObjectType {
 			get {
 				return _objectType;
 			}
-//			protected set {
-//				_objectType = value;
-//				_typeCode = Type.GetTypeCode (ObjectType);
-//			}
 		}
 
 		public string Name {
 			get {
 				return _name;
 			}
-//			protected set {
-//				_name = value;
-//			}
 		}
 
 		public int? DataOrder {
@@ -84,18 +71,12 @@ namespace Light.Data
 			get {
 				return _indexName;
 			}
-//			protected set {
-//				_indexName = value;
-//			}
 		}
 
 		public DataMapping TypeMapping {
 			get {
 				return _typeMapping;
 			}
-//			protected set {
-//				_typeMapping = value;
-//			}
 		}
 
 		public PropertyHandler Handler {
@@ -120,7 +101,7 @@ namespace Light.Data
 
 		#region 公共方法
 
-		public FieldMapping (Type objectType, string name, string indexName, DataMapping typeMapping, bool isNullable, string dbType)
+		protected FieldMapping (Type objectType, string name, string indexName, DataMapping typeMapping, bool isNullable, string dbType)
 		{
 			this._objectType = objectType;
 			if (objectType != null) {

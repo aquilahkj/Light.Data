@@ -13,37 +13,40 @@ namespace Light.Data
 
 		static object _synobj = new object ();
 
-		static Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> _assemblyMapping = new Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> ();
+//		static Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> _assemblyMapping = new Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> ();
 
 		static Dictionary<Type, AggregateTableMapping> _defaultMapping = new Dictionary<Type, AggregateTableMapping> ();
 
+
 		public static AggregateTableMapping GetAggregateMapping (Type type)
 		{
-			Assembly callingAssembly = DataContext.CallingAssembly;
-			Dictionary<Type, AggregateTableMapping> mappings = null;
-			if (callingAssembly == null) {
-				mappings = _defaultMapping;
-			}
-			else {
-				if (!_assemblyMapping.ContainsKey (callingAssembly)) {
-					lock (_synobj) {
-						if (!_assemblyMapping.ContainsKey (callingAssembly)) {
-							_assemblyMapping.Add (callingAssembly, new Dictionary<Type, AggregateTableMapping> ());
-						}
-					}
-				}
-				mappings = _assemblyMapping [callingAssembly];
-			}
+//			Assembly callingAssembly = DataContext.CallingAssembly;
+//			Dictionary<Type, AggregateTableMapping> mappings = null;
+//			if (callingAssembly == null) {
+//				mappings = _defaultMapping;
+//			}
+//			else {
+//				if (!_assemblyMapping.ContainsKey (callingAssembly)) {
+//					lock (_synobj) {
+//						if (!_assemblyMapping.ContainsKey (callingAssembly)) {
+//							_assemblyMapping.Add (callingAssembly, new Dictionary<Type, AggregateTableMapping> ());
+//						}
+//					}
+//				}
+//				mappings = _assemblyMapping [callingAssembly];
+//			}
 
-			if (!mappings.ContainsKey (type)) {
+			Dictionary<Type, AggregateTableMapping> mappings = _defaultMapping;
+			AggregateTableMapping mapping = null;
+			if (!mappings.TryGetValue (type, out mapping)) {
 				lock (_synobj) {
 					if (!mappings.ContainsKey (type)) {
-						AggregateTableMapping mapping = CreateMapping (type);
+						mapping = CreateMapping (type);
 						mappings [type] = mapping;
 					}
 				}
 			}
-			return mappings [type];
+			return mapping;
 		}
 
 		private static AggregateTableMapping CreateMapping (Type type)

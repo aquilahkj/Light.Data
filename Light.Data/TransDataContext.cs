@@ -81,22 +81,26 @@ namespace Light.Data
 			return _trconnection;
 		}
 
-		internal override int ExecuteMultiCommands (IDbCommand[] dbcommands, SafeLevel level)
+		internal override int[] ExecuteMultiCommands (IDbCommand[] dbcommands, SafeLevel level)
 		{
-			int rInt = 0;
+			int[] rInts = new int[dbcommands.Length];
 			if (_isTransaction) {
+				int index = 0;
 				foreach (IDbCommand dbcommand in dbcommands) {
 					_trconnection.SetupCommand (dbcommand);
-					rInt += dbcommand.ExecuteNonQuery ();
+					rInts [index] = dbcommand.ExecuteNonQuery ();
+					index++;
 				}
 			}
 			else {
 				TransactionConnection transaction = GetTransactionConnection ();
 				transaction.ResetTransaction (level);
 				try {
+					int index = 0;
 					foreach (IDbCommand dbcommand in dbcommands) {
 						transaction.SetupCommand (dbcommand);
-						rInt += dbcommand.ExecuteNonQuery ();
+						rInts [index] = dbcommand.ExecuteNonQuery ();
+						index++;
 					}
 					transaction.Commit ();
 				}
@@ -105,7 +109,7 @@ namespace Light.Data
 					throw ex;
 				}
 			}
-			return rInt;
+			return rInts;
 		}
 
 		internal override object ExecuteInsertCommand (IDbCommand dbcommand, IDbCommand indentityCommand, SafeLevel level)
@@ -145,7 +149,6 @@ namespace Light.Data
 			return result;
 		}
 
-
 		internal override int ExecuteNonQuery (IDbCommand dbcommand, SafeLevel level)
 		{
 			int rInt = 0;
@@ -168,8 +171,6 @@ namespace Light.Data
 			}
 			return rInt;
 		}
-
-
 
 		internal override object ExecuteScalar (IDbCommand dbcommand, SafeLevel level)
 		{

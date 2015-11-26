@@ -22,7 +22,7 @@ namespace Light.Data
         {
             if (string.IsNullOrEmpty(paramName))
             {
-                throw new ArgumentNullException("ParamName");
+                throw new ArgumentNullException ("paramName");
             }
             
             _parameterName = paramName;

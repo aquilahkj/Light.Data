@@ -54,20 +54,20 @@ namespace Light.Data
 				fields.Remove (mapping.IdentityField);
 			}
 			List<DataParameter> paramList = GetDataParameters (fields, entity);
-			StringBuilder insert = new StringBuilder ();
-			StringBuilder values = new StringBuilder ();
 
 			IDataParameter[] dataParameters = new IDataParameter[paramList.Count];
-			int count = 0;
+			string[] insertList = new string[paramList.Count];
+			string[] valuesList = new string[paramList.Count];
+			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
-				IDataParameter param = _database.CreateParameter ("P" + count, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-				insert.AppendFormat ("{0},", CreateDataFieldSql (dataParameter.ParameterName));
-				values.AppendFormat ("{0},", param.ParameterName);
-				dataParameters [count] = param;
-				count++;
+				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+				dataParameters [index] = param;
+				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
+				valuesList [index] = param.ParameterName;
+				index++;
 			}
-			insert.Remove (insert.Length - 1, 1);
-			values.Remove (values.Length - 1, 1);
+			string insert = string.Join (",", insertList);
+			string values = string.Join (",", valuesList);
 			StringBuilder sql = new StringBuilder ();
 			if (identityIntegrated) {
 				sql.AppendFormat ("insert into {0}({3},{1})values({4}.nextval,{2})", CreateDataTableSql (mapping.TableName), insert, values, CreateDataFieldSql (mapping.IdentityField.Name), GetIndentitySeq (mapping));
@@ -117,13 +117,15 @@ namespace Light.Data
 				fields.Remove (mapping.IdentityField);
 			}
 			StringBuilder totalSql = new StringBuilder ();
-			StringBuilder insert = new StringBuilder ();
 
 			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
+			string[] insertList = new string[paramList.Count];
+			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
-				insert.AppendFormat ("{0},", CreateDataFieldSql (dataParameter.ParameterName));
+				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
+				index++;
 			}
-			insert.Remove (insert.Length - 1, 1);
+			string insert = string.Join (",", insertList);
 			string insertsql;
 			if (identityIntegrated) {
 				insertsql = string.Format ("insert into {0}({2},{1})", CreateDataTableSql (mapping.TableName), insert, CreateDataFieldSql (mapping.IdentityField.Name));
@@ -141,16 +143,19 @@ namespace Light.Data
 			IDbCommand command = _database.CreateCommand ();
 			int paramCount = 0;
 			List<IDbCommand> commands = new List<IDbCommand> ();
+
 			foreach (object entity in entitys) {
 				paramList = GetDataParameters (fields, entity);
-				StringBuilder value = new StringBuilder ();
+				string[] valueList = new string[entitys.Length];
+				int vindex = 0;
 				foreach (DataParameter dataParameter in paramList) {
 					IDataParameter param = _database.CreateParameter ("P" + paramCount, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-					value.AppendFormat ("{0},", param.ParameterName);
 					command.Parameters.Add (param);
+					valueList [vindex] = param.ParameterName;
 					paramCount++;
+					vindex++;
 				}
-				value.Remove (value.Length - 1, 1);
+				string value = string.Join (",", valueList);
 				if (identityIntegrated) {
 					totalSql.AppendFormat ("{0}values({2}.nextval,{1});", insertsql, value, identityString);
 				}
@@ -284,38 +289,38 @@ namespace Light.Data
 				string format1 = format.ToUpper ();
 				string sqlformat = null;
 				switch (format1) {
-					case "YMD":
-						sqlformat = "yyyymmdd";
-						break;
-					case "YM":
-						sqlformat = "yyyymm";
-						break;
-					case "Y-M-D":
-						sqlformat = "yyyy-mm-dd";
-						break;
-					case "Y-M":
-						sqlformat = "yyyy-mm";
-						break;
-					case "M-D-Y":
-						sqlformat = "mm-dd-yyyy";
-						break;
-					case "D-M-Y":
-						sqlformat = "dd-mm-yyyy";
-						break;
-					case "Y/M/D":
-						sqlformat = "yyyy/mm/dd";
-						break;
-					case "Y/M":
-						sqlformat = "yyyy/mm";
-						break;
-					case "M/D/Y":
-						sqlformat = "mm/dd/yyyy";
-						break;
-					case "D/M/Y":
-						sqlformat = "dd/mm/yyyy";
-						break;
-					default:
-						throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
+				case "YMD":
+					sqlformat = "yyyymmdd";
+					break;
+				case "YM":
+					sqlformat = "yyyymm";
+					break;
+				case "Y-M-D":
+					sqlformat = "yyyy-mm-dd";
+					break;
+				case "Y-M":
+					sqlformat = "yyyy-mm";
+					break;
+				case "M-D-Y":
+					sqlformat = "mm-dd-yyyy";
+					break;
+				case "D-M-Y":
+					sqlformat = "dd-mm-yyyy";
+					break;
+				case "Y/M/D":
+					sqlformat = "yyyy/mm/dd";
+					break;
+				case "Y/M":
+					sqlformat = "yyyy/mm";
+					break;
+				case "M/D/Y":
+					sqlformat = "mm/dd/yyyy";
+					break;
+				case "D/M/Y":
+					sqlformat = "dd/mm/yyyy";
+					break;
+				default:
+					throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
 				}
 				return string.Format ("to_char({0},'{1}')", field, sqlformat);
 			}

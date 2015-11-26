@@ -16,7 +16,7 @@ namespace Light.Data
 		/// </summary>
 		static DataContext _defaultContext = null;
 
-		static DataContextCollection _collection = null;
+		static readonly DataContextCollection _collection = null;
 
 		/// <summary>
 		/// 数据库连接集合

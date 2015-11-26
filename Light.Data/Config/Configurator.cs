@@ -13,7 +13,7 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromSystemConfig (string sectionName)
 		{
 			if (string.IsNullOrEmpty (sectionName)) {
-				throw new ArgumentNullException ("SectionName");
+				throw new ArgumentNullException ("sectionName");
 			}
 			object obj = ConfigurationManager.GetSection (sectionName);
 			XmlNode node = obj as XmlNode;
@@ -28,7 +28,7 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromAssembly (Assembly assembly, string sectionName)
 		{
 			if (assembly == null) {
-				throw new ArgumentNullException ("Assembly");
+				throw new ArgumentNullException ("assembly");
 			}
 			Configurator configFile = null;
 			XmlConfiguratorAttribute[] attribute = AttributeCore.GetAssemblyAttributes<XmlConfiguratorAttribute> (assembly, true);
@@ -40,37 +40,71 @@ namespace Light.Data
 			return configFile;
 		}
 
-		public static Configurator LoadConfiguratorFromFile (string fileName, string sectionName)
+		public static Configurator[] LoadConfiguratorFromConfigFileDir (string directory, string sectionName)
 		{
-			if (string.IsNullOrEmpty (fileName)) {
-				throw new ArgumentNullException ("FileName");
+			if (string.IsNullOrEmpty (directory)) {
+				throw new ArgumentNullException ("directory");
 			}
-			Configurator configFile = null;
-			string fullPath2ConfigFile = null;
+			List<Configurator> list = new List<Configurator> ();
+			string fullPathConfigDirectory = null;
 			string applicationBaseDirectory = null;
 			try {
 				applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-			}
-			catch {
-
+			} catch {
 			}
 			if (applicationBaseDirectory != null) {
-				fullPath2ConfigFile = Path.Combine (applicationBaseDirectory, fileName);
+				fullPathConfigDirectory = Path.Combine (applicationBaseDirectory, directory);
 			}
 			else {
-				fullPath2ConfigFile = fileName;
+				fullPathConfigDirectory = directory;
+			}
+			DirectoryInfo dir = new DirectoryInfo (fullPathConfigDirectory);
+			if (dir.Exists) {
+				FileInfo[] infos = dir.GetFiles ();
+				foreach (FileInfo info in infos) {
+					if (info.Extension == "config") {
+						try {
+							Configurator config = LoadConfiguratorFromFile (info, sectionName);
+							if (config != null) {
+								list.Add (config);
+							}
+						} catch {
+								
+						}
+					}
+				}
+
+			}
+			return list.ToArray ();
+		}
+
+		public static Configurator LoadConfiguratorFromFile (string fileName, string sectionName)
+		{
+			if (string.IsNullOrEmpty (fileName)) {
+				throw new ArgumentNullException ("fileName");
+			}
+			Configurator configFile = null;
+			string fullPathConfigFile = null;
+			string applicationBaseDirectory = null;
+			try {
+				applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+			} catch {
+			}
+			if (applicationBaseDirectory != null) {
+				fullPathConfigFile = Path.Combine (applicationBaseDirectory, fileName);
+			}
+			else {
+				fullPathConfigFile = fileName;
 			}
 
-			if (!string.IsNullOrEmpty (fullPath2ConfigFile)) {
-				configFile = LoadConfiguratorFromFile (new FileInfo (fullPath2ConfigFile), sectionName);
-			}
+			configFile = LoadConfiguratorFromFile (new FileInfo (fullPathConfigFile), sectionName);
 			return configFile;
 		}
 
 		public static Configurator LoadConfiguratorFromFile (FileInfo fileInfo, string sectionName)
 		{
 			if (fileInfo == null) {
-				throw new ArgumentNullException ("FileInfo");
+				throw new ArgumentNullException ("fileInfo");
 			}
 			Configurator configFile = null;
 			if (fileInfo.Exists) {
@@ -82,8 +116,7 @@ namespace Light.Data
 					try {
 						// Load the configuration from the stream
 						configFile = LoadConfiguratorFromStream (fs, sectionName);
-					}
-					finally {
+					} finally {
 						// Force the file closed whatever happens
 						fs.Close ();
 					}
@@ -95,10 +128,10 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromStream (Stream configStream, string sectionName)
 		{
 			if (configStream == null) {
-				throw new ArgumentNullException ("Stream");
+				throw new ArgumentNullException ("configStream");
 			}
 			if (string.IsNullOrEmpty (sectionName)) {
-				throw new ArgumentNullException ("SectionName");
+				throw new ArgumentNullException ("sectionName");
 			}
 			Configurator configFile = null;
 			XmlDocument doc = new XmlDocument ();
@@ -119,13 +152,13 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromXml (XmlNode configNode)
 		{
 			if (configNode == null) {
-				throw new ArgumentNullException ("ConfigNode");
+				throw new ArgumentNullException ("configNode");
 			}
 			Configurator configFile = new Configurator (configNode);
 			return configFile;
 		}
 
-		XmlNode _node = null;
+		readonly XmlNode _node = null;
 
 		private Configurator (XmlNode node)
 		{
@@ -139,12 +172,6 @@ namespace Light.Data
 			config.LoadConfig (_node);
 			return config;
 		}
-
-		//Dictionary<Type, DataTableConfig> _dataTableConfigs = null;
-
-		//Dictionary<Type, AggregateTableConfig> _aggregateTableConfig = null;
-
-
 	}
 
 	interface IConfig

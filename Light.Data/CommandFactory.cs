@@ -207,28 +207,22 @@ namespace Light.Data
 				fields.Remove (mapping.IdentityField);
 			}
 			List<DataParameter> paramList = GetDataParameters (fields, entity);
-			StringBuilder insert = new StringBuilder ();
-			StringBuilder values = new StringBuilder ();
 
 			IDataParameter[] dataParameters = new IDataParameter[paramList.Count];
-			int count = 0;
+			string[] insertList = new string[paramList.Count];
+			string[] valuesList = new string[paramList.Count];
+			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
-				IDataParameter param = _database.CreateParameter ("P" + count, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-				insert.AppendFormat ("{0},", CreateDataFieldSql (dataParameter.ParameterName));
-				values.AppendFormat ("{0},", param.ParameterName);
-				dataParameters [count] = param;
-				count++;
+				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+				dataParameters [index] = param;
+				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
+				valuesList [index] = param.ParameterName;
+				index++;
 			}
-			insert.Remove (insert.Length - 1, 1);
-			values.Remove (values.Length - 1, 1);
-			StringBuilder sql = new StringBuilder ();
-			sql.AppendFormat ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
-			//string identitysql = CreateIdentitySql(mapping);
-			//if (!string.IsNullOrEmpty(identitysql))
-			//{
-			//    sql.AppendFormat(";{0}", identitysql);
-			//}
-			IDbCommand command = _database.CreateCommand (sql.ToString ());
+			string insert = string.Join (",", insertList);
+			string values = string.Join (",", valuesList);
+			string sql = string.Format ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
+			IDbCommand command = _database.CreateCommand (sql);
 			command.CommandType = CommandType.Text;
 			foreach (IDataParameter param in dataParameters) {
 				command.Parameters.Add (param);
@@ -280,28 +274,27 @@ namespace Light.Data
 			if (columnList.Count == 0) {
 				throw new LightDataException (RE.UpdateFieldIsNotExists);
 			}
-			StringBuilder update = new StringBuilder ();
-			StringBuilder where = new StringBuilder ();
-			IDataParameter[] dataParameters = new IDataParameter[columnList.Count + primaryList.Count];
 
-			int count = 0;
+			IDataParameter[] dataParameters = new IDataParameter[columnList.Count + primaryList.Count];
+			string[] updateList = new string[columnList.Count];
+			string[] whereList = new string[primaryList.Count];
+			int index = 0;
 			foreach (DataParameter dataParameter in columnList) {
-				IDataParameter param = _database.CreateParameter ("P" + count, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-				update.AppendFormat ("{0}={1},", CreateDataFieldSql (dataParameter.ParameterName), param.ParameterName);
-				dataParameters [count] = param;
-				count++;
+				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+				dataParameters [index] = param;
+				updateList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), param.ParameterName);
+				index++;
 			}
 			foreach (DataParameter dataParameter in primaryList) {
-				IDataParameter param = _database.CreateParameter ("P" + count, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-				where.AppendFormat ("{0}={1} and ", CreateDataFieldSql (dataParameter.ParameterName), param.ParameterName);
-				dataParameters [count] = param;
-				count++;
+				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+				dataParameters [index] = param;
+				whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), param.ParameterName);
+				index++;
 			}
-			update.Remove (update.Length - 1, 1);
-			where.Remove (where.Length - 5, 5);
-			StringBuilder sql = new StringBuilder ();
-			sql.AppendFormat ("update {0} set {1} where {2}", CreateDataTableSql (mapping.TableName), update, where);
-			IDbCommand command = _database.CreateCommand (sql.ToString ());
+			string update = string.Join (",", updateList);
+			string where = string.Join (" and ", whereList);
+			string sql = string.Format ("update {0} set {1} where {2}", CreateDataTableSql (mapping.TableName), update, where);
+			IDbCommand command = _database.CreateCommand (sql);
 			command.CommandType = CommandType.Text;
 			foreach (IDataParameter param in dataParameters) {
 				command.Parameters.Add (param);
@@ -321,19 +314,18 @@ namespace Light.Data
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
 			List<DataParameter> primaryList = GetDataParameters (mapping.PrimaryKeyFields, entity);
-			StringBuilder where = new StringBuilder ();
 			IDataParameter[] dataParameters = new IDataParameter[primaryList.Count];
-			int count = 0;
+			string[] whereList = new string[primaryList.Count];
+			int index = 0;
 			foreach (DataParameter dataParameter in primaryList) {
-				IDataParameter param = _database.CreateParameter ("P" + count, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-				where.AppendFormat ("{0}={1} and ", CreateDataFieldSql (dataParameter.ParameterName), param.ParameterName);
-				dataParameters [count] = param;
-				count++;
+				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+				dataParameters [index] = param;
+				whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), param.ParameterName);
+				index++;
 			}
-			where.Remove (where.Length - 5, 5);
-			StringBuilder sql = new StringBuilder ();
-			sql.AppendFormat ("delete from {0} where {1}", CreateDataTableSql (mapping.TableName), where);
-			IDbCommand command = _database.CreateCommand (sql.ToString ());
+			string where = string.Join (" and ", whereList);
+			string sql = string.Format ("delete from {0} where {1}", CreateDataTableSql (mapping.TableName), where);
+			IDbCommand command = _database.CreateCommand (sql);
 			command.CommandType = CommandType.Text;
 			foreach (IDataParameter param in dataParameters) {
 				command.Parameters.Add (param);
@@ -347,20 +339,16 @@ namespace Light.Data
 
 		public virtual string GetSelectString (DataEntityMapping mapping)
 		{
-			StringBuilder sb = new StringBuilder ();
 			string[] names = mapping.GetFieldNames ();
-			bool flat = false;
-			foreach (string name in names) {
-				string fieldname = CreateDataFieldSql (name);
-				if (!flat) {
-					flat = true;
-				}
-				else {
-					fieldname = "," + fieldname;
-				}
-				sb.Append (fieldname);
+			return GetSelectString (names);
+		}
+
+		public virtual string GetSelectString (string[] names)
+		{
+			for (int i = 0; i < names.Length; i++) {
+				names [i] = CreateDataFieldSql (names [i]);
 			}
-			return sb.ToString ();
+			return string.Join (",", names);
 		}
 
 		public virtual string GetQueryString (DataEntityMapping mapping, QueryExpression query, out DataParameter[] parameters)
@@ -559,21 +547,21 @@ namespace Light.Data
 
 			string function = null;
 			switch (aggregateType) {
-				case AggregateType.COUNT:
-					function = CreateCountSql (fieldMapping.Name, distinct);
-					break;
-				case AggregateType.SUM:
-					function = CreateSumSql (fieldMapping.Name, distinct);
-					break;
-				case AggregateType.AVG:
-					function = CreateAvgSql (fieldMapping.Name, distinct);
-					break;
-				case AggregateType.MAX:
-					function = CreateMaxSql (fieldMapping.Name);
-					break;
-				case AggregateType.MIN:
-					function = CreateMinSql (fieldMapping.Name);
-					break;
+			case AggregateType.COUNT:
+				function = CreateCountSql (fieldMapping.Name, distinct);
+				break;
+			case AggregateType.SUM:
+				function = CreateSumSql (fieldMapping.Name, distinct);
+				break;
+			case AggregateType.AVG:
+				function = CreateAvgSql (fieldMapping.Name, distinct);
+				break;
+			case AggregateType.MAX:
+				function = CreateMaxSql (fieldMapping.Name);
+				break;
+			case AggregateType.MIN:
+				function = CreateMinSql (fieldMapping.Name);
+				break;
 			}
 			//string select = string.Format("{0}({2}{1})", aggregateType.ToString().ToLower(), CreateDataFieldSql(fieldMapping.Name), distinct ? "distinct " : string.Empty);
 			return CreateSelectBaseCommand (mapping, function, query, null, null);//, false);
@@ -599,6 +587,35 @@ namespace Light.Data
 			return command;
 		}
 
+		public virtual IDbCommand CreateSelectIntoCommand (DataTableEntityMapping insertMapping, string[] insertFiledNames, DataTableEntityMapping selectMapping, string[] selectFiledNames, QueryExpression query, OrderExpression order)
+		{
+			StringBuilder sql = new StringBuilder ();
+			if (insertFiledNames == null) {
+				insertFiledNames = insertMapping.GetFieldNames ();
+			}
+			if (selectFiledNames == null) {
+				selectFiledNames = selectMapping.GetFieldNames ();
+			}
+			if (insertFiledNames.Length != selectFiledNames.Length) {
+				throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
+			}
+			string insert = GetSelectString (insertFiledNames);
+			string select = GetSelectString (selectFiledNames);
+			DataParameter[] parameters;
+			string queryString = GetQueryString (selectMapping, query, out parameters);
+			string orderString = GetOrderString (selectMapping, order);
+			sql.AppendFormat ("insert into {0}({1})", CreateDataTableSql (insertMapping.TableName), insert);
+			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (selectMapping.TableName));
+			if (!string.IsNullOrEmpty (queryString)) {
+				sql.AppendFormat (" {0}", queryString);
+			}
+			if (!string.IsNullOrEmpty (orderString)) {
+				sql.AppendFormat (" {0}", orderString);
+			}
+			IDbCommand command = BuildCommand (sql.ToString (), parameters);
+			return command;
+		}
+
 		public virtual IDbCommand CreateUpdateMassCommand (DataTableEntityMapping mapping, UpdateSetValue[] updateSetValues, QueryExpression query)
 		{
 			List<DataParameter> parameterlist = new List<DataParameter> ();
@@ -609,17 +626,17 @@ namespace Light.Data
 
 			int length = updateSetValues.Length;
 			DataParameter[] setparameters = new DataParameter[length];
-
-			sql.AppendFormat ("update {0} set ", CreateDataTableSql (mapping.TableName));
+			string[] setList = new string[length];
 
 			for (int i = 0; i < length; i++) {
 				if (!mapping.Equals (updateSetValues [i].DataField.DataField.EntityMapping)) {
 					throw new LightDataException (RE.UpdateFieldTypeIsError);
 				}
 				setparameters [i] = updateSetValues [i].CreateDataParameter (this);
-				sql.AppendFormat ("{0}={1}{2}", updateSetValues [i].DataField.CreateDataFieldSql (this), setparameters [i].ParameterName, i < length - 1 ? "," : " ");
+				setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateDataFieldSql (this), setparameters [i].ParameterName);
 			}
-
+			string setString = string.Join (",", setList);
+			sql.AppendFormat ("update {0} set {1}", CreateDataTableSql (mapping.TableName), setString);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
 			}
@@ -636,12 +653,10 @@ namespace Light.Data
 			}
 			StringBuilder sql = new StringBuilder ();
 
-			StringBuilder select = new StringBuilder ();
-			StringBuilder groupby = new StringBuilder ();
-
 			List<DataParameter> parameterlist = new List<DataParameter> ();
-
-			bool flat = false;
+			string[] selectList = new string[dataFieldInfoDictionary.Count + aggregateFunctionDictionary.Count];
+			string[] groupbyList = new string[dataFieldInfoDictionary.Count];
+			int index = 0;
 
 			foreach (KeyValuePair<string, DataFieldInfo> kv in dataFieldInfoDictionary) {
 				if (!mapping.Equals (kv.Value.TableMapping)) {
@@ -650,16 +665,11 @@ namespace Light.Data
 				string groupbyField = kv.Value.CreateDataFieldSql (this);
 				string aliasName = CreateDataFieldSql (kv.Key);
 				string selectField = string.Format ("{0} as {1}", groupbyField, aliasName);
-				if (!flat) {
-					flat = true;
-				}
-				else {
-					selectField = "," + selectField;
-					groupbyField = "," + groupbyField;
-				}
-				select.Append (selectField);
-				groupby.Append (groupbyField);
+				selectList [index] = selectField;
+				groupbyList [index] = groupbyField;
+				index++;
 			}
+
 			foreach (KeyValuePair<string, AggregateFunction> kv in aggregateFunctionDictionary) {
 				if (kv.Value.TableMapping != null && !mapping.Equals (kv.Value.TableMapping)) {
 					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
@@ -668,11 +678,13 @@ namespace Light.Data
 				DataParameter[] aggparameters = null;
 				string aggField = kv.Value.CreateSqlString (this, out aggparameters);
 				string aliasName = CreateDataFieldSql (kv.Key);
-				string selectField = string.Format (",{0} as {1}", aggField, aliasName);
-				select.Append (selectField);
+				string selectField = string.Format ("{0} as {1}", aggField, aliasName);
+				selectList [index] = selectField;
 				parameterlist.AddRange (aggparameters);
+				index++;
 			}
-
+			string select = string.Join (",", selectList);
+			string groupby = string.Join (",", groupbyList);
 			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
 
 			DataParameter[] queryparameters = null;
@@ -720,14 +732,13 @@ namespace Light.Data
 				fields.Remove (mapping.IdentityField);
 			}
 			StringBuilder totalSql = new StringBuilder ();
-			StringBuilder insert = new StringBuilder ();
 
 			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
+			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
-				insert.AppendFormat ("{0},", CreateDataFieldSql (dataParameter.ParameterName));
+				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
 			}
-			insert.Remove (insert.Length - 1, 1);
-			string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
+			string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), string.Join (",", insertList));
 
 			int createCount = 0;
 			int totalCreateCount = 0;
@@ -737,14 +748,16 @@ namespace Light.Data
 			List<IDbCommand> commands = new List<IDbCommand> ();
 			foreach (object entity in entitys) {
 				paramList = GetDataParameters (fields, entity);
-				StringBuilder value = new StringBuilder ();
+				string[] valueList = new string[paramList.Count];
+				int index = 0;
 				foreach (DataParameter dataParameter in paramList) {
 					IDataParameter param = _database.CreateParameter ("P" + paramCount, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-					value.AppendFormat ("{0},", param.ParameterName);
 					command.Parameters.Add (param);
+					valueList [index] = param.ParameterName;
+					index++;
 					paramCount++;
 				}
-				value.Remove (value.Length - 1, 1);
+				string value = string.Join (",", valueList);
 				totalSql.AppendFormat ("{0}values({1});", insertsql, value);
 				createCount++;
 				totalCreateCount++;
@@ -768,7 +781,7 @@ namespace Light.Data
 			IDbCommand command = null;
 			string sql = CreateIdentitySql (mapping);
 			if (!string.IsNullOrEmpty (sql)) {
-				command = BuildCommand (sql.ToString (), null);
+				command = BuildCommand (sql, null);
 			}
 			return command;
 		}
@@ -784,18 +797,7 @@ namespace Light.Data
 
 		public virtual string CreateCatchExpressionSql (string[] expressionStrings)
 		{
-			StringBuilder sb = new StringBuilder ();
-			bool flat = false;
-			foreach (string expressionString in expressionStrings) {
-				if (!flat) {
-					flat = true;
-				}
-				else {
-					sb.Append (",");
-				}
-				sb.Append (expressionString);
-			}
-			return sb.ToString ();
+			return string.Join (",", expressionStrings);
 		}
 
 		public virtual string CreateSingleParamSql (string fieldName, QueryPredicate predicate, bool isReverse, DataParameter dataParameter)

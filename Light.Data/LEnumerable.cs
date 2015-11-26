@@ -33,7 +33,7 @@ namespace Light.Data
 
 		#region IEnumerable 成员
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
 		}
