@@ -13,25 +13,25 @@ namespace Light.Data
 	/// </summary>
 	public class DataContext
 	{
-//		[ThreadStatic]
+		//		[ThreadStatic]
 		static DataContext _currentInstance = null;
 
-//		internal static Assembly CallingAssembly {
-//			get {
-//				return _assembly;
-//			}
-//		}
-//
-//		/// <summary>
-//		/// 设置程序集配置
-//		/// </summary>
-//		public static void SetAssemblyConfig ()
-//		{
-//			_assembly = Assembly.GetCallingAssembly ();
-//		}
-//
-//		[ThreadStatic]
-//		static Assembly _assembly = null;
+		//		internal static Assembly CallingAssembly {
+		//			get {
+		//				return _assembly;
+		//			}
+		//		}
+		//
+		//		/// <summary>
+		//		/// 设置程序集配置
+		//		/// </summary>
+		//		public static void SetAssemblyConfig ()
+		//		{
+		//			_assembly = Assembly.GetCallingAssembly ();
+		//		}
+		//
+		//		[ThreadStatic]
+		//		static Assembly _assembly = null;
 
 		/// <summary>
 		/// 当前数据连接上下文
@@ -154,6 +154,16 @@ namespace Light.Data
 			get {
 				return _dataBase;
 			}
+		}
+
+		/// <summary>
+		/// 命令输出接口
+		/// </summary>
+		protected ICommandOutput output = null;
+
+		public void SetCommanfOutput (ICommandOutput output)
+		{
+			this.output = output;
 		}
 
 		/// <summary>
@@ -990,6 +1000,26 @@ namespace Light.Data
 
 		#region 核心数据库方法
 
+		/// <summary>
+		/// Outputs the command.
+		/// </summary>
+		/// <param name="action">Action.</param>
+		/// <param name="command">Command.</param>
+		/// <param name="level">Level.</param>
+		protected virtual void OutputCommand (string action, IDbCommand command, SafeLevel level)
+		{
+			if (this.output != null) {
+				int count = command.Parameters.Count;
+				DataParameter[] list = new DataParameter[count];
+				int index = 0;
+				foreach (IDataParameter value in command.Parameters) {
+					list [index] = new DataParameter (value.ParameterName, value.Value, value.DbType.ToString (), value.Direction);
+					index++;
+				}
+				this.output.Output (action, command.CommandText, list, command.CommandType, command.Transaction != null, level);
+			}
+		}
+
 		internal virtual int[] ExecuteMultiCommands (IDbCommand[] dbcommands, SafeLevel level)
 		{
 			if (level == SafeLevel.None) {
@@ -1002,6 +1032,7 @@ namespace Light.Data
 					int index = 0;
 					foreach (IDbCommand dbcommand in dbcommands) {
 						transaction.SetupCommand (dbcommand);
+						OutputCommand ("ExecuteMultiCommands", dbcommand, level);
 						rInts [index] = dbcommand.ExecuteNonQuery ();
 						index++;
 					}
@@ -1021,9 +1052,11 @@ namespace Light.Data
 				transaction.Open ();
 				try {
 					transaction.SetupCommand (dbcommand);
+					OutputCommand ("ExecuteInsertCommand", dbcommand, level);
 					dbcommand.ExecuteNonQuery ();
 					if (indentityCommand != null) {
 						transaction.SetupCommand (indentityCommand);
+						OutputCommand ("ExecuteInsertCommand_Indentity", dbcommand, level);
 						object obj = indentityCommand.ExecuteScalar ();
 						if (obj != null) {
 							result = obj;
@@ -1045,6 +1078,7 @@ namespace Light.Data
 				transaction.Open ();
 				try {
 					transaction.SetupCommand (dbcommand);
+					OutputCommand ("ExecuteNonQuery", dbcommand, level);
 					rInt = dbcommand.ExecuteNonQuery ();
 					transaction.Commit ();
 				} catch (Exception ex) {
@@ -1062,6 +1096,7 @@ namespace Light.Data
 				transaction.Open ();
 				try {
 					transaction.SetupCommand (dbcommand);
+					OutputCommand ("ExecuteScalar", dbcommand, level);
 					result = dbcommand.ExecuteScalar ();
 					transaction.Commit ();
 				} catch (Exception ex) {
@@ -1080,6 +1115,7 @@ namespace Light.Data
 				try {
 					transaction.SetupCommand (dbcommand);
 					IDbDataAdapter adapter = _dataBase.CreateDataAdapter (dbcommand);
+					OutputCommand ("QueryDataSet", dbcommand, level);
 					adapter.Fill (ds);
 					transaction.Commit ();
 				} catch (Exception ex) {
@@ -1105,6 +1141,7 @@ namespace Light.Data
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				transaction.SetupCommand (dbcommand);
+				OutputCommand (string.Format ("QueryDataReader({0}-{1})", start, size), dbcommand, level);
 				using (IDataReader reader = dbcommand.ExecuteReader ()) {
 					int index = 0;
 					int count = 0;

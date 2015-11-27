@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Light.Data.Demo
 {
@@ -10,8 +11,13 @@ namespace Light.Data.Demo
 		public static void Main (string[] args)
 		{
 			DataContext context = DataContextConfiguration.Default;
-			context.LQuery<MainClass> ();
-			context.BulkInsert (null, batchCount: 30);
+			CommandOutput output = new CommandOutput ();
+			output.OutputFullCommand = true;
+			output.UseConsoleOutput = true;
+			context.SetCommanfOutput (output);
+			List<TestUser> list = context.LQuery<TestUser> ().Where (TestUser.IdField > 10 & TestUser.UserNameField == "aaa" & TestUser.RegTimeField >= DateTime.Now.Date).ToList ();
+
+			Console.ReadLine ();
 		}
 
 		static void ReadXml ()

@@ -277,6 +277,9 @@
     <Compile Include="Utility.cs" />
     <Compile Include="RE.cs" />
     <Compile Include="ICommandOutput.cs" />
+    <Compile Include="CommandOutput.cs" />
+    <Compile Include="CommandOutputEventArgs.cs" />
+    <Compile Include="CommandOutputEventHandle.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

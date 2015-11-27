@@ -1,0 +1,512 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
+<#@ assembly name="System.Core"#>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="/Developer/ExportLibrary/MySql.Data.dll"  #>
+<#@ import namespace="System"#>
+<#@ import namespace="System.Text"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Data.SqlClient"#>
+<#@ import namespace="MySql.Data.MySqlClient"#>
+<#@ output extension=".cs" #>
+<#
+	var namespaceName="Light.Data.Demo";
+	var dbType="MySql";
+	var connection="Server=localhost;Port=3306;Database=CM_TEST;Uid=root;Pwd=qwerty;";
+	var excludeTable=new HashSet<string>();
+	excludeTable.Add("QcConfiguration");
+	excludeTable.Add("QcDataLog");
+
+    var dbSchema=DBSchemaFactory.GetDBSchema(dbType,connection);
+    List<string> tableList=dbSchema.GetTablesList();
+#>
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Light.Data;
+
+namespace <#=namespaceName#>
+{
+<#
+    foreach(string tableName in tableList)
+    {
+    	if(excludeTable.Contains(tableName))
+    	{
+    		continue;
+    	}
+        Table table=dbSchema.GetTableMetadata(tableName);
+#>
+    [Serializable]
+    [DataTable("<#=tableName#>")]
+    public partial class <#=StringUtil.ToPascalCase(tableName)#> : DataTableEntity
+    {
+    	#region "Static Field"
+<#
+        foreach(Column c in table.Columns)
+        {
+#>
+		static readonly DataFieldInfo <#=StringUtil.ToCamelCase(c.ColumnName)#>Field = DataFieldInfo<<#=StringUtil.ToPascalCase(tableName)#>>.Create("<#=StringUtil.ToPascalCase(c.ColumnName)#>");
+
+<#
+        }
+#>
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+<#
+        foreach(Column c in table.Columns)
+        {
+#>
+		public static DataFieldInfo <#=StringUtil.ToPascalCase(c.ColumnName)#>Field
+        {
+            get {
+                return <#=StringUtil.ToCamelCase(c.ColumnName)#>Field;
+            }
+        }
+
+<#
+        }
+#>
+    	#endregion
+
+    	#region "Data Property"
+<#
+        foreach(Column c in table.Columns)
+        {
+#>
+		private <#=c.TypeName#> <#=StringUtil.ToCamelCase(c.ColumnName)#>;
+
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPk) { #>, IsPrimaryKey = true<# } #><# if (c.AllowDBNull) { #>, IsNullable = true<# } #>)]
+        public <#=c.TypeName#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
+        {
+            get { 
+            	return this.<#=StringUtil.ToCamelCase(c.ColumnName)#>; 
+            }
+            set { 
+            	this.<#=StringUtil.ToCamelCase(c.ColumnName)#> = value; 
+            }
+        }
+<#
+        }
+#>
+		#endregion
+    }
+
+<#
+    }
+    dbSchema.Dispose();
+#>
+}
+
+<#+ 
+#region Code
+    public class DBSchemaFactory
+    {
+        public static IDBSchema GetDBSchema(string dbType,string connection)
+        {
+            IDBSchema dbSchema;
+            switch (dbType) 
+            {
+                case "SqlServer":
+                    {
+                        dbSchema =new SqlServerSchema(connection);
+                        break;
+                    }
+                case "MySql":
+                    {
+                        dbSchema = new MySqlSchema(connection);
+                        break;
+                    }
+                default: 
+                    {
+                        throw new ArgumentException("The input argument of DatabaseType is invalid!");
+                    }
+            }
+            return dbSchema;
+        }
+    }
+
+    public interface IDBSchema : IDisposable
+    {
+        List<string> GetTablesList();
+
+        Table GetTableMetadata(string tableName);
+    }
+
+    public class SqlServerSchema : IDBSchema
+    {
+        public SqlConnection conn;
+
+        public SqlServerSchema(string connection)
+        {
+            conn = new SqlConnection(connection);
+            conn.Open();
+        }
+
+        public List<string> GetTablesList()
+        {
+            DataTable dt = conn.GetSchema("Tables");
+            List<string> list = new List<string>();
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(row["TABLE_NAME"].ToString());
+            }
+            return list;
+        }
+
+        public Table GetTableMetadata(string tableName)
+        {
+            string selectCmdText = string.Format("SELECT * FROM {0}", tableName); ;
+            SqlCommand command = new SqlCommand(selectCmdText, conn);
+            SqlDataAdapter ad = new SqlDataAdapter(command);
+            System.Data.DataSet ds = new DataSet();
+            ad.FillSchema(ds, SchemaType.Mapped, tableName);
+
+            Table table = new Table(ds.Tables[0]);
+            return table;
+        }
+
+        public void Dispose()
+        {
+            if (conn != null)
+                conn.Close();
+        }
+    }
+
+    public class MySqlSchema : IDBSchema
+    {
+
+        public MySqlConnection conn;
+
+        public MySqlSchema(string connection)
+        {
+            conn = new MySqlConnection(connection);
+            conn.Open();
+        }
+
+        public List<string> GetTablesList()
+        {
+            DataTable dt = conn.GetSchema("Tables");
+            List<string> list = new List<string>();
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(row["TABLE_NAME"].ToString());
+            }
+            return list;
+        }
+
+        public Table GetTableMetadata(string tableName)
+        {
+            string selectCmdText = string.Format("SELECT * FROM {0}", tableName); ;
+            MySqlCommand command = new MySqlCommand(selectCmdText, conn);
+            MySqlDataAdapter ad = new MySqlDataAdapter(command);
+            System.Data.DataSet ds = new DataSet();
+            ad.FillSchema(ds, SchemaType.Mapped, tableName);
+
+            Table table = new Table(ds.Tables[0]);
+            return table;
+        }
+
+        public void Dispose()
+        {
+            if (conn != null)
+                conn.Close();
+        }
+    }
+
+    public class Table
+    {
+        public Table(DataTable t)
+        {
+            this.PKs = this.GetPKList(t);
+            this.Columns = this.GetColumnList(t);
+        }
+
+        public List<Column> PKs;
+
+        public List<Column> Columns;
+
+        public string ColumnTypeNames;
+        public List<Column> GetPKList(DataTable dt)
+        {
+            List<Column> list = new List<Column>();
+            Column c = null;
+            if (dt.PrimaryKey.Length > 0)
+            {
+                list = new List<Column>();
+                foreach (DataColumn dc in dt.PrimaryKey)
+                {
+                    c = new Column(dc,true);
+                    list.Add(c);
+                }
+            }
+            return list;
+        }
+
+        private List<Column> GetColumnList(DataTable dt)
+        {
+        	HashSet<DataColumn> pks=new HashSet<DataColumn>();
+        	foreach (DataColumn dc in dt.PrimaryKey)
+            {
+                    pks.Add(dc);
+            }
+            List<Column> list = new List<Column>();
+            foreach (DataColumn dc in dt.Columns)
+            {
+            	bool isPk=pks.Contains(dc);
+                Column c = new Column(dc,isPk);
+                list.Add(c);
+            }
+            return list;
+        }
+
+    }
+
+    public class Column
+    {
+        DataColumn columnBase;
+
+        bool isPk;
+
+        public Column(DataColumn columnBase,bool isPk)
+        {
+            this.columnBase = columnBase;
+            this.isPk = isPk;
+        }
+
+        public bool IsPk
+        {
+        	get
+        	{
+        		return this.isPk;
+        	}
+        }
+
+        public bool IsIdentity
+        {
+        	get
+        	{
+        		return this.columnBase.AutoIncrement;
+        	}
+        }
+
+        public string ColumnName 
+        { 
+        	get 
+        	{ 
+        		return this.columnBase.ColumnName; 
+        	} 
+        }
+
+        public string MaxLength 
+        { 
+        	get 
+        	{ 
+        		return this.columnBase.MaxLength.ToString(); 
+        	} 
+        }
+
+        public string TypeName { 
+            get 
+            {
+                string result = string.Empty;
+
+                if (this.columnBase.DataType==typeof(Boolean))
+                {
+                	result="bool";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(Byte))
+                {
+                	result="byte";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(Char))
+                {
+                	result="char";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(DateTime))
+                {
+                	result="DateTime";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(Decimal))
+                {
+                	result="decimal";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(Double))
+                {
+                	result="double";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(Guid))
+                {
+                	result="Guid";	
+                }
+                else if(this.columnBase.DataType==typeof(Int16))
+                {
+                	result="short";
+                }
+                else if(this.columnBase.DataType==typeof(Int32))
+                {
+                	result="int";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(Int64))
+                {
+                	result="long";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(SByte))
+                {
+                	result="SByte";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(Single))
+                {
+                	result="single";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(String))
+                {
+                	result="string";
+                }
+                else if(this.columnBase.DataType==typeof(TimeSpan))
+                {
+                	result="TimeSpan";
+                }
+                else if(this.columnBase.DataType==typeof(UInt16))
+                {
+                	result="ushort";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(UInt32))
+                {
+                	result="uint";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(UInt64))
+                {
+                	result="ulong";
+                	if(this.columnBase.AllowDBNull)
+                	{
+                		result+="?";
+                	}
+                }
+                else if(this.columnBase.DataType==typeof(byte[]))
+                {
+                	result="byte[]";
+                }
+                return result; 
+            } 
+        }
+
+        public bool AllowDBNull 
+        { 
+        	get 
+        	{ 
+        		return this.columnBase.AllowDBNull; 
+        	} 
+        }
+    }
+
+    public static class StringUtil
+    {
+        public static string ToPascalCase(string name)
+        {
+           	StringBuilder sb = new StringBuilder();
+			string[] parts = name.Split(new char[]{'_'});
+			foreach (string part in parts)
+			{
+				if (part.Length > 0)
+				{
+					sb.Append(Char.ToUpper(part[0]));
+					if (part.Length > 1)
+					{
+						string o=part.Substring(1);
+						if(o==o.ToUpper())
+						{
+							o=o.ToLower();
+						}
+						sb.Append(o);
+					}
+				}
+			}
+			return sb.ToString();
+        }
+
+        public static string ToCamelCase(string name)
+        {
+           	StringBuilder sb = new StringBuilder();
+			string[] parts = name.Split(new char[]{'_'});
+			bool f=false;
+			foreach (string part in parts)
+			{
+				if (part.Length > 0)
+				{
+					if(!f)
+					{
+						sb.Append(Char.ToLower(part[0]));
+						f=true;
+					}
+					else
+					{
+						sb.Append(Char.ToUpper(part[0]));
+					}
+
+					if (part.Length > 1)
+					{
+						string o=part.Substring(1);
+						if(o==o.ToUpper())
+						{
+							o=o.ToLower();
+						}
+						sb.Append(o);
+					}
+				}
+			}
+			return sb.ToString();
+        }
+    }
+
+    #endregion
+#>

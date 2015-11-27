@@ -77,6 +77,7 @@ namespace Light.Data
             command.Connection = _connection;
         }
 
+
         public void Open()
         {
             _connection.Open();
