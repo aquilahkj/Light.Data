@@ -106,7 +106,7 @@ namespace Light.Data.MysqlAdapter
 			return commands.ToArray ();
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
 		{
 			return "rand()";
 		}
@@ -145,38 +145,38 @@ namespace Light.Data.MysqlAdapter
 				string format1 = format.ToUpper ();
 				string sqlformat = null;
 				switch (format1) {
-					case "YMD":
-						sqlformat = "%Y%m%d";
-						break;
-					case "YM":
-						sqlformat = "%Y%m";
-						break;
-					case "Y-M-D":
-						sqlformat = "%Y-%m-%d";
-						break;
-					case "Y-M":
-						sqlformat = "%Y-%m";
-						break;
-					case "M-D-Y":
-						sqlformat = "%m-%d-%Y";
-						break;
-					case "D-M-Y":
-						sqlformat = "%d-%m-%Y";
-						break;
-					case "Y/M/D":
-						sqlformat = "%Y/%m/%d";
-						break;
-					case "Y/M":
-						sqlformat = "%Y/%m";
-						break;
-					case "M/D/Y":
-						sqlformat = "%m/%d/%Y";
-						break;
-					case "D/M/Y":
-						sqlformat = "%d/%m/%Y";
-						break;
-					default:
-						throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
+				case "YMD":
+					sqlformat = "%Y%m%d";
+					break;
+				case "YM":
+					sqlformat = "%Y%m";
+					break;
+				case "Y-M-D":
+					sqlformat = "%Y-%m-%d";
+					break;
+				case "Y-M":
+					sqlformat = "%Y-%m";
+					break;
+				case "M-D-Y":
+					sqlformat = "%m-%d-%Y";
+					break;
+				case "D-M-Y":
+					sqlformat = "%d-%m-%Y";
+					break;
+				case "Y/M/D":
+					sqlformat = "%Y/%m/%d";
+					break;
+				case "Y/M":
+					sqlformat = "%Y/%m";
+					break;
+				case "M/D/Y":
+					sqlformat = "%m/%d/%Y";
+					break;
+				case "D/M/Y":
+					sqlformat = "%d/%m/%Y";
+					break;
+				default:
+					throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
 				}
 				return string.Format ("date_format({0},'{1}')", field, sqlformat);
 			}

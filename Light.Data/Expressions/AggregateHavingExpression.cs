@@ -17,21 +17,21 @@ namespace Light.Data
 
 		internal AggregateHavingExpression (DataEntityMapping tableMapping)
 		{
-			if (tableMapping == null) {
-				IgnoreConsistency = true;
-			}
-			else {
-				TableMapping = tableMapping;
-			}
+//			if (tableMapping == null) {
+//				IgnoreConsistency = true;
+//			}
+//			else {
+			TableMapping = tableMapping;
+//			}
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			DataParameter[] dp1 = null;
-			string expressionString1 = _expression1.CreateSqlString (factory, out dp1);
+			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1);
 
 			DataParameter[] dp2 = null;
-			string expressionString2 = _expression2.CreateSqlString (factory, out dp2);
+			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
 
 			dataParameters = new DataParameter[dp1.Length + dp2.Length];
 			dp1.CopyTo (dataParameters, 0);
@@ -39,13 +39,13 @@ namespace Light.Data
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
-		internal virtual string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters, GetAliasHandler handler)
+		internal virtual string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			DataParameter[] dp1 = null;
-			string expressionString1 = _expression1.CreateSqlString (factory, out dp1, handler);
+			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1, handler);
 
 			DataParameter[] dp2 = null;
-			string expressionString2 = _expression2.CreateSqlString (factory, out dp2, handler);
+			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2, handler);
 
 			dataParameters = new DataParameter[dp1.Length + dp2.Length];
 			dp1.CopyTo (dataParameters, 0);

@@ -15,9 +15,27 @@ namespace Light.Data
 	{
 		DataEntityMapping _mapping = null;
 
+		internal DataEntityMapping Mapping {
+			get {
+				return _mapping;
+			}
+		}
+
 		QueryExpression _query = null;
 
+		internal QueryExpression Query {
+			get {
+				return _query;
+			}
+		}
+
 		OrderExpression _order = null;
+
+		internal OrderExpression Order {
+			get {
+				return _order;
+			}
+		}
 
 		Region _region = null;
 
@@ -481,6 +499,73 @@ namespace Light.Data
 		public IDbCommand GetDbCommand ()
 		{
 			return _context.DataBase.Factory.CreateSelectCommand (_mapping, _query, _order, _context.IsInnerPager ? _region : null);
+		}
+
+		/// <summary>
+		/// Join the specified le.
+		/// </summary>
+		/// <param name="le">Le.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (LEnumerable<K> le) where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le);
+		}
+
+		/// <summary>
+		/// Join this instance.
+		/// </summary>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> () where K : class, new()
+		{
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="le">Le.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> (LEnumerable<K> le) where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> () where K : class, new()
+		{
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="le">Le.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (LEnumerable<K> le) where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> () where K : class, new()
+		{
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this);
 		}
 	}
 }

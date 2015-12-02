@@ -15,13 +15,13 @@ namespace Light.Data
 		{
 			_queryExpression = expression;
 			_isNot = isNot;
-			IgnoreConsistency = true;
+//			IgnoreConsistency = true;
 		}
 
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			string queryString = _queryExpression.CreateSqlString (factory, out dataParameters);
+			string queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
 			return factory.CreateExistsQuerySql (factory.CreateDataTableSql (_queryExpression.TableMapping), queryString, _isNot);
 		}
 

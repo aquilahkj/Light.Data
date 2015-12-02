@@ -15,10 +15,10 @@ namespace Light.Data
 		}
 
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			dataParameters = new DataParameter[0];
-			return factory.CreateMaxSql (_fieldinfo.FieldName);
+			return factory.CreateMaxSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName));
 		}
 
 		protected override bool EqualsDetail (AggregateFunction function)

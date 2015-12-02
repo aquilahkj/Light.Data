@@ -23,12 +23,12 @@ namespace Light.Data
 			_isReverse = isReverse;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			DataParameter dataParameter = new DataParameter (pn, _fieldInfo.DataField.ToColumn (_value), _fieldInfo.DBType);
 			dataParameters = new DataParameter[] { dataParameter };
-			return factory.CreateSingleParamSql (_fieldInfo.CreateDataFieldSql (factory), _predicate, _isReverse, dataParameter);
+			return factory.CreateSingleParamSql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, _isReverse, dataParameter);
 		}
 
 		protected override bool EqualsDetail (QueryExpression expression)

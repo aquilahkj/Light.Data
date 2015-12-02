@@ -161,6 +161,10 @@ namespace Light.Data
 		/// </summary>
 		protected ICommandOutput output = null;
 
+		/// <summary>
+		/// Sets the commanf output.
+		/// </summary>
+		/// <param name="output">Output.</param>
 		public void SetCommanfOutput (ICommandOutput output)
 		{
 			this.output = output;
@@ -735,6 +739,18 @@ namespace Light.Data
 			}
 		}
 
+		internal IList QueryJoinDataList (DataMapping mapping, List<JoinModel> modelList, DataFieldExpression on, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		{
+			using (IDbCommand command = _dataBase.Factory.CreateSelectJoinTableCommand (null, modelList, on, query, order)) {
+				IList items = CreateList (mapping.ObjectType);
+				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
+				foreach (object obj in ie) {
+					items.Add (obj);
+				}
+				return items;
+			}
+		}
+
 		/// <summary>
 		/// 查询单列数据
 		/// </summary>
@@ -926,6 +942,21 @@ namespace Light.Data
 		internal object AggregateCount (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
 			using (IDbCommand command = _dataBase.Factory.CreateAggregateCountCommand (mapping, query)) {
+				return ExecuteScalar (command, level);
+			}
+		}
+
+		/// <summary>
+		/// Aggregates the join table count.
+		/// </summary>
+		/// <returns>The join table count.</returns>
+		/// <param name="models">Models.</param>
+		/// <param name="on">On.</param>
+		/// <param name="query">Query.</param>
+		/// <param name="level">Level.</param>
+		internal object AggregateJoinTableCount (List<JoinModel> models, DataFieldExpression on, QueryExpression query, SafeLevel level)
+		{
+			using (IDbCommand command = _dataBase.Factory.CreateAggregateJoinCountCommand (models, on, query)) {
 				return ExecuteScalar (command, level);
 			}
 		}

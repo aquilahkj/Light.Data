@@ -20,10 +20,10 @@ namespace Light.Data
 			_isDistinct = isDistinct;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			string sql = _expression.CreateSqlString (factory, out dataParameters);
-			return factory.CreateConditionAvgSql (sql, _fieldinfo.FieldName, _isDistinct);
+			string sql = _expression.CreateSqlString (factory, fullFieldName, out dataParameters);
+			return factory.CreateConditionAvgSql (sql, _fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		}
 
 		protected override bool EqualsDetail (AggregateFunction function)

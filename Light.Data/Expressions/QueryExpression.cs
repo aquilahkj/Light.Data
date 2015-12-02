@@ -17,27 +17,33 @@ namespace Light.Data
 
 		internal QueryExpression (DataEntityMapping tableMapping)
 		{
-			if (tableMapping == null) {
-				IgnoreConsistency = true;
-			}
-			else {
-				TableMapping = tableMapping;
-			}
+//			if (tableMapping == null) {
+//				IgnoreConsistency = true;
+//			}
+//			else {
+			TableMapping = tableMapping;
+//			}
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			DataParameter[] dp1 = null;
-			string expressionString1 = _expression1.CreateSqlString (factory, out dp1);
+			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1);
 
 			DataParameter[] dp2 = null;
-			string expressionString2 = _expression2.CreateSqlString (factory, out dp2);
+			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
 
 			//dataParameters = new DataParameter[dp1.Length + dp2.Length];
 			//dp1.CopyTo(dataParameters, 0);
 			//dp2.CopyTo(dataParameters, dp1.Length);
 			if (dp1 == null && dp2 == null) {
 				dataParameters = null;
+			}
+			else if (dp1 != null && dp2 == null) {
+				dataParameters = dp1;
+			}
+			else if (dp1 == null && dp2 != null) {
+				dataParameters = dp2;
 			}
 			else {
 				List<DataParameter> list = new List<DataParameter> ();
@@ -64,21 +70,27 @@ namespace Light.Data
 			//    throw new LightDataException(RE.DataMappingOfExpressionIsNotMatch);
 			//}
 			DataEntityMapping demapping = null;
-			//如果expression1不需要检查一致性而expression2需要,则用expression2的查询表
-			if (expression1.IgnoreConsistency && !expression2.IgnoreConsistency) {
-				demapping = expression2.TableMapping;
-			}
-			else if (!expression1.IgnoreConsistency && expression2.IgnoreConsistency) {
+			if (expression1.TableMapping != null) {
 				demapping = expression1.TableMapping;
 			}
-			else if (!expression1.IgnoreConsistency && !expression2.IgnoreConsistency) {
-				if (expression1.TableMapping.Equals (expression2.TableMapping)) {
-					demapping = expression1.TableMapping;
-				}
-				else {
-					throw new LightDataException (RE.DataMappingOfExpressionIsNotMatch);
-				}
+			else if (expression2.TableMapping != null) {
+				demapping = expression2.TableMapping;
 			}
+//			//如果expression1不需要检查一致性而expression2需要,则用expression2的查询表
+//			if (expression1.IgnoreConsistency && !expression2.IgnoreConsistency) {
+//				demapping = expression2.TableMapping;
+//			}
+//			else if (!expression1.IgnoreConsistency && expression2.IgnoreConsistency) {
+//				demapping = expression1.TableMapping;
+//			}
+//			else if (!expression1.IgnoreConsistency && !expression2.IgnoreConsistency) {
+//				if (expression1.TableMapping.Equals (expression2.TableMapping)) {
+//					demapping = expression1.TableMapping;
+//				}
+//				else {
+//					throw new LightDataException (RE.DataMappingOfExpressionIsNotMatch);
+//				}
+//			}
 			QueryExpression newExpression = new QueryExpression (demapping);
 			newExpression._expression1 = expression1;
 			newExpression._expression2 = expression2;

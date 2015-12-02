@@ -21,7 +21,7 @@ namespace Light.Data
 			_values = values;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			List<DataParameter> list = new List<DataParameter> ();
 			foreach (object value in _values) {
@@ -29,7 +29,7 @@ namespace Light.Data
 				list.Add (new DataParameter (pn, _fieldInfo.DataField.ToColumn (value), _fieldInfo.DBType));
 			}
 			dataParameters = list.ToArray ();
-			return factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory), _predicate, list);
+			return factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, list);
 		}
 
 		protected override bool EqualsDetail (QueryExpression expression)

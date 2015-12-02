@@ -24,31 +24,31 @@ namespace Light.Data
 		}
 
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string queryString = null;
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps = null;
-			string functionSql = _function.CreateSqlString (factory, out ps);
+			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
 			list.AddRange (ps);
 
 			DataParameter[] ps2 = null;
-			queryString = _queryExpression.CreateSqlString (factory, out ps2);
+			queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out ps2);
 			list.AddRange (ps2);
 
 			dataParameters = list.ToArray ();
 			return factory.CreateSubQuerySql (functionSql, _predicate, _queryFieldInfo.FieldName, _queryFieldInfo.TableMapping.TableName, queryString);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters, GetAliasHandler handler)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			string alise = handler (_function);
 			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, out dataParameters);
+				return CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
 			string name = factory.CreateDataFieldSql (alise);
 			string queryString = null;
-			queryString = _queryExpression.CreateSqlString (factory, out dataParameters);
+			queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
 			return factory.CreateSubQuerySql (name, _predicate, _queryFieldInfo.CreateDataFieldSql (factory), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
 		}
 

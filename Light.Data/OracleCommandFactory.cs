@@ -262,7 +262,7 @@ namespace Light.Data
 			return AddRound (sql);
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
 		{
 			return "dbms_random.value";
 		}

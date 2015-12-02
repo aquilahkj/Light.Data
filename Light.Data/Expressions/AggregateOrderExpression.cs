@@ -16,17 +16,17 @@ namespace Light.Data
 			_orderType = orderType;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			string functionSql = _function.CreateSqlString (factory, out dataParameters);
+			string functionSql = _function.CreateSqlString (factory, fullFieldName, out dataParameters);
 			return factory.CreateOrderBySql (functionSql, _orderType);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters, GetAliasHandler handler)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			string alise = handler (_function);
 			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, out dataParameters);
+				return CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
 			dataParameters = new DataParameter[0]; 
 			string name = factory.CreateDataFieldSql (alise);

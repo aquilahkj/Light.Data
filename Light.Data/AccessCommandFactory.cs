@@ -28,10 +28,10 @@ namespace Light.Data
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-				if (!having.IgnoreConsistency && !mapping.Equals (having.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregationExpression);
-				}
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, out parameters, new GetAliasHandler (delegate(object obj) {
+//				if (!having.IgnoreConsistency && !mapping.Equals (having.TableMapping)) {
+//					throw new LightDataException (RE.DataMappingIsNotMatchAggregationExpression);
+//				}
+				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate {
 					return null;
 				})));
 			}
@@ -43,16 +43,16 @@ namespace Light.Data
 			string orderString = null;
 			parameters = null;
 			if (order != null) {
-				if (order.IgnoreConsistency) {
-					RandomOrderExpression random = order as RandomOrderExpression;
-					if (random != null) {
-						random.SetTableMapping (mapping);
-					}
+//				if (order.IgnoreConsistency) {
+				RandomOrderExpression random = order as RandomOrderExpression;
+				if (random != null) {
+					random.SetTableMapping (mapping);
 				}
-				if (!order.IgnoreConsistency && !mapping.Equals (order.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchOrderExpression);
-				}
-				orderString = string.Format ("order by {0}", order.CreateSqlString (this, out parameters, new GetAliasHandler (delegate(object obj) {
+//				}
+//				if (!order.IgnoreConsistency && !mapping.Equals (order.TableMapping)) {
+//					throw new LightDataException (RE.DataMappingIsNotMatchOrderExpression);
+//				}
+				orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate {
 					return null;
 				})));
 			}
@@ -90,143 +90,167 @@ namespace Light.Data
 			return string.Format ("[{0}]", tableName);
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
 		{
 			Random rnd = new Random (unchecked((int)DateTime.Now.Ticks));
 			int intRandomNumber = rnd.Next () * -1;
 
-			string field = "";
-			foreach (DataFieldMapping df in mapping.GetFieldMappings()) {
-				if (df.ObjectType == typeof(int)) {
-					field = CreateDataFieldSql (df.Name);
-					break;
+			DataFieldMapping keyfield = null;
+			DataTableEntityMapping tableMapping = mapping as DataTableEntityMapping;
+			if (tableMapping != null) {
+				if (tableMapping.IdentityField != null) {
+					keyfield = tableMapping.IdentityField;
+				}
+				else if (tableMapping.PrimaryKeyFields != null && tableMapping.PrimaryKeyFields.Length > 0) {
+					keyfield = tableMapping.PrimaryKeyFields [0];
 				}
 			}
-			if (string.IsNullOrEmpty (field)) {
+			if (keyfield == null) {
 				foreach (DataFieldMapping df in mapping.GetFieldMappings()) {
-					if (df.ObjectType == typeof(string)) {
-						field = string.Format ("len({0})", CreateDataFieldSql (df.Name));
+					if (df.ObjectType == typeof(int)) {
+						keyfield = df;
 						break;
 					}
 				}
 			}
-			if (string.IsNullOrEmpty (field)) {
+			if (keyfield == null) {
+				foreach (DataFieldMapping df in mapping.GetFieldMappings()) {
+					if (df.ObjectType == typeof(string)) {
+						keyfield = df;
+						break;
+					}
+				}
+			}
+			if (keyfield != null) {
+				string field;
+				if (fullFieldName) {
+					field = CreateFullDataFieldSql (mapping.TableName, keyfield.Name);
+				}
+				else {
+					field = CreateDataFieldSql (keyfield.Name);
+				}
+				if (keyfield.ObjectType == typeof(string)) {
+					field = string.Format ("len({0})", field);
+				}
+				return string.Format ("rnd({0}*{1})", intRandomNumber, field);
+			}
+			else {
 				throw new LightDataException (RE.DataFieldIsNotStringType);
 			}
-			return string.Format ("rnd({0}*{1})", intRandomNumber, field);
+
 		}
 
-		public override string CreateMatchSql (string value, bool left, bool right)
+		public override string CreateMatchSql (string field, bool left, bool right)
 		{
 			StringBuilder sb = new StringBuilder ();
 			if (left) {
 				sb.AppendFormat ("'{0}'+", _wildcards);
 			}
-			sb.Append (value);
+			sb.Append (field);
 			if (right) {
 				sb.AppendFormat ("+'{0}'", _wildcards);
 			}
 			return sb.ToString ();
 		}
 
-		public override string CreateDateSql (string value, string format)
+		public override string CreateDateSql (string field, string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
-				return string.Format ("cdate(format({0}),'yyyy-mm-dd')", value);
+				return string.Format ("cdate(format({0}),'yyyy-mm-dd')", field);
 			}
 			else {
 				string format1 = format.ToUpper ();
-				string sqlformat = null;
+				string sqlformat;
 				switch (format1) {
-					case "YMD":
-						sqlformat = "yyyymmdd";
-						break;
-					case "YM":
-						sqlformat = "yyyymm";
-						break;
-					case "Y-M-D":
-						sqlformat = "yyyy-mm-dd";
-						break;
-					case "Y-M":
-						sqlformat = "yyyy-mm";
-						break;
-					case "M-D-Y":
-						sqlformat = "mm-dd-yyyy";
-						break;
-					case "D-M-Y":
-						sqlformat = "dd-mm-yyyy";
-						break;
-					case "Y/M/D":
-						sqlformat = "yyyy/mm/dd";
-						break;
-					case "Y/M":
-						sqlformat = "yyyy/mm";
-						break;
-					case "M/D/Y":
-						sqlformat = "mm/dd/yyyy";
-						break;
-					case "D/M/Y":
-						sqlformat = "dd/mm/yyyy";
-						break;
-					default:
-						throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
+				case "YMD":
+					sqlformat = "yyyymmdd";
+					break;
+				case "YM":
+					sqlformat = "yyyymm";
+					break;
+				case "Y-M-D":
+					sqlformat = "yyyy-mm-dd";
+					break;
+				case "Y-M":
+					sqlformat = "yyyy-mm";
+					break;
+				case "M-D-Y":
+					sqlformat = "mm-dd-yyyy";
+					break;
+				case "D-M-Y":
+					sqlformat = "dd-mm-yyyy";
+					break;
+				case "Y/M/D":
+					sqlformat = "yyyy/mm/dd";
+					break;
+				case "Y/M":
+					sqlformat = "yyyy/mm";
+					break;
+				case "M/D/Y":
+					sqlformat = "mm/dd/yyyy";
+					break;
+				case "D/M/Y":
+					sqlformat = "dd/mm/yyyy";
+					break;
+				default:
+					throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
 				}
-				return string.Format ("format({0},'{1}')", value, sqlformat);
+				return string.Format ("format({0},'{1}')", field, sqlformat);
 			}
 		}
 
-		public override string CreateYearSql (string value)
+		public override string CreateYearSql (string field)
 		{
-			return string.Format ("year({0})", value);
+			return string.Format ("year({0})", field);
 		}
 
-		public override string CreateMonthSql (string value)
+		public override string CreateMonthSql (string field)
 		{
-			return string.Format ("month({0})", value);
+			return string.Format ("month({0})", field);
 		}
 
-		public override string CreateDaySql (string value)
+		public override string CreateDaySql (string field)
 		{
-			return string.Format ("day({0})", value);
+			return string.Format ("day({0})", field);
 		}
 
-		public override string CreateHourSql (string value)
+		public override string CreateHourSql (string field)
 		{
-			return string.Format ("hour({0})", value);
+			return string.Format ("hour({0})", field);
 		}
 
-		public override string CreateMinuteSql (string value)
+		public override string CreateMinuteSql (string field)
 		{
-			return string.Format ("minute({0})", value);
+			return string.Format ("minute({0})", field);
 		}
 
-		public override string CreateSecondSql (string value)
+		public override string CreateSecondSql (string field)
 		{
-			return string.Format ("second({0})", value);
+			return string.Format ("second({0})", field);
 		}
 
-		public override string CreateWeekSql (string value)
+		public override string CreateWeekSql (string field)
 		{
-			return string.Format ("val(format({0},'ww'))", value);
+			return string.Format ("val(format({0},'ww'))", field);
 		}
 
-		public override string CreateWeekDaySql (string value)
+		public override string CreateWeekDaySql (string field)
 		{
-			return string.Format ("weekday({0})", value);
+			return string.Format ("weekday({0})", field);
 		}
 
-		public override string CreateLengthSql (string value)
+		public override string CreateLengthSql (string field)
 		{
-			return string.Format ("len({0})", value);
+			return string.Format ("len({0})", field);
 		}
 
-		public override string CreateSubStringSql (string value, int start, int size)
+		public override string CreateSubStringSql (string field, int start, int size)
 		{
 			if (size == 0) {
-				return string.Format ("mid({0},{1})", value, start);
+				return string.Format ("mid({0},{1})", field, start);
 			}
 			else {
-				return string.Format ("mid({0},{1},{2})", value, start, size);
+				return string.Format ("mid({0},{1},{2})", field, start, size);
 			}
 		}
 

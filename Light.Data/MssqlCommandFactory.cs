@@ -28,10 +28,10 @@ namespace Light.Data
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-				if (!having.IgnoreConsistency && !mapping.Equals (having.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregationExpression);
-				}
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, out parameters, new GetAliasHandler (delegate(object obj) {
+//				if (!having.IgnoreConsistency && !mapping.Equals (having.TableMapping)) {
+//					throw new LightDataException (RE.DataMappingIsNotMatchAggregationExpression);
+//				}
+				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
 					return null;
 				})));
 			}
@@ -121,38 +121,38 @@ namespace Light.Data
 				string format1 = format.ToUpper ();
 				string sqlformat = null;
 				switch (format1) {
-					case "YMD":
-						sqlformat = "convert(char(8),{0},112)";
-						break;
-					case "YM":
-						sqlformat = "convert(char(6),{0},112)";
-						break;
-					case "Y-M-D":
-						sqlformat = "convert(char(10),{0},23)";
-						break;
-					case "Y-M":
-						sqlformat = "convert(char(7),{0},23)";
-						break;
-					case "M-D-Y":
-						sqlformat = "convert(char(10),{0},110)";
-						break;
-					case "D-M-Y":
-						sqlformat = "convert(char(10),{0},105)";
-						break;
-					case "Y/M/D":
-						sqlformat = "convert(char(10),{0},111)";
-						break;
-					case "Y/M":
-						sqlformat = "convert(char(7),{0},111)";
-						break;
-					case "M/D/Y":
-						sqlformat = "convert(char(10),{0},101)";
-						break;
-					case "D/M/Y":
-						sqlformat = "convert(char(10),{0},103)";
-						break;
-					default:
-						throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
+				case "YMD":
+					sqlformat = "convert(char(8),{0},112)";
+					break;
+				case "YM":
+					sqlformat = "convert(char(6),{0},112)";
+					break;
+				case "Y-M-D":
+					sqlformat = "convert(char(10),{0},23)";
+					break;
+				case "Y-M":
+					sqlformat = "convert(char(7),{0},23)";
+					break;
+				case "M-D-Y":
+					sqlformat = "convert(char(10),{0},110)";
+					break;
+				case "D-M-Y":
+					sqlformat = "convert(char(10),{0},105)";
+					break;
+				case "Y/M/D":
+					sqlformat = "convert(char(10),{0},111)";
+					break;
+				case "Y/M":
+					sqlformat = "convert(char(7),{0},111)";
+					break;
+				case "M/D/Y":
+					sqlformat = "convert(char(10),{0},101)";
+					break;
+				case "D/M/Y":
+					sqlformat = "convert(char(10),{0},103)";
+					break;
+				default:
+					throw new LightDataException (string.Format (RE.UnsupportDateFormat, format));
 				}
 				return string.Format (sqlformat, field);
 			}

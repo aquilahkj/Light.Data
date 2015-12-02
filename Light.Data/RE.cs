@@ -268,6 +268,8 @@ namespace Light.Data
 		/// "select"字段数与"insert"字段数不相等.
 		/// </summary>
 		public const string SelectFiledsCountNotEquidInsertFiledCount = "select fileds count not equid insert filed count";
+
+		public const string SelectFiledsNotInJoinTables = "select fileds not in join tables";
 	}
 }
 

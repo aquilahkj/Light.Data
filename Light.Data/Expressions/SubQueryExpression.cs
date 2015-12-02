@@ -23,14 +23,14 @@ namespace Light.Data
 			_queryExpression = queryExpression;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string queryString = null;
 			if (_queryExpression == null) {
 				dataParameters = new DataParameter[0];
 			}
 			else {
-				queryString = _queryExpression.CreateSqlString (factory, out dataParameters);
+				queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
 			return factory.CreateSubQuerySql (_fieldInfo.CreateDataFieldSql (factory), _predicate, _queryFieldInfo.CreateDataFieldSql (factory), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
 		}

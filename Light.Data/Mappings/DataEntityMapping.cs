@@ -73,12 +73,12 @@ namespace Light.Data
 
 		public string TableName {
 			get {
-//				if (_aliasName != null) {
-//					return _aliasName;
-//				}
-//				else {
+				if (_aliasName != null) {
+					return DataEntityMapping._aliasName;
+				}
+				else {
 					return _tableName;
-//				}
+				}
 			}
 
 		}
@@ -91,12 +91,12 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (name)) {
 				throw new ArgumentNullException ("name");
 			}
-			_aliasName = name;
+			DataEntityMapping._aliasName = name;
 		}
 
 		public void ClearAliasName ()
 		{
-			_aliasName = null;
+			DataEntityMapping._aliasName = null;
 		}
 
 		public bool Equals (DataEntityMapping mapping)

@@ -299,9 +299,9 @@ namespace Light.Data
 			if (expression == null) {
 				throw new ArgumentNullException ("expression");
 			}
-			if (!expression.IgnoreConsistency && !field.TableMapping.Equals (expression.TableMapping)) {
-				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-			}
+//			if (!expression.IgnoreConsistency && !field.TableMapping.Equals (expression.TableMapping)) {
+//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
+//			}
 			AggregateHavingExpression exp = new SubAggregateExpression (this, predicate, field, expression);
 			return exp;
 		}
@@ -424,7 +424,7 @@ namespace Light.Data
 			return exp;
 		}
 
-		internal abstract string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters);
+		internal abstract string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters);
 
 		/// <summary>
 		/// 生成计数函数,Count所有数据
@@ -445,7 +445,8 @@ namespace Light.Data
 			if (expression == null) {
 				throw new ArgumentNullException ("expression");
 			}
-			return new ConditionCountFunction (!expression.IgnoreConsistency ? expression.TableMapping : null, expression, null, false);
+//			return new ConditionCountFunction (!expression.IgnoreConsistency ? expression.TableMapping : null, expression, null, false);
+			return new ConditionCountFunction (expression.TableMapping, expression, null, false);
 		}
 
 		/// <summary>
@@ -463,9 +464,9 @@ namespace Light.Data
 			if (Object.Equals (fieldInfo, null)) {
 				throw new ArgumentNullException ("fieldInfo");
 			}
-			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
-				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-			}
+//			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
+//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
+//			}
 			return new ConditionCountFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
 
@@ -543,9 +544,9 @@ namespace Light.Data
 			if (Object.Equals (fieldInfo, null)) {
 				throw new ArgumentNullException ("fieldInfo");
 			}
-			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
-				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-			}
+//			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
+//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
+//			}
 			return new ConditionSumFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
 
@@ -599,9 +600,9 @@ namespace Light.Data
 			if (Object.Equals (fieldInfo, null)) {
 				throw new ArgumentNullException ("fieldInfo");
 			}
-			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
-				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-			}
+//			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
+//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
+//			}
 			return new ConditionAvgFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
 

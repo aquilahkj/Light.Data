@@ -23,7 +23,7 @@ namespace Light.Data
 			_toValue = toValue;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
@@ -32,7 +32,7 @@ namespace Light.Data
 			DataParameter toParam = new DataParameter (pn1, _toValue, null);
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps = null;
-			string functionSql = _function.CreateSqlString (factory, out ps);
+			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
 			list.AddRange (ps);
 			list.Add (fromParam);
 			list.Add (toParam);
@@ -40,11 +40,11 @@ namespace Light.Data
 			return factory.CreateBetweenParamsQuerySql (functionSql, _isNot, fromParam, toParam);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters, GetAliasHandler handler)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			string alise = handler (_function);
 			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, out dataParameters);
+				return CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
 			string name = factory.CreateDataFieldSql (alise);
 

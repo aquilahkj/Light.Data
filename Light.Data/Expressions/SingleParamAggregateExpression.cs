@@ -23,24 +23,24 @@ namespace Light.Data
 			_isReverse = isReverse;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			DataParameter dataParameter = new DataParameter (pn, _value, null);
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps = null;
-			string functionSql = _function.CreateSqlString (factory, out ps);
+			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
 			list.AddRange (ps);
 			list.Add (dataParameter);
 			dataParameters = list.ToArray ();
 			return factory.CreateSingleParamSql (functionSql, _predicate, _isReverse, dataParameter);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters, GetAliasHandler handler)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			string alise = handler (_function);
 			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, out dataParameters);
+				return CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
 			string name = factory.CreateDataFieldSql (alise);
 

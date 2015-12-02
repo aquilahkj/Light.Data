@@ -23,7 +23,7 @@ namespace Light.Data
 			_toValue = toValue;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
@@ -31,7 +31,7 @@ namespace Light.Data
 			DataParameter fromParam = new DataParameter (pn, _fieldInfo.DataField.ToColumn (_fromValue), _fieldInfo.DBType);
 			DataParameter toParam = new DataParameter (pn1, _fieldInfo.DataField.ToColumn (_toValue), _fieldInfo.DBType);
 			dataParameters = new DataParameter[] { fromParam, toParam };
-			return factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory), _isNot, fromParam, toParam);
+			return factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isNot, fromParam, toParam);
 		}
 
 		protected override bool EqualsDetail (QueryExpression expression)

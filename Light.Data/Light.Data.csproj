@@ -280,6 +280,11 @@
     <Compile Include="CommandOutput.cs" />
     <Compile Include="CommandOutputEventArgs.cs" />
     <Compile Include="CommandOutputEventHandle.cs" />
+    <Compile Include="JoinTable.cs" />
+    <Compile Include="JoinType.cs" />
+    <Compile Include="Expressions\DataFieldExpression.cs" />
+    <Compile Include="Expressions\DataFieldMatchExpression.cs" />
+    <Compile Include="JoinModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

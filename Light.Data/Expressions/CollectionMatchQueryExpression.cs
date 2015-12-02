@@ -28,7 +28,7 @@ namespace Light.Data
 		}
 
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			List<DataParameter> list = new List<DataParameter> ();
 			Type objType = _value.GetType ();
@@ -54,7 +54,7 @@ namespace Light.Data
 				list.Add (new DataParameter (pn, _fieldInfo.DataField.ToColumn (obj), _fieldInfo.DBType));
 			}
 			dataParameters = list.ToArray ();
-			return factory.CreateCollectionMatchQuerySql (_fieldInfo.CreateDataFieldSql (factory), _isReverse, _isMatch, _isNot, list);
+			return factory.CreateCollectionMatchQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isReverse, _isMatch, _isNot, list);
 		}
 
 		protected override bool EqualsDetail (QueryExpression expression)

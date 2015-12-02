@@ -26,7 +26,7 @@ namespace Light.Data
 			_isSameTable = Object.Equals (fieldInfo.TableMapping, relateFieldInfo.TableMapping);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			dataParameters = new DataParameter[0];
 			return factory.CreateRelationTableSql (_fieldInfo.CreateDataFieldSql (factory), _predicate, _isReverse, _relateFieldInfo.CreateDataFieldSql (factory, !_isSameTable));

@@ -59,11 +59,18 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Light.Data.CommandOutput"/> class.
+		/// </summary>
 		public CommandOutput () : this (true)
 		{
 
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Light.Data.CommandOutput"/> class.
+		/// </summary>
+		/// <param name="defaultEnable">If set to <c>true</c> default enable.</param>
 		public CommandOutput (bool defaultEnable)
 		{
 			this.enable = defaultEnable;

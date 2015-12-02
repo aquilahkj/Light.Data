@@ -9,27 +9,27 @@ namespace Light.Data
 		public RandomOrderExpression ()
 			: base (null)
 		{
-			IgnoreConsistency = true;
+//			IgnoreConsistency = true;
 		}
 
 		public void SetTableMapping (DataEntityMapping mapping)
 		{
 			if (mapping == null) {
-				throw new ArgumentNullException ("DataEntityMapping");
+				throw new ArgumentNullException ("mapping");
 			}
 			TableMapping = mapping;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			dataParameters = new DataParameter[0];
-			return factory.CreateRandomOrderBySql (TableMapping);
+			return factory.CreateRandomOrderBySql (TableMapping, fullFieldName);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters, GetAliasHandler handler)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			dataParameters = new DataParameter[0];
-			return factory.CreateRandomOrderBySql (TableMapping);
+			return factory.CreateRandomOrderBySql (TableMapping, fullFieldName);
 		}
 	}
 }
