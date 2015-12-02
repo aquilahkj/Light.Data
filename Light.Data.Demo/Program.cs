@@ -10,6 +10,7 @@ namespace Light.Data.Demo
 	{
 		public static void Main (string[] args)
 		{
+			
 			DataContext context = DataContextConfiguration.Default;
 			CommandOutput output = new CommandOutput ();
 			output.OutputFullCommand = true;
