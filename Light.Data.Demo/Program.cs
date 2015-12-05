@@ -17,12 +17,12 @@ namespace Light.Data.Demo
 			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
 //			List<TestUser> list = context.LQuery<TestUser> ().Where (TestUser.IdField > 10 & TestUser.UserNameField == "aaa" & TestUser.RegTimeField >= DateTime.Now.Date).ToList ();
-			List<TaskModel> list = context.LQuery<TaskBase> ().Where (TaskBase.PriorityField == 100).LeftJoin<TaskContent> ()
-				.On (TaskBase.TaskIdField == TaskContent.TaskIdField)
-				.Select (TaskBase.TaskIdField, TaskBase.PositionField, TaskBase.PriorityField, TaskBase.StartTimeField, TaskBase.EndTimeField, TaskContent.ContentIdField, TaskContent.ContentTypeField, TaskContent.TransField, TaskContent.ContentField)
-				.Where (TaskContent.ContentTypeField != 1)
-				.OrderBy (TaskContent.ContentField.OrderByAsc ())
-				.ToList<TaskModel> ();
+//			List<TaskModel> list = context.LQuery<TaskBase> ().Where (TaskBase.PriorityField == 100).LeftJoin<TaskContent> ()
+//				.On (TaskBase.TaskIdField == TaskContent.TaskIdField)
+//				.Select (TaskBase.TaskIdField, TaskBase.PositionField, TaskBase.PriorityField, TaskBase.StartTimeField, TaskBase.EndTimeField, TaskContent.ContentIdField, TaskContent.ContentTypeField, TaskContent.TransField, TaskContent.ContentField)
+//				.Where (TaskContent.ContentTypeField != 1)
+//				.OrderBy (TaskContent.ContentField.OrderByAsc ())
+//				.ToList<TaskModel> ();
 			Console.ReadLine ();
 		}
 
