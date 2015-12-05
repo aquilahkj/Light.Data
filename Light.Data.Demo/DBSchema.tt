@@ -19,7 +19,8 @@
 	excludeTable.Add("QcDataLog");
 
     var dbSchema=DBSchemaFactory.GetDBSchema(dbType,connection);
-    List<string> tableList=dbSchema.GetTablesList();
+    List<string> tableList=new List<string>();
+    //List<string> tableList=dbSchema.GetTablesList();
 #>
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,10 @@ namespace <#=namespaceName#>
 #>
 		private <#=c.TypeName#> <#=StringUtil.ToCamelCase(c.ColumnName)#>;
 
+		/// <summary>
+		/// <#=c.Caption#>
+		/// </summary>
+		/// <value>The record time.</value>
 		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPk) { #>, IsPrimaryKey = true<# } #><# if (c.AllowDBNull) { #>, IsNullable = true<# } #>)]
         public <#=c.TypeName#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
         {
@@ -273,6 +278,14 @@ namespace <#=namespaceName#>
         {
             this.columnBase = columnBase;
             this.isPk = isPk;
+        }
+
+        public string Caption
+        {
+        	get
+        	{
+        		return this.columnBase.Caption;
+        	}
         }
 
         public bool IsPk
