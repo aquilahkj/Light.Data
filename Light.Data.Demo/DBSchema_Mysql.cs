@@ -9,33 +9,112 @@ using Light.Data;
 namespace Light.Data.Demo
 {
     [Serializable]
-    [DataTable("Te_Article")]
-    public partial class TeArticle : DataTableEntity
+    [DataTable("ScConfiguration")]
+    public partial class ScConfiguration : DataTableEntity
     {
     	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeArticle>.Create("Id");
+		static readonly DataFieldInfo controllerNameField = DataFieldInfo<ScConfiguration>.Create("ControllerName");
 
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeArticle>.Create("UserId");
+		static readonly DataFieldInfo syncSpanField = DataFieldInfo<ScConfiguration>.Create("SyncSpan");
 
-		static readonly DataFieldInfo titleField = DataFieldInfo<TeArticle>.Create("Title");
+		static readonly DataFieldInfo argumentsField = DataFieldInfo<ScConfiguration>.Create("Arguments");
 
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeArticle>.Create("Content");
+    	#endregion
 
-		static readonly DataFieldInfo publishTimeField = DataFieldInfo<TeArticle>.Create("PublishTime");
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo ControllerNameField
+        {
+            get {
+                return controllerNameField;
+            }
+        }
 
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeArticle>.Create("Status");
+		public static DataFieldInfo SyncSpanField
+        {
+            get {
+                return syncSpanField;
+            }
+        }
 
-		static readonly DataFieldInfo readNumField = DataFieldInfo<TeArticle>.Create("ReadNum");
+		public static DataFieldInfo ArgumentsField
+        {
+            get {
+                return argumentsField;
+            }
+        }
 
-		static readonly DataFieldInfo praiseNumField = DataFieldInfo<TeArticle>.Create("PraiseNum");
+    	#endregion
 
-		static readonly DataFieldInfo lastModifyTimeField = DataFieldInfo<TeArticle>.Create("LastModifyTime");
+    	#region "Data Property"
+		private string controllerName;
 
-		static readonly DataFieldInfo lastCommentTimeField = DataFieldInfo<TeArticle>.Create("LastCommentTime");
+		/// <summary>
+		/// 控制器名称
+		/// </summary>
+		/// <value></value>
+		[DataField("ControllerName", IsPrimaryKey = true)]
+        public string ControllerName
+        {
+            get { 
+            	return this.controllerName; 
+            }
+            set { 
+            	this.controllerName = value; 
+            }
+        }
+		private int syncSpan;
 
-		static readonly DataFieldInfo tagsField = DataFieldInfo<TeArticle>.Create("Tags");
+		/// <summary>
+		/// 同步时间间隔
+		/// </summary>
+		/// <value></value>
+		[DataField("SyncSpan")]
+        public int SyncSpan
+        {
+            get { 
+            	return this.syncSpan; 
+            }
+            set { 
+            	this.syncSpan = value; 
+            }
+        }
+		private string arguments;
 
-		static readonly DataFieldInfo columnIdField = DataFieldInfo<TeArticle>.Create("ColumnId");
+		/// <summary>
+		/// 参数集
+		/// </summary>
+		/// <value></value>
+		[DataField("Arguments")]
+        public string Arguments
+        {
+            get { 
+            	return this.arguments; 
+            }
+            set { 
+            	this.arguments = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("ScDataLog")]
+    public partial class ScDataLog : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<ScDataLog>.Create("Id");
+
+		static readonly DataFieldInfo recordTimeField = DataFieldInfo<ScDataLog>.Create("RecordTime");
+
+		static readonly DataFieldInfo userIdField = DataFieldInfo<ScDataLog>.Create("UserId");
+
+		static readonly DataFieldInfo flagField = DataFieldInfo<ScDataLog>.Create("Flag");
+
+		static readonly DataFieldInfo midField = DataFieldInfo<ScDataLog>.Create("Mid");
+
+		static readonly DataFieldInfo codeField = DataFieldInfo<ScDataLog>.Create("Code");
+
+		static readonly DataFieldInfo urlField = DataFieldInfo<ScDataLog>.Create("Url");
 
     	#endregion
 
@@ -44,6 +123,13 @@ namespace Light.Data.Demo
         {
             get {
                 return idField;
+            }
+        }
+
+		public static DataFieldInfo RecordTimeField
+        {
+            get {
+                return recordTimeField;
             }
         }
 
@@ -54,73 +140,31 @@ namespace Light.Data.Demo
             }
         }
 
-		public static DataFieldInfo TitleField
+		public static DataFieldInfo FlagField
         {
             get {
-                return titleField;
+                return flagField;
             }
         }
 
-		public static DataFieldInfo ContentField
+		public static DataFieldInfo MidField
         {
             get {
-                return contentField;
+                return midField;
             }
         }
 
-		public static DataFieldInfo PublishTimeField
+		public static DataFieldInfo CodeField
         {
             get {
-                return publishTimeField;
+                return codeField;
             }
         }
 
-		public static DataFieldInfo StatusField
+		public static DataFieldInfo UrlField
         {
             get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo ReadNumField
-        {
-            get {
-                return readNumField;
-            }
-        }
-
-		public static DataFieldInfo PraiseNumField
-        {
-            get {
-                return praiseNumField;
-            }
-        }
-
-		public static DataFieldInfo LastModifyTimeField
-        {
-            get {
-                return lastModifyTimeField;
-            }
-        }
-
-		public static DataFieldInfo LastCommentTimeField
-        {
-            get {
-                return lastCommentTimeField;
-            }
-        }
-
-		public static DataFieldInfo TagsField
-        {
-            get {
-                return tagsField;
-            }
-        }
-
-		public static DataFieldInfo ColumnIdField
-        {
-            get {
-                return columnIdField;
+                return urlField;
             }
         }
 
@@ -143,14 +187,30 @@ namespace Light.Data.Demo
             	this.id = value; 
             }
         }
-		private int userId;
+		private DateTime recordTime;
+
+		/// <summary>
+		/// RecordTime
+		/// </summary>
+		/// <value></value>
+		[DataField("RecordTime")]
+        public DateTime RecordTime
+        {
+            get { 
+            	return this.recordTime; 
+            }
+            set { 
+            	this.recordTime = value; 
+            }
+        }
+		private string userId;
 
 		/// <summary>
 		/// UserId
 		/// </summary>
 		/// <value></value>
 		[DataField("UserId")]
-        public int UserId
+        public string UserId
         {
             get { 
             	return this.userId; 
@@ -159,324 +219,255 @@ namespace Light.Data.Demo
             	this.userId = value; 
             }
         }
-		private string title;
+		private string flag;
 
 		/// <summary>
-		/// Title
+		/// Flag
 		/// </summary>
 		/// <value></value>
-		[DataField("Title")]
-        public string Title
+		[DataField("Flag")]
+        public string Flag
         {
             get { 
-            	return this.title; 
+            	return this.flag; 
             }
             set { 
-            	this.title = value; 
+            	this.flag = value; 
             }
         }
-		private string content;
+		private string mid;
 
 		/// <summary>
-		/// Content
+		/// Mid
 		/// </summary>
 		/// <value></value>
-		[DataField("Content")]
-        public string Content
+		[DataField("Mid", IsNullable = true)]
+        public string Mid
         {
             get { 
-            	return this.content; 
+            	return this.mid; 
             }
             set { 
-            	this.content = value; 
+            	this.mid = value; 
             }
         }
-		private DateTime publishTime;
+		private string code;
 
 		/// <summary>
-		/// PublishTime
+		/// Code
 		/// </summary>
 		/// <value></value>
-		[DataField("PublishTime")]
-        public DateTime PublishTime
+		[DataField("Code")]
+        public string Code
         {
             get { 
-            	return this.publishTime; 
+            	return this.code; 
             }
             set { 
-            	this.publishTime = value; 
+            	this.code = value; 
             }
         }
-		private string status;
+		private string url;
 
 		/// <summary>
-		/// Status
+		/// Url
 		/// </summary>
 		/// <value></value>
-		[DataField("Status")]
-        public string Status
+		[DataField("Url", IsNullable = true)]
+        public string Url
         {
             get { 
-            	return this.status; 
+            	return this.url; 
             }
             set { 
-            	this.status = value; 
-            }
-        }
-		private int readNum;
-
-		/// <summary>
-		/// ReadNum
-		/// </summary>
-		/// <value></value>
-		[DataField("ReadNum")]
-        public int ReadNum
-        {
-            get { 
-            	return this.readNum; 
-            }
-            set { 
-            	this.readNum = value; 
-            }
-        }
-		private int praiseNum;
-
-		/// <summary>
-		/// PraiseNum
-		/// </summary>
-		/// <value></value>
-		[DataField("PraiseNum")]
-        public int PraiseNum
-        {
-            get { 
-            	return this.praiseNum; 
-            }
-            set { 
-            	this.praiseNum = value; 
-            }
-        }
-		private DateTime lastModifyTime;
-
-		/// <summary>
-		/// LastModifyTime
-		/// </summary>
-		/// <value></value>
-		[DataField("LastModifyTime")]
-        public DateTime LastModifyTime
-        {
-            get { 
-            	return this.lastModifyTime; 
-            }
-            set { 
-            	this.lastModifyTime = value; 
-            }
-        }
-		private DateTime lastCommentTime;
-
-		/// <summary>
-		/// LastCommentTime
-		/// </summary>
-		/// <value></value>
-		[DataField("LastCommentTime")]
-        public DateTime LastCommentTime
-        {
-            get { 
-            	return this.lastCommentTime; 
-            }
-            set { 
-            	this.lastCommentTime = value; 
-            }
-        }
-		private string tags;
-
-		/// <summary>
-		/// Tags
-		/// </summary>
-		/// <value></value>
-		[DataField("Tags", IsNullable = true)]
-        public string Tags
-        {
-            get { 
-            	return this.tags; 
-            }
-            set { 
-            	this.tags = value; 
-            }
-        }
-		private string columnId;
-
-		/// <summary>
-		/// ColumnId
-		/// </summary>
-		/// <value></value>
-		[DataField("ColumnId", IsNullable = true)]
-        public string ColumnId
-        {
-            get { 
-            	return this.columnId; 
-            }
-            set { 
-            	this.columnId = value; 
+            	this.url = value; 
             }
         }
 		#endregion
     }
 
     [Serializable]
-    [DataTable("Te_ArticleColumn")]
-    public partial class TeArticleColumn : DataTableEntity
+    [DataTable("ScDataStat")]
+    public partial class ScDataStat : DataTableEntity
     {
     	#region "Static Field"
-		static readonly DataFieldInfo columnIdField = DataFieldInfo<TeArticleColumn>.Create("ColumnId");
+		static readonly DataFieldInfo statDateField = DataFieldInfo<ScDataStat>.Create("StatDate");
 
-		static readonly DataFieldInfo columnNameField = DataFieldInfo<TeArticleColumn>.Create("ColumnName");
+		static readonly DataFieldInfo flagField = DataFieldInfo<ScDataStat>.Create("Flag");
 
-		static readonly DataFieldInfo parentIdField = DataFieldInfo<TeArticleColumn>.Create("ParentId");
+		static readonly DataFieldInfo midField = DataFieldInfo<ScDataStat>.Create("Mid");
 
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeArticleColumn>.Create("Status");
+		static readonly DataFieldInfo codeField = DataFieldInfo<ScDataStat>.Create("Code");
 
-		static readonly DataFieldInfo remarkField = DataFieldInfo<TeArticleColumn>.Create("Remark");
+		static readonly DataFieldInfo pvField = DataFieldInfo<ScDataStat>.Create("Pv");
+
+		static readonly DataFieldInfo uvField = DataFieldInfo<ScDataStat>.Create("Uv");
 
     	#endregion
 
     	#region "Static DataFieldInfo"
-		public static DataFieldInfo ColumnIdField
+		public static DataFieldInfo StatDateField
         {
             get {
-                return columnIdField;
+                return statDateField;
             }
         }
 
-		public static DataFieldInfo ColumnNameField
+		public static DataFieldInfo FlagField
         {
             get {
-                return columnNameField;
+                return flagField;
             }
         }
 
-		public static DataFieldInfo ParentIdField
+		public static DataFieldInfo MidField
         {
             get {
-                return parentIdField;
+                return midField;
             }
         }
 
-		public static DataFieldInfo StatusField
+		public static DataFieldInfo CodeField
         {
             get {
-                return statusField;
+                return codeField;
             }
         }
 
-		public static DataFieldInfo RemarkField
+		public static DataFieldInfo PvField
         {
             get {
-                return remarkField;
+                return pvField;
+            }
+        }
+
+		public static DataFieldInfo UvField
+        {
+            get {
+                return uvField;
             }
         }
 
     	#endregion
 
     	#region "Data Property"
-		private string columnId;
+		private DateTime statDate;
 
 		/// <summary>
-		/// ColumnId
+		/// StatDate
 		/// </summary>
 		/// <value></value>
-		[DataField("ColumnId", IsPrimaryKey = true)]
-        public string ColumnId
+		[DataField("StatDate", IsPrimaryKey = true)]
+        public DateTime StatDate
         {
             get { 
-            	return this.columnId; 
+            	return this.statDate; 
             }
             set { 
-            	this.columnId = value; 
+            	this.statDate = value; 
             }
         }
-		private string columnName;
+		private string flag;
 
 		/// <summary>
-		/// ColumnName
+		/// Flag
 		/// </summary>
 		/// <value></value>
-		[DataField("ColumnName")]
-        public string ColumnName
+		[DataField("Flag", IsPrimaryKey = true)]
+        public string Flag
         {
             get { 
-            	return this.columnName; 
+            	return this.flag; 
             }
             set { 
-            	this.columnName = value; 
+            	this.flag = value; 
             }
         }
-		private string parentId;
+		private string mid;
 
 		/// <summary>
-		/// ParentId
+		/// Mid
 		/// </summary>
 		/// <value></value>
-		[DataField("ParentId")]
-        public string ParentId
+		[DataField("Mid", IsPrimaryKey = true)]
+        public string Mid
         {
             get { 
-            	return this.parentId; 
+            	return this.mid; 
             }
             set { 
-            	this.parentId = value; 
+            	this.mid = value; 
             }
         }
-		private string status;
+		private string code;
 
 		/// <summary>
-		/// Status
+		/// Code
 		/// </summary>
 		/// <value></value>
-		[DataField("Status")]
-        public string Status
+		[DataField("Code", IsPrimaryKey = true)]
+        public string Code
         {
             get { 
-            	return this.status; 
+            	return this.code; 
             }
             set { 
-            	this.status = value; 
+            	this.code = value; 
             }
         }
-		private string remark;
+		private int pv;
 
 		/// <summary>
-		/// Remark
+		/// Pv
 		/// </summary>
 		/// <value></value>
-		[DataField("Remark", IsNullable = true)]
-        public string Remark
+		[DataField("Pv")]
+        public int Pv
         {
             get { 
-            	return this.remark; 
+            	return this.pv; 
             }
             set { 
-            	this.remark = value; 
+            	this.pv = value; 
+            }
+        }
+		private string uv;
+
+		/// <summary>
+		/// Uv
+		/// </summary>
+		/// <value></value>
+		[DataField("Uv")]
+        public string Uv
+        {
+            get { 
+            	return this.uv; 
+            }
+            set { 
+            	this.uv = value; 
             }
         }
 		#endregion
     }
 
     [Serializable]
-    [DataTable("Te_ArticleComment")]
-    public partial class TeArticleComment : DataTableEntity
+    [DataTable("ScDevicePackage")]
+    public partial class ScDevicePackage : DataTableEntity
     {
     	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeArticleComment>.Create("Id");
+		static readonly DataFieldInfo idField = DataFieldInfo<ScDevicePackage>.Create("Id");
 
-		static readonly DataFieldInfo articleIdField = DataFieldInfo<TeArticleComment>.Create("ArticleId");
+		static readonly DataFieldInfo recordTimeField = DataFieldInfo<ScDevicePackage>.Create("RecordTime");
 
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeArticleComment>.Create("UserId");
+		static readonly DataFieldInfo getTimeField = DataFieldInfo<ScDevicePackage>.Create("GetTime");
 
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeArticleComment>.Create("Content");
+		static readonly DataFieldInfo packageNameField = DataFieldInfo<ScDevicePackage>.Create("PackageName");
 
-		static readonly DataFieldInfo publishTimeField = DataFieldInfo<TeArticleComment>.Create("PublishTime");
+		static readonly DataFieldInfo countField = DataFieldInfo<ScDevicePackage>.Create("Count");
 
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeArticleComment>.Create("Status");
+		static readonly DataFieldInfo statusField = DataFieldInfo<ScDevicePackage>.Create("Status");
+
+		static readonly DataFieldInfo dataField = DataFieldInfo<ScDevicePackage>.Create("Data");
 
     	#endregion
 
@@ -488,31 +479,416 @@ namespace Light.Data.Demo
             }
         }
 
-		public static DataFieldInfo ArticleIdField
+		public static DataFieldInfo RecordTimeField
         {
             get {
-                return articleIdField;
+                return recordTimeField;
             }
         }
 
-		public static DataFieldInfo UserIdField
+		public static DataFieldInfo GetTimeField
         {
             get {
-                return userIdField;
+                return getTimeField;
             }
         }
 
-		public static DataFieldInfo ContentField
+		public static DataFieldInfo PackageNameField
         {
             get {
-                return contentField;
+                return packageNameField;
             }
         }
 
-		public static DataFieldInfo PublishTimeField
+		public static DataFieldInfo CountField
         {
             get {
-                return publishTimeField;
+                return countField;
+            }
+        }
+
+		public static DataFieldInfo StatusField
+        {
+            get {
+                return statusField;
+            }
+        }
+
+		public static DataFieldInfo DataField
+        {
+            get {
+                return dataField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private DateTime recordTime;
+
+		/// <summary>
+		/// RecordTime
+		/// </summary>
+		/// <value></value>
+		[DataField("RecordTime")]
+        public DateTime RecordTime
+        {
+            get { 
+            	return this.recordTime; 
+            }
+            set { 
+            	this.recordTime = value; 
+            }
+        }
+		private DateTime? getTime;
+
+		/// <summary>
+		/// GetTime
+		/// </summary>
+		/// <value></value>
+		[DataField("GetTime", IsNullable = true)]
+        public DateTime? GetTime
+        {
+            get { 
+            	return this.getTime; 
+            }
+            set { 
+            	this.getTime = value; 
+            }
+        }
+		private string packageName;
+
+		/// <summary>
+		/// PackageName
+		/// </summary>
+		/// <value></value>
+		[DataField("PackageName")]
+        public string PackageName
+        {
+            get { 
+            	return this.packageName; 
+            }
+            set { 
+            	this.packageName = value; 
+            }
+        }
+		private int count;
+
+		/// <summary>
+		/// Count
+		/// </summary>
+		/// <value></value>
+		[DataField("Count")]
+        public int Count
+        {
+            get { 
+            	return this.count; 
+            }
+            set { 
+            	this.count = value; 
+            }
+        }
+		private int status;
+
+		/// <summary>
+		/// Status
+		/// </summary>
+		/// <value></value>
+		[DataField("Status")]
+        public int Status
+        {
+            get { 
+            	return this.status; 
+            }
+            set { 
+            	this.status = value; 
+            }
+        }
+		private string data;
+
+		/// <summary>
+		/// Data
+		/// </summary>
+		/// <value></value>
+		[DataField("Data", IsNullable = true)]
+        public string Data
+        {
+            get { 
+            	return this.data; 
+            }
+            set { 
+            	this.data = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("ScDevicePackageHistory")]
+    public partial class ScDevicePackageHistory : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<ScDevicePackageHistory>.Create("Id");
+
+		static readonly DataFieldInfo recordTimeField = DataFieldInfo<ScDevicePackageHistory>.Create("RecordTime");
+
+		static readonly DataFieldInfo getTimeField = DataFieldInfo<ScDevicePackageHistory>.Create("GetTime");
+
+		static readonly DataFieldInfo packageNameField = DataFieldInfo<ScDevicePackageHistory>.Create("PackageName");
+
+		static readonly DataFieldInfo countField = DataFieldInfo<ScDevicePackageHistory>.Create("Count");
+
+		static readonly DataFieldInfo statusField = DataFieldInfo<ScDevicePackageHistory>.Create("Status");
+
+		static readonly DataFieldInfo dataField = DataFieldInfo<ScDevicePackageHistory>.Create("Data");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RecordTimeField
+        {
+            get {
+                return recordTimeField;
+            }
+        }
+
+		public static DataFieldInfo GetTimeField
+        {
+            get {
+                return getTimeField;
+            }
+        }
+
+		public static DataFieldInfo PackageNameField
+        {
+            get {
+                return packageNameField;
+            }
+        }
+
+		public static DataFieldInfo CountField
+        {
+            get {
+                return countField;
+            }
+        }
+
+		public static DataFieldInfo StatusField
+        {
+            get {
+                return statusField;
+            }
+        }
+
+		public static DataFieldInfo DataField
+        {
+            get {
+                return dataField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id")]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private DateTime recordTime;
+
+		/// <summary>
+		/// RecordTime
+		/// </summary>
+		/// <value></value>
+		[DataField("RecordTime")]
+        public DateTime RecordTime
+        {
+            get { 
+            	return this.recordTime; 
+            }
+            set { 
+            	this.recordTime = value; 
+            }
+        }
+		private DateTime? getTime;
+
+		/// <summary>
+		/// GetTime
+		/// </summary>
+		/// <value></value>
+		[DataField("GetTime", IsNullable = true)]
+        public DateTime? GetTime
+        {
+            get { 
+            	return this.getTime; 
+            }
+            set { 
+            	this.getTime = value; 
+            }
+        }
+		private string packageName;
+
+		/// <summary>
+		/// PackageName
+		/// </summary>
+		/// <value></value>
+		[DataField("PackageName")]
+        public string PackageName
+        {
+            get { 
+            	return this.packageName; 
+            }
+            set { 
+            	this.packageName = value; 
+            }
+        }
+		private int count;
+
+		/// <summary>
+		/// Count
+		/// </summary>
+		/// <value></value>
+		[DataField("Count")]
+        public int Count
+        {
+            get { 
+            	return this.count; 
+            }
+            set { 
+            	this.count = value; 
+            }
+        }
+		private int status;
+
+		/// <summary>
+		/// Status
+		/// </summary>
+		/// <value></value>
+		[DataField("Status")]
+        public int Status
+        {
+            get { 
+            	return this.status; 
+            }
+            set { 
+            	this.status = value; 
+            }
+        }
+		private string data;
+
+		/// <summary>
+		/// Data
+		/// </summary>
+		/// <value></value>
+		[DataField("Data", IsNullable = true)]
+        public string Data
+        {
+            get { 
+            	return this.data; 
+            }
+            set { 
+            	this.data = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("ScProfileInfo")]
+    public partial class ScProfileInfo : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<ScProfileInfo>.Create("Id");
+
+		static readonly DataFieldInfo recordTimeField = DataFieldInfo<ScProfileInfo>.Create("RecordTime");
+
+		static readonly DataFieldInfo flagField = DataFieldInfo<ScProfileInfo>.Create("Flag");
+
+		static readonly DataFieldInfo domainField = DataFieldInfo<ScProfileInfo>.Create("Domain");
+
+		static readonly DataFieldInfo pathField = DataFieldInfo<ScProfileInfo>.Create("Path");
+
+		static readonly DataFieldInfo postDataRegexField = DataFieldInfo<ScProfileInfo>.Create("PostDataRegex");
+
+		static readonly DataFieldInfo statusField = DataFieldInfo<ScProfileInfo>.Create("Status");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RecordTimeField
+        {
+            get {
+                return recordTimeField;
+            }
+        }
+
+		public static DataFieldInfo FlagField
+        {
+            get {
+                return flagField;
+            }
+        }
+
+		public static DataFieldInfo DomainField
+        {
+            get {
+                return domainField;
+            }
+        }
+
+		public static DataFieldInfo PathField
+        {
+            get {
+                return pathField;
+            }
+        }
+
+		public static DataFieldInfo PostDataRegexField
+        {
+            get {
+                return postDataRegexField;
             }
         }
 
@@ -542,68 +918,84 @@ namespace Light.Data.Demo
             	this.id = value; 
             }
         }
-		private int articleId;
+		private DateTime recordTime;
 
 		/// <summary>
-		/// ArticleId
+		/// RecordTime
 		/// </summary>
 		/// <value></value>
-		[DataField("ArticleId")]
-        public int ArticleId
+		[DataField("RecordTime")]
+        public DateTime RecordTime
         {
             get { 
-            	return this.articleId; 
+            	return this.recordTime; 
             }
             set { 
-            	this.articleId = value; 
+            	this.recordTime = value; 
             }
         }
-		private int userId;
+		private string flag;
 
 		/// <summary>
-		/// UserId
+		/// Flag
 		/// </summary>
 		/// <value></value>
-		[DataField("UserId")]
-        public int UserId
+		[DataField("Flag")]
+        public string Flag
         {
             get { 
-            	return this.userId; 
+            	return this.flag; 
             }
             set { 
-            	this.userId = value; 
+            	this.flag = value; 
             }
         }
-		private string content;
+		private string domain;
 
 		/// <summary>
-		/// Content
+		/// Domain
 		/// </summary>
 		/// <value></value>
-		[DataField("Content")]
-        public string Content
+		[DataField("Domain")]
+        public string Domain
         {
             get { 
-            	return this.content; 
+            	return this.domain; 
             }
             set { 
-            	this.content = value; 
+            	this.domain = value; 
             }
         }
-		private DateTime publishTime;
+		private string path;
 
 		/// <summary>
-		/// PublishTime
+		/// Path
 		/// </summary>
 		/// <value></value>
-		[DataField("PublishTime")]
-        public DateTime PublishTime
+		[DataField("Path")]
+        public string Path
         {
             get { 
-            	return this.publishTime; 
+            	return this.path; 
             }
             set { 
-            	this.publishTime = value; 
+            	this.path = value; 
+            }
+        }
+		private string postDataRegex;
+
+		/// <summary>
+		/// PostDataRegex
+		/// </summary>
+		/// <value></value>
+		[DataField("PostDataRegex", IsNullable = true)]
+        public string PostDataRegex
+        {
+            get { 
+            	return this.postDataRegex; 
+            }
+            set { 
+            	this.postDataRegex = value; 
             }
         }
 		private int status;
@@ -620,459 +1012,6 @@ namespace Light.Data.Demo
             }
             set { 
             	this.status = value; 
-            }
-        }
-		#endregion
-    }
-
-    [Serializable]
-    [DataTable("Te_User")]
-    public partial class TeUser : DataTableEntity
-    {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeUser>.Create("Id");
-
-		static readonly DataFieldInfo accountField = DataFieldInfo<TeUser>.Create("Account");
-
-		static readonly DataFieldInfo passwordField = DataFieldInfo<TeUser>.Create("Password");
-
-		static readonly DataFieldInfo nickNameField = DataFieldInfo<TeUser>.Create("NickName");
-
-		static readonly DataFieldInfo genderField = DataFieldInfo<TeUser>.Create("Gender");
-
-		static readonly DataFieldInfo birthdayField = DataFieldInfo<TeUser>.Create("Birthday");
-
-		static readonly DataFieldInfo telephoneField = DataFieldInfo<TeUser>.Create("Telephone");
-
-		static readonly DataFieldInfo emailField = DataFieldInfo<TeUser>.Create("Email");
-
-		static readonly DataFieldInfo addressField = DataFieldInfo<TeUser>.Create("Address");
-
-		static readonly DataFieldInfo levelIdField = DataFieldInfo<TeUser>.Create("LevelId");
-
-		static readonly DataFieldInfo regTimeField = DataFieldInfo<TeUser>.Create("RegTime");
-
-		static readonly DataFieldInfo lastLoginTimeField = DataFieldInfo<TeUser>.Create("LastLoginTime");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeUser>.Create("Status");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo AccountField
-        {
-            get {
-                return accountField;
-            }
-        }
-
-		public static DataFieldInfo PasswordField
-        {
-            get {
-                return passwordField;
-            }
-        }
-
-		public static DataFieldInfo NickNameField
-        {
-            get {
-                return nickNameField;
-            }
-        }
-
-		public static DataFieldInfo GenderField
-        {
-            get {
-                return genderField;
-            }
-        }
-
-		public static DataFieldInfo BirthdayField
-        {
-            get {
-                return birthdayField;
-            }
-        }
-
-		public static DataFieldInfo TelephoneField
-        {
-            get {
-                return telephoneField;
-            }
-        }
-
-		public static DataFieldInfo EmailField
-        {
-            get {
-                return emailField;
-            }
-        }
-
-		public static DataFieldInfo AddressField
-        {
-            get {
-                return addressField;
-            }
-        }
-
-		public static DataFieldInfo LevelIdField
-        {
-            get {
-                return levelIdField;
-            }
-        }
-
-		public static DataFieldInfo RegTimeField
-        {
-            get {
-                return regTimeField;
-            }
-        }
-
-		public static DataFieldInfo LastLoginTimeField
-        {
-            get {
-                return lastLoginTimeField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-    	#endregion
-
-    	#region "Data Property"
-		private int id;
-
-		/// <summary>
-		/// Id
-		/// </summary>
-		/// <value></value>
-		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
-        public int Id
-        {
-            get { 
-            	return this.id; 
-            }
-            set { 
-            	this.id = value; 
-            }
-        }
-		private string account;
-
-		/// <summary>
-		/// Account
-		/// </summary>
-		/// <value></value>
-		[DataField("Account")]
-        public string Account
-        {
-            get { 
-            	return this.account; 
-            }
-            set { 
-            	this.account = value; 
-            }
-        }
-		private string password;
-
-		/// <summary>
-		/// Password
-		/// </summary>
-		/// <value></value>
-		[DataField("Password")]
-        public string Password
-        {
-            get { 
-            	return this.password; 
-            }
-            set { 
-            	this.password = value; 
-            }
-        }
-		private string nickName;
-
-		/// <summary>
-		/// NickName
-		/// </summary>
-		/// <value></value>
-		[DataField("NickName", IsNullable = true)]
-        public string NickName
-        {
-            get { 
-            	return this.nickName; 
-            }
-            set { 
-            	this.nickName = value; 
-            }
-        }
-		private int gender;
-
-		/// <summary>
-		/// Gender
-		/// </summary>
-		/// <value></value>
-		[DataField("Gender")]
-        public int Gender
-        {
-            get { 
-            	return this.gender; 
-            }
-            set { 
-            	this.gender = value; 
-            }
-        }
-		private DateTime birthday;
-
-		/// <summary>
-		/// Birthday
-		/// </summary>
-		/// <value></value>
-		[DataField("Birthday")]
-        public DateTime Birthday
-        {
-            get { 
-            	return this.birthday; 
-            }
-            set { 
-            	this.birthday = value; 
-            }
-        }
-		private string telephone;
-
-		/// <summary>
-		/// Telephone
-		/// </summary>
-		/// <value></value>
-		[DataField("Telephone", IsNullable = true)]
-        public string Telephone
-        {
-            get { 
-            	return this.telephone; 
-            }
-            set { 
-            	this.telephone = value; 
-            }
-        }
-		private string email;
-
-		/// <summary>
-		/// Email
-		/// </summary>
-		/// <value></value>
-		[DataField("Email", IsNullable = true)]
-        public string Email
-        {
-            get { 
-            	return this.email; 
-            }
-            set { 
-            	this.email = value; 
-            }
-        }
-		private string address;
-
-		/// <summary>
-		/// Address
-		/// </summary>
-		/// <value></value>
-		[DataField("Address", IsNullable = true)]
-        public string Address
-        {
-            get { 
-            	return this.address; 
-            }
-            set { 
-            	this.address = value; 
-            }
-        }
-		private int levelId;
-
-		/// <summary>
-		/// LevelId
-		/// </summary>
-		/// <value></value>
-		[DataField("LevelId")]
-        public int LevelId
-        {
-            get { 
-            	return this.levelId; 
-            }
-            set { 
-            	this.levelId = value; 
-            }
-        }
-		private DateTime regTime;
-
-		/// <summary>
-		/// RegTime
-		/// </summary>
-		/// <value></value>
-		[DataField("RegTime")]
-        public DateTime RegTime
-        {
-            get { 
-            	return this.regTime; 
-            }
-            set { 
-            	this.regTime = value; 
-            }
-        }
-		private DateTime lastLoginTime;
-
-		/// <summary>
-		/// LastLoginTime
-		/// </summary>
-		/// <value></value>
-		[DataField("LastLoginTime")]
-        public DateTime LastLoginTime
-        {
-            get { 
-            	return this.lastLoginTime; 
-            }
-            set { 
-            	this.lastLoginTime = value; 
-            }
-        }
-		private int status;
-
-		/// <summary>
-		/// Status
-		/// </summary>
-		/// <value></value>
-		[DataField("Status")]
-        public int Status
-        {
-            get { 
-            	return this.status; 
-            }
-            set { 
-            	this.status = value; 
-            }
-        }
-		#endregion
-    }
-
-    [Serializable]
-    [DataTable("Te_UserLevel")]
-    public partial class TeUserLevel : DataTableEntity
-    {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeUserLevel>.Create("Id");
-
-		static readonly DataFieldInfo levelNameField = DataFieldInfo<TeUserLevel>.Create("LevelName");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeUserLevel>.Create("Status");
-
-		static readonly DataFieldInfo remarkField = DataFieldInfo<TeUserLevel>.Create("Remark");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo LevelNameField
-        {
-            get {
-                return levelNameField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo RemarkField
-        {
-            get {
-                return remarkField;
-            }
-        }
-
-    	#endregion
-
-    	#region "Data Property"
-		private int id;
-
-		/// <summary>
-		/// Id
-		/// </summary>
-		/// <value></value>
-		[DataField("Id", IsPrimaryKey = true)]
-        public int Id
-        {
-            get { 
-            	return this.id; 
-            }
-            set { 
-            	this.id = value; 
-            }
-        }
-		private string levelName;
-
-		/// <summary>
-		/// LevelName
-		/// </summary>
-		/// <value></value>
-		[DataField("LevelName")]
-        public string LevelName
-        {
-            get { 
-            	return this.levelName; 
-            }
-            set { 
-            	this.levelName = value; 
-            }
-        }
-		private int status;
-
-		/// <summary>
-		/// Status
-		/// </summary>
-		/// <value></value>
-		[DataField("Status")]
-        public int Status
-        {
-            get { 
-            	return this.status; 
-            }
-            set { 
-            	this.status = value; 
-            }
-        }
-		private string remark;
-
-		/// <summary>
-		/// Remark
-		/// </summary>
-		/// <value></value>
-		[DataField("Remark", IsNullable = true)]
-        public string Remark
-        {
-            get { 
-            	return this.remark; 
-            }
-            set { 
-            	this.remark = value; 
             }
         }
 		#endregion

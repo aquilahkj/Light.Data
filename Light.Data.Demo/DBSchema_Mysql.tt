@@ -17,12 +17,12 @@
 
 <#
 	var namespaceName="Light.Data.Demo";
-	var connection="Server=localhost;Port=3306;Database=CM_TEST;Uid=root;Pwd=qwerty;";
+	var connection="Server=localhost;Port=3306;Database=CM_MC_SCSERVICE;Uid=root;Pwd=qwerty;";
 	var excludeTable=new HashSet<string>();
 	excludeTable.Add("QcConfiguration");
 	excludeTable.Add("QcDataLog");
 
-    var dbSchema= new DataBaseSchema("CM_TEST", connection);
+    var dbSchema= new DataBaseSchema("CM_MC_SCSERVICE", connection);
     List<Table> tableList=dbSchema.GetTables();
 #>
 using System;

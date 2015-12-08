@@ -340,6 +340,32 @@ namespace Light.Data
 			return command;
 		}
 
+		public virtual IDbCommand CreateEntityExistsCommand (object entity)
+		{
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
+			if (mapping.PrimaryKeyFields == null || mapping.PrimaryKeyFields.Length == 0) {
+				throw new LightDataException (RE.PrimaryKeyIsNotExist);
+			}
+			List<DataParameter> primaryList = GetDataParameters (mapping.PrimaryKeyFields, entity);
+			IDataParameter[] dataParameters = new IDataParameter[primaryList.Count];
+			string[] whereList = new string[primaryList.Count];
+			int index = 0;
+			foreach (DataParameter dataParameter in primaryList) {
+				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+				dataParameters [index] = param;
+				whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), param.ParameterName);
+				index++;
+			}
+			string where = string.Join (" and ", whereList);
+			string sql = string.Format ("select 1 from {0} where {1}", CreateDataTableSql (mapping.TableName), where);
+			IDbCommand command = _database.CreateCommand (sql);
+			command.CommandType = CommandType.Text;
+			foreach (IDataParameter param in dataParameters) {
+				command.Parameters.Add (param);
+			}
+			return command;
+		}
+
 		#endregion
 
 		#region 主命令语句块

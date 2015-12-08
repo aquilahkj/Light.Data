@@ -51,6 +51,20 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Insert or update.
+		/// </summary>
+		public void InsertOrUpdate()
+		{
+			if (Context != null) {
+				Context.InsertOrUpdate (this);
+				_hasLoadData = true;
+			}
+			else {
+				throw new LightDataException (RE.DataContextIsNotExists);
+			}
+		}
+
+		/// <summary>
 		/// 被更新的数据字段
 		/// </summary>
 		List<string> _updateFields = null;

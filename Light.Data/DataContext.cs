@@ -294,6 +294,30 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Insert or update.
+		/// </summary>
+		/// <returns></returns>
+		/// <param name="data">Data.</param>
+		public int InsertOrUpdate (object data)
+		{
+			bool exists = false;
+			using (IDbCommand command = _dataBase.Factory.CreateEntityExistsCommand (data)) {
+				PrimitiveDataDefine pm = PrimitiveDataDefine.Create (typeof(Int32), 0);
+				foreach (object obj in QueryDataReader(pm, command, null, SafeLevel.Default)) {
+					exists = true;
+				}
+			}
+			int result;
+			if (exists) {
+				result = Update (data);
+			}
+			else {
+				result = Insert (data);
+			}
+			return result;
+		}
+
+		/// <summary>
 		/// 更新数据
 		/// </summary>
 		/// <param name="data">数据对象</param>
