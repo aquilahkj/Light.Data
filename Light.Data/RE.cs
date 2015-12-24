@@ -270,6 +270,9 @@ namespace Light.Data
 		public const string SelectFiledsCountNotEquidInsertFiledCount = "select fileds count not equid insert filed count";
 
 		public const string SelectFiledsNotInJoinTables = "select fileds not in join tables";
+
+		public const string InsertFieldIsNotDataFieldInfo = "insert field is not datafield info";
+
 	}
 }
 

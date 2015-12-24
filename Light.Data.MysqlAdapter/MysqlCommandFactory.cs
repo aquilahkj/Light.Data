@@ -241,6 +241,11 @@ namespace Light.Data.MysqlAdapter
 		{
 			return string.Format ("power({0},{1})", field, value);
 		}
+
+		public override string CreateDataBaseTimeSql ()
+		{
+			return "now()";
+		}
 	}
 }
 

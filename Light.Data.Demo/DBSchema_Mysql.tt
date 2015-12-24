@@ -1,4 +1,5 @@
-﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
+﻿
+<#@ template debug="true" hostspecific="true" language="C#"  #>
 <#@ output extension=".cs" #>
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>

@@ -10,7 +10,6 @@ namespace Light.Data.Demo
 	{
 		public static void Main (string[] args)
 		{
-			
 			DataContext context = DataContextConfiguration.Default;
 			CommandOutput output = new CommandOutput ();
 			output.OutputFullCommand = true;
@@ -23,7 +22,41 @@ namespace Light.Data.Demo
 //				.Where (TaskContent.ContentTypeField != 1)
 //				.OrderBy (TaskContent.ContentField.OrderByAsc ())
 //				.ToList<TaskModel> ();
+
+			context.SelectInto<ScDevicePackageHistory,ScDevicePackage> (
+				new DataFieldInfo[] {
+					ScDevicePackageHistory.IdField,
+					ScDevicePackageHistory.PackageNameField,
+					ScDevicePackageHistory.RecordTimeField,
+					ScDevicePackageHistory.GetTimeField,
+					ScDevicePackageHistory.DataField,
+					ScDevicePackageHistory.CountField,
+					ScDevicePackageHistory.StatusField
+				},
+				new DataFieldInfo[] {
+					ScDevicePackage.IdField,
+					ScDevicePackage.PackageNameField,
+					ScDevicePackage.RecordTimeField,
+					DataFieldInfo.DbTimeDataField,
+					ScDevicePackage.DataField,
+					ScDevicePackage.CountField,
+					ScDevicePackage.StatusField
+				});
 			Console.ReadLine ();
+		}
+
+		public static string ToDBC (string input)
+		{
+			char[] c = input.ToCharArray ();
+			for (int i = 0; i < c.Length; i++) {
+				if (c [i] == 12288) {
+					c [i] = (char)32;
+					continue;
+				}
+				if (c [i] > 65280 && c [i] < 65375)
+					c [i] = (char)(c [i] - 65248);
+			}
+			return new String (c);
 		}
 
 		static void ReadXml ()

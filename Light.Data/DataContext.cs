@@ -565,45 +565,6 @@ namespace Light.Data
 		{
 			DataTableEntityMapping insertMapping = DataMapping.GetTableMapping (insertType);
 			DataTableEntityMapping selectMapping = DataMapping.GetTableMapping (selectType);
-			DataFieldMapping[] insertFieldMappings = null;
-			DataFieldMapping[] selectFieldMappings = null;
-			if (insertFields != null) {
-				insertFieldMappings = new DataFieldMapping[insertFields.Length];
-				for (int i = 0; i < insertFields.Length; i++) {
-					insertFieldMappings [i] = insertFields [i].DataField;
-					if (!insertMapping.Equals (insertFields [i].TableMapping)) {
-						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-					}
-				}
-			}
-			if (selectFields != null) {
-				selectFieldMappings = new DataFieldMapping[selectFields.Length];
-				for (int i = 0; i < selectFields.Length; i++) {
-					selectFieldMappings [i] = selectFields [i].DataField;
-					if (!selectMapping.Equals (selectFields [i].TableMapping)) {
-						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-					}
-				}
-			}
-			return SelectInto (insertMapping, insertFieldMappings, selectMapping, selectFieldMappings, query, order);
-		}
-
-		internal int SelectInto (DataTableEntityMapping insertMapping, DataFieldMapping[] insertFieldMappings, DataTableEntityMapping selectMapping, DataFieldMapping[] selectFieldMappings, QueryExpression query, OrderExpression order)
-		{
-			string[] selectFields = null;
-			string[] insertFields = null;
-			if (insertFieldMappings != null) {
-				insertFields = new string[insertFieldMappings.Length];
-				for (int i = 0; i < insertFieldMappings.Length; i++) {
-					insertFields [i] = insertFieldMappings [i].Name;
-				}
-			}
-			if (selectFieldMappings != null) {
-				selectFields = new string[selectFieldMappings.Length];
-				for (int i = 0; i < selectFieldMappings.Length; i++) {
-					selectFields [i] = selectFieldMappings [i].Name;
-				}
-			}
 			int rInt = 0;
 			using (IDbCommand command = _dataBase.Factory.CreateSelectIntoCommand (insertMapping, insertFields, selectMapping, selectFields, query, order)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);

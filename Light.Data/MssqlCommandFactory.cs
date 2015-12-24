@@ -222,5 +222,10 @@ namespace Light.Data
 		{
 			return string.Format ("power({0},{1})", field, value);
 		}
+
+		public override string CreateDataBaseTimeSql ()
+		{
+			return "getdate()";
+		}
 	}
 }

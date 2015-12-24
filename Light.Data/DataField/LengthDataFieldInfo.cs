@@ -23,5 +23,21 @@ namespace Light.Data
 				return string.Empty;
 			}
 		}
+
+		protected override bool EqualsDetail (DataFieldInfo info)
+		{
+			if (base.EqualsDetail (info)) {
+				LengthDataFieldInfo target = info as LengthDataFieldInfo;
+				if (!Object.Equals (target, null)) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;
+			}
+		}
 	}
 }

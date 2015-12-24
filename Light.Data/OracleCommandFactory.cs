@@ -466,5 +466,10 @@ namespace Light.Data
 			field = base.CreateAtanSql (field);
 			return AddRound (field);
 		}
+
+		public override string CreateDataBaseTimeSql ()
+		{
+			return "sysdate";
+		}
 	}
 }

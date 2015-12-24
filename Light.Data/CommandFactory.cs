@@ -370,19 +370,33 @@ namespace Light.Data
 
 		#region 主命令语句块
 
-		public virtual string GetSelectString (DataEntityMapping mapping)
+		public virtual string GetSelectString (DataEntityMapping mapping, out int count)
 		{
 			string[] names = mapping.GetFieldNames ();
-			return GetSelectString (names);
+			string[] values = new string[names.Length];
+			for (int i = 0; i < names.Length; i++) {
+				values [i] = CreateDataFieldSql (names [i]);
+			}
+			count = names.Length;
+			return string.Join (",", values);
+//			return GetSelectString (names);
 		}
 
-		public virtual string GetSelectString (string[] names)
+		public virtual string GetSelectString (DataEntityMapping mapping)
 		{
-			for (int i = 0; i < names.Length; i++) {
-				names [i] = CreateDataFieldSql (names [i]);
-			}
-			return string.Join (",", names);
+			int count;
+			return GetSelectString (mapping, out count);
+//			string[] names = mapping.GetFieldNames ();
+//			return GetSelectString (names);
 		}
+
+		//		public virtual string GetSelectString (string[] names)
+		//		{
+		//			for (int i = 0; i < names.Length; i++) {
+		//				names [i] = CreateDataFieldSql (names [i]);
+		//			}
+		//			return string.Join (",", names);
+		//		}
 
 		public virtual string GetQueryString (DataEntityMapping mapping, QueryExpression query, out DataParameter[] parameters)
 		{
@@ -665,7 +679,7 @@ namespace Light.Data
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
 			}
-			IDbCommand command = BuildCommand (sql.ToString (), listParameters.ToArray());
+			IDbCommand command = BuildCommand (sql.ToString (), listParameters.ToArray ());
 			return command;
 		}
 
@@ -748,20 +762,52 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual IDbCommand CreateSelectIntoCommand (DataTableEntityMapping insertMapping, string[] insertFiledNames, DataTableEntityMapping selectMapping, string[] selectFiledNames, QueryExpression query, OrderExpression order)
+		public virtual IDbCommand CreateSelectIntoCommand (DataTableEntityMapping insertMapping, DataFieldInfo[] insertFields, DataTableEntityMapping selectMapping, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
 		{
 			StringBuilder sql = new StringBuilder ();
-			if (insertFiledNames == null) {
-				insertFiledNames = insertMapping.GetFieldNames ();
+			string insert = null;
+			string select = null;
+			int insertCount = 0;
+			int selectCount = 0;
+			if (insertFields != null && insertFields.Length > 0) {
+				insertCount = insertFields.Length;
+				string[] insertFieldNames = new string[insertFields.Length];
+				for (int i = 0; i < insertFields.Length; i++) {
+					if (!insertMapping.Equals (insertFields [i].TableMapping)) {
+						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
+					}
+					if (insertFields [i] is CommonDataFieldInfo) {
+						throw new LightDataException (RE.InsertFieldIsNotDataFieldInfo);
+					}
+					if (insertFields [i] is ExtendDataFieldInfo) {
+						throw new LightDataException (RE.InsertFieldIsNotDataFieldInfo);
+					}
+					insertFieldNames [i] = insertFields [i].CreateDataFieldSql (this);
+					insert = string.Join (",", insertFieldNames);
+				}
 			}
-			if (selectFiledNames == null) {
-				selectFiledNames = selectMapping.GetFieldNames ();
+			else {
+				insert = GetSelectString (insertMapping, out insertCount);
 			}
-			if (insertFiledNames.Length != selectFiledNames.Length) {
+			if (selectFields != null && selectFields.Length > 0) {
+				selectCount = selectFields.Length;
+				string[] selectFieldNames = new string[selectFields.Length];
+				for (int i = 0; i < selectFields.Length; i++) {
+					if (!(selectFields [i] is CommonDataFieldInfo) && !selectMapping.Equals (selectFields [i].TableMapping)) {
+						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
+					}
+					selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this);
+					select = string.Join (",", selectFieldNames);
+				}
+			}
+			else {
+				select = GetSelectString (selectMapping, out selectCount);
+			}
+
+			if (insertCount != selectCount) {
 				throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
 			}
-			string insert = GetSelectString (insertFiledNames);
-			string select = GetSelectString (selectFiledNames);
+
 			DataParameter[] parameters;
 			string queryString = GetQueryString (selectMapping, query, out parameters);
 			string orderString = GetOrderString (selectMapping, order);
@@ -1214,6 +1260,32 @@ namespace Light.Data
 		public virtual string CreateSubStringSql (string field, int start, int size)
 		{
 			throw new NotImplementedException ();
+		}
+
+		public virtual string CreateDataBaseTimeSql ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public virtual string CreateStringSql (string value)
+		{
+			if (value.IndexOf ('\\') >= 0) {
+				value = value.Replace ("\\", "\\\\");
+			}
+			if (value.IndexOf ('\'') >= 0) {
+				value = value.Replace ("\'", "\\'");
+			}
+			return string.Format ("'{0}'", value);
+		}
+
+		public virtual string CreateNumberSql (object value)
+		{
+			return value.ToString ();
+		}
+
+		public virtual string CreateBooleanSql (bool value)
+		{
+			return value ? "true" : "false";
 		}
 
 		public virtual string CreatePlusSql (string field, object value)

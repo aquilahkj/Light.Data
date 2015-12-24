@@ -35,7 +35,12 @@ namespace Light.Data
 		{
 			if (base.EqualsDetail (info)) {
 				MatchDataFieldInfo target = info as MatchDataFieldInfo;
-				return this._left == target._left && this._right == target._right;
+				if (!Object.Equals (target, null)) {
+					return this._left == target._left && this._right == target._right;
+				}
+				else {
+					return false;
+				}
 			}
 			else {
 				return false;

@@ -244,6 +244,11 @@ namespace Light.Data
 			return string.Format ("len({0})", field);
 		}
 
+		public override string CreateDataBaseTimeSql ()
+		{
+			return "now()";
+		}
+
 		public override string CreateSubStringSql (string field, int start, int size)
 		{
 			if (size == 0) {

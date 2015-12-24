@@ -19,27 +19,27 @@ namespace Light.Data
 			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
 			string sql = null;
 			switch (_function) {
-				case MathFunction.Abs:
-					sql = factory.CreateAbsSql (field);
-					break;
-				case MathFunction.Log:
-					sql = factory.CreateLogSql (field);
-					break;
-				case MathFunction.Exp:
-					sql = factory.CreateExpSql (field);
-					break;
-				case MathFunction.Sin:
-					sql = factory.CreateSinSql (field);
-					break;
-				case MathFunction.Cos:
-					sql = factory.CreateCosSql (field);
-					break;
-				case MathFunction.Tan:
-					sql = factory.CreateTanSql (field);
-					break;
-				case MathFunction.Atan:
-					sql = factory.CreateAtanSql (field);
-					break;
+			case MathFunction.Abs:
+				sql = factory.CreateAbsSql (field);
+				break;
+			case MathFunction.Log:
+				sql = factory.CreateLogSql (field);
+				break;
+			case MathFunction.Exp:
+				sql = factory.CreateExpSql (field);
+				break;
+			case MathFunction.Sin:
+				sql = factory.CreateSinSql (field);
+				break;
+			case MathFunction.Cos:
+				sql = factory.CreateCosSql (field);
+				break;
+			case MathFunction.Tan:
+				sql = factory.CreateTanSql (field);
+				break;
+			case MathFunction.Atan:
+				sql = factory.CreateAtanSql (field);
+				break;
 			}
 			return sql;
 		}
@@ -54,7 +54,12 @@ namespace Light.Data
 		{
 			if (base.EqualsDetail (info)) {
 				MathFunctionDataFieldInfo target = info as MathFunctionDataFieldInfo;
-				return this._function == target._function;
+				if (!Object.Equals (target, null)) {
+					return this._function == target._function;
+				}
+				else {
+					return false;
+				}
 			}
 			else {
 				return false;

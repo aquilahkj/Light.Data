@@ -44,15 +44,27 @@ namespace Light.Data
 
 			Dictionary<Type, DataMapping> mappings = _defaultMapping;
 			DataMapping mapping = null;
-			if (!mappings.TryGetValue (type, out mapping)) {
+			mappings.TryGetValue (type, out mapping);
+			if (mapping == null) {
 				lock (_synobj) {
-					if (!mappings.ContainsKey (type)) {
-						mapping = CreateMapping (type);
+					mappings.TryGetValue (type, out mapping);
+					if (mapping == null) {
+						try {
+							mapping = CreateMapping (type);
+						} catch (Exception ex) {
+							mapping = new ErrorDataMapping (ex);
+						}
 						mappings [type] = mapping;
 					}
 				}
 			}
-			return mapping;
+			ErrorDataMapping errMapping = mapping as ErrorDataMapping;
+			if (errMapping != null) {
+				throw errMapping.InnerException;
+			}
+			else {
+				return mapping;
+			}
 		}
 
 		/// <summary>
@@ -97,7 +109,7 @@ namespace Light.Data
 			string tableName = null;
 			string extentParam = null;
 			bool isEntityTable = true;
-			DataMapping dataMapping = null;
+			DataMapping dataMapping;
 
 			IDataTableConfig config = ConfigManager.LoadDataTableConfig (type);
 			if (config != null) {
@@ -130,7 +142,7 @@ namespace Light.Data
 
 		#endregion
 
-		public DataMapping (Type type)
+		protected DataMapping (Type type)
 		{
 			ObjectType = type;
 		}

@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Mysql.cs" />
     <Compile Include="MysqlCommandFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data" />

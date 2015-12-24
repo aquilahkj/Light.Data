@@ -34,8 +34,8 @@ namespace Light.Data
 		/// <returns></returns>
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{
-			if (base.EqualsDetail (info)) {
-				ExtendDataFieldInfo target = info as ExtendDataFieldInfo;
+			ExtendDataFieldInfo target = info as ExtendDataFieldInfo;
+			if (!Object.Equals (target, null)) {
 				return this._baseFieldInfo.Equals (target._baseFieldInfo);
 			}
 			else {

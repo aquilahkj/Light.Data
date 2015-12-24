@@ -39,7 +39,12 @@ namespace Light.Data
 		{
 			if (base.EqualsDetail (info)) {
 				SubStringDataFieldInfo target = info as SubStringDataFieldInfo;
-				return this._start == target._start && this._size == target._size;
+				if (!Object.Equals (target, null)) {
+					return this._start == target._start && this._size == target._size;
+				}
+				else {
+					return false;
+				}
 			}
 			else {
 				return false;

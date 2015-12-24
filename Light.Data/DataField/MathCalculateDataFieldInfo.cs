@@ -54,7 +54,12 @@ namespace Light.Data
 		{
 			if (base.EqualsDetail (info)) {
 				MathCalculateDataFieldInfo target = info as MathCalculateDataFieldInfo;
-				return this._opera == target._opera && Object.Equals (this._value, target._value);
+				if (!Object.Equals (target, null)) {
+					return this._opera == target._opera && Object.Equals (this._value, target._value);
+				}
+				else {
+					return false;
+				}
 			}
 			else {
 				return false;
