@@ -13,56 +13,91 @@ namespace Light.Data
 	/// </summary>
 	public class DataContext
 	{
-		//		[ThreadStatic]
-		static DataContext _currentInstance = null;
-
-		//		internal static Assembly CallingAssembly {
-		//			get {
-		//				return _assembly;
-		//			}
-		//		}
+		//		static DataContext _currentInstance = null;
 		//
 		//		/// <summary>
-		//		/// 设置程序集配置
+		//		/// 当前数据连接上下文
 		//		/// </summary>
-		//		public static void SetAssemblyConfig ()
-		//		{
-		//			_assembly = Assembly.GetCallingAssembly ();
+		//		public static DataContext Current {
+		//			get {
+		//				return DataContext._currentInstance;
+		//			}
+		//			set {
+		//				DataContext._currentInstance = value;
+		//			}
 		//		}
-		//
-		//		[ThreadStatic]
-		//		static Assembly _assembly = null;
+
+		static Dictionary<string,DataContextSetting> Settings = new Dictionary<string, DataContextSetting> ();
+
+		static DataContextSetting DefaultContextSetting;
+
+		static DataContext DefaultContext;
 
 		/// <summary>
-		/// 当前数据连接上下文
+		/// Gets the default.
 		/// </summary>
-		public static DataContext Current {
+		/// <value>The default.</value>
+		public static DataContext Default {
 			get {
-				return DataContext._currentInstance;
+				if (DefaultContext == null) {
+					throw new LightDataException (RE.DefaultConnectionNotExists);
+				}
+				else {
+					return DefaultContext;
+				}
 			}
-			set {
-				DataContext._currentInstance = value;
+		}
+
+		static DataContext ()
+		{
+			if (ConfigurationManager.ConnectionStrings != null) {
+				foreach (ConnectionStringSettings connectionSetting in ConfigurationManager.ConnectionStrings) {
+					DataContextSetting contextSetting = DataContextSetting.CreateSetting (connectionSetting, false);
+					if (contextSetting != null && DefaultContextSetting == null) {
+						DefaultContextSetting = contextSetting;
+						DefaultContext = new DataContext (contextSetting.Connection, contextSetting.Name, contextSetting.DataBase);
+					}
+					Settings [connectionSetting.Name] = contextSetting;
+				}
 			}
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Creates the default.
 		/// </summary>
-		/// <param name="index">配置文件中连接字符串的索引</param>
-		public static DataContext Create (int index)
+		/// <returns>The default.</returns>
+		public static DataContext CreateDefault ()
 		{
-			ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings [index];
-			return Create (setting, true);
+			if (DefaultContextSetting == null) {
+				throw new LightDataException (RE.DefaultConnectionNotExists);
+			}
+			else {
+				DataContext context = new DataContext (DefaultContextSetting.Connection, DefaultContextSetting.Name, DefaultContextSetting.DataBase);
+				return context;
+			}
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Create the specified configName.
 		/// </summary>
-		/// <param name="connectionStringName">配置文件中连接字符串的名称</param>
-		public static DataContext Create (string connectionStringName)
+		/// <param name="configName">Config name.</param>
+		public static DataContext Create (string configName)
 		{
-			ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings [connectionStringName];
-			return Create (setting, true);
+			if (configName == null)
+				throw new ArgumentNullException ("configName");
+			DataContextSetting setting;
+			if (Settings.TryGetValue (configName, out setting)) {
+				if (setting != null) {
+					DataContext context = new DataContext (setting.Connection, setting.Name, setting.DataBase);
+					return context;
+				}
+				else {
+					throw new LightDataException (RE.SpecifiedConfigNameConnectionStringError);
+				}
+			}
+			else {
+				throw new LightDataException (RE.SpecifiedConfigNameConnectionStringNotExists);
+			}
 		}
 
 		/// <summary>
@@ -73,8 +108,8 @@ namespace Light.Data
 		/// <param name="providerName">提供类型名称</param>
 		public static DataContext Create (string name, string connectionString, string providerName)
 		{
-			ConnectionStringSettings setting = new ConnectionStringSettings (name, connectionString, providerName);
-			return Create (setting, true);
+			ConnectionStringSettings connectionSetting = new ConnectionStringSettings (name, connectionString, providerName);
+			return Create (connectionSetting);
 		}
 
 		/// <summary>
@@ -84,51 +119,10 @@ namespace Light.Data
 		/// <returns>数据上下文</returns>
 		public static DataContext Create (ConnectionStringSettings setting)
 		{
-			return Create (setting, true);
-		}
-
-
-		internal static DataContext Create (ConnectionStringSettings setting, bool throwOnError)
-		{
-			if (setting == null) {
-				throw new ArgumentException (RE.ConnectionSettingIsNotExists);
-			}
-			Type type = null;
-			string connection = setting.ConnectionString;
-			string args = null;
-			int index = connection.IndexOf ("--extendparam:");
-			if (index > 1) {
-				args = connection.Substring (index + 15);
-				connection = connection.Substring (0, index).Trim ();
-			}
-			if (!string.IsNullOrEmpty (setting.ProviderName)) {
-				type = System.Type.GetType (setting.ProviderName, throwOnError);
-			}
-			else {
-				type = System.Type.GetType ("Light.Data.Mssql,Light.Data", throwOnError);
-			}
-			if (type == null) {
-				return null;
-			}
-
-			if (!throwOnError) {
-				Type dataBaseType = typeof(Database);
-				if (!TypeHelper.IsParentType (type, dataBaseType)) {
-					return null;
-				}
-			}
-
-			Database _dataBase = Activator.CreateInstance (type) as Database;
-			if (_dataBase == null) {
-				if (!throwOnError) {
-					return null;
-				}
-				else {
-					throw new LightDataException (string.Format (RE.TypeIsNotDatabase, type.FullName));
-				}
-			}
-			_dataBase.SetExtentArguments (args);
-			DataContext context = new DataContext (connection, setting.Name, _dataBase);
+			if (setting == null)
+				throw new ArgumentNullException ("setting");
+			DataContextSetting contextSetting = DataContextSetting.CreateSetting (setting, true);
+			DataContext context = new DataContext (contextSetting.Connection, contextSetting.Name, contextSetting.DataBase);
 			return context;
 		}
 
@@ -261,9 +255,10 @@ namespace Light.Data
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
 			object obj;
 			int rInt = 0;
-
-			using (IDbCommand command = _dataBase.Factory.CreateInsertCommand (data)) {
-				IDbCommand identityCommand = _dataBase.Factory.CreateIdentityCommand (mapping);
+			CommandData commandData = _dataBase.Factory.CreateInsertCommand (data);
+			CommandData commandDataIdentity = _dataBase.Factory.CreateIdentityCommand (mapping);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+				IDbCommand identityCommand = commandDataIdentity.CreateCommand (_dataBase);
 				obj = ExecuteInsertCommand (command, identityCommand, SafeLevel.Default);
 				if (identityCommand != null) {
 					identityCommand.Dispose ();
@@ -301,9 +296,11 @@ namespace Light.Data
 		public int InsertOrUpdate (object data)
 		{
 			bool exists = false;
-			using (IDbCommand command = _dataBase.Factory.CreateEntityExistsCommand (data)) {
+			CommandData commandData = _dataBase.Factory.CreateEntityExistsCommand (data);
+			Region region = new Region (0, 1);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.Create (typeof(Int32), 0);
-				foreach (object obj in QueryDataReader(pm, command, null, SafeLevel.Default)) {
+				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default)) {
 					exists = true;
 				}
 			}
@@ -326,7 +323,8 @@ namespace Light.Data
 		public int Update (object data, string[] updateFields)
 		{
 			int rInt = 0;
-			using (IDbCommand command = _dataBase.Factory.CreateUpdateCommand (data, updateFields)) {
+			CommandData commandData = _dataBase.Factory.CreateUpdateCommand (data, updateFields);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -340,7 +338,8 @@ namespace Light.Data
 		public int Delete (object data)
 		{
 			int rInt = 0;
-			using (IDbCommand command = _dataBase.Factory.CreateDeleteCommand (data)) {
+			CommandData commandData = _dataBase.Factory.CreateDeleteCommand (data);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -409,7 +408,8 @@ namespace Light.Data
 		internal int DeleteMass (DataTableEntityMapping mapping, QueryExpression query)
 		{
 			int rInt = 0;
-			using (IDbCommand command = _dataBase.Factory.CreateDeleteMassCommand (mapping, query)) {
+			CommandData commandData = _dataBase.Factory.CreateDeleteMassCommand (mapping, query);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -464,7 +464,8 @@ namespace Light.Data
 		internal int UpdateMass (DataTableEntityMapping mapping, UpdateSetValue[] updates, QueryExpression query)
 		{
 			int rInt = 0;
-			using (IDbCommand command = _dataBase.Factory.CreateUpdateMassCommand (mapping, updates, query)) {
+			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (mapping, updates, query);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -484,7 +485,11 @@ namespace Light.Data
 			if (datas.Length == 0) {
 				return 0;
 			}
-			IDbCommand[] dbcommands = _dataBase.Factory.CreateBulkInsertCommand (datas, batchCount);
+			CommandData[] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (datas, batchCount);
+			IDbCommand[] dbcommands = new IDbCommand[commandDatas.Length];
+			for (int i = 0; i < commandDatas.Length; i++) {
+				dbcommands [i] = commandDatas [i].CreateCommand (_dataBase);
+			}
 			int[] results = ExecuteMultiCommands (dbcommands, SafeLevel.Default);
 			foreach (IDbCommand command in dbcommands) {
 				command.Dispose ();
@@ -566,7 +571,8 @@ namespace Light.Data
 			DataTableEntityMapping insertMapping = DataMapping.GetTableMapping (insertType);
 			DataTableEntityMapping selectMapping = DataMapping.GetTableMapping (selectType);
 			int rInt = 0;
-			using (IDbCommand command = _dataBase.Factory.CreateSelectIntoCommand (insertMapping, insertFields, selectMapping, selectFields, query, order)) {
+			CommandData commandData = _dataBase.Factory.CreateSelectIntoCommand (insertMapping, insertFields, selectMapping, selectFields, query, order);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -699,7 +705,8 @@ namespace Light.Data
 		/// <returns>数据枚举</returns>
 		internal IEnumerable QueryDataEnumerable (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			IDbCommand command = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			IDbCommand command = commandData.CreateCommand (_dataBase);
 			return QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
 		}
 
@@ -714,7 +721,8 @@ namespace Light.Data
 		/// <returns>数据集合</returns>
 		internal IList QueryDataList (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null)) {
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				IList items = CreateList (mapping.ObjectType);
 				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
 				foreach (object obj in ie) {
@@ -726,7 +734,8 @@ namespace Light.Data
 
 		internal IList QueryJoinDataList (DataMapping mapping, List<JoinModel> modelList, DataFieldExpression on, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateSelectJoinTableCommand (null, modelList, on, query, order)) {
+			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (null, modelList, on, query, order);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				IList items = CreateList (mapping.ObjectType);
 				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
 				foreach (object obj in ie) {
@@ -748,7 +757,8 @@ namespace Light.Data
 		/// <returns>单列数据枚举</returns>
 		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
-			IDbCommand command = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+			IDbCommand command = commandData.CreateCommand (_dataBase);
 			DataDefine define = TransferDataDefine (fieldInfo.DataField);
 			return QueryDataReader (define, command, region, level);
 		}
@@ -767,7 +777,8 @@ namespace Light.Data
 		/// <returns>单列数据枚举</returns>
 		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, bool isNullable, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
-			IDbCommand command = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+			IDbCommand command = commandData.CreateCommand (_dataBase);
 			DataDefine define = TransferDataDefine (outputType, null, isNullable);
 			return QueryDataReader (define, command, region, level);
 		}
@@ -785,7 +796,8 @@ namespace Light.Data
 		/// <returns>数据集合</returns>
 		internal IList QueryColumeList (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null)) {
+			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				DataDefine define = TransferDataDefine (fieldInfo.DataField);
 				IList items = CreateList (define.ObjectType);
 
@@ -824,7 +836,8 @@ namespace Light.Data
 		/// <returns>数据集合</returns>
 		internal IList QueryColumeList (DataFieldInfo fieldInfo, Type outputType, bool isNullable, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null)) {
+			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				DataDefine define = TransferDataDefine (outputType, null, isNullable);
 				IList items = CreateList (define.ObjectType);
 
@@ -863,7 +876,8 @@ namespace Light.Data
 		/// <returns>数据表</returns>
 		internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, Dictionary<string, DataFieldInfo> dataFieldInfoDictionary, Dictionary<string, AggregateFunction> aggregateFunctionDictionary, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, dataFieldInfoDictionary, aggregateFunctionDictionary, query, having, order)) {
+			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, dataFieldInfoDictionary, aggregateFunctionDictionary, query, having, order);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				return QueryDataTable (command, null, level);
 			}
 		}
@@ -885,7 +899,8 @@ namespace Light.Data
 			if (amapping.RelateType != null && amapping.RelateType != mapping.ObjectType) {
 				throw new LightDataException (string.Format (RE.AggregateTypeIsNotSpecifyType, amapping.RelateType.FullName));
 			}
-			using (IDbCommand command = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, dataFieldInfoDictionary, aggregateFunctionDictionary, query, having, order)) {
+			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, dataFieldInfoDictionary, aggregateFunctionDictionary, query, having, order);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				IList items = CreateList (amapping.ObjectType);
 				IEnumerable ie = QueryDataReader (amapping, command, null, level);
 				foreach (object obj in ie) {
@@ -908,7 +923,8 @@ namespace Light.Data
 		{
 			object target = null;
 			Region region = new Region (index, 1);
-			using (IDbCommand command = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null)) {
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				//target = LExecuteReaderSingle(mapping, command, index, level);
 				foreach (object obj in QueryDataReader(mapping, command, region, level)) {
 					target = obj;
@@ -926,7 +942,8 @@ namespace Light.Data
 		/// <returns>查询行数</returns>
 		internal object AggregateCount (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateAggregateCountCommand (mapping, query)) {
+			CommandData commandData = _dataBase.Factory.CreateAggregateCountCommand (mapping, query);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				return ExecuteScalar (command, level);
 			}
 		}
@@ -941,7 +958,8 @@ namespace Light.Data
 		/// <param name="level">Level.</param>
 		internal object AggregateJoinTableCount (List<JoinModel> models, DataFieldExpression on, QueryExpression query, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateAggregateJoinCountCommand (models, on, query)) {
+			CommandData commandData = _dataBase.Factory.CreateAggregateJoinCountCommand (models, on, query);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				return ExecuteScalar (command, level);
 			}
 		}
@@ -957,7 +975,8 @@ namespace Light.Data
 		/// <returns>统计结果</returns>
 		internal object Aggregate (DataFieldMapping fieldMapping, AggregateType aggregateType, QueryExpression query, bool distinct, SafeLevel level)
 		{
-			using (IDbCommand command = _dataBase.Factory.CreateAggregateCommand (fieldMapping, aggregateType, query, distinct)) {
+			CommandData commandData = _dataBase.Factory.CreateAggregateCommand (fieldMapping, aggregateType, query, distinct);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				object obj = ExecuteScalar (command, level);
 				if (Object.Equals (obj, DBNull.Value)) {
 					return null;
@@ -978,10 +997,11 @@ namespace Light.Data
 		internal bool Exists (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
 			bool exists = false;
-			//Region region = new Region(0, 1);
-			using (IDbCommand command = _dataBase.Factory.CreateExistsCommand (mapping, query)) {
+			Region region = new Region (0, 1);
+				CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.Create (typeof(Int32), 0);
-				foreach (object obj in QueryDataReader(pm, command, null, level)) {
+				foreach (object obj in QueryDataReader(pm, command, region, level)) {
 					exists = true;
 				}
 			}

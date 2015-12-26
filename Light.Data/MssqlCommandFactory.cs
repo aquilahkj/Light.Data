@@ -7,8 +7,7 @@ namespace Light.Data
 {
 	class MssqlCommandFactory : CommandFactory
 	{
-		public MssqlCommandFactory (Database database)
-			: base (database)
+		public MssqlCommandFactory ()
 		{
 			_canInnerPage = true;
 		}
@@ -38,7 +37,7 @@ namespace Light.Data
 			return havingString;
 		}
 
-		protected override IDbCommand CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)
+		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)
 		{
 			if (region == null) {
 				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null);
@@ -85,7 +84,10 @@ namespace Light.Data
 				sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
 					innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
 			}
-			IDbCommand command = BuildCommand (sql.ToString (), parameters);
+//			IDbCommand command = BuildCommand (sql.ToString (), parameters);
+//			return command;
+			CommandData command = new CommandData (sql.ToString (), parameters);
+			command.TransParamName = true;
 			return command;
 		}
 

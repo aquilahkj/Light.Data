@@ -11,7 +11,7 @@ namespace Light.Data
 	{
 		public Mssql ()
 		{
-			_factory = new MssqlCommandFactory (this);
+			_factory = new MssqlCommandFactory ();
 		}
 
 		#region IDatabase 成员
@@ -113,10 +113,10 @@ namespace Light.Data
 				int version;
 				if (int.TryParse (extendParams ["Version"], out version)) {
 					if (version == 8) {
-						_factory = new MssqlCommandFactory_2000 (this);
+						_factory = new MssqlCommandFactory_2000 ();
 					}
 					else if (version >= 10) {
-						_factory = new MssqlCommandFactory_2008 (this);
+						_factory = new MssqlCommandFactory_2008 ();
 					}
 				}
 			}

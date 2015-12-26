@@ -11,7 +11,7 @@ namespace Light.Data
 	{
 		public Oracle ()
 		{
-			_factory = new OracleCommandFactory (this);
+			_factory = new OracleCommandFactory ();
 		}
 
 		#region IDatabase 成员

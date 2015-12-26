@@ -498,7 +498,8 @@ namespace Light.Data
 		/// <returns>命令接口</returns>
 		public IDbCommand GetDbCommand ()
 		{
-			return _context.DataBase.Factory.CreateSelectCommand (_mapping, _query, _order, _context.IsInnerPager ? _region : null);
+			CommandData commandData = _context.DataBase.Factory.CreateSelectCommand (_mapping, _query, _order, _context.IsInnerPager ? _region : null);
+			return commandData.CreateCommand (_context.DataBase);
 		}
 
 		/// <summary>

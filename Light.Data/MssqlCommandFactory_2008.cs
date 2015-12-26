@@ -7,13 +7,12 @@ namespace Light.Data
 {
 	class MssqlCommandFactory_2008 : MssqlCommandFactory
 	{
-		public MssqlCommandFactory_2008 (Database database)
-			: base (database)
+		public MssqlCommandFactory_2008 ()
 		{
             
 		}
 
-		public override IDbCommand[] CreateBulkInsertCommand (Array entitys, int batchCount)
+		public override CommandData[] CreateBulkInsertCommand (Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
 				throw new ArgumentNullException ("entitys");
@@ -29,49 +28,66 @@ namespace Light.Data
 			if (mapping.IdentityField != null) {
 				fields.Remove (mapping.IdentityField);
 			}
-			StringBuilder values = new StringBuilder ();
 
 			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
-			string[] insertList = new string[paramList.Count];
-			int index = 0;
+//			string[] insertList = new string[paramList.Count];
+//			int index = 0;
+//			foreach (DataParameter dataParameter in paramList) {
+//				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
+//				index++;
+//			}
+			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
-				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-				index++;
+				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
 			}
+
 			string insert = string.Join (",", insertList);
 			string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
 
 			int createCount = 0;
 			int totalCreateCount = 0;
-
-			IDbCommand command = _database.CreateCommand ();
-			int paramCount = 0;
-			List<IDbCommand> commands = new List<IDbCommand> ();
+			StringBuilder values = new StringBuilder ();
+//			IDbCommand command = _database.CreateCommand ();
+			int paramIndex = 0;
+			List<DataParameter> dataParams = new List<DataParameter> ();
+			List<CommandData> commands = new List<CommandData> ();
+//			List<IDbCommand> commands = new List<IDbCommand> ();
 			foreach (object entity in entitys) {
-				paramList = GetDataParameters (fields, entity);
+				List<DataParameter> entityParams = GetDataParameters (fields, entity);
 				string[] valueList = new string[paramList.Count];
-				int vindex = 0;
-				foreach (DataParameter dataParameter in paramList) {
-					IDataParameter param = _database.CreateParameter ("P" + paramCount, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-					command.Parameters.Add (param);
-					valueList [vindex] = param.ParameterName;
-					paramCount++;
-					vindex++;
+				int index = 0;
+				foreach (DataParameter dataParameter in entityParams) {
+//					IDataParameter param = _database.CreateParameter ("P" + paramIndex, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+//					command.Parameters.Add (param);
+//					valueList [vindex] = param.ParameterName;
+//					paramIndex++;
+//					vindex++;
+					string paramName = "P" + index;
+					valueList [index] = paramName;
+					dataParameter.ParameterName = paramName;
+					dataParams.Add (dataParameter);
+					index++;
+					paramIndex++;
 				}
 				string value = string.Join (",", valueList);
 				values.AppendFormat ("({0})", value);
 				createCount++;
 				totalCreateCount++;
 				if (createCount == batchCount || totalCreateCount == totalCount) {
-					values.Append (";");
-					command.CommandText = string.Format ("{0}values{1}", insertsql, values);
+//					values.Append (";");
+//					command.CommandText = string.Format ("{0}values{1}", insertsql, values);
+					CommandData command = new CommandData (string.Format ("{0}values{1};", insertsql, values), dataParams);
 					commands.Add (command);
 					if (totalCreateCount == totalCount) {
 						break;
 					}
-					command = _database.CreateCommand ();
+//					command = _database.CreateCommand ();
+//					createCount = 0;
+//					paramIndex = 0;
+//					values = new StringBuilder ();
+					dataParams = new List<DataParameter> ();
 					createCount = 0;
-					paramCount = 0;
+					paramIndex = 0;
 					values = new StringBuilder ();
 				}
 				else {

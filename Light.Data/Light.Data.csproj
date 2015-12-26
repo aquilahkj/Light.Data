@@ -208,8 +208,6 @@
     <Compile Include="Expressions\CollectionParamsQueryExpression.cs" />
     <Compile Include="CommandFactory.cs" />
     <Compile Include="DataContext.cs" />
-    <Compile Include="DataContextCollection.cs" />
-    <Compile Include="DataContextConfiguration.cs" />
     <Compile Include="DataEntity.cs" />
     <Compile Include="DataParameter.cs" />
     <Compile Include="DataField\DataFieldInfo.cs" />
@@ -291,6 +289,8 @@
     <Compile Include="DataField\NumberDataFieldInfo.cs" />
     <Compile Include="DataField\CommonDataFieldInfo.cs" />
     <Compile Include="BooleanDataFieldInfo.cs" />
+    <Compile Include="DataContextSetting.cs" />
+    <Compile Include="CommandData.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

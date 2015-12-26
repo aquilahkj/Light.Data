@@ -14,8 +14,14 @@ namespace Light.Data
 
 		Regex _roundReplaceRegex = null;
 
-		public OracleCommandFactory (Database database)
-			: base (database)
+		//		public OracleCommandFactory (Database database)
+		//			: base (database)
+		//		{
+		//			_canInnerPage = true;
+		//			LoadRoundRegex ();
+		//		}
+
+		public OracleCommandFactory ()
 		{
 			_canInnerPage = true;
 			LoadRoundRegex ();
@@ -43,7 +49,7 @@ namespace Light.Data
 			return tableName;
 		}
 
-		public override IDbCommand CreateInsertCommand (object entity)
+		public override CommandData CreateInsertCommand (object entity)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
@@ -55,15 +61,17 @@ namespace Light.Data
 			}
 			List<DataParameter> paramList = GetDataParameters (fields, entity);
 
-			IDataParameter[] dataParameters = new IDataParameter[paramList.Count];
+//			IDataParameter[] dataParameters = new IDataParameter[paramList.Count];
 			string[] insertList = new string[paramList.Count];
 			string[] valuesList = new string[paramList.Count];
 			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
-				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-				dataParameters [index] = param;
+//				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+//				dataParameters [index] = param;
+				string paramName = "P" + index;
 				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-				valuesList [index] = param.ParameterName;
+				valuesList [index] = paramName;
+				dataParameter.ParameterName = paramName;
 				index++;
 			}
 			string insert = string.Join (",", insertList);
@@ -75,11 +83,13 @@ namespace Light.Data
 			else {
 				sql.AppendFormat ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
 			}
-			IDbCommand command = _database.CreateCommand (sql.ToString ());
-			command.CommandType = CommandType.Text;
-			foreach (IDataParameter param in dataParameters) {
-				command.Parameters.Add (param);
-			}
+//			IDbCommand command = _database.CreateCommand (sql.ToString ());
+//			command.CommandType = CommandType.Text;
+//			foreach (IDataParameter param in dataParameters) {
+//				command.Parameters.Add (param);
+//			}
+//			return command;
+			CommandData command = new CommandData (sql.ToString (), paramList);
 			return command;
 		}
 
@@ -99,7 +109,7 @@ namespace Light.Data
 			return identityIntegrated;
 		}
 
-		public override IDbCommand[] CreateBulkInsertCommand (Array entitys, int batchCount)
+		public override CommandData[] CreateBulkInsertCommand (Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
 				throw new ArgumentNullException ("entitys");
@@ -116,14 +126,18 @@ namespace Light.Data
 			if (mapping.IdentityField != null) {
 				fields.Remove (mapping.IdentityField);
 			}
-			StringBuilder totalSql = new StringBuilder ();
+
 
 			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
-			string[] insertList = new string[paramList.Count];
-			int index = 0;
+//			string[] insertList = new string[paramList.Count];
+//			int index = 0;
+//			foreach (DataParameter dataParameter in paramList) {
+//				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
+//				index++;
+//			}
+			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
-				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-				index++;
+				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
 			}
 			string insert = string.Join (",", insertList);
 			string insertsql;
@@ -140,20 +154,29 @@ namespace Light.Data
 			if (identityIntegrated) {
 				identityString = GetIndentitySeq (mapping);
 			}
-			IDbCommand command = _database.CreateCommand ();
-			int paramCount = 0;
-			List<IDbCommand> commands = new List<IDbCommand> ();
+//			IDbCommand command = _database.CreateCommand ();
+			StringBuilder totalSql = new StringBuilder ();
+			int paramIndex = 0;
+//			List<IDbCommand> commands = new List<IDbCommand> ();
+			List<DataParameter> dataParams = new List<DataParameter> ();
+			List<CommandData> commands = new List<CommandData> ();
 
 			foreach (object entity in entitys) {
-				paramList = GetDataParameters (fields, entity);
+				List<DataParameter> entityParams = GetDataParameters (fields, entity);
 				string[] valueList = new string[entitys.Length];
-				int vindex = 0;
-				foreach (DataParameter dataParameter in paramList) {
-					IDataParameter param = _database.CreateParameter ("P" + paramCount, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-					command.Parameters.Add (param);
-					valueList [vindex] = param.ParameterName;
-					paramCount++;
-					vindex++;
+				int index = 0;
+				foreach (DataParameter dataParameter in entityParams) {
+//					IDataParameter param = _database.CreateParameter ("P" + paramIndex, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
+//					command.Parameters.Add (param);
+//					valueList [vindex] = param.ParameterName;
+//					paramIndex++;
+//					vindex++;
+					string paramName = "P" + index;
+					valueList [index] = paramName;
+					dataParameter.ParameterName = paramName;
+					dataParams.Add (dataParameter);
+					index++;
+					paramIndex++;
 				}
 				string value = string.Join (",", valueList);
 				if (identityIntegrated) {
@@ -165,15 +188,21 @@ namespace Light.Data
 				createCount++;
 				totalCreateCount++;
 				if (createCount == batchCount || totalCreateCount == totalCount) {
-					command.CommandText = string.Format ("begin {0} end;", totalSql);
+					CommandData command = new CommandData (string.Format ("begin {0} end;", totalSql), dataParams);
 					commands.Add (command);
+//					command.CommandText = string.Format ("begin {0} end;", totalSql);
+//					commands.Add (command);
 					if (totalCreateCount == totalCount) {
 						break;
 					}
-					command = _database.CreateCommand ();
+					dataParams = new List<DataParameter> ();
 					createCount = 0;
-					paramCount = 0;
+					paramIndex = 0;
 					totalSql = new StringBuilder ();
+//					command = _database.CreateCommand ();
+//					createCount = 0;
+//					paramIndex = 0;
+//					totalSql = new StringBuilder ();
 				}
 			}
 			return commands.ToArray ();
@@ -203,7 +232,7 @@ namespace Light.Data
 			return seq;
 		}
 
-		protected override IDbCommand CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
 			if (region == null) {
 				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null);
@@ -246,8 +275,10 @@ namespace Light.Data
 				sql.AppendFormat ("select {4} from (select a.*,ROWNUM {3} from ({0})a where ROWNUM<={2})b where {3}>{1}",
 					innerSQL, region.Start, region.Start + region.Size, tempRowNumber, customSelect);
 			}
-			IDbCommand command = BuildCommand (sql.ToString (), parameters);
+			CommandData command = new CommandData (sql.ToString (), parameters);
+			command.TransParamName = true;
 			return command;
+
 		}
 
 		public override string CreateAvgSql (string fieldName, bool isDistinct)

@@ -36,7 +36,7 @@ namespace Light.Data
 				Interlocked.CompareExchange (ref this._syncRoot, new object (), null);
 			}
 			foreach (ConnectionStringSettings setting in ConfigurationManager.ConnectionStrings) {
-				DataContext context = DataContext.Create (setting, false);
+				DataContext context = DataContext.Create (setting);
 				if (context != null) {
 					_contextNameDictionary.Add (setting.Name, context);
 					if (_default == null) {

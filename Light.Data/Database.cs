@@ -79,7 +79,7 @@ namespace Light.Data
 					_commandTimeOut = value;
 				}
 				else {
-					throw new ArgumentOutOfRangeException ("CommandTimeOut");
+					throw new ArgumentOutOfRangeException ("value");
 				}
 			}
 		}

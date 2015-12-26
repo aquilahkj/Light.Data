@@ -8,7 +8,7 @@ namespace Light.Data.MysqlAdapter
 	{
 		public Mysql ()
 		{
-			_factory = new MysqlCommandFactory (this);
+			_factory = new MysqlCommandFactory ();
 		}
 
 		#region IDatabase 成员

@@ -2,7 +2,7 @@
 
 namespace Light.Data
 {
-	public class BooleanDataFieldInfo:CommonDataFieldInfo
+	class BooleanDataFieldInfo:CommonDataFieldInfo
 	{
 		static BooleanDataFieldInfo instanceTrue = new BooleanDataFieldInfo (true);
 

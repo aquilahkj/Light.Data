@@ -10,7 +10,7 @@ namespace Light.Data.Demo
 	{
 		public static void Main (string[] args)
 		{
-			DataContext context = DataContextConfiguration.Default;
+			DataContext context = DataContext.Default;
 			CommandOutput output = new CommandOutput ();
 			output.OutputFullCommand = true;
 			output.UseConsoleOutput = true;
@@ -41,7 +41,9 @@ namespace Light.Data.Demo
 					ScDevicePackage.DataField,
 					ScDevicePackage.CountField,
 					ScDevicePackage.StatusField
-				});
+				},
+				ScDevicePackage.IdField > 100 & ScDevicePackage.RecordTimeField >= DateTime.Now
+				, ScDevicePackage.IdField.OrderByAsc ());
 			Console.ReadLine ();
 		}
 

@@ -273,6 +273,11 @@ namespace Light.Data
 
 		public const string InsertFieldIsNotDataFieldInfo = "insert field is not datafield info";
 
+		public const string SpecifiedConfigNameConnectionStringNotExists = "specified configName connection string not exists";
+
+		public const string SpecifiedConfigNameConnectionStringError = "specified configName connection string error";
+
+		public const string DefaultConnectionNotExists = "default connection not exists";
 	}
 }
 

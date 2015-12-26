@@ -7,12 +7,6 @@ namespace Light.Data
 {
 	class AccessCommandFactory : CommandFactory
 	{
-		public AccessCommandFactory (Database database)
-			: base (database)
-		{
-
-		}
-
 		public override string CreateDataFieldSql (string fieldName)
 		{
 			return string.Format ("[{0}]", fieldName);
@@ -80,7 +74,7 @@ namespace Light.Data
 		/// <param name="mapping">数据表映射</param>
 		/// <param name="query">查询表达式</param>
 		/// <returns></returns>
-		public override IDbCommand CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
+		public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
 		{
 			return this.CreateSelectBaseCommand (mapping, "top 1", query, null, null);
 		}

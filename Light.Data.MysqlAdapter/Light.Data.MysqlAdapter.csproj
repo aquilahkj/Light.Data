@@ -30,12 +30,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Light.Data\Light.Data.csproj">
-      <Project>{AB57F3CC-2F20-4FCC-BDE7-E6ED904B68DB}</Project>
-      <Name>Light.Data</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Mysql.cs" />
     <Compile Include="MysqlCommandFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,5 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Light.Data\Light.Data.csproj">
+      <Project>{AB57F3CC-2F20-4FCC-BDE7-E6ED904B68DB}</Project>
+      <Name>Light.Data</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
