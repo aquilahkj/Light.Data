@@ -23,7 +23,7 @@ namespace Light.Data
 
 		protected string _wildcards = "%";
 
-//		Regex _paramNameRegex = new Regex ("_param_[a-zA-Z0-9]{32}_", RegexOptions.Compiled);
+		//		Regex _paramNameRegex = new Regex ("_param_[a-zA-Z0-9]{32}_", RegexOptions.Compiled);
 
 		Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string> ();
 
@@ -227,7 +227,7 @@ namespace Light.Data
 //				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
 //				dataParameters [index] = param;
 				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-				string paramName = "P" + index;
+				string paramName = CreateParamName ("P" + index);
 				valuesList [index] = paramName;
 				dataParameter.ParameterName = paramName;
 				index++;
@@ -297,7 +297,7 @@ namespace Light.Data
 			foreach (DataParameter dataParameter in columnList) {
 //				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
 //				dataParameters [index] = param;
-				string paramName = "P" + index;
+				string paramName = CreateParamName ("P" + index);
 				updateList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), paramName);
 				dataParameter.ParameterName = paramName;
 				index++;
@@ -305,7 +305,7 @@ namespace Light.Data
 			foreach (DataParameter dataParameter in primaryList) {
 //				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
 //				dataParameters [index] = param;
-				string paramName = "P" + index;
+				string paramName = CreateParamName ("P" + index);
 				whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), paramName);
 				dataParameter.ParameterName = paramName;
 				index++;
@@ -342,7 +342,7 @@ namespace Light.Data
 			foreach (DataParameter dataParameter in primaryList) {
 //				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
 //				dataParameters [index] = param;
-				string paramName = "P" + index;
+				string paramName = CreateParamName ("P" + index);
 				whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), paramName);
 				dataParameter.ParameterName = paramName;
 				index++;
@@ -372,7 +372,7 @@ namespace Light.Data
 			foreach (DataParameter dataParameter in primaryList) {
 //				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
 //				dataParameters [index] = param;
-				string paramName = "P" + index;
+				string paramName = CreateParamName ("P" + index);
 				whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), paramName);
 				dataParameter.ParameterName = paramName;
 				index++;
@@ -971,7 +971,7 @@ namespace Light.Data
 				foreach (DataParameter dataParameter in entityParams) {
 //					IDataParameter param = _database.CreateParameter ("P" + paramIndex, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
 //					command.Parameters.Add (param);
-					string paramName = "P" + index;
+					string paramName = CreateParamName ("P" + paramIndex);
 					valueList [index] = paramName;
 					dataParameter.ParameterName = paramName;
 					dataParams.Add (dataParameter);
@@ -1385,6 +1385,16 @@ namespace Light.Data
 			string op = GetQueryPredicate (predicate);
 			sb.AppendFormat ("{0}{2}{1}", leftField, rightField, op);
 			return sb.ToString ();
+		}
+
+		public virtual string CreateParamName (string name)
+		{
+			if (!name.StartsWith ("?")) {
+				return "?" + name;
+			}
+			else {
+				return name;
+			}
 		}
 	}
 }

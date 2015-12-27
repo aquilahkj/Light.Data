@@ -229,5 +229,15 @@ namespace Light.Data
 		{
 			return "getdate()";
 		}
+
+		public override string CreateParamName(string name)
+		{
+			if (!name.StartsWith ("@")) {
+				return "@" + name;
+			}
+			else {
+				return name;
+			}
+		}
 	}
 }

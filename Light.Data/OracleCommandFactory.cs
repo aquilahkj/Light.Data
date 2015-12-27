@@ -68,7 +68,7 @@ namespace Light.Data
 			foreach (DataParameter dataParameter in paramList) {
 //				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
 //				dataParameters [index] = param;
-				string paramName = "P" + index;
+				string paramName = CreateParamName ("P" + index);
 				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
 				valuesList [index] = paramName;
 				dataParameter.ParameterName = paramName;
@@ -171,7 +171,7 @@ namespace Light.Data
 //					valueList [vindex] = param.ParameterName;
 //					paramIndex++;
 //					vindex++;
-					string paramName = "P" + index;
+					string paramName = CreateParamName ("P" + paramIndex);
 					valueList [index] = paramName;
 					dataParameter.ParameterName = paramName;
 					dataParams.Add (dataParameter);
@@ -501,6 +501,16 @@ namespace Light.Data
 		public override string CreateDataBaseTimeSql ()
 		{
 			return "sysdate";
+		}
+
+		public override string CreateParamName(string name)
+		{
+			if (!name.StartsWith (":")) {
+				return ":" + name;
+			}
+			else {
+				return name;
+			}
 		}
 	}
 }

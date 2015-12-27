@@ -62,7 +62,7 @@ namespace Light.Data
 //					valueList [vindex] = param.ParameterName;
 //					paramIndex++;
 //					vindex++;
-					string paramName = "P" + index;
+					string paramName = CreateParamName ("P" + paramIndex);
 					valueList [index] = paramName;
 					dataParameter.ParameterName = paramName;
 					dataParams.Add (dataParameter);

@@ -25,7 +25,7 @@ namespace Light.Data
 				return commandText;
 			}
 			set {
-				if (string.IsNullOrEmpty (null)) {
+				if (string.IsNullOrEmpty (value)) {
 					throw new ArgumentNullException ("value");
 				}
 				commandText = value;
