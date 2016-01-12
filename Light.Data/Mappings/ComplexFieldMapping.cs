@@ -18,6 +18,8 @@ namespace Light.Data
 			ParseSubDataField ();
 		}
 
+		int _count = 0;
+
 		private void ParseSubDataField ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
@@ -41,6 +43,7 @@ namespace Light.Data
 					}
 				}
 			}
+			_count = _fieldMappingDictionary.Count;
 			if (_fieldMappingDictionary.Count == 0) {
 				throw new LightDataException (RE.ComplexFieldHaveNotSubFields);
 			}
@@ -49,6 +52,12 @@ namespace Light.Data
 		Dictionary<string, FieldMapping> _fieldMappingDictionary = new Dictionary<string, FieldMapping> ();
 
 		Dictionary<string, FieldMapping> _fieldMappingAlterNameDictionary = new Dictionary<string, FieldMapping> ();
+
+		public int SubDataFieldCount {
+			get {
+				return this._count;
+			}
+		}
 
 		public override object ToProperty (object value)
 		{

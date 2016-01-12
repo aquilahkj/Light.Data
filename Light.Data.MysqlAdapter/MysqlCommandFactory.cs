@@ -73,21 +73,14 @@ namespace Light.Data.MysqlAdapter
 			int createCount = 0;
 			int totalCreateCount = 0;
 			StringBuilder values = new StringBuilder ();
-			//			IDbCommand command = _database.CreateCommand ();
 			int paramIndex = 0;
 			List<DataParameter> dataParams = new List<DataParameter> ();
 			List<CommandData> commands = new List<CommandData> ();
-			//			List<IDbCommand> commands = new List<IDbCommand> ();
 			foreach (object entity in entitys) {
 				List<DataParameter> entityParams = GetDataParameters (fields, entity);
 				string[] valueList = new string[paramList.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
-					//					IDataParameter param = _database.CreateParameter ("P" + paramIndex, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-					//					command.Parameters.Add (param);
-					//					valueList [vindex] = param.ParameterName;
-					//					paramIndex++;
-					//					vindex++;
 					string paramName = CreateParamName ("P" + paramIndex);
 					valueList [index] = paramName;
 					dataParameter.ParameterName = paramName;

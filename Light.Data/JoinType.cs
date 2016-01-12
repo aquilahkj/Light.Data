@@ -8,10 +8,6 @@ namespace Light.Data
 	public enum JoinType
 	{
 		/// <summary>
-		/// The default.
-		/// </summary>
-		Default,
-		/// <summary>
 		/// The inner join.
 		/// </summary>
 		InnerJoin,

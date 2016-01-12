@@ -17,14 +17,11 @@ namespace Light.Data
 			_wildcards = "*";
 		}
 
-		public override string GetHavingString (DataEntityMapping mapping, AggregateHavingExpression having, out DataParameter[] parameters, Dictionary<string, AggregateFunction> aggregateFunctionDictionary)
+		public override string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-//				if (!having.IgnoreConsistency && !mapping.Equals (having.TableMapping)) {
-//					throw new LightDataException (RE.DataMappingIsNotMatchAggregationExpression);
-//				}
 				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate {
 					return null;
 				})));
@@ -32,20 +29,11 @@ namespace Light.Data
 			return havingString;
 		}
 
-		public override string GetOrderString (DataEntityMapping mapping, OrderExpression order, out DataParameter[] parameters, Dictionary<string, DataFieldInfo> dataFieldInfoDictionary, Dictionary<string, AggregateFunction> aggregateFunctionDictionary)
+		public override string GetOrderString (OrderExpression order, out DataParameter[] parameters, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions)
 		{
 			string orderString = null;
 			parameters = null;
 			if (order != null) {
-//				if (order.IgnoreConsistency) {
-				RandomOrderExpression random = order as RandomOrderExpression;
-				if (random != null) {
-					random.SetTableMapping (mapping);
-				}
-//				}
-//				if (!order.IgnoreConsistency && !mapping.Equals (order.TableMapping)) {
-//					throw new LightDataException (RE.DataMappingIsNotMatchOrderExpression);
-//				}
 				orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate {
 					return null;
 				})));

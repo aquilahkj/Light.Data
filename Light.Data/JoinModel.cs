@@ -7,36 +7,47 @@ namespace Light.Data
 	{
 		//		bool isSingle;
 
-		JoinType _type = JoinType.Default;
+//		JoinType _type = JoinType.Default;
+//
+//		public JoinType Type {
+//			get {
+//				return _type;
+//			}
+//		}
 
-		public JoinType Type {
+		JoinConnect _connect;
+
+		public JoinConnect Connect {
 			get {
-				return _type;
-			}
-		}
-
-		bool selectAllField;
-
-		public bool SelectAllField {
-			get {
-				return selectAllField;
+				return _connect;
 			}
 			set {
-				selectAllField = value;
+				_connect = value;
 			}
 		}
 
-		List<DataFieldInfo> fields = new List<DataFieldInfo> ();
+//		bool selectAllField;
+//
+//		public bool SelectAllField {
+//			get {
+//				return selectAllField;
+//			}
+//			set {
+//				selectAllField = value;
+//			}
+//		}
 
-		public DataFieldInfo[] GetFields ()
-		{
-			return fields.ToArray ();
-		}
-
-		public void SetField (DataFieldInfo field)
-		{
-			this.fields.Add (field);
-		}
+//		List<DataFieldInfo> fields = new List<DataFieldInfo> ();
+//
+//		public DataFieldInfo[] GetFields ()
+//		{
+//			return fields.ToArray ();
+//		}
+//
+//		public void SetField (DataFieldInfo field)
+//		{
+//			this.fields.Add (field);
+//		}
 
 		DataEntityMapping _mapping = null;
 
@@ -62,14 +73,10 @@ namespace Light.Data
 			}
 		}
 
-		//		List<JoinModel> models = null;
-		//
-		//		DataFieldExpression _on = null;
-
-		public JoinModel (DataEntityMapping mapping, JoinType type, QueryExpression query, OrderExpression order)
+		public JoinModel (DataEntityMapping mapping, JoinConnect connect, QueryExpression query, OrderExpression order)
 		{
 			this._mapping = mapping;
-			this._type = type;
+			this._connect = connect;
 			this._query = query;
 			this._order = order;
 		}

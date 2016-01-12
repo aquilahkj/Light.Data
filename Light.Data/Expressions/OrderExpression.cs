@@ -34,8 +34,9 @@ namespace Light.Data
 			else if (expression1 != null && expression2 == null) {
 				return expression1;
 			}
-			if (expression1 is RandomOrderExpression || expression2 is RandomOrderExpression) {
-				throw new LightDataException (RE.RandomOrderForbitCatch);
+			else if (expression1 is RandomOrderExpression || expression2 is RandomOrderExpression) {
+				return expression2;
+				//throw new LightDataException (RE.RandomOrderForbitCatch);
 			}
 			DataEntityMapping demapping = null;
 			if (expression1.TableMapping != null) {
@@ -92,14 +93,14 @@ namespace Light.Data
 			return Catch (expression1, expression2);
 		}
 
-		/// <summary>
-		/// 随机排序
-		/// </summary>
-		/// <returns></returns>
-		public static OrderExpression Random ()
-		{
-			return new RandomOrderExpression ();
-		}
+//		/// <summary>
+//		/// 随机排序
+//		/// </summary>
+//		/// <returns></returns>
+//		public static OrderExpression Random ()
+//		{
+//			return new RandomOrderExpression ();
+//		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{

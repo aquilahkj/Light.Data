@@ -22,14 +22,11 @@ namespace Light.Data
 			return string.Format ("[{0}]", tableName);
 		}
 
-		public override string GetHavingString (DataEntityMapping mapping, AggregateHavingExpression having, out DataParameter[] parameters, Dictionary<string, AggregateFunction> aggregateFunctionDictionary)
+		public override string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-//				if (!having.IgnoreConsistency && !mapping.Equals (having.TableMapping)) {
-//					throw new LightDataException (RE.DataMappingIsNotMatchAggregationExpression);
-//				}
 				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
 					return null;
 				})));
@@ -45,8 +42,8 @@ namespace Light.Data
 
 			StringBuilder sql = new StringBuilder ();
 			DataParameter[] parameters;
-			string queryString = GetQueryString (mapping, query, out parameters);
-			string orderString = GetOrderString (mapping, order);
+			string queryString = GetQueryString (query, out parameters);
+			string orderString = GetOrderString (order);
 			bool distinct = false;
 			if (customSelect.StartsWith ("distinct ", StringComparison.OrdinalIgnoreCase)) {
 				distinct = true;
@@ -62,15 +59,6 @@ namespace Light.Data
 				}
 			}
 			else {
-
-//				example
-//				select *
-//				from (
-//				select row_number()over(order by __tc__)__rn__,*
-//				from (select top 开始位置+10 0 __tc__,* from Student where Age>18 order by Age)t
-//				)tt
-//				where __rn__>开始位置
-//
 				StringBuilder innerSQL = new StringBuilder ();
 				string tempCount = CreateCustomFiledName ();
 				string tempRowNumber = CreateCustomFiledName ();
@@ -84,8 +72,6 @@ namespace Light.Data
 				sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
 					innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
 			}
-//			IDbCommand command = BuildCommand (sql.ToString (), parameters);
-//			return command;
 			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
@@ -121,7 +107,7 @@ namespace Light.Data
 			}
 			else {
 				string format1 = format.ToUpper ();
-				string sqlformat = null;
+				string sqlformat;
 				switch (format1) {
 				case "YMD":
 					sqlformat = "convert(char(8),{0},112)";
@@ -230,7 +216,7 @@ namespace Light.Data
 			return "getdate()";
 		}
 
-		public override string CreateParamName(string name)
+		public override string CreateParamName (string name)
 		{
 			if (!name.StartsWith ("@")) {
 				return "@" + name;

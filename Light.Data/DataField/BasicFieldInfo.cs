@@ -39,6 +39,5 @@ namespace Light.Data
 				return DataField.Name;
 			}
 		}
-
 	}
 }

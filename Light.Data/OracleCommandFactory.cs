@@ -61,13 +61,10 @@ namespace Light.Data
 			}
 			List<DataParameter> paramList = GetDataParameters (fields, entity);
 
-//			IDataParameter[] dataParameters = new IDataParameter[paramList.Count];
 			string[] insertList = new string[paramList.Count];
 			string[] valuesList = new string[paramList.Count];
 			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
-//				IDataParameter param = _database.CreateParameter ("P" + index, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-//				dataParameters [index] = param;
 				string paramName = CreateParamName ("P" + index);
 				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
 				valuesList [index] = paramName;
@@ -83,12 +80,6 @@ namespace Light.Data
 			else {
 				sql.AppendFormat ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
 			}
-//			IDbCommand command = _database.CreateCommand (sql.ToString ());
-//			command.CommandType = CommandType.Text;
-//			foreach (IDataParameter param in dataParameters) {
-//				command.Parameters.Add (param);
-//			}
-//			return command;
 			CommandData command = new CommandData (sql.ToString (), paramList);
 			return command;
 		}
@@ -154,10 +145,8 @@ namespace Light.Data
 			if (identityIntegrated) {
 				identityString = GetIndentitySeq (mapping);
 			}
-//			IDbCommand command = _database.CreateCommand ();
 			StringBuilder totalSql = new StringBuilder ();
 			int paramIndex = 0;
-//			List<IDbCommand> commands = new List<IDbCommand> ();
 			List<DataParameter> dataParams = new List<DataParameter> ();
 			List<CommandData> commands = new List<CommandData> ();
 
@@ -166,11 +155,6 @@ namespace Light.Data
 				string[] valueList = new string[entitys.Length];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
-//					IDataParameter param = _database.CreateParameter ("P" + paramIndex, dataParameter.Value, dataParameter.DbType, dataParameter.Direction);
-//					command.Parameters.Add (param);
-//					valueList [vindex] = param.ParameterName;
-//					paramIndex++;
-//					vindex++;
 					string paramName = CreateParamName ("P" + paramIndex);
 					valueList [index] = paramName;
 					dataParameter.ParameterName = paramName;
@@ -190,8 +174,6 @@ namespace Light.Data
 				if (createCount == batchCount || totalCreateCount == totalCount) {
 					CommandData command = new CommandData (string.Format ("begin {0} end;", totalSql), dataParams);
 					commands.Add (command);
-//					command.CommandText = string.Format ("begin {0} end;", totalSql);
-//					commands.Add (command);
 					if (totalCreateCount == totalCount) {
 						break;
 					}
@@ -199,10 +181,6 @@ namespace Light.Data
 					createCount = 0;
 					paramIndex = 0;
 					totalSql = new StringBuilder ();
-//					command = _database.CreateCommand ();
-//					createCount = 0;
-//					paramIndex = 0;
-//					totalSql = new StringBuilder ();
 				}
 			}
 			return commands.ToArray ();
@@ -240,8 +218,8 @@ namespace Light.Data
 
 			StringBuilder sql = new StringBuilder ();
 			DataParameter[] parameters;
-			string queryString = GetQueryString (mapping, query, out parameters);
-			string orderString = GetOrderString (mapping, order);
+			string queryString = GetQueryString ( query, out parameters);
+			string orderString = GetOrderString ( order);
 
 			if (region.Start == 0 && orderString == null) {
 				sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);

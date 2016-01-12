@@ -80,7 +80,7 @@ namespace Light.Data
 		/// <returns> 枚举查询器</returns>
 		public LEnumerable<T> Where (QueryExpression expression)
 		{
-			Where (expression, CatchOperatorsType.AND);
+			_query &= expression;
 			return this;
 		}
 
@@ -88,18 +88,29 @@ namespace Light.Data
 		/// 添加查询表达式
 		/// </summary>
 		/// <param name="expression">查询表达式</param>
-		/// <param name="catchType">连接操作符类型</param>
 		/// <returns> 枚举查询器</returns>
-		public LEnumerable<T> Where (QueryExpression expression, CatchOperatorsType catchType)
+		public LEnumerable<T> WhereWithOr (QueryExpression expression)
 		{
-			if (catchType == CatchOperatorsType.AND) {
-				_query = QueryExpression.And (_query, expression);
-			}
-			else {
-				_query = QueryExpression.Or (_query, expression);
-			}
+			_query |= expression;
 			return this;
 		}
+
+//		/// <summary>
+//		/// 添加查询表达式
+//		/// </summary>
+//		/// <param name="expression">查询表达式</param>
+//		/// <param name="catchType">连接操作符类型</param>
+//		/// <returns> 枚举查询器</returns>
+//		public LEnumerable<T> Where (QueryExpression expression, CatchOperatorsType catchType)
+//		{
+//			if (catchType == CatchOperatorsType.AND) {
+//				_query = QueryExpression.And (_query, expression);
+//			}
+//			else {
+//				_query = QueryExpression.Or (_query, expression);
+//			}
+//			return this;
+//		}
 
 		/// <summary>
 		/// 添加排序表达式
@@ -109,6 +120,16 @@ namespace Light.Data
 		public LEnumerable<T> OrderBy (OrderExpression expression)
 		{
 			_order &= expression;
+			return this;
+		}
+
+		/// <summary>
+		/// Orders the by random.
+		/// </summary>
+		/// <returns>The by random.</returns>
+		public LEnumerable<T> OrderByRandom ()
+		{
+			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof(T)));
 			return this;
 		}
 
@@ -503,15 +524,26 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Join the specified le.
+		/// Join the specified le and on.
 		/// </summary>
 		/// <param name="le">Le.</param>
+		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (LEnumerable<K> le) where K : class, new()
+		public JoinTable Join<K> (LEnumerable<K> le, DataFieldMatchExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, on);
+		}
+
+		/// <summary>
+		/// Join the specified on.
+		/// </summary>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (DataFieldMatchExpression on) where K : class, new()
+		{
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, null, on);
 		}
 
 		/// <summary>
@@ -520,7 +552,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable Join<K> () where K : class, new()
 		{
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, null, null);
 		}
 
 		/// <summary>
@@ -528,12 +560,13 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
+		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (LEnumerable<K> le) where K : class, new()
+		public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldMatchExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -541,9 +574,9 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> () where K : class, new()
+		public JoinTable LeftJoin<K> (DataFieldMatchExpression on) where K : class, new()
 		{
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, null, on);
 		}
 
 		/// <summary>
@@ -551,12 +584,13 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
+		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (LEnumerable<K> le) where K : class, new()
+		public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldMatchExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -564,9 +598,9 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> () where K : class, new()
+		public JoinTable RightJoin<K> (DataFieldMatchExpression on) where K : class, new()
 		{
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, null, on);
 		}
 	}
 }

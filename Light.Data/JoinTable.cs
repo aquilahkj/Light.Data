@@ -9,27 +9,35 @@ namespace Light.Data
 	/// </summary>
 	public class JoinTable
 	{
-		internal static JoinTable CreateJoinTable<T,K> (DataContext dataContext, JoinType joinType, LEnumerable<T> left, LEnumerable<K> right)
+		internal static JoinTable CreateJoinTable<T,K> (DataContext dataContext, JoinType joinType, LEnumerable<T> left, LEnumerable<K> right, DataFieldMatchExpression on)
 			where T : class, new() 
 			where K : class, new()
 		{
 			JoinTable table = new JoinTable (dataContext);
-			JoinModel model1 = new JoinModel (left.Mapping, JoinType.Default, left.Query, left.Order);
-			JoinModel model2 = new JoinModel (right.Mapping, joinType, right.Query, right.Order);
-			table.modelList.Add (model1);
-			table.modelList.Add (model2);
-			return table;
-		}
+			JoinConnect connect = new JoinConnect (joinType, on);
 
-		internal static JoinTable CreateJoinTable<T,K> (DataContext dataContext, JoinType joinType, LEnumerable<T> left)
-			where T : class, new() 
-			where K : class, new()
-		{
-			JoinTable table = new JoinTable (dataContext);
-			JoinModel model1 = new JoinModel (left.Mapping, JoinType.Default, left.Query, left.Order);
-			JoinModel model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), joinType, null, null);
-			table.modelList.Add (model1);
-			table.modelList.Add (model2);
+			JoinModel model1;
+			if (left != null) {
+				model1 = new JoinModel (left.Mapping, null, left.Query, left.Order);
+			}
+			else {
+				model1 = new JoinModel (DataMapping.GetEntityMapping (typeof(T)), null, null, null);
+			}
+			JoinModel model2;
+			if (right != null) {
+				model2 = new JoinModel (right.Mapping, null, right.Query, right.Order);
+			}
+			else {
+				model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), connect, null, null);
+			}
+
+			if (model1.Mapping.Equals (model2.Mapping)) {
+				throw new LightDataException (RE.CanNotJoinTheSameTable);
+			}
+
+//			model2 = new JoinModel (right.Mapping, connect, right.Query, right.Order);
+			table._modelList.Add (model1);
+			table._modelList.Add (model2);
 			return table;
 		}
 
@@ -38,11 +46,11 @@ namespace Light.Data
 			_context = dataContext;
 		}
 
+		JoinSelector _selector = new JoinSelector ();
+
 		QueryExpression _query = null;
 
 		OrderExpression _order = null;
-
-		DataFieldExpression _on = null;
 
 		Region _region = null;
 
@@ -50,7 +58,21 @@ namespace Light.Data
 
 		SafeLevel _level = SafeLevel.None;
 
-		List<JoinModel> modelList = new List<JoinModel> ();
+		List<JoinModel> _modelList = new List<JoinModel> ();
+
+//		/// <summary>
+//		/// 重置条件语句
+//		/// </summary>
+//		/// <returns> 枚举查询器</returns>
+//		public JoinTable Reset ()
+//		{
+//			_selector = new JoinSelector ();
+//			_query = null;
+//			_order = null;
+//			_region = null;
+//			_level = SafeLevel.Default;
+//			return this;
+//		}
 
 		/// <summary>
 		/// Join the specified le.
@@ -61,7 +83,7 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return InternalJoin<K> (JoinType.InnerJoin, le);
+			return InternalJoin<K> (JoinType.InnerJoin, le, null);
 		}
 
 		/// <summary>
@@ -70,7 +92,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable Join<K> ()where K : class, new()
 		{
-			return InternalJoin<K> (JoinType.InnerJoin);
+			return InternalJoin<K> (JoinType.InnerJoin, null, null);
 		}
 
 		/// <summary>
@@ -83,7 +105,7 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return InternalJoin<K> (JoinType.LeftJoin, le);
+			return InternalJoin<K> (JoinType.LeftJoin, le, null);
 		}
 
 		/// <summary>
@@ -93,7 +115,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable LeftJoin<K> ()where K : class, new()
 		{
-			return InternalJoin<K> (JoinType.LeftJoin);
+			return InternalJoin<K> (JoinType.LeftJoin, null, null);
 		}
 
 		/// <summary>
@@ -106,7 +128,7 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return InternalJoin<K> (JoinType.RightJoin, le);
+			return InternalJoin<K> (JoinType.RightJoin, le, null);
 		}
 
 		/// <summary>
@@ -116,45 +138,50 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable RightJoin<K> ()where K : class, new()
 		{
-			return InternalJoin<K> (JoinType.RightJoin);
+			return InternalJoin<K> (JoinType.RightJoin, null, null);
 		}
 
-		private JoinTable InternalJoin<K> (JoinType joinType, LEnumerable<K> right)where K : class, new()
+		private JoinTable InternalJoin<K> (JoinType joinType, LEnumerable<K> right, DataFieldMatchExpression on)where K : class, new()
 		{
-			JoinModel model2 = new JoinModel (right.Mapping, joinType, right.Query, right.Order);
-			this.modelList.Add (model2);
-			return this;
-		}
+			JoinConnect connect = new JoinConnect (joinType, on);
+			JoinModel model2;
+			if (right != null) {
+				model2 = new JoinModel (right.Mapping, null, right.Query, right.Order);
+			}
+			else {
+				model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), connect, null, null);
+			}
+			foreach (JoinModel model in this._modelList) {
+				if (model.Mapping.Equals (model2.Mapping)) {
+					throw new LightDataException (RE.CanNotJoinTheSameTable);
+				}
+			}
 
-		private JoinTable InternalJoin<K> (JoinType joinType)where K : class, new()
-		{
-			JoinModel model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), joinType, null, null);
-			this.modelList.Add (model2);
+			this._modelList.Add (model2);
 			return this;
 		}
 
 		/// <summary>
-		/// Raises the  event.
+		/// Raises the On.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		public JoinTable On (DataFieldExpression expression)
 		{
-			return On (expression, CatchOperatorsType.AND);
+			JoinModel model = this._modelList [this._modelList.Count - 1];
+			JoinConnect connect = model.Connect;
+			connect.On = DataFieldExpression.And (connect.On, expression);
+			return this;
 		}
 
 		/// <summary>
-		/// Raises the  event.
+		/// Raises the On.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <param name="catchType">Catch type.</param>
-		public JoinTable On (DataFieldExpression expression, CatchOperatorsType catchType)
+		public JoinTable OnWithOr (DataFieldExpression expression)
 		{
-			if (catchType == CatchOperatorsType.AND) {
-				_on = DataFieldExpression.And (_on, expression);
-			}
-			else {
-				_on = DataFieldExpression.Or (_on, expression);
-			}
+			JoinModel model = this._modelList [this._modelList.Count - 1];
+			JoinConnect connect = model.Connect;
+			connect.On = DataFieldExpression.Or (connect.On, expression);
 			return this;
 		}
 
@@ -164,22 +191,51 @@ namespace Light.Data
 		/// <param name="fields">Fields.</param>
 		public JoinTable Select (params DataFieldInfo[] fields)
 		{
-//			this._dataFieldList.AddRange (fields);
 			foreach (DataFieldInfo field in fields) {
 				JoinModel m = null;
-				foreach (JoinModel model in modelList) {
+				foreach (JoinModel model in _modelList) {
 					if (model.Mapping.Equals (field.TableMapping)) {
 						m = model;
 						break;
 					}
 				}
 				if (m != null) {
-					m.SetField (field);
+					_selector.SetDataField (field);
 				}
 				else {
 					throw new LightDataException (RE.SelectFiledsNotInJoinTables);
 				}
 			}
+			return this;
+		}
+
+		/// <summary>
+		/// Selects the alias.
+		/// </summary>
+		/// <returns>The alias.</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="alias">Alias.</param>
+		public JoinTable SelectAlias (DataFieldInfo field, string alias)
+		{
+			if (Object.Equals (field, null))
+				throw new ArgumentNullException ("field");
+			if (string.IsNullOrEmpty (alias))
+				throw new ArgumentNullException ("alias");
+			JoinModel m = null;
+			foreach (JoinModel model in _modelList) {
+				if (model.Mapping.Equals (field.TableMapping)) {
+					m = model;
+					break;
+				}
+			}
+			if (m != null) {
+				AliasDataFieldInfo aliasField = new AliasDataFieldInfo (field, alias);
+				_selector.SetAliasDataField (aliasField);
+			}
+			else {
+				throw new LightDataException (RE.SelectFiledsNotInJoinTables);
+			}
+
 			return this;
 		}
 
@@ -192,14 +248,14 @@ namespace Light.Data
 		{
 			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof(K));
 			JoinModel m = null;
-			foreach (JoinModel model in modelList) {
+			foreach (JoinModel model in _modelList) {
 				if (model.Mapping.Equals (mapping)) {
 					m = model;
 					break;
 				}
 			}
 			if (m != null) {
-				m.SelectAllField = true;
+				_selector.SetDataEntity (mapping);
 			}
 			else {
 				throw new LightDataException (RE.SelectFiledsNotInJoinTables);
@@ -215,7 +271,7 @@ namespace Light.Data
 		/// <returns> 枚举查询器</returns>
 		public JoinTable Where (QueryExpression expression)
 		{
-			Where (expression, CatchOperatorsType.AND);
+			_query &= expression;
 			return this;
 		}
 
@@ -223,18 +279,31 @@ namespace Light.Data
 		/// 添加查询表达式
 		/// </summary>
 		/// <param name="expression">查询表达式</param>
-		/// <param name="catchType">连接操作符类型</param>
 		/// <returns> 枚举查询器</returns>
-		public JoinTable Where (QueryExpression expression, CatchOperatorsType catchType)
+		public JoinTable WhereWithOr (QueryExpression expression)
 		{
-			if (catchType == CatchOperatorsType.AND) {
-				_query = QueryExpression.And (_query, expression);
-			}
-			else {
-				_query = QueryExpression.Or (_query, expression);
-			}
+			_query |= expression;
 			return this;
 		}
+
+//		/// <summary>
+//		/// 添加查询表达式
+//		/// </summary>
+//		/// <param name="expression">查询表达式</param>
+//		/// <param name="catchType">连接操作符类型</param>
+//		/// <returns> 枚举查询器</returns>
+//		public JoinTable Where (QueryExpression expression, CatchOperatorsType catchType)
+//		{
+//			if (catchType == CatchOperatorsType.AND) {
+//				_query = QueryExpression.And (_query, expression);
+//			}
+//			else {
+//				_query = QueryExpression.Or (_query, expression);
+//			}
+//			return this;
+//		}
+
+
 
 		/// <summary>
 		/// 添加排序表达式
@@ -244,6 +313,16 @@ namespace Light.Data
 		public JoinTable OrderBy (OrderExpression expression)
 		{
 			_order &= expression;
+			return this;
+		}
+
+		/// <summary>
+		/// Orders the by random.
+		/// </summary>
+		/// <returns>The by random.</returns>
+		public JoinTable OrderByRandom ()
+		{
+			_order = new RandomOrderExpression (this._modelList [0].Mapping);
 			return this;
 		}
 
@@ -336,7 +415,7 @@ namespace Light.Data
 		/// </summary>
 		public int Count {
 			get {
-				return Convert.ToInt32 (_context.AggregateJoinTableCount (this.modelList, _on, _query, _level));
+				return Convert.ToInt32 (_context.AggregateJoinTableCount (_modelList, _query, _level));
 			}
 		}
 
@@ -345,7 +424,7 @@ namespace Light.Data
 		/// </summary>
 		public long LongCount {
 			get {
-				return Convert.ToInt64 (_context.AggregateJoinTableCount (this.modelList, _on, _query, _level));
+				return Convert.ToInt64 (_context.AggregateJoinTableCount (_modelList, _query, _level));
 			}
 		}
 
@@ -357,7 +436,7 @@ namespace Light.Data
 		public List<K> ToList<K> () where K : class, new()
 		{
 			DataMapping mapping = DataMapping.GetMapping (typeof(K));
-			List<K> list = _context.QueryJoinDataList (mapping, modelList, _on, _query, _order, _region, _level) as List<K>;
+			List<K> list = _context.QueryJoinDataList (mapping, _selector, _modelList, _query, _order, _region, _level) as List<K>;
 			return list;
 		}
 

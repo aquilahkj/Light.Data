@@ -596,10 +596,6 @@ namespace Light.Data
 			if (expression == null) {
 				throw new ArgumentNullException ("expression");
 			}
-//            if (!expression.IgnoreConsistency && !field.TableMapping.Equals(expression.TableMapping))
-//            {
-//                throw new LightDataException(RE.DataMappingIsNotMatchQueryExpression);
-//            }
 			QueryExpression exp = new SubQueryExpression (this, predicate, field, expression);
 			return exp;
 		}

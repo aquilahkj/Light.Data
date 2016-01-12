@@ -732,9 +732,9 @@ namespace Light.Data
 			}
 		}
 
-		internal IList QueryJoinDataList (DataMapping mapping, List<JoinModel> modelList, DataFieldExpression on, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IList QueryJoinDataList (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (null, modelList, on, query, order);
+			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				IList items = CreateList (mapping.ObjectType);
 				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
@@ -867,16 +867,16 @@ namespace Light.Data
 		/// 动态统计数据到数据表中
 		/// </summary>
 		/// <param name="mapping">数据映射</param>
-		/// <param name="dataFieldInfoDictionary">统计字段信息</param>
-		/// <param name="aggregateFunctionDictionary">统计方法信息</param>
+		/// <param name="fields">统计字段信息</param>
+		/// <param name="functions">统计方法信息</param>
 		/// <param name="query">查询表达式</param>
 		/// <param name="having">统计查询表达式</param>
 		/// <param name="order">排序表达式</param>
 		/// <param name="level">安全级别</param>
 		/// <returns>数据表</returns>
-		internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, Dictionary<string, DataFieldInfo> dataFieldInfoDictionary, Dictionary<string, AggregateFunction> aggregateFunctionDictionary, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, dataFieldInfoDictionary, aggregateFunctionDictionary, query, having, order);
+			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				return QueryDataTable (command, null, level);
 			}
@@ -887,19 +887,19 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="mapping">数据映射</param>
 		/// <param name="amapping">统计结果类型</param>
-		/// <param name="dataFieldInfoDictionary">统计字段信息</param>
-		/// <param name="aggregateFunctionDictionary">统计方法信息</param>
+		/// <param name="fields">统计字段信息</param>
+		/// <param name="functions">统计方法信息</param>
 		/// <param name="query">查询表达式</param>
 		/// <param name="having">统计查询表达式</param>
 		/// <param name="order">排序表达式</param>
 		/// <param name="level">安全级别</param>
 		/// <returns>数据集合</returns>
-		internal IList QueryDynamicAggregateList (DataEntityMapping mapping, AggregateTableMapping amapping, Dictionary<string, DataFieldInfo> dataFieldInfoDictionary, Dictionary<string, AggregateFunction> aggregateFunctionDictionary, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		internal IList QueryDynamicAggregateList (DataEntityMapping mapping, AggregateTableMapping amapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
 			if (amapping.RelateType != null && amapping.RelateType != mapping.ObjectType) {
 				throw new LightDataException (string.Format (RE.AggregateTypeIsNotSpecifyType, amapping.RelateType.FullName));
 			}
-			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, dataFieldInfoDictionary, aggregateFunctionDictionary, query, having, order);
+			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				IList items = CreateList (amapping.ObjectType);
 				IEnumerable ie = QueryDataReader (amapping, command, null, level);
@@ -953,12 +953,11 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join table count.</returns>
 		/// <param name="models">Models.</param>
-		/// <param name="on">On.</param>
 		/// <param name="query">Query.</param>
 		/// <param name="level">Level.</param>
-		internal object AggregateJoinTableCount (List<JoinModel> models, DataFieldExpression on, QueryExpression query, SafeLevel level)
+		internal object AggregateJoinTableCount (List<JoinModel> models, QueryExpression query, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateAggregateJoinCountCommand (models, on, query);
+			CommandData commandData = _dataBase.Factory.CreateAggregateJoinCountCommand (models, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				return ExecuteScalar (command, level);
 			}
@@ -998,7 +997,7 @@ namespace Light.Data
 		{
 			bool exists = false;
 			Region region = new Region (0, 1);
-				CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
+			CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.Create (typeof(Int32), 0);
 				foreach (object obj in QueryDataReader(pm, command, region, level)) {

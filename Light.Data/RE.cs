@@ -278,6 +278,10 @@ namespace Light.Data
 		public const string SpecifiedConfigNameConnectionStringError = "specified configName connection string error";
 
 		public const string DefaultConnectionNotExists = "default connection not exists";
+
+		public const string CanNotJoinTheSameTable = "can not join the same table";
+
+		public const string UnknowHavingType = "unknow having type";
 	}
 }
 

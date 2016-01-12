@@ -26,7 +26,7 @@ namespace Light.Data
 
 		Dictionary<string, DataFieldInfo> _dataFieldInfoDictionary = new Dictionary<string, DataFieldInfo> ();
 
-		Dictionary<string, AggregateFunction> _aggregateFunctionDictionary = new Dictionary<string, AggregateFunction> ();
+		Dictionary<string, AggregateFunctionInfo> _aggregateFunctionDictionary = new Dictionary<string, AggregateFunctionInfo> ();
 
 		internal AggregateTable (DataContext dataContext)
 		{
@@ -53,7 +53,9 @@ namespace Light.Data
 		/// <returns>统计表生成器</returns>
 		public DataTable GetDataTable ()
 		{
-			return _context.QueryDynamicAggregateTable (_enetityMapping, _dataFieldInfoDictionary, _aggregateFunctionDictionary, _query, _having, _order, _level);
+			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
+			List<AggregateFunctionInfo> functions = new List<AggregateFunctionInfo> (_aggregateFunctionDictionary.Values);
+			return _context.QueryDynamicAggregateTable (_enetityMapping, fields, functions, _query, _having, _order, _level);
 		}
 
 		/// <summary>
@@ -63,8 +65,10 @@ namespace Light.Data
 		/// <returns>类型集合</returns>
 		public List<K> GetObjectList<K> () where K : class, new()
 		{
+			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
+			List<AggregateFunctionInfo> functions = new List<AggregateFunctionInfo> (_aggregateFunctionDictionary.Values);
 			AggregateTableMapping aggregateMapping = AggregateTableMapping.GetAggregateMapping (typeof(K));
-			List<K> list = _context.QueryDynamicAggregateList (_enetityMapping, aggregateMapping, _dataFieldInfoDictionary, _aggregateFunctionDictionary, _query, _having, _order, _level) as List<K>;
+			List<K> list = _context.QueryDynamicAggregateList (_enetityMapping, aggregateMapping, fields, functions, _query, _having, _order, _level) as List<K>;
 			return list;
 		}
 
@@ -88,11 +92,14 @@ namespace Light.Data
 		public AggregateTable<T> GroupBy (DataFieldInfo fieldInfo, string alias)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("DataFieldInfo");
+				throw new ArgumentNullException ("fieldInfo");
 			}
 			if (string.IsNullOrEmpty (alias)) {
 				alias = fieldInfo.FieldName;
 			}
+//			else {
+//				fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
+//			}
 			if (_dataFieldInfoDictionary.ContainsKey (alias)) {
 				throw new LightDataException (string.Format (RE.GroupNameFieldIsExists, alias));
 			}
@@ -113,7 +120,7 @@ namespace Light.Data
 		public AggregateTable<T> Aggregate (AggregateFunction function, string alias)
 		{
 			if (Object.Equals (function, null)) {
-				throw new ArgumentNullException ("AggregateFunction");
+				throw new ArgumentNullException ("function");
 			}
 			if (string.IsNullOrEmpty (alias)) {
 				throw new ArgumentNullException ("alias");
@@ -124,13 +131,8 @@ namespace Light.Data
 			if (_dataFieldInfoDictionary.ContainsKey (alias)) {
 				throw new LightDataException (string.Format (RE.GroupNameFieldIsExists, alias));
 			}
-
-			//if (function.TableMapping == null)
-			//{
-			//    function.TableMapping = _enetityMapping;
-			//}
-			//function.CName = alias;
-			_aggregateFunctionDictionary.Add (alias, function);
+			AggregateFunctionInfo info = new AggregateFunctionInfo (function, alias);
+			_aggregateFunctionDictionary.Add (alias, info);
 
 			return this;
 		}
@@ -147,6 +149,17 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// 添加统计够查询条件
+		/// </summary>
+		/// <param name="expression">查询表达式</param>
+		/// <returns>统计表生成器</returns>
+		public AggregateTable<T> HavingWithOr (AggregateHavingExpression expression)
+		{
+			_having |= expression;
+			return this;
+		}
+
+		/// <summary>
 		/// 添加排序表达式
 		/// </summary>
 		/// <param name="expression">排序表达式</param>
@@ -154,6 +167,16 @@ namespace Light.Data
 		public AggregateTable<T> OrderBy (OrderExpression expression)
 		{
 			_order &= expression;
+			return this;
+		}
+
+		/// <summary>
+		/// Orders the by random.
+		/// </summary>
+		/// <returns>The by random.</returns>
+		public AggregateTable<T> OrderByRandom ()
+		{
+			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof(T)));
 			return this;
 		}
 
@@ -169,12 +192,25 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// 添加查询表达式
+		/// </summary>
+		/// <param name="expression">查询表达式</param>
+		/// <returns>统计表生成器</returns>
+		public AggregateTable<T> WhereWithOr (QueryExpression expression)
+		{
+			_query |= expression;
+			return this;
+		}
+
+		/// <summary>
 		/// 生成命令
 		/// </summary>
 		/// <returns>命令接口</returns>
 		public IDbCommand GetDbCommand ()
 		{
-			CommandData commandData = _context.DataBase.Factory.CreateDynamicAggregateCommand (_enetityMapping, _dataFieldInfoDictionary, _aggregateFunctionDictionary, _query, _having, _order);
+			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
+			List<AggregateFunctionInfo> functions = new List<AggregateFunctionInfo> (_aggregateFunctionDictionary.Values);
+			CommandData commandData = _context.DataBase.Factory.CreateDynamicAggregateCommand (_enetityMapping, fields, functions, _query, _having, _order);
 			return commandData.CreateCommand (_context.DataBase);
 		}
 

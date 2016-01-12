@@ -17,12 +17,7 @@ namespace Light.Data
 
 		internal QueryExpression (DataEntityMapping tableMapping)
 		{
-//			if (tableMapping == null) {
-//				IgnoreConsistency = true;
-//			}
-//			else {
 			TableMapping = tableMapping;
-//			}
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
@@ -33,9 +28,6 @@ namespace Light.Data
 			DataParameter[] dp2 = null;
 			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
 
-			//dataParameters = new DataParameter[dp1.Length + dp2.Length];
-			//dp1.CopyTo(dataParameters, 0);
-			//dp2.CopyTo(dataParameters, dp1.Length);
 			if (dp1 == null && dp2 == null) {
 				dataParameters = null;
 			}
@@ -65,10 +57,6 @@ namespace Light.Data
 			else if (expression1 != null && expression2 == null) {
 				return expression1;
 			}
-			//if (expression1.TableMapping != expression2.TableMapping)
-			//{
-			//    throw new LightDataException(RE.DataMappingOfExpressionIsNotMatch);
-			//}
 			DataEntityMapping demapping = null;
 			if (expression1.TableMapping != null) {
 				demapping = expression1.TableMapping;
@@ -76,21 +64,6 @@ namespace Light.Data
 			else if (expression2.TableMapping != null) {
 				demapping = expression2.TableMapping;
 			}
-//			//如果expression1不需要检查一致性而expression2需要,则用expression2的查询表
-//			if (expression1.IgnoreConsistency && !expression2.IgnoreConsistency) {
-//				demapping = expression2.TableMapping;
-//			}
-//			else if (!expression1.IgnoreConsistency && expression2.IgnoreConsistency) {
-//				demapping = expression1.TableMapping;
-//			}
-//			else if (!expression1.IgnoreConsistency && !expression2.IgnoreConsistency) {
-//				if (expression1.TableMapping.Equals (expression2.TableMapping)) {
-//					demapping = expression1.TableMapping;
-//				}
-//				else {
-//					throw new LightDataException (RE.DataMappingOfExpressionIsNotMatch);
-//				}
-//			}
 			QueryExpression newExpression = new QueryExpression (demapping);
 			newExpression._expression1 = expression1;
 			newExpression._expression2 = expression2;

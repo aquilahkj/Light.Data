@@ -24,11 +24,11 @@ namespace Light.Data
 			return factory.CreateDateSql (field, _format);
 		}
 
-		internal override string DBType {
-			get {
-				return string.Empty;
-			}
-		}
+//		internal override string DBType {
+//			get {
+//				return string.Empty;
+//			}
+//		}
 
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{

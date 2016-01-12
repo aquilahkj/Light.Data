@@ -2,7 +2,10 @@
 
 namespace Light.Data
 {
-	class DataFieldMatchExpression:DataFieldExpression
+	/// <summary>
+	/// Data field match expression.
+	/// </summary>
+	public class DataFieldMatchExpression:DataFieldExpression
 	{
 		readonly DataFieldInfo leftField;
 
@@ -10,7 +13,7 @@ namespace Light.Data
 
 		QueryPredicate predicate;
 
-		public DataFieldMatchExpression (DataFieldInfo leftField, DataFieldInfo rightField, QueryPredicate predicate)
+		internal DataFieldMatchExpression (DataFieldInfo leftField, DataFieldInfo rightField, QueryPredicate predicate)
 		{
 			this.leftField = leftField;
 			this.rightField = rightField;
@@ -25,6 +28,7 @@ namespace Light.Data
 			return factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 		}
 
+		/// <param name="match">Match.</param>
 		public static implicit operator QueryExpression (DataFieldMatchExpression match)
 		{ 
 			DataFieldQueryExpression exp = new DataFieldQueryExpression (match.leftField, match.predicate, match.rightField, false);

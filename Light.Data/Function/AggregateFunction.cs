@@ -672,7 +672,7 @@ namespace Light.Data
 		/// <returns></returns>
 		public override bool Equals (object obj)
 		{
-			return base.Equals (obj);
+			return object.ReferenceEquals (this, obj);
 		}
 
 		/// <summary>

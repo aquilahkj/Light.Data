@@ -291,6 +291,10 @@
     <Compile Include="BooleanDataFieldInfo.cs" />
     <Compile Include="DataContextSetting.cs" />
     <Compile Include="CommandData.cs" />
+    <Compile Include="JoinConnect.cs" />
+    <Compile Include="DataField\AliasDataFieldInfo.cs" />
+    <Compile Include="JoinSelector.cs" />
+    <Compile Include="Function\AggregateFunctionInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -6,8 +6,8 @@ namespace Light.Data
 {
 	class RandomOrderExpression : OrderExpression
 	{
-		public RandomOrderExpression ()
-			: base (null)
+		public RandomOrderExpression (DataEntityMapping tableMapping)
+			: base (tableMapping)
 		{
 //			IgnoreConsistency = true;
 		}

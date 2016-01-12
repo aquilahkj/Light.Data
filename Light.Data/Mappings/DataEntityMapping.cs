@@ -106,10 +106,18 @@ namespace Light.Data
 			return this.ObjectType.Equals (mapping.ObjectType);
 		}
 
+		int _fieldCount = 0;
+
+		public int FieldCount {
+			get {
+				return this._fieldCount;
+			}
+		}
+
 		protected void InitialDataFieldMapping ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-
+			int fieldCount = 0;
 			foreach (PropertyInfo pi in propertys) {
 				//字段属性
 				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
@@ -122,12 +130,19 @@ namespace Light.Data
 					if (mapping.Name != mapping.IndexName) {
 						_fieldMappingAlterNameDictionary.Add (mapping.Name, mapping);
 					}
+					ComplexFieldMapping complex = mapping as ComplexFieldMapping;
+					if (complex != null) {
+						fieldCount += complex.SubDataFieldCount;
+					}
+					else {
+						fieldCount++;
+					}
 				}
 			}
 			if (_fieldMappingDictionary.Count == 0) {
 				throw new LightDataException (RE.DataFieldsIsNotExists);
 			}
-
+			this._fieldCount = fieldCount;
 		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
