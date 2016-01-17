@@ -109,7 +109,7 @@ namespace Light.Data
 		public static DataContext Create (string name, string connectionString, string providerName)
 		{
 			ConnectionStringSettings connectionSetting = new ConnectionStringSettings (name, connectionString, providerName);
-			return Create (connectionSetting);
+			return CreateFromSetting (connectionSetting);
 		}
 
 		/// <summary>
@@ -117,7 +117,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="setting">数据连接设置</param>
 		/// <returns>数据上下文</returns>
-		public static DataContext Create (ConnectionStringSettings setting)
+		public static DataContext CreateFromSetting (ConnectionStringSettings setting)
 		{
 			if (setting == null)
 				throw new ArgumentNullException ("setting");
