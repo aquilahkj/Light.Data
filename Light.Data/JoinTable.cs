@@ -9,7 +9,7 @@ namespace Light.Data
 	/// </summary>
 	public class JoinTable
 	{
-		internal static JoinTable CreateJoinTable<T,K> (DataContext dataContext, JoinType joinType, LEnumerable<T> left, LEnumerable<K> right, DataFieldMatchExpression on)
+		internal static JoinTable CreateJoinTable<T,K> (DataContext dataContext, JoinType joinType, LEnumerable<T> left, LEnumerable<K> right, DataFieldExpression on)
 			where T : class, new() 
 			where K : class, new()
 		{
@@ -60,19 +60,47 @@ namespace Light.Data
 
 		List<JoinModel> _modelList = new List<JoinModel> ();
 
-//		/// <summary>
-//		/// 重置条件语句
-//		/// </summary>
-//		/// <returns> 枚举查询器</returns>
-//		public JoinTable Reset ()
-//		{
-//			_selector = new JoinSelector ();
-//			_query = null;
-//			_order = null;
-//			_region = null;
-//			_level = SafeLevel.Default;
-//			return this;
-//		}
+		//		/// <summary>
+		//		/// 重置条件语句
+		//		/// </summary>
+		//		/// <returns> 枚举查询器</returns>
+		//		public JoinTable Reset ()
+		//		{
+		//			_selector = new JoinSelector ();
+		//			_query = null;
+		//			_order = null;
+		//			_region = null;
+		//			_level = SafeLevel.Default;
+		//			return this;
+		//		}
+
+		/// <summary>
+		/// Join the specified le and on.
+		/// </summary>
+		/// <param name="le">Le.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (LEnumerable<K> le, DataFieldExpression on)where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.InnerJoin, le, on);
+		}
+
+		/// <summary>
+		/// Join the specified on.
+		/// </summary>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (DataFieldExpression on)where K : class, new()
+		{
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.InnerJoin, null, on);
+		}
+
 
 		/// <summary>
 		/// Join the specified le.
@@ -93,6 +121,35 @@ namespace Light.Data
 		public JoinTable Join<K> ()where K : class, new()
 		{
 			return InternalJoin<K> (JoinType.InnerJoin, null, null);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="le">Le.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		/// <param name = "on"></param>
+		public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldExpression on)where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.LeftJoin, le, on);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> (DataFieldExpression on)where K : class, new()
+		{
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.LeftJoin, null, on);
 		}
 
 		/// <summary>
@@ -123,6 +180,35 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldExpression on)where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.RightJoin, le, on);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (DataFieldExpression on)where K : class, new()
+		{
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.RightJoin, null, on);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable RightJoin<K> (LEnumerable<K> le)where K : class, new()
 		{
@@ -141,7 +227,7 @@ namespace Light.Data
 			return InternalJoin<K> (JoinType.RightJoin, null, null);
 		}
 
-		private JoinTable InternalJoin<K> (JoinType joinType, LEnumerable<K> right, DataFieldMatchExpression on)where K : class, new()
+		private JoinTable InternalJoin<K> (JoinType joinType, LEnumerable<K> right, DataFieldExpression on)where K : class, new()
 		{
 			JoinConnect connect = new JoinConnect (joinType, on);
 			JoinModel model2;
@@ -286,22 +372,22 @@ namespace Light.Data
 			return this;
 		}
 
-//		/// <summary>
-//		/// 添加查询表达式
-//		/// </summary>
-//		/// <param name="expression">查询表达式</param>
-//		/// <param name="catchType">连接操作符类型</param>
-//		/// <returns> 枚举查询器</returns>
-//		public JoinTable Where (QueryExpression expression, CatchOperatorsType catchType)
-//		{
-//			if (catchType == CatchOperatorsType.AND) {
-//				_query = QueryExpression.And (_query, expression);
-//			}
-//			else {
-//				_query = QueryExpression.Or (_query, expression);
-//			}
-//			return this;
-//		}
+		//		/// <summary>
+		//		/// 添加查询表达式
+		//		/// </summary>
+		//		/// <param name="expression">查询表达式</param>
+		//		/// <param name="catchType">连接操作符类型</param>
+		//		/// <returns> 枚举查询器</returns>
+		//		public JoinTable Where (QueryExpression expression, CatchOperatorsType catchType)
+		//		{
+		//			if (catchType == CatchOperatorsType.AND) {
+		//				_query = QueryExpression.And (_query, expression);
+		//			}
+		//			else {
+		//				_query = QueryExpression.Or (_query, expression);
+		//			}
+		//			return this;
+		//		}
 
 
 

@@ -15,6 +15,14 @@ namespace Light.Data.Demo
 			output.OutputFullCommand = true;
 			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
+
+			List<VehicleModel> list = context.LQuery<BusVehicleInfo> ().LeftJoin<BusFleetInfo> ()
+				.On (BusVehicleInfo.FleetCodeField == BusFleetInfo.FleetCodeField)
+				.SelectAll<BusVehicleInfo> ()
+				.SelectAll<BusFleetInfo> ()
+				.ToList<VehicleModel> ();
+
+
 //			List<TestUser> list = context.LQuery<TestUser> ().Where (TestUser.IdField > 10 & TestUser.UserNameField == "aaa" & TestUser.RegTimeField >= DateTime.Now.Date).ToList ();
 //			List<TaskModel> list = context.LQuery<TaskBase> ().Where (TaskBase.PriorityField == 100).LeftJoin<TaskContent> ()
 //				.On (TaskBase.TaskIdField == TaskContent.TaskIdField)
@@ -23,27 +31,27 @@ namespace Light.Data.Demo
 //				.OrderBy (TaskContent.ContentField.OrderByAsc ())
 //				.ToList<TaskModel> ();
 
-			context.SelectInto<ScDevicePackageHistory,ScDevicePackage> (
-				new DataFieldInfo[] {
-					ScDevicePackageHistory.IdField,
-					ScDevicePackageHistory.PackageNameField,
-					ScDevicePackageHistory.RecordTimeField,
-					ScDevicePackageHistory.GetTimeField,
-					ScDevicePackageHistory.DataField,
-					ScDevicePackageHistory.CountField,
-					ScDevicePackageHistory.StatusField
-				},
-				new DataFieldInfo[] {
-					ScDevicePackage.IdField,
-					ScDevicePackage.PackageNameField,
-					ScDevicePackage.RecordTimeField,
-					DataFieldInfo.DbTimeDataField,
-					ScDevicePackage.DataField,
-					ScDevicePackage.CountField,
-					ScDevicePackage.StatusField
-				},
-				ScDevicePackage.IdField > 100 & ScDevicePackage.RecordTimeField >= DateTime.Now
-				, ScDevicePackage.IdField.OrderByAsc ());
+//			context.SelectInto<ScDevicePackageHistory,ScDevicePackage> (
+//				new DataFieldInfo[] {
+//					ScDevicePackageHistory.IdField,
+//					ScDevicePackageHistory.PackageNameField,
+//					ScDevicePackageHistory.RecordTimeField,
+//					ScDevicePackageHistory.GetTimeField,
+//					ScDevicePackageHistory.DataField,
+//					ScDevicePackageHistory.CountField,
+//					ScDevicePackageHistory.StatusField
+//				},
+//				new DataFieldInfo[] {
+//					ScDevicePackage.IdField,
+//					ScDevicePackage.PackageNameField,
+//					ScDevicePackage.RecordTimeField,
+//					DataFieldInfo.DbTimeDataField,
+//					ScDevicePackage.DataField,
+//					ScDevicePackage.CountField,
+//					ScDevicePackage.StatusField
+//				},
+//				ScDevicePackage.IdField > 100 & ScDevicePackage.RecordTimeField >= DateTime.Now
+//				, ScDevicePackage.IdField.OrderByAsc ());
 			Console.ReadLine ();
 		}
 

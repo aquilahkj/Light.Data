@@ -53,15 +53,7 @@ namespace Light.Data.MysqlAdapter
 			if (mapping.IdentityField != null) {
 				fields.Remove (mapping.IdentityField);
 			}
-
-
 			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
-			//			string[] insertList = new string[paramList.Count];
-			//			int index = 0;
-			//			foreach (DataParameter dataParameter in paramList) {
-			//				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-			//				index++;
-			//			}
 			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
 				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
@@ -93,17 +85,11 @@ namespace Light.Data.MysqlAdapter
 				createCount++;
 				totalCreateCount++;
 				if (createCount == batchCount || totalCreateCount == totalCount) {
-					//					values.Append (";");
-					//					command.CommandText = string.Format ("{0}values{1}", insertsql, values);
 					CommandData command = new CommandData (string.Format ("{0}values{1};", insertsql, values), dataParams);
 					commands.Add (command);
 					if (totalCreateCount == totalCount) {
 						break;
 					}
-					//					command = _database.CreateCommand ();
-					//					createCount = 0;
-					//					paramIndex = 0;
-					//					values = new StringBuilder ();
 					dataParams = new List<DataParameter> ();
 					createCount = 0;
 					paramIndex = 0;
@@ -114,6 +100,28 @@ namespace Light.Data.MysqlAdapter
 				}
 			}
 			return commands.ToArray ();
+		}
+
+		public override string CreateCollectionParamsQuerySql (string fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		{
+			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
+				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
+			}
+			string op = GetQueryCollectionPredicate (predicate);
+			if (dataParameters.Count == 0) {
+				throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
+			}
+			int i = 0;
+			StringBuilder sb = new StringBuilder ();
+			sb.AppendFormat ("{0} {1} (", fieldName, op);
+			foreach (DataParameter dataParameter in dataParameters) {
+				if (i > 0)
+					sb.Append (" union all ");
+				sb.AppendFormat ("select {0}", dataParameter.ParameterName);
+				i++;
+			}
+			sb.Append (")");
+			return sb.ToString ();
 		}
 
 		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)

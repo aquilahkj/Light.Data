@@ -40,6 +40,11 @@ namespace Light.Data
 			}
 		}
 
+		public CommandData (string commandText)
+		{
+			this.commandText = commandText;
+		}
+
 		CommandType commandType = CommandType.Text;
 
 		public CommandType CommandType {

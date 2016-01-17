@@ -1,29 +1,26 @@
-﻿
-<#@ template debug="true" hostspecific="true" language="C#"  #>
+﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
 <#@ output extension=".cs" #>
 <#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
 <#@ assembly name="System.Xml"#>
 <#@ assembly name="/Developer/ExportLibrary/MySql.Data.dll"  #>
-
 <#@ import namespace="System"#>
 <#@ import namespace="System.Data"#>
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="MySql.Data.MySqlClient"#>
-
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Text.RegularExpressions"#>
-
 <#
-	var namespaceName="Light.Data.Demo";
-	var connection="Server=localhost;Port=3306;Database=CM_MC_SCSERVICE;Uid=root;Pwd=qwerty;";
+	var namespaceName="Light.Data.MysqlTest";
+	var connection="Server=localhost;Port=3306;Database=CM_TEST;Uid=root;Pwd=qwerty;";
 	var excludeTable=new HashSet<string>();
 	excludeTable.Add("QcConfiguration");
 	excludeTable.Add("QcDataLog");
+	var eccludePrefix="Bus_";
 
-    var dbSchema= new DataBaseSchema("CM_MC_SCSERVICE", connection);
+    var dbSchema= new DataBaseSchema("CM_TEST", connection);
     List<Table> tableList=dbSchema.GetTables();
 #>
 using System;
@@ -38,6 +35,10 @@ namespace <#=namespaceName#>
     {
     	string tableName=table.TableName;
     	if(excludeTable.Contains(tableName))
+    	{
+    		continue;
+    	}
+    	if(!string.IsNullOrEmpty(eccludePrefix) && tableName.StartsWith(eccludePrefix))
     	{
     		continue;
     	}

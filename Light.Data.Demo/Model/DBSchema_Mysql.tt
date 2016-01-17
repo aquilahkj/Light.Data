@@ -1,0 +1,733 @@
+﻿
+<#@ template debug="true" hostspecific="true" language="C#"  #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core"#>
+<#@ assembly name="System.Data"#>
+<#@ assembly name="System.Xml"#>
+<#@ assembly name="/Developer/ExportLibrary/MySql.Data.dll"  #>
+
+<#@ import namespace="System"#>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="MySql.Data.MySqlClient"#>
+
+<#@ import namespace="System.Text"#>
+<#@ import namespace="System.Text.RegularExpressions"#>
+
+<#
+	var namespaceName="Light.Data.Demo";
+	var connection="Server=localhost;Port=3306;Database=CM_TEST;Uid=root;Pwd=qwerty;";
+	var excludeTable=new HashSet<string>();
+	excludeTable.Add("QcConfiguration");
+	excludeTable.Add("QcDataLog");
+
+    var dbSchema= new DataBaseSchema("CM_TEST", connection);
+    List<Table> tableList=dbSchema.GetTables();
+#>
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Light.Data;
+
+namespace <#=namespaceName#>
+{
+<#
+    foreach(Table table in tableList)
+    {
+    	string tableName=table.TableName;
+    	if(excludeTable.Contains(tableName))
+    	{
+    		continue;
+    	}
+#>
+    [Serializable]
+    [DataTable("<#=tableName#>")]
+    public partial class <#=StringUtil.ToPascalCase(tableName)#> : DataTableEntity
+    {
+    	#region "Static Field"
+<#
+        foreach(Column c in table.Columns.Values)
+        {
+#>
+		static readonly DataFieldInfo <#=StringUtil.ToCamelCase(c.ColumnName)#>Field = DataFieldInfo<<#=StringUtil.ToPascalCase(tableName)#>>.Create("<#=StringUtil.ToPascalCase(c.ColumnName)#>");
+
+<#
+        }
+#>
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+<#
+        foreach(Column c in table.Columns.Values)
+        {
+#>
+		public static DataFieldInfo <#=StringUtil.ToPascalCase(c.ColumnName)#>Field
+        {
+            get {
+                return <#=StringUtil.ToCamelCase(c.ColumnName)#>Field;
+            }
+        }
+
+<#
+        }
+#>
+    	#endregion
+
+    	#region "Data Property"
+<#
+        foreach(Column c in table.Columns.Values)
+        {
+#>
+		private <#=c.DataType#> <#=StringUtil.ToCamelCase(c.ColumnName)#>;
+
+		/// <summary>
+		/// <#=c.ColumnComment#>
+		/// </summary>
+		/// <value></value>
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #>)]
+        public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
+        {
+            get { 
+            	return this.<#=StringUtil.ToCamelCase(c.ColumnName)#>; 
+            }
+            set { 
+            	this.<#=StringUtil.ToCamelCase(c.ColumnName)#> = value; 
+            }
+        }
+<#
+        }
+#>
+		#endregion
+    }
+
+<#
+    }
+    dbSchema.Dispose();
+#>
+}
+
+<#+ 
+
+    #region GetDataBaseSchema
+
+    public class DataBaseSchema
+    {
+        MySqlConnection _conn;
+        string _dataBaseName;
+
+        Dictionary<string, Table> _dict = null;
+
+        public DataBaseSchema(string dataBaseName, string connectionString)
+        {
+            this._dataBaseName = dataBaseName;
+            this._conn = new MySqlConnection(connectionString);
+            this._dict = new Dictionary<string, Table>();
+        }
+
+        public List<Table> GetTables()
+        {
+            string commandText = @"SELECT DISTINCT
+	ColumnInfo.TABLE_SCHEMA AS 'DataBaseName',
+	ColumnInfo.TABLE_NAME AS 'TableName',
+	TableInfo.TABLE_COMMENT AS 'TableComment',
+	ColumnInfo.COLUMN_NAME AS 'ColumnName',
+	ColumnInfo.COLUMN_COMMENT AS 'ColumnComment',
+	ColumnInfo.COLUMN_DEFAULT AS 'DefaultValue',
+	ColumnInfo.IS_NULLABLE AS 'AllowNull',
+	ColumnInfo.DATA_TYPE AS 'DataType',
+	ColumnInfo.CHARACTER_MAXIMUM_LENGTH AS 'MaxLength',
+	ColumnInfo.COLUMN_KEY AS 'ColumnKey',
+	ColumnInfo.COLUMN_TYPE AS 'ColumnType',
+	ColumnInfo.EXTRA AS 'Extra'
+FROM
+	information_schema.COLUMNS AS ColumnInfo 
+	LEFT JOIN information_schema.TABLES AS TableInfo 
+		ON ColumnInfo.TABLE_NAME = TableInfo.TABLE_NAME AND TableInfo.TABLE_SCHEMA = ColumnInfo.TABLE_SCHEMA
+WHERE
+	ColumnInfo.TABLE_SCHEMA = '" + this._dataBaseName + @"'
+ORDER BY
+	ColumnInfo.TABLE_NAME,
+	ColumnInfo.ORDINAL_POSITION ASC;";
+
+            commandText += @"SELECT 
+	TABLE_NAME AS 'TableName',
+	COLUMN_NAME AS 'ColumnName',
+	ORDINAL_POSITION AS 'OrdinalPosition',
+	REFERENCED_TABLE_NAME AS 'RefTableName',
+	REFERENCED_COLUMN_NAME AS 'RefCoulumnName'
+FROM
+	information_schema.KEY_COLUMN_USAGE
+WHERE
+	TABLE_SCHEMA = '" + this._dataBaseName + @"' AND (CONSTRAINT_NAME = 'PRIMARY' OR REFERENCED_TABLE_NAME IS NOT NULL)
+ORDER BY
+	TABLE_NAME";
+
+            this._conn.Open();
+            MySqlCommand command = new MySqlCommand(commandText, this._conn);
+            MySqlDataAdapter ad = new MySqlDataAdapter(command);
+            DataSet ds = new DataSet();
+            ad.Fill(ds);
+
+            DataTable columns = ds.Tables[0];
+
+            DataTable keys = ds.Tables[1];
+
+            this._conn.Close();
+
+            Dictionary<string, Table> dict = new Dictionary<string, Table>();
+            #region 生成表结构
+            foreach (DataRow item in columns.Rows)
+            {
+                string dataBaseName = item["DataBaseName"].ToString();
+                string tableName = item["TableName"].ToString();
+                Table table = null;
+                if (!dict.TryGetValue(tableName, out table))
+                {
+                    table = new Table(dataBaseName, tableName, item);
+                }
+                table.SetColumn(item);
+                dict[tableName] = table;
+            }
+            #endregion
+
+            #region 关系链
+            foreach (DataRow item in keys.Rows)
+            {
+                string tableName = item["TableName"].ToString();
+                Table table = null;
+                if (dict.TryGetValue(tableName, out table))
+                {
+                    table.SetRelationships(dict, item);
+                }
+            }
+            #endregion
+
+            List<Table> tableList = new List<Table>();
+            foreach (var item in dict)
+            {
+                tableList.Add(item.Value);
+            }
+            this._dict = dict;
+            return tableList;
+        }
+
+        public Table GetTable(string tableName)
+        {
+            Table table = null;
+            if (!string.IsNullOrEmpty(tableName))
+            {
+                table = this._dict[tableName];
+            }
+            return table;
+        }
+
+        public void Dispose()
+        {
+            if (this._conn != null)
+                this._conn.Close();
+        }
+    }
+
+    public class Table
+    {
+        public Table(string dataBaseName, string tableName, DataRow dataRow)
+        {
+            this._dataBaseName = dataBaseName;
+            this._tableName = tableName;
+
+            string comment = dataRow["TableComment"].ToString();
+            if (!string.IsNullOrEmpty(comment))
+            {
+                this._tableComment = comment;
+            }
+
+            this._columns = new Dictionary<string, Column>();
+
+            this._primaryKeyList = new HashSet<Column>();
+			this._foreignTables = new Dictionary<string, Table>();
+            this._subTables = new Dictionary<string, Table>();
+        }
+
+        string _dataBaseName = null;
+        public string DataBaseName
+        {
+            get
+            {
+                return this._dataBaseName;
+            }
+        }
+
+        string _tableName = null;
+        public string TableName
+        {
+            get
+            {
+                return this._tableName;
+            }
+        }
+
+        string _tableComment = null;
+        public string TableComment
+        {
+            get
+            {
+                return this._tableComment;
+            }
+        }
+
+        Dictionary<string, Column> _columns = null;
+        public Dictionary<string, Column> Columns
+        {
+            get
+            {
+                return this._columns;
+            }
+        }
+
+        HashSet<Column> _primaryKeyList = null;
+        public HashSet<Column> PrimaryKeyList
+        {
+            get
+            {
+                return this._primaryKeyList;
+            }
+        }
+
+        public Dictionary<string, Table> _subTables = null;
+
+        public void SetColumn(DataRow dataRow)
+        {
+            string columnName = dataRow["ColumnName"].ToString();
+            Column column = null;
+            if (!this._columns.TryGetValue(columnName, out column))
+            {
+                column = new Column(this, dataRow);
+            }
+            this._columns[columnName] = column;
+        }
+
+        public void SetRelationships(Dictionary<string, Table> tableDict, DataRow dataRow)
+        {
+            string columnName = dataRow["ColumnName"].ToString();
+            Column column = null;
+            if (this._columns.TryGetValue(columnName, out column))
+            {
+                string refTableName = dataRow["RefTableName"].ToString();
+                if (string.IsNullOrEmpty(refTableName))
+                {
+                    this._primaryKeyList.Add(column);
+                }
+                else
+                {
+                    Table refTable = null;
+                    Column refColumn = null;
+                    string refColumnName = dataRow["RefCoulumnName"].ToString();
+                    if (tableDict.TryGetValue(refTableName, out refTable) && refTable.GetColumn(refColumnName, out refColumn))
+                    {
+                        column.SetForeginKey(refColumn);
+                    }
+                }
+            }
+
+        }
+
+        public bool GetColumn(string columnName, out Column column)
+        {
+            column = null;
+            Dictionary<string, Column> dict = this._columns;
+            if (dict != null)
+            {
+                return dict.TryGetValue(columnName, out column);
+            }
+            return false;
+        }
+
+        Dictionary<string, Table> _foreignTables = null;
+        public void SetForeignTables(Table table)
+        {
+            if (!this._foreignTables.ContainsKey(table.TableName))
+            {
+                this._foreignTables.Add(table.TableName, table);
+            }
+        }
+
+        public List<Table> GetForeignTables()
+        {
+            return this._foreignTables.Values.ToList();
+        }
+
+        public void SetSubTable(Table table)
+        {
+            if (!this._subTables.ContainsKey(table.TableName))
+            {
+                this._subTables.Add(table.TableName, table);
+            }
+        }
+
+        public void RemoveSubTable(Table table)
+        {
+            if (this._subTables.ContainsKey(table.TableName))
+            {
+                this._subTables.Remove(table.TableName);
+            }
+        }
+
+        public List<Table> GetSubTables()
+        {
+            return this._subTables.Values.ToList();
+        }
+    }
+
+    public class Column
+    {
+        public Column(Table table, DataRow dataRow)
+        {
+            this._table = table;
+            this._dataBaseName = table.DataBaseName;
+            this._tableName = table.TableName;
+
+            this._allowNull = dataRow["AllowNull"].ToString().Equals("YES", StringComparison.InvariantCultureIgnoreCase);
+
+            this._columnName = dataRow["ColumnName"].ToString();
+            this._lowerColumnName = string.Format("{0}{1}", this._columnName[0].ToString().ToLower(), this._columnName.Substring(1));
+            this._upColumnName = string.Format("{0}{1}", this._columnName[0].ToString().ToUpper(), this._columnName.Substring(1));
+            this._columnComment = dataRow["ColumnComment"].ToString();
+            string columnType = dataRow["ColumnType"].ToString();
+
+            string dataType = dataRow["DataType"].ToString();
+            this._rawType = dataType;
+            if (dataType.Equals("bit", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = "bool";
+            }
+            else if (dataType.Equals("datetime", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("timestamp", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("date", StringComparison.InvariantCultureIgnoreCase)
+                )
+            {
+                this._dataType = "DateTime";
+            }
+            else if (dataType.Equals("decimal", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("money", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = "decimal";
+            }
+            else if (dataType.Equals("double", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = "double";
+            }
+            else if (dataType.Equals("float", StringComparison.InvariantCultureIgnoreCase))
+            {
+            	this._dataType = "float";
+            }
+            else if (dataType.Equals("char", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("varchar", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("text", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("tinytext", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("mediumtext", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("longtext", StringComparison.InvariantCultureIgnoreCase)
+                )
+            {
+                this._dataType = "string";
+            }
+            else if (dataType.Equals("smallint", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = "short";
+            }
+            else if (dataType.Equals("tinyint", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = "byte";
+            }
+            else if (dataType.Equals("mediumint", StringComparison.InvariantCultureIgnoreCase)
+                || dataType.Equals("int", StringComparison.InvariantCultureIgnoreCase)
+                )
+            {
+                this._dataType = "int";
+            }
+            else if (dataType.Equals("bigint", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = "long";
+            }
+            else
+            {
+                this._dataType = "byte[]";
+            }
+            if(string.IsNullOrEmpty(this._columnComment))
+            {
+            	this._columnComment=this._columnName;
+            }
+            Match match=Regex.Match(this._columnComment,"^#EnumType:(?<type>\\w+)#",RegexOptions.Compiled);
+          	if (match.Success) {
+				this._dataType=match.Groups["type"].Value;
+			}
+			else if(columnType.Contains("unsigned"))
+			{
+				this._dataType=string.Format("u{0}", this._dataType);
+			}
+            if (this._allowNull && !string.Equals(this._dataType, "string", StringComparison.InvariantCultureIgnoreCase)&& !string.Equals(this._dataType, "byte[]", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this._dataType = string.Format("{0}?", this._dataType);
+            }
+
+
+            this._defaultValue = dataRow["DefaultValue"].ToString();
+
+            this._isPrimaryKey = string.Equals(dataRow["ColumnKey"].ToString(), "PRI", StringComparison.InvariantCultureIgnoreCase);
+            this._isSubKey = string.Equals(dataRow["ColumnKey"].ToString(), "MUL", StringComparison.InvariantCultureIgnoreCase);
+            this._isIdentity = string.Equals(dataRow["Extra"].ToString(), "auto_increment", StringComparison.InvariantCultureIgnoreCase);
+
+            int maxLength = 0;
+            if (int.TryParse(dataRow["MaxLength"].ToString(), out maxLength))
+            {
+                this._maxLength = maxLength;
+            }
+        }
+
+        string _dataBaseName = null;
+        public string DataBaseName
+        {
+            get
+            {
+                return this._dataBaseName;
+            }
+        }
+
+        Table _table = null;
+        public Table Table
+        {
+            get
+            {
+                return this._table;
+            }
+        }
+
+        string _tableName = null;
+        public string TableName
+        {
+            get
+            {
+                return this._tableName;
+            }
+        }
+
+        string _columnName = null;
+        public string ColumnName
+        {
+            get
+            {
+                return this._columnName;
+            }
+        }
+
+        string _columnComment = null;
+        public string ColumnComment
+        {
+            get
+            {
+                return this._columnComment;
+            }
+        }
+
+        public string _defaultValue = null;
+        public string DefaultValue
+        {
+            get
+            {
+                return this._defaultValue;
+            }
+        }
+
+        bool _allowNull = false;
+        public bool AllowNull
+        {
+            get
+            {
+                return this._allowNull;
+            }
+        }
+
+        string _rawType = null;
+        public string RawType
+        {
+            get
+            {
+                return this._rawType;
+            }
+        }
+
+        string _dataType = null;
+        public string DataType
+        {
+            get
+            {
+                return this._dataType;
+            }
+        }
+
+        int? _maxLength = null;
+        public int? MaxLength
+        {
+            get
+            {
+                return this._maxLength;
+            }
+        }
+
+        #region Key
+
+        bool _isPrimaryKey = false;
+        public bool IsPrimaryKey
+        {
+            get
+            {
+                return this._isPrimaryKey;
+            }
+        }
+
+        #region 外键
+        bool _isForeginKey = false;
+        public bool IsForeginKey
+        {
+            get
+            {
+                return this._isForeginKey;
+            }
+        }
+
+        Column _foreginKey;
+        public Column ForeginKey
+        {
+            get
+            {
+                return this._foreginKey;
+            }
+        }
+
+        Table _foreginTable;
+        public Table ForeginTable
+        {
+            get
+            {
+                return this._foreginTable;
+            }
+        }
+
+        public void SetForeginKey(Column column)
+        {
+            if (column != null)
+            {
+				this._isForeginKey = true;
+				this._foreginKey = column;
+				this._foreginTable = column.Table;
+				this.Table.SetForeignTables(column.Table);
+				column.Table.SetSubTable(this.Table);
+            }
+        }
+        #endregion
+
+        bool _isSubKey = false;
+        public bool IsSubKey
+        {
+            get
+            {
+                return this._isSubKey;
+            }
+            set
+            {
+                this._isSubKey = value;
+            }
+        }
+
+        bool _isIdentity = false;
+        public bool IsIdentity
+        {
+            get
+            {
+                return this._isIdentity;
+            }
+        }
+
+        #endregion
+
+        string _upColumnName = null;
+        public string UpColumnName
+        {
+            get
+            {
+                return this._upColumnName;
+            }
+        }
+
+        string _lowerColumnName = null;
+        public string LowerColumnName
+        {
+            get
+            {
+                return this._lowerColumnName;
+            }
+        }
+    }
+
+    #endregion
+
+    public static class StringUtil
+    {
+        public static string ToPascalCase(string name)
+        {
+           	StringBuilder sb = new StringBuilder();
+			string[] parts = name.Split(new char[]{'_'});
+			foreach (string part in parts)
+			{
+				if (part.Length > 0)
+				{
+					sb.Append(Char.ToUpper(part[0]));
+					if (part.Length > 1)
+					{
+						string o=part.Substring(1);
+						if(o==o.ToUpper())
+						{
+							o=o.ToLower();
+						}
+						sb.Append(o);
+					}
+				}
+			}
+			return sb.ToString();
+        }
+
+        public static string ToCamelCase(string name)
+        {
+           	StringBuilder sb = new StringBuilder();
+			string[] parts = name.Split(new char[]{'_'});
+			bool f=false;
+			foreach (string part in parts)
+			{
+				if (part.Length > 0)
+				{
+					if(!f)
+					{
+						sb.Append(Char.ToLower(part[0]));
+						f=true;
+					}
+					else
+					{
+						sb.Append(Char.ToUpper(part[0]));
+					}
+
+					if (part.Length > 1)
+					{
+						string o=part.Substring(1);
+						if(o==o.ToUpper())
+						{
+							o=o.ToLower();
+						}
+						sb.Append(o);
+					}
+				}
+			}
+			return sb.ToString();
+        }
+    }
+#>

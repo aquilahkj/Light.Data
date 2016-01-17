@@ -42,7 +42,8 @@
     <Compile Include="Mapping.cs">
       <DependentUpon>Mapping.tt</DependentUpon>
     </Compile>
-    <Compile Include="DBSchema_Mysql.cs">
+    <Compile Include="Model\VehicleModel.cs" />
+    <Compile Include="Model\DBSchema_Mysql.cs">
       <DependentUpon>DBSchema_Mysql.tt</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -70,7 +71,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Mapping.cs</LastGenOutput>
     </None>
-    <None Include="DBSchema_Mysql.tt">
+    <None Include="Model\DBSchema_Mysql.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DBSchema_Mysql.cs</LastGenOutput>
     </None>

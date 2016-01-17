@@ -50,7 +50,7 @@ namespace Light.Data
 			_joinCollectionPredicateDict [JoinType.RightJoin] = "right join";
 		}
 
-		string GetQueryPredicate (QueryPredicate predicate)
+		protected string GetQueryPredicate (QueryPredicate predicate)
 		{
 			if (_queryPredicateDict.ContainsKey (predicate)) {
 				return _queryPredicateDict [predicate];
@@ -60,7 +60,7 @@ namespace Light.Data
 			}
 		}
 
-		string GetQueryCollectionPredicate (QueryCollectionPredicate predicate)
+		protected string GetQueryCollectionPredicate (QueryCollectionPredicate predicate)
 		{
 			if (_queryCollectionPredicateDict.ContainsKey (predicate)) {
 				return _queryCollectionPredicateDict [predicate];
@@ -292,6 +292,13 @@ namespace Light.Data
 			return command;
 		}
 
+		public virtual CommandData CreateTruncatCommand (DataTableEntityMapping mapping)
+		{
+			string sql = string.Format ("truncate table {0}", CreateDataTableSql (mapping));
+			CommandData command = new CommandData (sql);
+			return command;
+		}
+
 		#endregion
 
 		#region 主命令语句块
@@ -373,7 +380,7 @@ namespace Light.Data
 						foreach (DataFieldInfo info in fields) {
 							if (Object.ReferenceEquals (obj, info)) {
 								AliasDataFieldInfo aliasInfo = info as AliasDataFieldInfo;
-								if (Object.Equals (aliasInfo, null)) {
+								if (!Object.Equals (aliasInfo, null)) {
 									alias = aliasInfo.Alias;
 								}
 								else {
@@ -480,7 +487,7 @@ namespace Light.Data
 			int index = 0;
 			foreach (DataFieldInfo fieldInfo in fields) {
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
-				if (Object.Equals (aliasInfo, null)) {
+				if (!Object.Equals (aliasInfo, null)) {
 					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false);
 				}
 				else {
@@ -764,7 +771,7 @@ namespace Light.Data
 				}
 				string groupbyField = fieldInfo.CreateDataFieldSql (this);
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
-				if (Object.Equals (aliasInfo, null)) {
+				if (!Object.Equals (aliasInfo, null)) {
 					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false);
 				}
 				else {
@@ -971,7 +978,7 @@ namespace Light.Data
 		public virtual string CreateBetweenParamsQuerySql (string fieldName, bool isNot, DataParameter fromParam, DataParameter toParam)
 		{
 			StringBuilder sb = new StringBuilder ();
-			sb.AppendFormat ("{0} {3}between {1} and {2}", fieldName, fromParam.ParameterName, fromParam.ParameterName, isNot ? string.Empty : "not ");
+			sb.AppendFormat ("{0} {3}between {1} and {2}", fieldName, fromParam.ParameterName, toParam.ParameterName, isNot ? string.Empty : "not ");
 			return sb.ToString ();
 		}
 

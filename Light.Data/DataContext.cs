@@ -695,6 +695,19 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Truncates the table.
+		/// </summary>
+		/// <returns>The table.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public int TruncateTable<T>()
+		{
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(T));
+			CommandData commandData = _dataBase.Factory.CreateTruncatCommand (mapping);
+			IDbCommand command = commandData.CreateCommand (_dataBase);
+			return ExecuteNonQuery (command, SafeLevel.Default);
+		}
+
+		/// <summary>
 		/// 生成数据查询枚举
 		/// </summary>
 		/// <param name="mapping">数据映射</param>
@@ -1006,7 +1019,7 @@ namespace Light.Data
 			}
 			return exists;
 		}
-
+			
 
 		/// <summary>
 		/// DataTable读取

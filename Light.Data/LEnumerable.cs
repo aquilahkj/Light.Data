@@ -95,22 +95,22 @@ namespace Light.Data
 			return this;
 		}
 
-//		/// <summary>
-//		/// 添加查询表达式
-//		/// </summary>
-//		/// <param name="expression">查询表达式</param>
-//		/// <param name="catchType">连接操作符类型</param>
-//		/// <returns> 枚举查询器</returns>
-//		public LEnumerable<T> Where (QueryExpression expression, CatchOperatorsType catchType)
-//		{
-//			if (catchType == CatchOperatorsType.AND) {
-//				_query = QueryExpression.And (_query, expression);
-//			}
-//			else {
-//				_query = QueryExpression.Or (_query, expression);
-//			}
-//			return this;
-//		}
+		//		/// <summary>
+		//		/// 添加查询表达式
+		//		/// </summary>
+		//		/// <param name="expression">查询表达式</param>
+		//		/// <param name="catchType">连接操作符类型</param>
+		//		/// <returns> 枚举查询器</returns>
+		//		public LEnumerable<T> Where (QueryExpression expression, CatchOperatorsType catchType)
+		//		{
+		//			if (catchType == CatchOperatorsType.AND) {
+		//				_query = QueryExpression.And (_query, expression);
+		//			}
+		//			else {
+		//				_query = QueryExpression.Or (_query, expression);
+		//			}
+		//			return this;
+		//		}
 
 		/// <summary>
 		/// 添加排序表达式
@@ -529,11 +529,25 @@ namespace Light.Data
 		/// <param name="le">Le.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (LEnumerable<K> le, DataFieldMatchExpression on) where K : class, new()
+		public JoinTable Join<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
+			if (on == null)
+				throw new ArgumentNullException ("on");
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, on);
+		}
+
+		/// <summary>
+		/// Join the specified le.
+		/// </summary>
+		/// <param name="le">Le.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (LEnumerable<K> le) where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, null);
 		}
 
 		/// <summary>
@@ -541,8 +555,10 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (DataFieldMatchExpression on) where K : class, new()
+		public JoinTable Join<K> (DataFieldExpression on) where K : class, new()
 		{
+			if (on == null)
+				throw new ArgumentNullException ("on");
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, null, on);
 		}
 
@@ -562,10 +578,12 @@ namespace Light.Data
 		/// <param name="le">Le.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldMatchExpression on) where K : class, new()
+		public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
+			if (on == null)
+				throw new ArgumentNullException ("on");
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, on);
 		}
 
@@ -573,10 +591,33 @@ namespace Light.Data
 		/// Lefts the join.
 		/// </summary>
 		/// <returns>The join.</returns>
+		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (DataFieldMatchExpression on) where K : class, new()
+		public JoinTable LeftJoin<K> (LEnumerable<K> le) where K : class, new()
+		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, null);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> (DataFieldExpression on) where K : class, new()
 		{
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, null, on);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> () where K : class, new()
+		{
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, null, null);
 		}
 
 		/// <summary>
@@ -586,7 +627,7 @@ namespace Light.Data
 		/// <param name="le">Le.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldMatchExpression on) where K : class, new()
+		public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
@@ -597,10 +638,35 @@ namespace Light.Data
 		/// Rights the join.
 		/// </summary>
 		/// <returns>The join.</returns>
+		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (DataFieldMatchExpression on) where K : class, new()
+		public JoinTable RightJoin<K> (LEnumerable<K> le) where K : class, new()
 		{
+			if (le == null)
+				throw new ArgumentNullException ("le");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, null);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (DataFieldExpression on) where K : class, new()
+		{
+			if (on == null)
+				throw new ArgumentNullException ("on");
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, null, on);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> () where K : class, new()
+		{
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, null, null);
 		}
 	}
 }
