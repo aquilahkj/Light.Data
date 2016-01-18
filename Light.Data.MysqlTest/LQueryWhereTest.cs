@@ -29,6 +29,7 @@ namespace Light.Data.MysqlTest
 					userInsert.CheckPoint = i * 0.01d;
 					userInsert.DeleteFlag = true;
 					userInsert.CheckStatus = true;
+					userInsert.CheckLevelType = CheckLevelType.Low;
 				}
 				list1.Add (userInsert);
 			}
@@ -385,7 +386,21 @@ namespace Light.Data.MysqlTest
 		}
 
 		[Test ()]
-		public void TestCase_QueryLikeMatch_String ()
+		public void TestCase_QueryInArray_String ()
+		{
+			InitialUserTable (20);
+			string[] arrayString = new string[]{ "test3", "test5", "test7" };
+			List<TeUser> listIn = context.LQuery<TeUser> ().Where (TeUser.AccountField.In (arrayString)).ToList ();
+			Assert.AreEqual (3, listIn.Count);
+			Assert.IsTrue (listIn.TrueForAll (x => x.Account == "test3" || x.Account == "test5" || x.Account == "test7"));
+
+			List<TeUser> listNotIn = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotIn (arrayString)).ToList ();
+			Assert.AreEqual (17, listNotIn.Count);
+			Assert.IsTrue (listNotIn.TrueForAll (x => x.Account != "test3" && x.Account != "test5" && x.Account != "test7"));
+		}
+
+		[Test ()]
+		public void TestCase_QueryLikeMatch_Single_String ()
 		{
 			InitialUserTable (20);
 
@@ -397,6 +412,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (9, listNotlike1.Count);
 			Assert.IsTrue (listNotlike1.TrueForAll (x => !x.Account.StartsWith ("test1")));
 
+
 			List<TeUser> listlike2 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Like ("%5")).ToList ();
 			Assert.AreEqual (2, listlike2.Count);
 			Assert.IsTrue (listlike2.TrueForAll (x => x.Account.EndsWith ("5")));
@@ -404,6 +420,7 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listNotlike2 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotLike ("%5")).ToList ();
 			Assert.AreEqual (18, listNotlike2.Count);
 			Assert.IsTrue (listNotlike2.TrueForAll (x => !x.Account.EndsWith ("5")));
+
 
 			List<TeUser> listlike3 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Like ("%est2%")).ToList ();
 			Assert.AreEqual (2, listlike3.Count);
@@ -415,66 +432,179 @@ namespace Light.Data.MysqlTest
 
 
 
-			List<TeUser> listlike4 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (true, false)).ReverseLike ("mytest2")).ToList ();
+
+
+			List<TeUser> listEnd1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.StartsWith ("test1")).ToList ();
+			Assert.AreEqual (11, listEnd1.Count);
+			Assert.IsTrue (listEnd1.TrueForAll (x => x.Account.StartsWith ("test1")));
+
+			List<TeUser> listNotEnd1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotStartsWith ("test1")).ToList ();
+			Assert.AreEqual (9, listNotEnd1.Count);
+			Assert.IsTrue (listNotEnd1.TrueForAll (x => !x.Account.StartsWith ("test1")));
+
+			List<TeUser> listStart1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.EndsWith ("5")).ToList ();
+			Assert.AreEqual (2, listStart1.Count);
+			Assert.IsTrue (listStart1.TrueForAll (x => x.Account.EndsWith ("5")));
+
+			List<TeUser> listNotStart1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotEndsWith ("5")).ToList ();
+			Assert.AreEqual (18, listNotStart1.Count);
+			Assert.IsTrue (listNotStart1.TrueForAll (x => !x.Account.EndsWith ("5")));
+
+			List<TeUser> listContains1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Contains ("est2")).ToList ();
+			Assert.AreEqual (2, listContains1.Count);
+			Assert.IsTrue (listContains1.TrueForAll (x => x.Account.Contains ("est2")));
+
+			List<TeUser> listNotContains1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotContains ("est2")).ToList ();
+			Assert.AreEqual (18, listNotContains1.Count);
+			Assert.IsTrue (listNotContains1.TrueForAll (x => !x.Account.Contains ("est2")));
+
+		}
+
+		[Test ()]
+		public void TestCAse_QueryLikeMatch_Single_String_Reverse ()
+		{
+			InitialUserTable (20);
+
+
+			List<TeUser> listlike4 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformEndsWithMatch ()).ReverseLike ("mytest2")).ToList ();
 			Assert.AreEqual (1, listlike4.Count);
 			Assert.IsTrue (listlike4.TrueForAll (x => "mytest2".EndsWith (x.Account)));
 
-			List<TeUser> listNotlike4 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (true, false)).ReverseNotLike ("mytest2")).ToList ();
+			List<TeUser> listNotlike4 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformEndsWithMatch ()).ReverseNotLike ("mytest2")).ToList ();
 			Assert.AreEqual (19, listNotlike4.Count);
 			Assert.IsTrue (listNotlike4.TrueForAll (x => !"mytest2".EndsWith (x.Account)));
 
-			List<TeUser> listlike5 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (true, false)).ReverseLike ("mytest2a")).ToList ();
+			List<TeUser> listlike5 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformEndsWithMatch ()).ReverseLike ("mytest2a")).ToList ();
 			Assert.AreEqual (0, listlike5.Count);
 
-			List<TeUser> listNotlike5 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (true, false)).ReverseNotLike ("mytest2a")).ToList ();
+			List<TeUser> listNotlike5 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformEndsWithMatch ()).ReverseNotLike ("mytest2a")).ToList ();
 			Assert.AreEqual (20, listNotlike5.Count);
 			Assert.IsTrue (listNotlike4.TrueForAll (x => !"mytest2a".EndsWith (x.Account)));
 
 
-
-			List<TeUser> listlike6 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (false, true)).ReverseLike ("test11aaaa")).ToList ();
+			List<TeUser> listlike6 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformStartsWithMatch ()).ReverseLike ("test11aaaa")).ToList ();
 			Assert.AreEqual (2, listlike6.Count);
 			Assert.IsTrue (listlike6.TrueForAll (x => "test11aaaa".StartsWith (x.Account)));
 
-			List<TeUser> listNotlike6 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (false, true)).ReverseNotLike ("test11aaaa")).ToList ();
+			List<TeUser> listNotlike6 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformStartsWithMatch ()).ReverseNotLike ("test11aaaa")).ToList ();
 			Assert.AreEqual (18, listNotlike6.Count);
 			Assert.IsTrue (listNotlike6.TrueForAll (x => !"test11aaaa".StartsWith (x.Account)));
 
-			List<TeUser> listlike7 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (false, true)).ReverseLike ("mytest11aaaa")).ToList ();
+			List<TeUser> listlike7 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformStartsWithMatch ()).ReverseLike ("mytest11aaaa")).ToList ();
 			Assert.AreEqual (0, listlike7.Count);
 
-			List<TeUser> listNotlike7 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (false, true)).ReverseNotLike ("mytest11aaaa")).ToList ();
+			List<TeUser> listNotlike7 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformStartsWithMatch ()).ReverseNotLike ("mytest11aaaa")).ToList ();
 			Assert.AreEqual (20, listNotlike7.Count);
 			Assert.IsTrue (listNotlike7.TrueForAll (x => !"mytest11aaaa".StartsWith (x.Account)));
 
 
-			List<TeUser> listlike8 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (true, true)).ReverseLike ("mytest11aaaa")).ToList ();
+
+			List<TeUser> listlike8 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformContainsMatch ()).ReverseLike ("mytest11aaaa")).ToList ();
 			Assert.AreEqual (2, listlike8.Count);
 			Assert.IsTrue (listlike8.TrueForAll (x => "mytest11aaaa".Contains (x.Account)));
 
-			List<TeUser> listNotlike8 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (true, true)).ReverseNotLike ("mytest11aaaa")).ToList ();
+			List<TeUser> listNotlike8 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformContainsMatch ()).ReverseNotLike ("mytest11aaaa")).ToList ();
 			Assert.AreEqual (18, listNotlike8.Count);
 			Assert.IsTrue (listNotlike8.TrueForAll (x => !"mytest11aaaa".Contains (x.Account)));
 
-			List<TeUser> listlike9 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (true, true)).ReverseLike ("test")).ToList ();
+			List<TeUser> listlike9 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformContainsMatch ()).ReverseLike ("test")).ToList ();
 			Assert.AreEqual (0, listlike9.Count);
 
-			List<TeUser> listNotlike9 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformMatch (false, true)).ReverseNotLike ("test")).ToList ();
+			List<TeUser> listNotlike9 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformContainsMatch ()).ReverseNotLike ("test")).ToList ();
 			Assert.AreEqual (20, listNotlike9.Count);
 			Assert.IsTrue (listNotlike7.TrueForAll (x => !"test".Contains (x.Account)));
+		}
+
+		[Test ()]
+		public void TestCase_QueryLikeMatch_Multi_String ()
+		{
+			InitialUserTable (20);
+			string[] like1Array = new string[]{ "test1%", "test2%", "test3%" };
+			List<TeUser> listlike1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Like (like1Array)).ToList ();
+			Assert.AreEqual (14, listlike1.Count);
+			Assert.IsTrue (listlike1.TrueForAll (x => x.Account.StartsWith ("test1") || x.Account.StartsWith ("test2") || x.Account.StartsWith ("test3")));
+
+			List<TeUser> listNotlike1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotLike (like1Array)).ToList ();
+			Assert.AreEqual (6, listNotlike1.Count);
+			Assert.IsTrue (listNotlike1.TrueForAll (x => !x.Account.StartsWith ("test1") && !x.Account.StartsWith ("test2") && !x.Account.StartsWith ("test3")));
+
+			string[] like2Array = new string[]{ "%2", "%5", "%6" };
+			List<TeUser> listlike2 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Like (like2Array)).ToList ();
+			Assert.AreEqual (6, listlike2.Count);
+			Assert.IsTrue (listlike2.TrueForAll (x => x.Account.EndsWith ("2") || x.Account.EndsWith ("5") || x.Account.EndsWith ("6")));
+
+			List<TeUser> listNotlike2 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotLike (like2Array)).ToList ();
+			Assert.AreEqual (14, listNotlike2.Count);
+			Assert.IsTrue (listNotlike2.TrueForAll (x => !x.Account.EndsWith ("2") && !x.Account.EndsWith ("5") && !x.Account.EndsWith ("6")));
+
+			string[] like3Array = new string[]{ "%est1%", "%est2%", "%est3%" };
+			List<TeUser> listlike3 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Like (like3Array)).ToList ();
+			Assert.AreEqual (14, listlike3.Count);
+			Assert.IsTrue (listlike3.TrueForAll (x => x.Account.Contains ("est1") || x.Account.Contains ("est2") || x.Account.Contains ("est3")));
+
+			List<TeUser> listNotlike3 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotLike (like3Array)).ToList ();
+			Assert.AreEqual (6, listNotlike3.Count);
+			Assert.IsTrue (listNotlike3.TrueForAll (x => !x.Account.Contains ("est1") && !x.Account.Contains ("est2") && !x.Account.Contains ("est3")));
 
 
+			List<TeUser> listStart1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.StartsWith (like1Array)).ToList ();
+			Assert.AreEqual (14, listStart1.Count);
+			Assert.IsTrue (listStart1.TrueForAll (x => x.Account.StartsWith ("test1") || x.Account.StartsWith ("test2") || x.Account.StartsWith ("test3")));
 
+			List<TeUser> listNotStart1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotStartsWith (like1Array)).ToList ();
+			Assert.AreEqual (6, listNotStart1.Count);
+			Assert.IsTrue (listNotStart1.TrueForAll (x => !x.Account.StartsWith ("test1") && !x.Account.StartsWith ("test2") && !x.Account.StartsWith ("test3")));
 
-			List<TeUser> listMatch1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Match ("est2")).ToList ();
-			Assert.AreEqual (2, listMatch1.Count);
-			Assert.IsTrue (listMatch1.TrueForAll (x => x.Account.Contains ("est2")));
+			List<TeUser> listEnd1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.EndsWith (like2Array)).ToList ();
+			Assert.AreEqual (6, listEnd1.Count);
+			Assert.IsTrue (listEnd1.TrueForAll (x => x.Account.EndsWith ("2") || x.Account.EndsWith ("5") || x.Account.EndsWith ("6")));
 
-			List<TeUser> listNotMatch1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotMatch ("est2")).ToList ();
-			Assert.AreEqual (18, listNotMatch1.Count);
-			Assert.IsTrue (listNotMatch1.TrueForAll (x => !x.Account.Contains ("est2")));
+			List<TeUser> listNotEnd1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotEndsWith (like2Array)).ToList ();
+			Assert.AreEqual (14, listNotEnd1.Count);
+			Assert.IsTrue (listNotEnd1.TrueForAll (x => !x.Account.EndsWith ("2") && !x.Account.EndsWith ("5") && !x.Account.EndsWith ("6")));
 
-				
+			List<TeUser> listContain1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.Contains (like3Array)).ToList ();
+			Assert.AreEqual (14, listContain1.Count);
+			Assert.IsTrue (listContain1.TrueForAll (x => x.Account.Contains ("est1") || x.Account.Contains ("est2") || x.Account.Contains ("est3")));
+
+			List<TeUser> listNotContain1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotContains (like3Array)).ToList ();
+			Assert.AreEqual (6, listNotContain1.Count);
+			Assert.IsTrue (listNotContain1.TrueForAll (x => !x.Account.Contains ("est1") && !x.Account.Contains ("est2") && !x.Account.Contains ("est3")));
+
+		}
+
+		[Test ()]
+		public void TestCase_QueryLikeMatch_Multi_String_Reverse ()
+		{
+			InitialUserTable (20);
+			string[] like1Array = new string[]{ "mytest1", "mytest2", "mytest3" };
+
+			List<TeUser> listlike4 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformEndsWithMatch ()).ReverseLike (like1Array)).ToList ();
+			Assert.AreEqual (3, listlike4.Count);
+			Assert.IsTrue (listlike4.TrueForAll (x => "mytest1".EndsWith (x.Account) || "mytest2".EndsWith (x.Account) || "mytest3".EndsWith (x.Account)));
+
+			List<TeUser> listNotlike4 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformEndsWithMatch ()).ReverseNotLike (like1Array)).ToList ();
+			Assert.AreEqual (17, listNotlike4.Count);
+			Assert.IsTrue (listNotlike4.TrueForAll (x => !"mytest1".EndsWith (x.Account) && !"mytest2".EndsWith (x.Account) && !"mytest3".EndsWith (x.Account)));
+		
+			string[] like2Array = new string[]{ "test11aaaa", "test22aaaa", "test33aaaa" };
+			List<TeUser> listlike6 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformStartsWithMatch ()).ReverseLike (like2Array)).ToList ();
+			Assert.AreEqual (4, listlike6.Count);
+			Assert.IsTrue (listlike6.TrueForAll (x => "test11aaaa".StartsWith (x.Account) || "test22aaaa".StartsWith (x.Account) || "test33aaaa".StartsWith (x.Account)));
+
+			List<TeUser> listNotlike6 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformStartsWithMatch ()).ReverseNotLike (like2Array)).ToList ();
+			Assert.AreEqual (16, listNotlike6.Count);
+			Assert.IsTrue (listNotlike6.TrueForAll (x => !"test11aaaa".StartsWith (x.Account) && !"test22aaaa".StartsWith (x.Account) && !"test33aaaa".StartsWith (x.Account)));
+
+			string[] like3Array = new string[]{ "mytest11aaaa", "mytest22aaaa", "mytest33aaaa" };
+			List<TeUser> listlike8 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformContainsMatch ()).ReverseLike (like3Array)).ToList ();
+			Assert.AreEqual (4, listlike8.Count);
+			Assert.IsTrue (listlike8.TrueForAll (x => "mytest11aaaa".Contains (x.Account) || "mytest22aaaa".Contains (x.Account) || "mytest33aaaa".Contains (x.Account)));
+
+			List<TeUser> listNotlike8 = context.LQuery<TeUser> ().Where ((TeUser.AccountField.TransformStartsWithMatch ()).ReverseNotLike (like2Array)).ToList ();
+			Assert.AreEqual (16, listNotlike8.Count);
+			Assert.IsTrue (listNotlike8.TrueForAll (x => !"mytest11aaaa".Contains (x.Account) && !"mytest22aaaa".Contains (x.Account) && !"mytest33aaaa".Contains (x.Account)));
+
 		}
 
 		[Test ()]
@@ -533,13 +663,29 @@ namespace Light.Data.MysqlTest
 		public void TestCase_Query_Boolean ()
 		{
 			InitialUserTable (21);
-			List<TeUser> listNull = context.LQuery<TeUser> ().Where (TeUser.DeleteFlagField.IsTrue()).ToList ();
+			List<TeUser> listNull = context.LQuery<TeUser> ().Where (TeUser.DeleteFlagField.IsTrue ()).ToList ();
 			Assert.AreEqual (10, listNull.Count);
 			Assert.IsTrue (listNull.TrueForAll (x => x.DeleteFlag));
 
 			List<TeUser> listNotNull = context.LQuery<TeUser> ().Where (TeUser.DeleteFlagField.IsFalse ()).ToList ();
 			Assert.AreEqual (11, listNotNull.Count);
 			Assert.IsTrue (listNotNull.TrueForAll (x => !x.DeleteFlag));
+
+			List<TeUser> listNull1 = context.LQuery<TeUser> ().Where (TeUser.DeleteFlagField == true).ToList ();
+			Assert.AreEqual (10, listNull1.Count);
+			Assert.IsTrue (listNull1.TrueForAll (x => x.DeleteFlag));
+
+			List<TeUser> listNull2 = context.LQuery<TeUser> ().Where (TeUser.DeleteFlagField != false).ToList ();
+			Assert.AreEqual (10, listNull2.Count);
+			Assert.IsTrue (listNull2.TrueForAll (x => x.DeleteFlag));
+
+			List<TeUser> listNotNull1 = context.LQuery<TeUser> ().Where (TeUser.DeleteFlagField == false).ToList ();
+			Assert.AreEqual (11, listNotNull1.Count);
+			Assert.IsTrue (listNotNull1.TrueForAll (x => !x.DeleteFlag));
+
+			List<TeUser> listNotNull2 = context.LQuery<TeUser> ().Where (TeUser.DeleteFlagField != true).ToList ();
+			Assert.AreEqual (11, listNotNull2.Count);
+			Assert.IsTrue (listNotNull2.TrueForAll (x => !x.DeleteFlag));
 		}
 
 		[Test ()]
@@ -553,6 +699,19 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listNotNull = context.LQuery<TeUser> ().Where (TeUser.CheckStatusField.IsNotNull ()).ToList ();
 			Assert.AreEqual (10, listNotNull.Count);
 			Assert.IsTrue (listNotNull.TrueForAll (x => x.CheckStatus != null));
+		}
+
+		[Test ()]
+		public void TestCase_QueryNull_Enum ()
+		{
+			InitialUserTable (21);
+			List<TeUser> listNull = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField.IsNull ()).ToList ();
+			Assert.AreEqual (11, listNull.Count);
+			Assert.IsTrue (listNull.TrueForAll (x => x.CheckLevelType == null));
+
+			List<TeUser> listNotNull = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField.IsNotNull ()).ToList ();
+			Assert.AreEqual (10, listNotNull.Count);
+			Assert.IsTrue (listNotNull.TrueForAll (x => x.CheckLevelType != null));
 		}
 	}
 }

@@ -665,6 +665,8 @@ namespace Light.Data.MysqlTest
 
 		static readonly DataFieldInfo checkStatusField = DataFieldInfo<TeUser>.Create("CheckStatus");
 
+		static readonly DataFieldInfo checkLevelTypeField = DataFieldInfo<TeUser>.Create("CheckLevelType");
+
     	#endregion
 
     	#region "Static DataFieldInfo"
@@ -798,6 +800,13 @@ namespace Light.Data.MysqlTest
         {
             get {
                 return checkStatusField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelTypeField
+        {
+            get {
+                return checkLevelTypeField;
             }
         }
 
@@ -1106,6 +1115,22 @@ namespace Light.Data.MysqlTest
             }
             set { 
             	this.checkStatus = value; 
+            }
+        }
+		private CheckLevelType? checkLevelType;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckLevelType", IsNullable = true)]
+        public CheckLevelType? CheckLevelType
+        {
+            get { 
+            	return this.checkLevelType; 
+            }
+            set { 
+            	this.checkLevelType = value; 
             }
         }
 		#endregion

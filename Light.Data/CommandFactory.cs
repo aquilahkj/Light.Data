@@ -982,7 +982,7 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public virtual string CreateCollectionMatchQuerySql (string fieldName, bool isReverse, bool isMatch, bool isNot, List<DataParameter> dataParameters)
+		public virtual string CreateCollectionMatchQuerySql (string fieldName, bool isReverse, bool starts, bool ends, bool isNot, List<DataParameter> dataParameters)
 		{
 			if (dataParameters.Count == 0) {
 				throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
@@ -994,13 +994,24 @@ namespace Light.Data
 				sb.Append ("(");
 			}
 			foreach (DataParameter item in dataParameters) {
-				if (i > 0)
-					sb.Append (" or ");
+				if (i > 0) {
+					if (isNot) {
+						sb.Append (" and ");
+					}
+					else {
+						sb.Append (" or ");
+					}
+				}
 				if (!isReverse) {
 					sb.AppendFormat ("{0} {2}like {1}", fieldName, item.ParameterName, isNot ? "not " : string.Empty);
-					if (isMatch) {
-						item.Value = string.Format ("{1}{0}{1}", item.Value, _wildcards);
+					string value = item.Value.ToString ();
+					if (starts && !value.StartsWith (_wildcards)) {
+						value = _wildcards + value;
 					}
+					if (ends && !value.EndsWith (_wildcards)) {
+						value = value + _wildcards;
+					}
+					item.Value = value;
 				}
 				else {
 					sb.AppendFormat ("{1} {2}like {0}", fieldName, item.ParameterName, isNot ? "not " : string.Empty);

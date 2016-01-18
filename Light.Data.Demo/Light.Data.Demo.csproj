@@ -46,6 +46,7 @@
     <Compile Include="Model\DBSchema_Mysql.cs">
       <DependentUpon>DBSchema_Mysql.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\DBSchema.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1892,6 +1892,16 @@ namespace Light.Data.Demo
 
 		static readonly DataFieldInfo areaField = DataFieldInfo<TeUser>.Create("Area");
 
+		static readonly DataFieldInfo deleteFlagField = DataFieldInfo<TeUser>.Create("DeleteFlag");
+
+		static readonly DataFieldInfo refereeIdField = DataFieldInfo<TeUser>.Create("RefereeId");
+
+		static readonly DataFieldInfo checkPointField = DataFieldInfo<TeUser>.Create("CheckPoint");
+
+		static readonly DataFieldInfo checkStatusField = DataFieldInfo<TeUser>.Create("CheckStatus");
+
+		static readonly DataFieldInfo checkLevelTypeField = DataFieldInfo<TeUser>.Create("CheckLevelType");
+
     	#endregion
 
     	#region "Static DataFieldInfo"
@@ -2000,6 +2010,41 @@ namespace Light.Data.Demo
             }
         }
 
+		public static DataFieldInfo DeleteFlagField
+        {
+            get {
+                return deleteFlagField;
+            }
+        }
+
+		public static DataFieldInfo RefereeIdField
+        {
+            get {
+                return refereeIdField;
+            }
+        }
+
+		public static DataFieldInfo CheckPointField
+        {
+            get {
+                return checkPointField;
+            }
+        }
+
+		public static DataFieldInfo CheckStatusField
+        {
+            get {
+                return checkStatusField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelTypeField
+        {
+            get {
+                return checkLevelTypeField;
+            }
+        }
+
     	#endregion
 
     	#region "Data Property"
@@ -2067,14 +2112,14 @@ namespace Light.Data.Demo
             	this.nickName = value; 
             }
         }
-		private int gender;
+		private GenderType gender;
 
 		/// <summary>
-		/// Gender
+		/// #EnumType:GenderType#sexy
 		/// </summary>
 		/// <value></value>
 		[DataField("Gender")]
-        public int Gender
+        public GenderType Gender
         {
             get { 
             	return this.gender; 
@@ -2211,14 +2256,14 @@ namespace Light.Data.Demo
             	this.status = value; 
             }
         }
-		private double? hotRate;
+		private double hotRate;
 
 		/// <summary>
 		/// HotRate
 		/// </summary>
 		/// <value></value>
-		[DataField("HotRate", IsNullable = true)]
-        public double? HotRate
+		[DataField("HotRate")]
+        public double HotRate
         {
             get { 
             	return this.hotRate; 
@@ -2241,6 +2286,86 @@ namespace Light.Data.Demo
             }
             set { 
             	this.area = value; 
+            }
+        }
+		private bool deleteFlag;
+
+		/// <summary>
+		/// DeleteFlag
+		/// </summary>
+		/// <value></value>
+		[DataField("DeleteFlag")]
+        public bool DeleteFlag
+        {
+            get { 
+            	return this.deleteFlag; 
+            }
+            set { 
+            	this.deleteFlag = value; 
+            }
+        }
+		private int? refereeId;
+
+		/// <summary>
+		/// RefereeId
+		/// </summary>
+		/// <value></value>
+		[DataField("RefereeId", IsNullable = true)]
+        public int? RefereeId
+        {
+            get { 
+            	return this.refereeId; 
+            }
+            set { 
+            	this.refereeId = value; 
+            }
+        }
+		private double? checkPoint;
+
+		/// <summary>
+		/// CheckPoint
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckPoint", IsNullable = true)]
+        public double? CheckPoint
+        {
+            get { 
+            	return this.checkPoint; 
+            }
+            set { 
+            	this.checkPoint = value; 
+            }
+        }
+		private bool? checkStatus;
+
+		/// <summary>
+		/// CheckStatus
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckStatus", IsNullable = true)]
+        public bool? CheckStatus
+        {
+            get { 
+            	return this.checkStatus; 
+            }
+            set { 
+            	this.checkStatus = value; 
+            }
+        }
+		private CheckLevelType? checkLevelType;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckLevelType", IsNullable = true)]
+        public CheckLevelType? CheckLevelType
+        {
+            get { 
+            	return this.checkLevelType; 
+            }
+            set { 
+            	this.checkLevelType = value; 
             }
         }
 		#endregion

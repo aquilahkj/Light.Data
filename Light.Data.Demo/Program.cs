@@ -17,7 +17,7 @@ namespace Light.Data.Demo
 			context.SetCommanfOutput (output);
 
 			List<VehicleModel> list = context.LQuery<BusVehicleInfo> ().LeftJoin<BusFleetInfo> ()
-				.On (BusVehicleInfo.FleetCodeField == BusFleetInfo.FleetCodeField)
+				.On (BusVehicleInfo.FleetCodeField.Eq (BusFleetInfo.FleetCodeField))
 				.SelectAll<BusVehicleInfo> ()
 				.SelectAll<BusFleetInfo> ()
 				.ToList<VehicleModel> ();

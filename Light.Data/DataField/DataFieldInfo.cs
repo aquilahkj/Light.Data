@@ -196,7 +196,19 @@ namespace Light.Data
 		/// <returns>查询表达式</returns>
 		public QueryExpression Eq (object value)
 		{
-			return SingleParam (QueryPredicate.Eq, value);
+			if (value == null) {
+				return IsNull ();
+			}
+			else if (value is System.Collections.IEnumerable && !(value is string)) {
+				return In ((System.Collections.IEnumerable)value);
+			}
+			else if (value is Boolean) {
+				bool b = (bool)value;
+				return b ? IsTrue () : IsFalse ();
+			}
+			else {
+				return SingleParam (QueryPredicate.Eq, value);
+			}
 		}
 
 		/// <summary>
@@ -246,7 +258,19 @@ namespace Light.Data
 		/// <returns>查询表达式</returns>
 		public QueryExpression NotEq (object value)
 		{
-			return SingleParam (QueryPredicate.NotEq, value);
+			if (value == null) {
+				return IsNotNull ();
+			}
+			else if (value is System.Collections.IEnumerable && !(value is string)) {
+				return NotIn ((System.Collections.IEnumerable)value);
+			}
+			else if (value is Boolean) {
+				bool b = (bool)value;
+				return !b ? IsTrue () : IsFalse ();
+			}
+			else {
+				return SingleParam (QueryPredicate.NotEq, value);
+			}
 		}
 
 		/// <summary>
@@ -466,9 +490,29 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="value">匹配值</param>
 		/// <returns>查询表达式</returns>
-		public QueryExpression Like (object value)
+		public QueryExpression Like (string value)
 		{
-			return MatchValue (value, false, false);
+			return MatchValue (value, false, false, false);
+		}
+
+		/// <summary>
+		/// like匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression Like (params string[] values)
+		{
+			return MatchValue (values, false, false, false);
+		}
+
+		/// <summary>
+		/// like匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression Like (IEnumerable<string> values)
+		{
+			return MatchValue (values, false, false, false);
 		}
 
 		/// <summary>
@@ -476,9 +520,29 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="value">匹配值</param>
 		/// <returns>查询表达式</returns>
-		public QueryExpression NotLike (object value)
+		public QueryExpression NotLike (string value)
 		{
-			return MatchValue (value, false, true);
+			return MatchValue (value, false, false, true);
+		}
+
+		/// <summary>
+		/// not like匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotLike (params string[] values)
+		{
+			return MatchValue (values, false, false, true);
+		}
+
+		/// <summary>
+		/// not like匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotLike (IEnumerable<string> values)
+		{
+			return MatchValue (values, false, false, true);
 		}
 
 		/// <summary>
@@ -486,9 +550,29 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="value">匹配值</param>
 		/// <returns>查询表达式</returns>
-		public QueryExpression Match (object value)
+		public QueryExpression Contains (string value)
 		{
-			return MatchValue (value, true, false);
+			return MatchValue (value, true, true, false);
+		}
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression Contains (params string[] values)
+		{
+			return MatchValue (values, true, true, false);
+		}
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression Contains (IEnumerable<string> values)
+		{
+			return MatchValue (values, true, true, false);
 		}
 
 		/// <summary>
@@ -496,10 +580,153 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="value">匹配值</param>
 		/// <returns>查询表达式</returns>
-		public QueryExpression NotMatch (object value)
+		public QueryExpression NotContains (string value)
 		{
-			return MatchValue (value, true, true);
+			return MatchValue (value, true, true, true);
 		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotContains (params string[] values)
+		{
+			return MatchValue (values, true, true, true);
+		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotContains (IEnumerable<string> values)
+		{
+			return MatchValue (values, true, true, true);
+		}
+
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="value">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression EndsWith (string value)
+		{
+			return MatchValue (value, true, false, false);
+		}
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression EndsWith (params string[] values)
+		{
+			return MatchValue (values, true, false, false);
+		}
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression EndsWith (IEnumerable<string> values)
+		{
+			return MatchValue (values, true, false, false);
+		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="value">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotEndsWith (string value)
+		{
+			return MatchValue (value, true, false, true);
+		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotEndsWith (params string[] values)
+		{
+			return MatchValue (values, true, false, true);
+		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotEndsWith (IEnumerable<string> values)
+		{
+			return MatchValue (values, true, false, true);
+		}
+
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="value">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression StartsWith (string value)
+		{
+			return MatchValue (value, false, true, false);
+		}
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression StartsWith (params string[] values)
+		{
+			return MatchValue (values, false, true, false);
+		}
+
+		/// <summary>
+		/// 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression StartsWith (IEnumerable<string> values)
+		{
+			return MatchValue (values, false, true, false);
+		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="value">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotStartsWith (string value)
+		{
+			return MatchValue (value, false, true, true);
+		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotStartsWith (params string[] values)
+		{
+			return MatchValue (values, false, true, true);
+		}
+
+		/// <summary>
+		/// not like 模糊匹配
+		/// </summary>
+		/// <param name="values">匹配值</param>
+		/// <returns>查询表达式</returns>
+		public QueryExpression NotStartsWith (IEnumerable<string> values)
+		{
+			return MatchValue (values, false, true, true);
+		}
+
 
 		///// <summary>
 		///// 模糊匹配(倒转)
@@ -570,8 +797,9 @@ namespace Light.Data
 				throw new ArgumentNullException ("value");
 			}
 			QueryExpression exp = null;
-			if (value is DataFieldInfo) {
-				exp = new DataFieldQueryExpression (this, predicate, value as DataFieldInfo, isReverse);
+			DataFieldInfo dataFieldInfo = value as DataFieldInfo;
+			if (!Object.Equals (dataFieldInfo, null)) {
+				exp = new DataFieldQueryExpression (this, predicate, dataFieldInfo, isReverse);
 			}
 			else {
 				exp = new SingleParamQueryExpression (this, predicate, value, isReverse);
@@ -612,12 +840,21 @@ namespace Light.Data
 			return exp;
 		}
 
-		private QueryExpression MatchValue (object value, bool isMatch, bool isNot)
+		private QueryExpression MatchValue (string value, bool starts, bool ends, bool isNot)
 		{
 			if (value == null) {
 				throw new LightDataException (RE.InputValueIsNotAllowNull);
 			}
-			QueryExpression exp = new CollectionMatchQueryExpression (this, value, false, isMatch, isNot);
+			QueryExpression exp = new CollectionMatchQueryExpression (this, value, false, starts, ends, isNot);
+			return exp;
+		}
+
+		private QueryExpression MatchValue (IEnumerable<string> values, bool starts, bool ends, bool isNot)
+		{
+			if (values == null) {
+				throw new LightDataException (RE.InputValueIsNotAllowNull);
+			}
+			QueryExpression exp = new CollectionMatchQueryExpression (this, values, false, starts, ends, isNot);
 			return exp;
 		}
 
@@ -665,10 +902,6 @@ namespace Light.Data
 		/// <returns></returns>
 		public static QueryExpression operator == (DataFieldInfo field, object value)
 		{
-			if (value == null)
-				return field.IsNull ();
-			if (value is System.Collections.IEnumerable && value.GetType () != typeof(string))
-				return field.In ((System.Collections.IEnumerable)value);
 			return field.Eq (value);
 		}
 
@@ -680,10 +913,6 @@ namespace Light.Data
 		/// <returns></returns>
 		public static QueryExpression operator != (DataFieldInfo field, object value)
 		{
-			if (value == null)
-				return field.IsNotNull ();
-			if (value is System.Collections.IEnumerable && value.GetType () != typeof(string))
-				return field.NotIn ((System.Collections.IEnumerable)value);
 			return field.NotEq (value);
 		}
 
@@ -752,15 +981,42 @@ namespace Light.Data
 			}
 		}
 
+//		/// <summary>
+//		/// 可在字段的左右两边添加匹配字符
+//		/// </summary>
+//		/// <param name="left">左匹配</param>
+//		/// <param name="right">右匹配</param>
+//		/// <returns></returns>
+//		public MatchDataFieldInfo TransformMatch (bool left, bool right)
+//		{
+//			return new MatchDataFieldInfo (this, left, right);
+//		}
+
 		/// <summary>
-		/// 可在字段的左右两边添加匹配字符
+		/// Transforms the starts with match.
 		/// </summary>
-		/// <param name="left">左匹配</param>
-		/// <param name="right">右匹配</param>
-		/// <returns></returns>
-		public MatchDataFieldInfo TransformMatch (bool left, bool right)
+		/// <returns>The starts with match.</returns>
+		public MatchDataFieldInfo TransformEndsWithMatch()
 		{
-			return new MatchDataFieldInfo (this, left, right);
+			return new MatchDataFieldInfo (this, true, false);
+		}
+
+		/// <summary>
+		/// Transforms the endss with match.
+		/// </summary>
+		/// <returns>The endss with match.</returns>
+		public MatchDataFieldInfo TransformStartsWithMatch()
+		{
+			return new MatchDataFieldInfo (this, false, true);
+		}
+
+		/// <summary>
+		/// Transforms the contains match.
+		/// </summary>
+		/// <returns>The contains match.</returns>
+		public MatchDataFieldInfo TransformContainsMatch()
+		{
+			return new MatchDataFieldInfo (this, true, true);
 		}
 
 		/// <summary>
@@ -1302,6 +1558,7 @@ namespace Light.Data
 		{
 			return field.LtEq (mfield);
 		}
+
 
 		private DataFieldExpression OnDataFieldMatch (QueryPredicate predicate, DataFieldInfo field)
 		{
