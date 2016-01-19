@@ -88,6 +88,24 @@ namespace Light.Data
 			return Catch (expression1, CatchOperatorsType.OR, expression2);
 		}
 
+		/// <summary>
+		/// Converts the query expression.
+		/// </summary>
+		/// <returns>The query expression.</returns>
+		protected virtual QueryExpression ConvertQueryExpression ()
+		{
+			QueryExpression query1 = _expression1.ConvertQueryExpression ();
+			QueryExpression query2 = _expression2.ConvertQueryExpression ();
+			return QueryExpression.Catch (query1, _operatorType, query2);
+		}
+
+		/// <param name="expression">Expression.</param>
+		public static implicit operator QueryExpression (DataFieldExpression expression)
+		{
+			return expression.ConvertQueryExpression ();
+		}
+
+
 		//		/// <summary>
 		//		/// 匹配内容是否相等
 		//		/// </summary>

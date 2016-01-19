@@ -44,6 +44,8 @@
       <DependentUpon>DBSchema_Mysql.tt</DependentUpon>
     </Compile>
     <Compile Include="LQueryWhereTest.cs" />
+    <Compile Include="LQueryOrderByTest.cs" />
+    <Compile Include="LQueryWhereOrderByTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -35,7 +35,7 @@ namespace Light.Data.MysqlTest
 		{
 			context.TruncateTable<TeUser> ();
 			List<TeUser> list1 = new List<TeUser> ();
-			const int count = 57;
+			const int count = 33;
 			const int rdd = 10;
 			for (int i = 0; i < count; i++) {
 				TeUser userInsert = CreateTestUser (false);
@@ -49,7 +49,7 @@ namespace Light.Data.MysqlTest
 
 			List<TeUser> list2 = context.LQuery<TeUser> ().ToList ();
 			for (int i = 0; i < count; i++) {
-				Assert.True (EqualUser (list1 [i], list2 [i], false));
+				Assert.True (EqualUser (list1 [i], list2 [i], true));
 			}
 
 			List<UpdateSetValue> updates1 = new List<UpdateSetValue> ();

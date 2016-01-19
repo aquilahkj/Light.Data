@@ -855,8 +855,9 @@ namespace Light.Data
 			int paramIndex = 0;
 			List<DataParameter> dataParams = new List<DataParameter> ();
 			List<CommandData> commands = new List<CommandData> ();
+			int i = 0;
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = GetDataParameters (fields, entity);
+				List<DataParameter> entityParams = i == 0 ? paramList : GetDataParameters (fields, entity);
 				string[] valueList = new string[paramList.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
@@ -882,6 +883,7 @@ namespace Light.Data
 					paramIndex = 0;
 					totalSql = new StringBuilder ();
 				}
+				i++;
 			}
 			return commands.ToArray ();
 		}

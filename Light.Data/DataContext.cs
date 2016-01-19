@@ -256,16 +256,24 @@ namespace Light.Data
 			object obj;
 			int rInt = 0;
 			CommandData commandData = _dataBase.Factory.CreateInsertCommand (data);
-			CommandData commandDataIdentity = _dataBase.Factory.CreateIdentityCommand (mapping);
+			CommandData commandDataIdentity = null;
+			if (mapping.IdentityField != null) {
+				commandDataIdentity = _dataBase.Factory.CreateIdentityCommand (mapping);
+			}
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IDbCommand identityCommand = commandDataIdentity.CreateCommand (_dataBase);
-				obj = ExecuteInsertCommand (command, identityCommand, SafeLevel.Default);
-				if (identityCommand != null) {
-					identityCommand.Dispose ();
+				if (commandDataIdentity != null) {
+					IDbCommand identityCommand = commandDataIdentity.CreateCommand (_dataBase);
+					obj = ExecuteInsertCommand (command, identityCommand, SafeLevel.Default);
+					if (identityCommand != null) {
+						identityCommand.Dispose ();
+					}
+				}
+				else {
+					obj = null;
 				}
 			}
 			rInt = 1;
-			if (mapping.IdentityField != null && !Object.Equals (obj, null)) {
+			if (!Object.Equals (obj, null)) {
 				object id = Convert.ChangeType (obj, mapping.IdentityField.ObjectType);
 				mapping.IdentityField.Handler.Set (data, id);
 			}
@@ -485,14 +493,36 @@ namespace Light.Data
 			if (datas.Length == 0) {
 				return 0;
 			}
+			Type arrayType = datas.GetType ();
+			Type type = arrayType.GetElementType ();
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
 			CommandData[] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (datas, batchCount);
 			IDbCommand[] dbcommands = new IDbCommand[commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
 				dbcommands [i] = commandDatas [i].CreateCommand (_dataBase);
 			}
-			int[] results = ExecuteMultiCommands (dbcommands, SafeLevel.Default);
+			IDbCommand identityCommand = null;
+			if (mapping.IdentityField != null) {
+				CommandData commandDataIdentity = _dataBase.Factory.CreateIdentityCommand (mapping);
+				identityCommand = commandDataIdentity.CreateCommand (_dataBase);
+			}
+				
+			object obj;
+			int[] results = ExecuteBluckInsertCommands (dbcommands, identityCommand, SafeLevel.Default, out obj);
 			foreach (IDbCommand command in dbcommands) {
 				command.Dispose ();
+			}
+			if (!Object.Equals (obj, null)) {
+				object id = Convert.ChangeType (obj, mapping.IdentityField.ObjectType);
+				int len = datas.Length;
+				object[] ids = CreateObjectList (id, len);
+
+				for (int i = 0; i < len; i++) {
+					object data = datas.GetValue (i);
+					object value = ids [i];
+					mapping.IdentityField.Handler.Set (data, value);
+				}
+
 			}
 			int result = 0;
 			foreach (int i in results) {
@@ -501,6 +531,50 @@ namespace Light.Data
 			return result;
 		}
 
+		static object[] CreateObjectList (object lastId, int len)
+		{
+			TypeCode code = Type.GetTypeCode (lastId.GetType ());
+			object[] results = new object[len] ;
+			if (code == TypeCode.Int16) {
+				short id = (short)lastId;
+				for (int i = len - 1; i >= 0; i--) {
+					results [i] = id--;
+				}
+			}
+			else if (code == TypeCode.Int32) {
+				int id = (int)lastId;
+				for (int i = len - 1; i >= 0; i--) {
+					results [i] = id--;
+				}
+			}
+			else if (code == TypeCode.Int64) {
+				long id = (long)lastId;
+				for (int i = len - 1; i >= 0; i--) {
+					results [i] = id--;
+				}
+			}
+			else if (code == TypeCode.UInt16) {
+				ushort id = (ushort)lastId;
+				for (int i = len - 1; i >= 0; i--) {
+					results [i] = id--;
+				}
+			}
+			else if (code == TypeCode.UInt32) {
+				uint id = (uint)lastId;
+				for (int i = len - 1; i >= 0; i--) {
+					results [i] = id--;
+				}
+			}
+			else if (code == TypeCode.UInt64) {
+				ulong id = (ulong)lastId;
+				id++;
+				for (int i = len - 1; i >= 0; i--) {
+					results [i] = id--;
+				}
+			}
+
+			return results;
+		}
 
 		/// <summary>
 		/// Select into 
@@ -699,7 +773,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The table.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int TruncateTable<T>()
+		public int TruncateTable<T> ()
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(T));
 			CommandData commandData = _dataBase.Factory.CreateTruncatCommand (mapping);
@@ -1019,7 +1093,7 @@ namespace Light.Data
 			}
 			return exists;
 		}
-			
+
 
 		/// <summary>
 		/// DataTable读取
@@ -1068,6 +1142,41 @@ namespace Light.Data
 			}
 		}
 
+		internal virtual int[] ExecuteBluckInsertCommands (IDbCommand[] insertCommands, IDbCommand indentityCommand, SafeLevel level, out object lastId)
+		{
+			if (level == SafeLevel.None) {
+				level = SafeLevel.Default;
+			}
+			int[] rInts = new int[insertCommands.Length];
+			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
+				transaction.Open ();
+				try {
+					int index = 0;
+					foreach (IDbCommand dbcommand in insertCommands) {
+						transaction.SetupCommand (dbcommand);
+						OutputCommand ("ExecuteMultiCommands", dbcommand, level);
+						rInts [index] = dbcommand.ExecuteNonQuery ();
+						index++;
+					}
+					if (indentityCommand != null) {
+						transaction.SetupCommand (indentityCommand);
+						OutputCommand ("ExecuteInsertCommand_Indentity", indentityCommand, level);
+						lastId = indentityCommand.ExecuteScalar ();
+					}
+					else {
+						lastId = null;
+					}
+					transaction.Commit ();
+
+				} catch (Exception ex) {
+					lastId = null;
+					transaction.Rollback ();
+					throw ex;
+				}
+			}
+			return rInts;
+		}
+
 		internal virtual int[] ExecuteMultiCommands (IDbCommand[] dbcommands, SafeLevel level)
 		{
 			if (level == SafeLevel.None) {
@@ -1104,7 +1213,7 @@ namespace Light.Data
 					dbcommand.ExecuteNonQuery ();
 					if (indentityCommand != null) {
 						transaction.SetupCommand (indentityCommand);
-						OutputCommand ("ExecuteInsertCommand_Indentity", dbcommand, level);
+						OutputCommand ("ExecuteInsertCommand_Indentity", indentityCommand, level);
 						object obj = indentityCommand.ExecuteScalar ();
 						if (obj != null) {
 							result = obj;

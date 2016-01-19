@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Light.Data.MysqlTest
 {
@@ -34,6 +35,60 @@ namespace Light.Data.MysqlTest
 			user.HotRate = 1.0d;
 			//user.Area = 1;
 			return user;
+		}
+
+		protected List<TeUser> InitialUserTable (int count, bool insert = true)
+		{
+			context.TruncateTable<TeUser> ();
+			List<TeUser> lists = new List<TeUser> ();
+			for (int i = 1; i <= count; i++) {
+				TeUser userInsert = CreateTestUser (false);
+				userInsert.Account += i;
+				userInsert.RegTime = userInsert.RegTime.AddMinutes (i);
+				userInsert.Gender = i % 2 == 0 ? GenderType.Male : GenderType.Female;
+				userInsert.LevelId = i % 10 == 0 ? 10 : i % 10;
+				userInsert.HotRate = 1 + i * 0.01d;
+				userInsert.DeleteFlag = i % 2 == 0;
+
+				userInsert.Address = i % 2 == 0 ? "addr" + userInsert.Account : null;
+
+				if (i % 2 == 0) {
+					userInsert.LastLoginTime = userInsert.RegTime.AddMinutes (i);
+					userInsert.Area = i;
+					userInsert.RefereeId = i % 6;
+					userInsert.CheckPoint = i * 0.01d;
+					userInsert.DeleteFlag = true;
+					userInsert.CheckStatus = true;
+					userInsert.CheckLevelType = CheckLevelType.Low;
+				}
+				lists.Add (userInsert);
+			}
+			if (insert) {
+				context.BulkInsert (lists.ToArray ());
+			}
+			return lists;
+		}
+
+		protected List<TeUserLevel> InitialUserLevelTable (int count, bool insert = true)
+		{
+			context.TruncateTable<TeUserLevel> ();
+			List<TeUserLevel> lists = new List<TeUserLevel> ();
+			for (int i = 1; i <= count; i++) {
+				TeUserLevel level = new TeUserLevel ();
+				level.Id = i;
+				level.LevelName = "level" + i;
+				if (i % 2 == 0) {
+					level.Status = 0;
+				}
+				else {
+					level.Status = 1;
+				}
+				lists.Add (level);
+			}
+			if (insert) {
+				context.BulkInsert (lists.ToArray ());	
+			}
+			return lists;
 		}
 
 		public bool EqualUser (TeUser user1, TeUser user2, bool checkId = true)

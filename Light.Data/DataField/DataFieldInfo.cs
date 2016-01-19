@@ -442,7 +442,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// 小于Any子查询
 		/// </summary>
 		/// <param name="field">子查询字段</param>
 		/// <returns>查询表达式</returns>
@@ -482,7 +482,6 @@ namespace Light.Data
 		public QueryExpression NotBetween (object fromvalue, object tovalue)
 		{
 			return BetweenParams (false, fromvalue, tovalue);
-			;
 		}
 
 		/// <summary>
@@ -821,9 +820,9 @@ namespace Light.Data
 			if (Object.Equals (field, null)) {
 				throw new ArgumentNullException ("field");
 			}
-			if (expression == null) {
-				throw new ArgumentNullException ("expression");
-			}
+//			if (expression == null) {
+//				throw new ArgumentNullException ("expression");
+//			}
 			QueryExpression exp = new SubQueryExpression (this, predicate, field, expression);
 			return exp;
 		}
@@ -981,22 +980,22 @@ namespace Light.Data
 			}
 		}
 
-//		/// <summary>
-//		/// 可在字段的左右两边添加匹配字符
-//		/// </summary>
-//		/// <param name="left">左匹配</param>
-//		/// <param name="right">右匹配</param>
-//		/// <returns></returns>
-//		public MatchDataFieldInfo TransformMatch (bool left, bool right)
-//		{
-//			return new MatchDataFieldInfo (this, left, right);
-//		}
+		//		/// <summary>
+		//		/// 可在字段的左右两边添加匹配字符
+		//		/// </summary>
+		//		/// <param name="left">左匹配</param>
+		//		/// <param name="right">右匹配</param>
+		//		/// <returns></returns>
+		//		public MatchDataFieldInfo TransformMatch (bool left, bool right)
+		//		{
+		//			return new MatchDataFieldInfo (this, left, right);
+		//		}
 
 		/// <summary>
 		/// Transforms the starts with match.
 		/// </summary>
 		/// <returns>The starts with match.</returns>
-		public MatchDataFieldInfo TransformEndsWithMatch()
+		public MatchDataFieldInfo TransformEndsWithMatch ()
 		{
 			return new MatchDataFieldInfo (this, true, false);
 		}
@@ -1005,7 +1004,7 @@ namespace Light.Data
 		/// Transforms the endss with match.
 		/// </summary>
 		/// <returns>The endss with match.</returns>
-		public MatchDataFieldInfo TransformStartsWithMatch()
+		public MatchDataFieldInfo TransformStartsWithMatch ()
 		{
 			return new MatchDataFieldInfo (this, false, true);
 		}
@@ -1014,7 +1013,7 @@ namespace Light.Data
 		/// Transforms the contains match.
 		/// </summary>
 		/// <returns>The contains match.</returns>
-		public MatchDataFieldInfo TransformContainsMatch()
+		public MatchDataFieldInfo TransformContainsMatch ()
 		{
 			return new MatchDataFieldInfo (this, true, true);
 		}
@@ -1562,7 +1561,7 @@ namespace Light.Data
 
 		private DataFieldExpression OnDataFieldMatch (QueryPredicate predicate, DataFieldInfo field)
 		{
-			if (Object.Equals (field, null)) {
+			if (Object.Equals (field, null) && predicate != QueryPredicate.Eq && predicate != QueryPredicate.NotEq) {
 				throw new ArgumentNullException ("field");
 			}
 			DataFieldMatchExpression exp = new DataFieldMatchExpression (this, field, predicate);

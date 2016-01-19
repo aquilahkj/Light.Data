@@ -7,37 +7,6 @@ namespace Light.Data.MysqlTest
 	[TestFixture ()]
 	public class LQueryWhereTest:BaseTest
 	{
-		List<TeUser> InitialUserTable (int count, bool insert = true)
-		{
-			context.TruncateTable<TeUser> ();
-			List<TeUser> list1 = new List<TeUser> ();
-			for (int i = 1; i <= count; i++) {
-				TeUser userInsert = CreateTestUser (false);
-				userInsert.Account += i;
-				userInsert.RegTime = userInsert.RegTime.AddMinutes (i);
-				userInsert.Gender = i % 2 == 0 ? GenderType.Male : GenderType.Female;
-				userInsert.LevelId = i % 10;
-				userInsert.HotRate = 1 + i * 0.01d;
-				userInsert.DeleteFlag = i % 2 == 0;
-
-				userInsert.Address = i % 2 == 0 ? "addr" + userInsert.Account : null;
-
-				if (i % 2 == 0) {
-					userInsert.LastLoginTime = userInsert.RegTime.AddMinutes (i);
-					userInsert.Area = i;
-					userInsert.RefereeId = i % 6;
-					userInsert.CheckPoint = i * 0.01d;
-					userInsert.DeleteFlag = true;
-					userInsert.CheckStatus = true;
-					userInsert.CheckLevelType = CheckLevelType.Low;
-				}
-				list1.Add (userInsert);
-			}
-			if (insert) {
-				context.BulkInsert (list1.ToArray ());
-			}
-			return list1;
-		}
 
 		[Test ()]
 		public void TestCase_QueryId ()
@@ -75,16 +44,16 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listReslt = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (count, listReslt.Count);
 			for (int i = 0; i < count; i++) {
-				Assert.IsTrue (EqualUser (listReslt [i], list1 [i], false));
+				Assert.IsTrue (EqualUser (listReslt [i], list1 [i], true));
 			}
 			TeUser[] arrayResult = context.LQuery<TeUser> ().ToArray ();
 			Assert.AreEqual (count, arrayResult.Length);
 			for (int i = 0; i < count; i++) {
-				Assert.IsTrue (EqualUser (arrayResult [i], list1 [i], false));
+				Assert.IsTrue (EqualUser (arrayResult [i], list1 [i], true));
 			}
 			int index = 0;
 			foreach (TeUser user in context.LQuery<TeUser> ()) {
-				Assert.IsTrue (EqualUser (user, list1 [index], false));
+				Assert.IsTrue (EqualUser (user, list1 [index], true));
 				index++;
 			}
 		}
@@ -712,6 +681,162 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listNotNull = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField.IsNotNull ()).ToList ();
 			Assert.AreEqual (10, listNotNull.Count);
 			Assert.IsTrue (listNotNull.TrueForAll (x => x.CheckLevelType != null));
+		}
+
+		[Test ()]
+		public void TestCase_Query_SubQuery ()
+		{
+			InitialUserTable (21);
+			InitialUserLevelTable (8);
+			List<TeUserLevel> listSub1 = context.LQuery<TeUserLevel> ().ToList ();
+			List<TeUserLevel> listSub2 = context.LQuery<TeUserLevel> ().Where (TeUserLevel.StatusField == 1).ToList ();
+
+			List<TeUser> list1 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.In (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (17, list1.Count);
+			Assert.IsTrue (list1.TrueForAll (x => {
+				return listSub1.Exists (y => y.Id == x.LevelId);
+			}));
+
+			List<TeUser> list2 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.In (TeUserLevel.IdField, TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (9, list2.Count);
+			Assert.IsTrue (list2.TrueForAll (x => {
+				return listSub2.Exists (y => y.Id == x.LevelId);
+			}));
+
+			List<TeUser> list1n = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.NotIn (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (4, list1n.Count);
+			Assert.IsTrue (list1n.TrueForAll (x => {
+				return listSub1.TrueForAll (y => y.Id != x.LevelId);
+			}));
+
+			List<TeUser> list2n = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.NotIn (TeUserLevel.IdField, TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (12, list2n.Count);
+			Assert.IsTrue (list2n.TrueForAll (x => {
+				return listSub2.TrueForAll (y => y.Id != x.LevelId);
+			}));
+
+			List<TeUser> list3 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.LtAny (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (15, list3.Count);
+			Assert.IsTrue (list3.TrueForAll (x => {
+				return listSub1.Exists (y => y.Id > x.LevelId);
+			}));
+
+			List<TeUser> list4 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.LtAny (TeUserLevel.IdField, TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (13, list4.Count);
+			Assert.IsTrue (list4.TrueForAll (x => {
+				return listSub2.Exists (y => y.Id > x.LevelId);
+			}));
+
+			List<TeUser> list5 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.GtAny (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (18, list5.Count);
+			Assert.IsTrue (list5.TrueForAll (x => {
+				return listSub1.Exists (y => y.Id < x.LevelId);
+			}));
+
+			List<TeUser> list6 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.GtAny (TeUserLevel.IdField, TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (18, list6.Count);
+			Assert.IsTrue (list6.TrueForAll (x => {
+				return listSub2.Exists (y => y.Id < x.LevelId);
+			}));
+
+
+			List<TeUser> list7 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.LtAll (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (0, list7.Count);
+	
+
+			List<TeUser> list8 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.LtAll (TeUserLevel.IdField, TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (0, list8.Count);
+
+
+			List<TeUser> list9 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.GtAll (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (4, list9.Count);
+			Assert.IsTrue (list9.TrueForAll (x => {
+				return listSub1.TrueForAll (y => y.Id < x.LevelId);
+			}));
+
+			List<TeUser> list10 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.GtAll (TeUserLevel.IdField, TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (6, list10.Count);
+			Assert.IsTrue (list10.TrueForAll (x => {
+				return listSub2.TrueForAll (y => y.Id < x.LevelId);
+			}));
+
+
+		}
+
+		[Test ()]
+		public void TestCase_Query_Exists ()
+		{
+			InitialUserTable (21);
+			InitialUserLevelTable (8);
+
+			List<TeUser> list1 = context.LQuery<TeUser> ().Where (QueryExpression.Exists (TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (21, list1.Count);
+
+			List<TeUser> list2 = context.LQuery<TeUser> ().Where (QueryExpression.Exists (TeUserLevel.StatusField == 2)).ToList ();
+			Assert.AreEqual (0, list2.Count);
+
+			List<TeUser> list3 = context.LQuery<TeUser> ().Where (QueryExpression.NotExists (TeUserLevel.StatusField == 1)).ToList ();
+			Assert.AreEqual (0, list3.Count);
+
+			List<TeUser> list4 = context.LQuery<TeUser> ().Where (QueryExpression.NotExists (TeUserLevel.StatusField == 2)).ToList ();
+			Assert.AreEqual (21, list4.Count);
+		}
+
+		[Test ()]
+		public void TestCase_Query_SubQuery_Match ()
+		{
+			InitialUserTable (21);
+			InitialUserLevelTable (8);
+			List<TeUserLevel> listSub1 = context.LQuery<TeUserLevel> ().ToList ();
+			List<TeUser> lists1 = context.LQuery<TeUser> ().Where (TeUser.IdField > 10 & TeUser.CheckLevelTypeField == null).ToList ();
+			Assert.AreEqual (6, lists1.Count);
+			Assert.IsTrue (lists1.TrueForAll (x => x.CheckLevelType == null));
+
+			List<TeUser> lists2 = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField != null & TeUser.IdField > 10).ToList ();
+			Assert.AreEqual (5, lists2.Count);
+			Assert.IsTrue (lists2.TrueForAll (x => x.CheckLevelType != null));
+
+			List<TeUser> lists3 = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField != null & TeUser.CheckPointField != null & TeUser.IdField > 10).ToList ();
+			Assert.AreEqual (5, lists3.Count);
+			Assert.IsTrue (lists3.TrueForAll (x => x.CheckLevelType != null));
+
+			List<TeUser> list1 = context.LQuery<TeUser> ().Where (QueryExpression.Exists (TeUserLevel.IdField == TeUser.LevelIdField)).ToList ();
+			Assert.AreEqual (17, list1.Count);
+			Assert.IsTrue (list1.TrueForAll (x => {
+				return listSub1.Exists (y => y.Id == x.LevelId);
+			}));
+
+			List<TeUser> list2 = context.LQuery<TeUser> ().Where (QueryExpression.NotExists (TeUserLevel.IdField == TeUser.LevelIdField)).ToList ();
+			Assert.AreEqual (4, list2.Count);
+			Assert.IsTrue (list2.TrueForAll (x => {
+				return listSub1.TrueForAll (y => y.Id != x.LevelId);
+			}));
+
+			List<TeUser> list3 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.In (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (17, list3.Count);
+			Assert.IsTrue (list1.TrueForAll (x => {
+				return listSub1.Exists (y => y.Id == x.LevelId);
+			}));
+
+			List<TeUser> list4 = context.LQuery<TeUser> ().Where (TeUser.LevelIdField.NotIn (TeUserLevel.IdField)).ToList ();
+			Assert.AreEqual (4, list4.Count);
+			Assert.IsTrue (list4.TrueForAll (x => {
+				return listSub1.TrueForAll (y => y.Id != x.LevelId);
+			}));
+		}
+
+		[Test ()]
+		public void TestCase_Query_Multi ()
+		{
+			InitialUserTable (21);
+
+			List<TeUser> list1 = context.LQuery<TeUser> ().Where (TeUser.AccountField.StartsWith ("test1") & TeUser.CheckPointField.IsNotNull ()).ToList ();
+			Assert.AreEqual (5, list1.Count);
+			Assert.IsTrue (list1.TrueForAll (x => x.Account.StartsWith ("test1") && x.CheckPoint != null));
+		
+			List<TeUser> list2 = context.LQuery<TeUser> ().Where (TeUser.AccountField.StartsWith ("test1") & TeUser.CheckPointField.IsNotNull () & TeUser.IdField.Between (11, 17)).ToList ();
+			Assert.AreEqual (3, list2.Count);
+			Assert.IsTrue (list2.TrueForAll (x => x.Account.StartsWith ("test1") && x.CheckPoint != null && x.Id >= 11 && x.Id <= 17));
 		}
 	}
 }

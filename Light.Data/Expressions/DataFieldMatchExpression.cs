@@ -28,12 +28,19 @@ namespace Light.Data
 			return factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 		}
 
-		/// <param name="match">Match.</param>
-		public static implicit operator QueryExpression (DataFieldMatchExpression match)
-		{ 
-			DataFieldQueryExpression exp = new DataFieldQueryExpression (match.leftField, match.predicate, match.rightField, false);
-			return exp;
+		protected override QueryExpression ConvertQueryExpression ()
+		{
+			QueryExpression expression;
+			if ((predicate == QueryPredicate.Eq || predicate == QueryPredicate.NotEq) && Object.Equals (rightField, null)) {
+				expression = new NullQueryExpression (leftField, predicate == QueryPredicate.Eq);
+			}
+			else {
+				expression = new DataFieldQueryExpression (leftField, predicate, rightField, false);
+			}
+			return expression;
 		}
+
+
 	}
 }
 
