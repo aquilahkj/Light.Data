@@ -8,26 +8,71 @@ namespace Light.Data.MysqlTest
 	public class BaseCommandTest:BaseTest
 	{
 		[Test ()]
-		public void TestCase_CUD_Single ()
+		public void TestCase_SaveErase_Single ()
 		{
 			context.TruncateTable<TeUser> ();
 
 			TeUser userInsert = CreateTestUser (true);
 			userInsert.Save ();
-			Assert.AreEqual (userInsert.Id, 1);
+			Assert.AreEqual (1, userInsert.Id);
 			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user1);
 			Assert.True (EqualUser (userInsert, user1));
 			user1.LastLoginTime = GetNow ();
 			user1.Status = 2;
 			user1.Save ();
-			Assert.AreEqual (userInsert.Id, 1);
+			Assert.AreEqual (1, userInsert.Id);
 			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user2);
 			Assert.True (EqualUser (user1, user2));
 			user2.Erase ();
 			TeUser user3 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.Null (user3);
+		}
+
+		[Test ()]
+		public void TestCase_CUD_Single ()
+		{
+			context.TruncateTable<TeUser> ();
+
+			TeUser userInsert = CreateTestUser (true);
+			context.Insert (userInsert);
+			Assert.AreEqual (1, userInsert.Id);
+			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+			Assert.NotNull (user1);
+			Assert.True (EqualUser (userInsert, user1));
+			user1.LastLoginTime = GetNow ();
+			user1.Status = 2;
+			context.Update (user1);
+			Assert.AreEqual (1, userInsert.Id);
+			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+			Assert.NotNull (user2);
+			Assert.True (EqualUser (user1, user2));
+			context.Delete (user2);
+			TeUser user3 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+			Assert.Null (user3);
+		}
+
+		[Test ()]
+		public void TestCase_InsertOrUpdate_Single ()
+		{
+			context.TruncateTable<TeUser> ();
+
+			TeUser userInsert = CreateTestUser (true);
+			context.Insert (userInsert);
+			Assert.AreEqual (1, userInsert.Id);
+			userInsert.Account = "abc";
+			context.InsertOrUpdate (userInsert);
+			Assert.AreEqual (1, userInsert.Id);
+			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+			Assert.True (EqualUser (userInsert, user1));
+
+			userInsert.Id = 0;
+			context.InsertOrUpdate (userInsert);
+			Assert.AreEqual (2, userInsert.Id);
+			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+			Assert.True (EqualUser (userInsert, user2));
+
 		}
 
 		[Test ()]

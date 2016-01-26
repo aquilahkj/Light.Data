@@ -26,12 +26,12 @@ namespace Light.Data
 			_baseFieldInfo = info;
 		}
 
-		internal override string DBType {
-			get {
-//				return _baseFieldInfo.DBType;
-				return string.Empty;
-			}
-		}
+//		internal override string DBType {
+//			get {
+////				return _baseFieldInfo.DBType;
+//				return string.Empty;
+//			}
+//		}
 
 		/// <summary>
 		/// 匹配细节内容是否相等

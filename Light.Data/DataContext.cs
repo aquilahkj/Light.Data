@@ -307,7 +307,9 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateEntityExistsCommand (data);
 			Region region = new Region (0, 1);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				PrimitiveDataDefine pm = PrimitiveDataDefine.Create (typeof(Int32), 0);
+				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
+				//= PrimitiveDataDefine.Create (typeof(Int32), 0);
+				//PrimitiveDataDefine.TryParseDefine (typeof(Int32), out pm); 
 				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default)) {
 					exists = true;
 				}
@@ -534,7 +536,7 @@ namespace Light.Data
 		static object[] CreateObjectList (object lastId, int len)
 		{
 			TypeCode code = Type.GetTypeCode (lastId.GetType ());
-			object[] results = new object[len] ;
+			object[] results = new object[len];
 			if (code == TypeCode.Int16) {
 				short id = (short)lastId;
 				for (int i = len - 1; i >= 0; i--) {
@@ -832,23 +834,23 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// 查询单列数据
-		/// </summary>
-		/// <param name="fieldInfo">单列数据字段</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围</param>
-		/// <param name="distinct">是否排除重复</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>单列数据枚举</returns>
-		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
-		{
-			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
-			IDbCommand command = commandData.CreateCommand (_dataBase);
-			DataDefine define = TransferDataDefine (fieldInfo.DataField);
-			return QueryDataReader (define, command, region, level);
-		}
+		//		/// <summary>
+		//		/// 查询单列数据
+		//		/// </summary>
+		//		/// <param name="fieldInfo">单列数据字段</param>
+		//		/// <param name="query">查询表达式</param>
+		//		/// <param name="order">排序表达式</param>
+		//		/// <param name="region">查询范围</param>
+		//		/// <param name="distinct">是否排除重复</param>
+		//		/// <param name="level">安全级别</param>
+		//		/// <returns>单列数据枚举</returns>
+		//		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		//		{
+		//			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+		//			IDbCommand command = commandData.CreateCommand (_dataBase);
+		//			DataDefine define = TransferDataDefine (fieldInfo.DataField);
+		//			return QueryDataReader (define, command, region, level);
+		//		}
 
 		/// <summary>
 		/// 查询单列数据
@@ -862,91 +864,95 @@ namespace Light.Data
 		/// <param name="distinct">是否排除重复</param>
 		/// <param name="level">安全级别</param>
 		/// <returns>单列数据枚举</returns>
-		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, bool isNullable, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
-			DataDefine define = TransferDataDefine (outputType, null, isNullable);
+			DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
 			return QueryDataReader (define, command, region, level);
 		}
 
 
-		/// <summary>
-		/// 查询单列数据
-		/// </summary>
-		/// <param name="fieldInfo">单列数据字段</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围</param>
-		/// <param name="distinct">是否排除重复</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>数据集合</returns>
-		internal IList QueryColumeList (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
-		{
-			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				DataDefine define = TransferDataDefine (fieldInfo.DataField);
-				IList items = CreateList (define.ObjectType);
-
-				IEnumerable ie = QueryDataReader (define, command, region, level);
-				if (define.IsNullable) {
-					MethodInfo addMethod = items.GetType ().GetMethod ("Add");
-					foreach (object obj in ie) {
-						if (Object.Equals (obj, null)) {
-							addMethod.Invoke (items, new object[] { null });
-						}
-						else {
-							items.Add (obj);
-						}
-					}
-				}
-				else {
-					foreach (object obj in ie) {
-						items.Add (obj);
-					}
-				}
-				return items;
-			}
-		}
+		//		/// <summary>
+		//		/// 查询单列数据
+		//		/// </summary>
+		//		/// <param name="fieldInfo">单列数据字段</param>
+		//		/// <param name="query">查询表达式</param>
+		//		/// <param name="order">排序表达式</param>
+		//		/// <param name="region">查询范围</param>
+		//		/// <param name="distinct">是否排除重复</param>
+		//		/// <param name="level">安全级别</param>
+		//		/// <returns>数据集合</returns>
+		//		internal IList QueryColumeList (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		//		{
+		//			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//				DataDefine define = TransferDataDefine (fieldInfo.DataField);
+		//				IList items = CreateList (define.ObjectType);
+		//
+		//				IEnumerable ie = QueryDataReader (define, command, region, level);
+		//				if (define.IsNullable) {
+		//					MethodInfo addMethod = items.GetType ().GetMethod ("Add");
+		//					foreach (object obj in ie) {
+		//						if (Object.Equals (obj, null)) {
+		//							addMethod.Invoke (items, new object[] { null });
+		//						}
+		//						else {
+		//							items.Add (obj);
+		//						}
+		//					}
+		//				}
+		//				else {
+		//					foreach (object obj in ie) {
+		//						items.Add (obj);
+		//					}
+		//				}
+		//				return items;
+		//			}
+		//		}
 
 		/// <summary>
 		/// 查询单列数据
 		/// </summary>
 		/// <param name="fieldInfo">字段信息</param>
-		/// <param name="outputType">输出类型</param>
-		/// <param name="isNullable">是否可空</param>
 		/// <param name="query">查询表达式</param>
 		/// <param name="order">排序表达式</param>
 		/// <param name="region">查询范围</param>
 		/// <param name="distinct">是否排除重复</param>
 		/// <param name="level">安全级别</param>
 		/// <returns>数据集合</returns>
-		internal IList QueryColumeList (DataFieldInfo fieldInfo, Type outputType, bool isNullable, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		internal List<K> QueryColumeList<K> (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
+			Type outputType = typeof(K);
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+			List<K> list = new List<K> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				DataDefine define = TransferDataDefine (outputType, null, isNullable);
-				IList items = CreateList (define.ObjectType);
+				DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
+//				IList items = CreateList (define.ObjectType);
 
 				IEnumerable ie = QueryDataReader (define, command, region, level);
-				if (define.IsNullable) {
-					MethodInfo addMethod = items.GetType ().GetMethod ("Add");
-					foreach (object obj in ie) {
-						if (Object.Equals (obj, null)) {
-							addMethod.Invoke (items, new object[] { null });
-						}
-						else {
-							items.Add (obj);
-						}
-					}
+				foreach (K obj in ie) {
+					list.Add (obj);
 				}
-				else {
-					foreach (object obj in ie) {
-						items.Add (obj);
-					}
-				}
-				return items;
+//				if (define.IsNullable) {
+//					MethodInfo addMethod = items.GetType ().GetMethod ("Add");
+//					foreach (object obj in ie) {
+//						if (Object.Equals (obj, null)) {
+//							addMethod.Invoke (items, new object[] { null });
+//						}
+//						else {
+//							items.Add (obj);
+//						}
+//					}
+//				}
+//				else {
+//					foreach (object obj in ie) {
+//						items.Add (obj);
+//					}
+//				}
+//				return items;
 			}
+			return list;
 		}
 
 
@@ -1086,7 +1092,10 @@ namespace Light.Data
 			Region region = new Region (0, 1);
 			CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				PrimitiveDataDefine pm = PrimitiveDataDefine.Create (typeof(Int32), 0);
+				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
+//				PrimitiveDataDefine pm;
+				//= PrimitiveDataDefine.Create (typeof(Int32), 0);
+//				PrimitiveDataDefine.TryParseDefine (typeof(Int32), out pm); 
 				foreach (object obj in QueryDataReader(pm, command, region, level)) {
 					exists = true;
 				}
@@ -1443,58 +1452,104 @@ namespace Light.Data
 
 		#region 静态函数
 
-		private static DataDefine TransferDataDefine (Type dataType, string name, bool isNullable)
-		{
-			DataDefine define = null;
-			if (dataType == typeof(string)) {
-				define = PrimitiveDataDefine.CreateString (isNullable, name);
-			}
-			else {
-				if (isNullable) {
-					Type itemstype = System.Type.GetType ("System.Nullable`1");
-					Type type = itemstype.MakeGenericType (dataType);
-					define = PrimitiveDataDefine.Create (type, name);
-				}
-				else {
-					define = PrimitiveDataDefine.Create (dataType, name);
-				}
-			}
-			return define;
-		}
+		//		private static DataDefine TransferDataDefine (Type dataType, string name)
+		//		{
+		//			bool isNullable = false;
+		//			if (dataType.IsGenericType) {
+		//				Type frameType = dataType.GetGenericTypeDefinition ();
+		//				if (frameType.FullName == "System.Nullable`1") {
+		//					Type[] arguments = type.GetGenericArguments ();
+		//					type = arguments [0];
+		//					isNullable = true;
+		//				}
+		//			}
+		//			DataDefine define = null;
+		//			if (Type == typeof(string)) {
+		//				define = PrimitiveDataDefine.CreateString (true, name);
+		//			}
+		//			else {
+		//				define = PrimitiveDataDefine.Create (type, name);
+		//
+		//			}
+		//			return define;
+		//		}
 
-		private static DataDefine TransferDataDefine (DataFieldMapping fieldMapping)
+
+		//		private static DataDefine TransferDataDefine (Type dataType, string name, bool isNullable)
+		//		{
+		//			if (type.IsGenericType) {
+		//				Type frameType = type.GetGenericTypeDefinition ();
+		//				if (frameType.FullName == "System.Nullable`1") {
+		//					Type[] arguments = type.GetGenericArguments ();
+		//					type = arguments [0];
+		//					isNullable = true;
+		//				}
+		//			}
+		//			DataDefine define = null;
+		//			if (dataType == typeof(string)) {
+		//				define = PrimitiveDataDefine.CreateString (isNullable, name);
+		//			}
+		//			else {
+		//				if (isNullable) {
+		//					Type itemstype = System.Type.GetType ("System.Nullable`1");
+		//					Type type = itemstype.MakeGenericType (dataType);
+		//					define = PrimitiveDataDefine.Create (type, name);
+		//				}
+		//				else {
+		//					define = PrimitiveDataDefine.Create (dataType, name);
+		//				}
+		//			}
+		//			return define;
+		//		}
+
+		//		private static DataDefine TransferDataDefine (DataFieldMapping fieldMapping)
+		//		{
+		//			DataDefine define = null;
+		//			if (fieldMapping is PrimitiveFieldMapping) {
+		//				if (fieldMapping.ObjectType == typeof(string)) {
+		//					define = PrimitiveDataDefine.CreateString (fieldMapping.IsNullable, fieldMapping.Name);
+		//				}
+		//				else {
+		//					if (fieldMapping.IsNullable) {
+		//						Type itemstype = System.Type.GetType ("System.Nullable`1");
+		//						Type type = itemstype.MakeGenericType (fieldMapping.ObjectType);
+		//						define = PrimitiveDataDefine.Create (type, fieldMapping.Name);
+		//					}
+		//					else {
+		//						define = PrimitiveDataDefine.Create (fieldMapping.ObjectType, fieldMapping.Name);
+		//					}
+		//				}
+		//			}
+		//			else if (fieldMapping is EnumFieldMapping) {
+		//				EnumFieldMapping em = fieldMapping as EnumFieldMapping;
+		//				if (fieldMapping.IsNullable) {
+		//					Type itemstype = System.Type.GetType ("System.Nullable`1");
+		//					Type type = itemstype.MakeGenericType (fieldMapping.ObjectType);
+		//					define = EnumDataDefine.Create (type, em.EnumType, fieldMapping.Name);
+		//				}
+		//				else {
+		//					define = EnumDataDefine.Create (fieldMapping.ObjectType, em.EnumType, fieldMapping.Name);
+		//				}
+		//			}
+		//			else {
+		//				throw new LightDataException (RE.OnlyPrimitiveFieldCanSelectSingle);
+		//			}
+		//			return define;
+		//		}
+
+		private static DataDefine TransferDataDefine (Type type, DataFieldMapping fieldMapping)
 		{
-			DataDefine define = null;
-			if (fieldMapping is PrimitiveFieldMapping) {
-				if (fieldMapping.ObjectType == typeof(string)) {
-					define = PrimitiveDataDefine.CreateString (fieldMapping.IsNullable, fieldMapping.Name);
-				}
-				else {
-					if (fieldMapping.IsNullable) {
-						Type itemstype = System.Type.GetType ("System.Nullable`1");
-						Type type = itemstype.MakeGenericType (fieldMapping.ObjectType);
-						define = PrimitiveDataDefine.Create (type, fieldMapping.Name);
-					}
-					else {
-						define = PrimitiveDataDefine.Create (fieldMapping.ObjectType, fieldMapping.Name);
-					}
-				}
+			PrimitiveFieldMapping pm = fieldMapping as PrimitiveFieldMapping;
+			if (pm != null) {
+				PrimitiveDataDefine pd = PrimitiveDataDefine.ParseDefine (type, pm);
+				return pd;
 			}
-			else if (fieldMapping is EnumFieldMapping) {
-				EnumFieldMapping em = fieldMapping as EnumFieldMapping;
-				if (fieldMapping.IsNullable) {
-					Type itemstype = System.Type.GetType ("System.Nullable`1");
-					Type type = itemstype.MakeGenericType (fieldMapping.ObjectType);
-					define = EnumDataDefine.Create (type, em.EnumType, fieldMapping.Name);
-				}
-				else {
-					define = EnumDataDefine.Create (fieldMapping.ObjectType, em.EnumType, fieldMapping.Name);
-				}
+			EnumFieldMapping em = fieldMapping as EnumFieldMapping;
+			if (em != null) {
+				EnumDataDefine ed = EnumDataDefine.ParseDefine (type, em);
+				return ed;
 			}
-			else {
-				throw new LightDataException (RE.OnlyPrimitiveFieldCanSelectSingle);
-			}
-			return define;
+			throw new LightDataException (RE.UnsupportDataDefineType);
 		}
 
 		private static IList CreateList (Type type)

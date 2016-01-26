@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
 	class EnumFieldMapping : DataFieldMapping
 	{
-		EnumFieldType _enumType = EnumFieldType.EnumToInt;
+		EnumFieldType _enumType = EnumFieldType.EnumToNumerics;
 
-		object _defaultValue = null;
+		readonly object _defaultValue = null;
 
-		Dictionary<int, object> _dict = new Dictionary<int, object> ();
+		//		Dictionary<int, object> _dict = new Dictionary<int, object> ();
 
 		public EnumFieldType EnumType {
 			get {
@@ -21,6 +22,16 @@ namespace Light.Data
 			}
 		}
 
+		Type nullableType;
+
+		public Type NullableType {
+			get {
+				return nullableType;
+			}
+		}
+
+		Regex textRegex = new Regex ("char|text", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
 		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
@@ -28,21 +39,30 @@ namespace Light.Data
 //			Name = fieldName;
 //			IndexName = indexName;
 //			TypeMapping = mapping;
-			if (string.IsNullOrEmpty (dbType) || dbType.IndexOf ("char", 0, StringComparison.OrdinalIgnoreCase) == -1) {
-				EnumType = EnumFieldType.EnumToInt;
-			}
-			else {
+//			if(dbType!=null && 
+
+			if (dbType != null && textRegex.IsMatch (dbType)) {
 				EnumType = EnumFieldType.EnumToString;
 			}
+			else {
+				EnumType = EnumFieldType.EnumToNumerics;
+			}
+//			if (string.IsNullOrEmpty (dbType) || dbType.Contains ("char")) {
+//				EnumType = EnumFieldType.EnumToInt;
+//			}
+//			else {
+//				EnumType = EnumFieldType.EnumToString;
+//			}
 //			DBType = dbType;
-
+			Type itemstype = System.Type.GetType ("System.Nullable`1");
+			nullableType = itemstype.MakeGenericType (type);
 			Array values = Enum.GetValues (ObjectType);
 			_defaultValue = values.GetValue (0);
-
-			for (int i = 0; i < values.Length; i++) {
-				object obj = values.GetValue (i);
-				_dict.Add (Convert.ToInt32 (obj), obj);
-			}
+//
+//			for (int i = 0; i < values.Length; i++) {
+//				object obj = values.GetValue (i);
+//				_dict.Add (Convert.ToInt32 (obj), obj);
+//			}
 		}
 
 		public override object ToProperty (object value)
@@ -60,13 +80,14 @@ namespace Light.Data
 					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {
-					int result = Convert.ToInt32 (value);//value.GetHashCode();
-					if (_dict.ContainsKey (result)) {
-						return _dict [result];
-					}
-					else {
-						throw new LightDataException (string.Format (RE.ValueNotInEnumType, result, ObjectType));
-					}
+//					int result = Convert.ToInt32 (value);//value.GetHashCode();
+//					if (_dict.ContainsKey (result)) {
+//						return _dict [result];
+//					}
+//					else {
+//						throw new LightDataException (string.Format (RE.ValueNotInEnumType, result, ObjectType));
+//					}
+					return value;
 				}
 			}
 		}
@@ -85,12 +106,8 @@ namespace Light.Data
 				return value.ToString ();
 			}
 			else {
-				return Convert.ToInt32 (value);
+				return value;
 			}
 		}
-
-
 	}
-
-
 }

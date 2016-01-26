@@ -675,11 +675,11 @@ namespace Light.Data.MysqlTest
 		{
 			InitialUserTable (21);
 			List<TeUser> listNull = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField.IsNull ()).ToList ();
-			Assert.AreEqual (11, listNull.Count);
+			Assert.AreEqual (6, listNull.Count);
 			Assert.IsTrue (listNull.TrueForAll (x => x.CheckLevelType == null));
 
 			List<TeUser> listNotNull = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField.IsNotNull ()).ToList ();
-			Assert.AreEqual (10, listNotNull.Count);
+			Assert.AreEqual (15, listNotNull.Count);
 			Assert.IsTrue (listNotNull.TrueForAll (x => x.CheckLevelType != null));
 		}
 
@@ -789,11 +789,11 @@ namespace Light.Data.MysqlTest
 			InitialUserLevelTable (8);
 			List<TeUserLevel> listSub1 = context.LQuery<TeUserLevel> ().ToList ();
 			List<TeUser> lists1 = context.LQuery<TeUser> ().Where (TeUser.IdField > 10 & TeUser.CheckLevelTypeField == null).ToList ();
-			Assert.AreEqual (6, lists1.Count);
+			Assert.AreEqual (4, lists1.Count);
 			Assert.IsTrue (lists1.TrueForAll (x => x.CheckLevelType == null));
 
 			List<TeUser> lists2 = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField != null & TeUser.IdField > 10).ToList ();
-			Assert.AreEqual (5, lists2.Count);
+			Assert.AreEqual (7, lists2.Count);
 			Assert.IsTrue (lists2.TrueForAll (x => x.CheckLevelType != null));
 
 			List<TeUser> lists3 = context.LQuery<TeUser> ().Where (TeUser.CheckLevelTypeField != null & TeUser.CheckPointField != null & TeUser.IdField > 10).ToList ();

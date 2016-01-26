@@ -95,13 +95,7 @@ namespace Light.Data.MysqlAdapter
 			else {
 				typeString = dbType.Substring (0, index);
 			}
-			try {
-				type = (MySqlDbType)Enum.Parse (typeof(MySqlDbType), typeString, true);
-				return true;
-			}
-			catch {
-				return false;
-			}
+			return Enum.TryParse<MySqlDbType> (typeString, true, out type);
 		}
 
 		public override void SetExtentArguments (string arguments)

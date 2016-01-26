@@ -47,6 +47,12 @@ namespace Light.Data
 			}
 		}
 
+		internal override string DBType {
+			get {
+				return "string";
+			}
+		}
+
 		/// <summary>
 		/// like匹配(倒转)
 		/// </summary>

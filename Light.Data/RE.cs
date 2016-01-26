@@ -282,6 +282,10 @@ namespace Light.Data
 		public const string CanNotJoinTheSameTable = "can not join the same table";
 
 		public const string UnknowHavingType = "unknow having type";
+
+		public const string UnsupportDataDefineType = "unsupport data define type";
+
+		public const string UnmatchDataDefineType = "unmatch data define type";
 	}
 }
 

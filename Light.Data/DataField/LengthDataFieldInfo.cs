@@ -18,6 +18,12 @@ namespace Light.Data
 			return factory.CreateLengthSql (field);
 		}
 
+		internal override string DBType {
+			get {
+				return "int";
+			}
+		}
+
 //		internal override string DBType {
 //			get {
 //				return string.Empty;

@@ -194,6 +194,13 @@ namespace Light.Data
 		/// <returns> 枚举查询器</returns>
 		public LEnumerable<T> PageSize (int page, int size)
 		{
+			if (page < 1) {
+				throw new ArgumentOutOfRangeException ("page");
+			}
+			if (size < 1) {
+				throw new ArgumentOutOfRangeException ("size");
+			}
+			page--;
 			int start = page * size;
 			if (_region == null) {
 				_region = new Region (start, size);
@@ -226,15 +233,15 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// 长整形数据集数量
-		/// </summary>
-		public long LongCount {
-			get {
-				return Convert.ToInt64 (_context.AggregateCount (_mapping, _query, _level));
-			}
-		}
-
+		//		/// <summary>
+		//		/// 长整形数据集数量
+		//		/// </summary>
+		//		public long LongCount {
+		//			get {
+		//				return Convert.ToInt64 (_context.AggregateCount (_mapping, _query, _level));
+		//			}
+		//		}
+		//
 		private object Aggregate (BasicFieldInfo field, AggregateType aggregateType, bool isDistinct)
 		{
 			if (!_mapping.Equals (field.TableMapping)) {
@@ -248,7 +255,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="field">统计字段</param>
 		/// <returns>结果</returns>
-		public object CountField (BasicFieldInfo field)
+		public int CountField (BasicFieldInfo field)
 		{
 			return CountField (field, false);
 		}
@@ -259,9 +266,9 @@ namespace Light.Data
 		/// <param name="field">统计字段</param>
 		/// <param name="isDistinct">是否去重</param>
 		/// <returns></returns>
-		public object CountField (BasicFieldInfo field, bool isDistinct)
+		public int CountField (BasicFieldInfo field, bool isDistinct)
 		{
-			return Aggregate (field, AggregateType.COUNT, isDistinct);
+			return Convert.ToInt32 (Aggregate (field, AggregateType.COUNT, isDistinct));
 		}
 
 		/// <summary>
@@ -271,19 +278,20 @@ namespace Light.Data
 		/// <returns>结果</returns>
 		public object Max (BasicFieldInfo field)
 		{
-			return Max (field, false);
+//			return Max (field, false);
+			return Aggregate (field, AggregateType.MAX, false);
 		}
 
-		/// <summary>
-		/// 聚合统计该字段的最大值
-		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns>结果</returns>
-		public object Max (BasicFieldInfo field, bool isDistinct)
-		{
-			return Aggregate (field, AggregateType.MAX, isDistinct);
-		}
+		//		/// <summary>
+		//		/// 聚合统计该字段的最大值
+		//		/// </summary>
+		//		/// <param name="field">统计字段</param>
+		//		/// <param name="isDistinct">是否去重</param>
+		//		/// <returns>结果</returns>
+		//		public object Max (BasicFieldInfo field, bool isDistinct)
+		//		{
+		//			return Aggregate (field, AggregateType.MAX, isDistinct);
+		//		}
 
 		/// <summary>
 		/// 聚合统计该字段的最小值
@@ -292,19 +300,20 @@ namespace Light.Data
 		/// <returns>结果</returns>
 		public object Min (BasicFieldInfo field)
 		{
-			return Min (field, false);
+//			return Min (field, false);
+			return Aggregate (field, AggregateType.MIN, false);
 		}
 
-		/// <summary>
-		/// 聚合统计该字段的最小值
-		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns>结果</returns>
-		public object Min (BasicFieldInfo field, bool isDistinct)
-		{
-			return Aggregate (field, AggregateType.MIN, isDistinct);
-		}
+		//		/// <summary>
+		//		/// 聚合统计该字段的最小值
+		//		/// </summary>
+		//		/// <param name="field">统计字段</param>
+		//		/// <param name="isDistinct">是否去重</param>
+		//		/// <returns>结果</returns>
+		//		public object Min (BasicFieldInfo field, bool isDistinct)
+		//		{
+		//			return Aggregate (field, AggregateType.MIN, isDistinct);
+		//		}
 
 		/// <summary>
 		/// 聚合统计该字段的平均值
@@ -404,38 +413,51 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// 查询单列字段的数据
-		/// </summary>
-		/// <param name="fieldInfo">字段</param>
-		/// <returns>数据枚举</returns>
-		public IEnumerable QuerySingleField (DataFieldInfo fieldInfo)
-		{
-			return QuerySingleField (fieldInfo, false);
-		}
+		//		/// <summary>
+		//		/// 查询单列字段的数据
+		//		/// </summary>
+		//		/// <param name="fieldInfo">字段</param>
+		//		/// <returns>数据枚举</returns>
+		//		public IEnumerable QuerySingleField (DataFieldInfo fieldInfo)
+		//		{
+		//			return QuerySingleField (fieldInfo, false);
+		//		}
+		//
+		//		/// <summary>
+		//		/// 查询单列字段的数据
+		//		/// </summary>
+		//		/// <param name="fieldInfo">字段</param>
+		//		/// <param name="isDistinct">是否去重</param>
+		//		/// <returns>数据枚举</returns>
+		//		public IEnumerable QuerySingleField (DataFieldInfo fieldInfo, bool isDistinct)
+		//		{
+		//			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
+		//				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
+		//			}
+		//			return _context.QueryColumeEnumerable (fieldInfo, _query, _order, _region, isDistinct, _level);
+		//		}
+		//
+
+
+		//		/// <summary>
+		//		/// 查询单列字段的数据
+		//		/// </summary>
+		//		/// <param name="fieldInfo">字段</param>
+		//		/// <returns>数据枚举</returns>
+		//		public IEnumerable QuerySingleFieldList (DataFieldInfo fieldInfo)
+		//		{
+		//			return QuerySingleFieldList (fieldInfo, false);
+		//		}
 
 		/// <summary>
-		/// 查询单列字段的数据
+		/// Queries the single field.
 		/// </summary>
-		/// <param name="fieldInfo">字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns>数据枚举</returns>
-		public IEnumerable QuerySingleField (DataFieldInfo fieldInfo, bool isDistinct)
+		/// <returns>The single field.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo)
 		{
-			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
-				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-			}
-			return _context.QueryColumeEnumerable (fieldInfo, _query, _order, _region, isDistinct, _level);
-		}
-
-		/// <summary>
-		/// 查询单列字段的数据
-		/// </summary>
-		/// <param name="fieldInfo">字段</param>
-		/// <returns>数据枚举</returns>
-		public IEnumerable QuerySingleFieldList (DataFieldInfo fieldInfo)
-		{
-			return QuerySingleFieldList (fieldInfo, false);
+			return QuerySingleField<K> (fieldInfo, false);
 		}
 
 		/// <summary>
@@ -443,29 +465,14 @@ namespace Light.Data
 		/// </summary>
 		/// <typeparam name="K">输出字段类型,必须为原始数据类型</typeparam>
 		/// <param name="fieldInfo">字段</param>
-		/// <param name="isNullable">是否可空</param>
 		/// <param name="isDistinct">是否去重</param>
 		/// <returns></returns>
-		public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo, bool isNullable, bool isDistinct)
+		public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			return _context.QueryColumeEnumerable (fieldInfo, typeof(K), isNullable, _query, _order, _region, isDistinct, _level);
-		}
-
-		/// <summary>
-		/// 查询单列字段的数据
-		/// </summary>
-		/// <param name="fieldInfo">字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns>数据集合</returns>
-		public IList QuerySingleFieldList (DataFieldInfo fieldInfo, bool isDistinct)
-		{
-			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
-				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-			}
-			return _context.QueryColumeList (fieldInfo, _query, _order, _region, isDistinct, _level);
+			return _context.QueryColumeEnumerable (fieldInfo, typeof(K), _query, _order, _region, isDistinct, _level);
 		}
 
 		/// <summary>
@@ -473,16 +480,50 @@ namespace Light.Data
 		/// </summary>
 		/// <typeparam name="K">输出字段类型,必须为原始数据类型</typeparam>
 		/// <param name="fieldInfo">字段</param>
-		/// <param name="isNullable">是否可空</param>
+		/// <returns>数据集合</returns>
+		public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo)
+		{
+			return QuerySingleFieldList<K> (fieldInfo, false);
+		}
+
+		/// <summary>
+		/// 查询单列字段的数据
+		/// </summary>
+		/// <typeparam name="K">输出字段类型,必须为原始数据类型</typeparam>
+		/// <param name="fieldInfo">字段</param>
 		/// <param name="isDistinct">是否去重</param>
 		/// <returns>数据集合</returns>
-		public IList QuerySingleFieldList<K> (DataFieldInfo fieldInfo, bool isNullable, bool isDistinct)
+		public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			return _context.QueryColumeList (fieldInfo, typeof(K), isNullable, _query, _order, _region, isDistinct, _level);
+			return _context.QueryColumeList<K> (fieldInfo, _query, _order, _region, isDistinct, _level);
 		}
+
+		/// <summary>
+		/// Queries the single field array.
+		/// </summary>
+		/// <returns>The single field array.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public K[] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo)
+		{
+			return QuerySingleFieldList<K> (fieldInfo, true).ToArray ();
+		}
+
+		/// <summary>
+		/// Queries the single field array.
+		/// </summary>
+		/// <returns>The single field array.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public K[] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo, bool isDistinct)
+		{
+			return QuerySingleFieldList<K> (fieldInfo, isDistinct).ToArray ();
+		}
+
 
 		/// <summary>
 		/// 转换为集合

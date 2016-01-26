@@ -61,6 +61,12 @@ namespace Light.Data.MysqlTest
 					userInsert.CheckStatus = true;
 					userInsert.CheckLevelType = CheckLevelType.Low;
 				}
+				if (i % 3 == 0) {
+					userInsert.CheckLevelType = CheckLevelType.Normal;
+				}
+				if (i % 5 == 0) {
+					userInsert.CheckLevelType = CheckLevelType.High;
+				}
 				lists.Add (userInsert);
 			}
 			if (insert) {
@@ -106,6 +112,12 @@ namespace Light.Data.MysqlTest
 				user1.Status == user2.Status &&
 				user1.Telephone == user2.Telephone &&
 				user1.LastLoginTime == user2.LastLoginTime &&
+				user1.CheckLevelType == user2.CheckLevelType &&
+				user1.CheckPoint == user2.CheckPoint &&
+				user1.CheckStatus == user2.CheckStatus &&
+				user1.Area == user2.Area &&
+				user1.DeleteFlag == user2.DeleteFlag &&
+				user1.RefereeId == user2.RefereeId &&
 				user1.HotRate == user2.HotRate;
 			if (checkId) {
 				ret = ret && (user1.Id == user2.Id);
@@ -118,6 +130,14 @@ namespace Light.Data.MysqlTest
 			DateTime now = DateTime.Now;
 			DateTime d = new DateTime (now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
 			return d;
+		}
+
+		protected static double FormatDouble (double d)
+		{
+			string cc = d.ToString ("##.####");
+			double t;
+			double.TryParse (cc, out t);
+			return t;
 		}
 
 	}

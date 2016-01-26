@@ -13,7 +13,32 @@ namespace Light.Data
 //			Name = fieldName;
 //			IndexName = indexName;
 //			TypeMapping = mapping;
+			if (type != typeof(string)) {
+				Type itemstype = System.Type.GetType ("System.Nullable`1");
+				nullableType = itemstype.MakeGenericType (type);
+			}
+			else {
+				nullableType = type;
+			}
 		}
+
+//		bool isString;
+//
+//		public bool IsString {
+//			get {
+//				return isString;
+//			}
+//		}
+
+		Type nullableType;
+
+		public Type NullableType {
+			get {
+				return nullableType;
+			}
+		}
+
+
 
 		bool _isPrimaryKey;
 

@@ -6,7 +6,7 @@ namespace Light.Data
 {
 	enum EnumFieldType
 	{
-		EnumToInt,
+		EnumToNumerics,
 		EnumToString
 	}
 }

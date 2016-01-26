@@ -29,11 +29,11 @@ namespace Light.Data
 			return factory.CreateSubStringSql (field, _start, _size);
 		}
 
-//		internal override string DBType {
-//			get {
-//				return string.Empty;
-//			}
-//		}
+		internal override string DBType {
+			get {
+				return "string";
+			}
+		}
 
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{

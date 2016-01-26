@@ -44,11 +44,16 @@ namespace Light.Data
 			return sql;
 		}
 
-//		internal override string DBType {
-//			get {
-//				return string.Empty;
-//			}
-//		}
+		internal override string DBType {
+			get {
+				if (_function == MathFunction.Abs) {
+					return base.DBType;
+				}
+				else {
+					return "double";
+				}
+			}
+		}
 
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{
