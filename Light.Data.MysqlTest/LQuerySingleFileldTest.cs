@@ -9,6 +9,29 @@ namespace Light.Data.MysqlTest
 	public class LQuerySingleFileldTest:BaseTest
 	{
 		[Test ()]
+		public void TeatCase_List_Array_Le ()
+		{
+			const int count = 57;
+			List<TeUser> list1 = InitialUserTable (count);
+			List<TeUser> listReslt = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (count, listReslt.Count);
+			for (int i = 0; i < count; i++) {
+				Assert.IsTrue (EqualUser (listReslt [i], list1 [i], true));
+			}
+			TeUser[] arrayResult = context.LQuery<TeUser> ().ToArray ();
+			Assert.AreEqual (count, arrayResult.Length);
+			for (int i = 0; i < count; i++) {
+				Assert.IsTrue (EqualUser (arrayResult [i], list1 [i], true));
+			}
+			int index = 0;
+			foreach (TeUser user in context.LQuery<TeUser> ()) {
+				Assert.IsTrue (EqualUser (user, list1 [index], true));
+				index++;
+			}
+		}
+
+
+		[Test ()]
 		public void TestCase_Field_Int ()
 		{
 			InitialUserTable (21);

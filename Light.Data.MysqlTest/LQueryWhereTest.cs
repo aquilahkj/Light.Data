@@ -8,55 +8,7 @@ namespace Light.Data.MysqlTest
 	public class LQueryWhereTest:BaseTest
 	{
 
-		[Test ()]
-		public void TestCase_QueryId ()
-		{
-			InitialUserTable (20);
-			TeUser user1 = context.SelectSingleFromId<TeUser> (8);
-			Assert.NotNull (user1);
-			Assert.AreEqual (8, user1.Id);
-			TeUser user2 = context.SelectSingleFromId<TeUser> (15);
-			Assert.NotNull (user2);
-			Assert.AreEqual (15, user2.Id);
-			TeUser user3 = context.SelectSingleFromId<TeUser> (21);
-			Assert.Null (user3);
-		}
 
-		[Test ()]
-		public void TestCase_QueryKey ()
-		{
-			InitialUserTable (20);
-			TeUser user1 = context.SelectSingleFromKey<TeUser> (8);
-			Assert.NotNull (user1);
-			Assert.AreEqual (8, user1.Id);
-			TeUser user2 = context.SelectSingleFromKey<TeUser> (15);
-			Assert.NotNull (user2);
-			Assert.AreEqual (15, user2.Id);
-			TeUser user3 = context.SelectSingleFromKey<TeUser> (21);
-			Assert.Null (user3);
-		}
-
-		[Test ()]
-		public void TeatCase_List_Array_Le ()
-		{
-			const int count = 57;
-			List<TeUser> list1 = InitialUserTable (count);
-			List<TeUser> listReslt = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (count, listReslt.Count);
-			for (int i = 0; i < count; i++) {
-				Assert.IsTrue (EqualUser (listReslt [i], list1 [i], true));
-			}
-			TeUser[] arrayResult = context.LQuery<TeUser> ().ToArray ();
-			Assert.AreEqual (count, arrayResult.Length);
-			for (int i = 0; i < count; i++) {
-				Assert.IsTrue (EqualUser (arrayResult [i], list1 [i], true));
-			}
-			int index = 0;
-			foreach (TeUser user in context.LQuery<TeUser> ()) {
-				Assert.IsTrue (EqualUser (user, list1 [index], true));
-				index++;
-			}
-		}
 
 		[Test ()]
 		public void TestCase_QuerySingleParam_Enum ()
