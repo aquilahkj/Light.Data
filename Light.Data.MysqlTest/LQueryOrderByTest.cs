@@ -62,7 +62,7 @@ namespace Light.Data.MysqlTest
 		}
 
 		[Test ()]
-		public void TestCase_OrderBy_Multi ()
+		public void TestCase_OrderBy_Catch ()
 		{
 			InitialUserTable (21);
 			List<TeUser> list;
@@ -84,7 +84,7 @@ namespace Light.Data.MysqlTest
 				}
 			}
 
-			list = context.LQuery<TeUser> ().OrderBy (TeUser.LevelIdField.OrderByAsc ()).OrderBy (TeUser.IdField.OrderByAsc ()).ToList ();
+			list = context.LQuery<TeUser> ().OrderBy (TeUser.LevelIdField.OrderByAsc ()).OrderByCatch (TeUser.IdField.OrderByAsc ()).ToList ();
 			Assert.AreEqual (21, list.Count);
 			for (int i = 1; i < list.Count; i++) {
 				Assert.LessOrEqual (list [i - 1].LevelId, list [i].LevelId);
@@ -93,7 +93,7 @@ namespace Light.Data.MysqlTest
 				}
 			}
 
-			list = context.LQuery<TeUser> ().OrderBy (TeUser.LevelIdField.OrderByDesc ()).OrderBy (TeUser.IdField.OrderByAsc ()).ToList ();
+			list = context.LQuery<TeUser> ().OrderBy (TeUser.LevelIdField.OrderByDesc ()).OrderByCatch (TeUser.IdField.OrderByAsc ()).ToList ();
 			Assert.AreEqual (21, list.Count);
 			for (int i = 1; i < list.Count; i++) {
 				Assert.GreaterOrEqual (list [i - 1].LevelId, list [i].LevelId);
@@ -134,6 +134,18 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (21, list.Count);
 			for (int i = 1; i < list.Count; i++) {
 				Assert.Greater (list [i - 1].Id, list [i].Id);
+			}
+
+			list = context.LQuery<TeUser> ().OrderByRandom ().OrderBy (TeUser.IdField.OrderByDesc ()).OrderByReset().ToList ();
+			Assert.AreEqual (21, list.Count);
+			for (int i = 1; i < list.Count; i++) {
+				Assert.Less (list [i - 1].Id, list [i].Id);
+			}
+
+			list = context.LQuery<TeUser> ().OrderByRandom ().OrderBy (TeUser.IdField.OrderByDesc ()).OrderBy(TeUser.IdField.OrderByAsc()).ToList ();
+			Assert.AreEqual (21, list.Count);
+			for (int i = 1; i < list.Count; i++) {
+				Assert.Less (list [i - 1].Id, list [i].Id);
 			}
 
 			list = context.LQuery<TeUser> ().OrderBy (TeUser.IdField.OrderByDesc ()).OrderByRandom ().ToList ();

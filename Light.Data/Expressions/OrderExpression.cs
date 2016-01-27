@@ -23,7 +23,7 @@ namespace Light.Data
 //            }
 		}
 
-		private static OrderExpression Catch (OrderExpression expression1, OrderExpression expression2)
+		internal static OrderExpression Catch (OrderExpression expression1, OrderExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
 				return null;

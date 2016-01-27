@@ -138,13 +138,27 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Having the specified expression.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		public AggregateTable<T> Having (AggregateHavingExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_having = expression;
+			return this;
+		}
+
+		/// <summary>
 		/// 添加统计够查询条件
 		/// </summary>
 		/// <param name="expression">查询表达式</param>
 		/// <returns>统计表生成器</returns>
-		public AggregateTable<T> Having (AggregateHavingExpression expression)
+		public AggregateTable<T> HavingWithAnd (AggregateHavingExpression expression)
 		{
-			_having &= expression;
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_having = AggregateHavingExpression.And (_having, expression);
 			return this;
 		}
 
@@ -155,18 +169,55 @@ namespace Light.Data
 		/// <returns>统计表生成器</returns>
 		public AggregateTable<T> HavingWithOr (AggregateHavingExpression expression)
 		{
-			_having |= expression;
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_having = AggregateHavingExpression.Or (_having, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// 添加排序表达式
+		/// Havings the reset.
 		/// </summary>
-		/// <param name="expression">排序表达式</param>
-		/// <returns>统计表生成器</returns>
+		/// <returns>The reset.</returns>
+		public AggregateTable<T> HavingReset ()
+		{
+			_having = null;
+			return this;
+		}
+
+		/// <summary>
+		/// catch order by expression.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">AggregateTable.</param>
+		public AggregateTable<T> OrderByCatch (OrderExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_order = OrderExpression.Catch (_order, expression);
+			return this;
+		}
+
+		/// <summary>
+		/// replace order by expression.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">AggregateTable.</param>
 		public AggregateTable<T> OrderBy (OrderExpression expression)
 		{
-			_order &= expression;
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_order = expression;
+			return this;
+		}
+
+		/// <summary>
+		/// reset order by expression
+		/// </summary>
+		/// <returns>AggregateTable.</returns>
+		public AggregateTable<T> OrderByReset ()
+		{
+			_order = null;
 			return this;
 		}
 
@@ -181,24 +232,51 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 添加查询表达式
+		/// reset where expression.
 		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns>统计表生成器</returns>
-		public AggregateTable<T> Where (QueryExpression expression)
+		/// <returns>The reset.</returns>
+		public AggregateTable<T> WhereReset ()
 		{
-			_query &= expression;
+			_query = null;
 			return this;
 		}
 
 		/// <summary>
-		/// 添加查询表达式
+		/// replace where expression
 		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns>统计表生成器</returns>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public AggregateTable<T> Where (QueryExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = expression;
+			return this;
+		}
+
+		/// <summary>
+		/// and catch where expression.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public AggregateTable<T> WhereWithAnd (QueryExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = QueryExpression.And (_query, expression);
+			return this;
+		}
+
+		/// <summary>
+		/// or catch where expression.
+		/// </summary>
+		/// <returns>LEnumerables.</returns>
+		/// <param name="expression">Expression.</param>
 		public AggregateTable<T> WhereWithOr (QueryExpression expression)
 		{
-			_query |= expression;
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = QueryExpression.Or (_query, expression);
 			return this;
 		}
 

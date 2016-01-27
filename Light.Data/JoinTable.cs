@@ -35,7 +35,6 @@ namespace Light.Data
 				throw new LightDataException (RE.CanNotJoinTheSameTable);
 			}
 
-//			model2 = new JoinModel (right.Mapping, connect, right.Query, right.Order);
 			table._modelList.Add (model1);
 			table._modelList.Add (model2);
 			return table;
@@ -60,20 +59,6 @@ namespace Light.Data
 
 		List<JoinModel> _modelList = new List<JoinModel> ();
 
-		//		/// <summary>
-		//		/// 重置条件语句
-		//		/// </summary>
-		//		/// <returns> 枚举查询器</returns>
-		//		public JoinTable Reset ()
-		//		{
-		//			_selector = new JoinSelector ();
-		//			_query = null;
-		//			_order = null;
-		//			_region = null;
-		//			_level = SafeLevel.Default;
-		//			return this;
-		//		}
-
 		/// <summary>
 		/// Join the specified le and on.
 		/// </summary>
@@ -86,6 +71,22 @@ namespace Light.Data
 				throw new ArgumentNullException ("le");
 			if (on == null)
 				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.InnerJoin, le, on);
+		}
+
+		/// <summary>
+		/// Join the specified query and on.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (QueryExpression query, DataFieldExpression on)where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return InternalJoin<K> (JoinType.InnerJoin, le, on);
 		}
 
@@ -115,6 +116,19 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Join the specified query.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (QueryExpression query)where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
+			return InternalJoin<K> (JoinType.InnerJoin, le, null);
+		}
+
+		/// <summary>
 		/// Join this instance.
 		/// </summary>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
@@ -136,6 +150,23 @@ namespace Light.Data
 				throw new ArgumentNullException ("le");
 			if (on == null)
 				throw new ArgumentNullException ("on");
+			return InternalJoin<K> (JoinType.LeftJoin, le, on);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> (QueryExpression query, DataFieldExpression on)where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return InternalJoin<K> (JoinType.LeftJoin, le, on);
 		}
 
@@ -169,6 +200,20 @@ namespace Light.Data
 		/// Lefts the join.
 		/// </summary>
 		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> (QueryExpression query)where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
+			return InternalJoin<K> (JoinType.LeftJoin, le, null);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable LeftJoin<K> ()where K : class, new()
 		{
@@ -195,6 +240,23 @@ namespace Light.Data
 		/// Rights the join.
 		/// </summary>
 		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (QueryExpression query, DataFieldExpression on)where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
+			return InternalJoin<K> (JoinType.RightJoin, le, on);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable RightJoin<K> (DataFieldExpression on)where K : class, new()
@@ -214,6 +276,20 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
+			return InternalJoin<K> (JoinType.RightJoin, le, null);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (QueryExpression query)where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return InternalJoin<K> (JoinType.RightJoin, le, null);
 		}
 
@@ -253,6 +329,22 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		public JoinTable On (DataFieldExpression expression)
 		{
+			if (expression == null)
+				throw new ArgumentNullException ("expression");
+			JoinModel model = this._modelList [this._modelList.Count - 1];
+			JoinConnect connect = model.Connect;
+			connect.On = expression;
+			return this;
+		}
+
+		/// <summary>
+		/// Raises the with and event.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		public JoinTable OnWithAnd (DataFieldExpression expression)
+		{
+			if (expression == null)
+				throw new ArgumentNullException ("expression");
 			JoinModel model = this._modelList [this._modelList.Count - 1];
 			JoinConnect connect = model.Connect;
 			connect.On = DataFieldExpression.And (connect.On, expression);
@@ -351,45 +443,53 @@ namespace Light.Data
 
 
 		/// <summary>
-		/// 添加查询表达式
+		/// reset where expression.
 		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns> 枚举查询器</returns>
-		public JoinTable Where (QueryExpression expression)
+		/// <returns>The reset.</returns>
+		public JoinTable WhereReset ()
 		{
-			_query &= expression;
+			_query = null;
 			return this;
 		}
 
 		/// <summary>
-		/// 添加查询表达式
+		/// replace where expression
 		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns> 枚举查询器</returns>
-		public JoinTable WhereWithOr (QueryExpression expression)
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public JoinTable Where (QueryExpression expression)
 		{
-			_query |= expression;
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = expression;
 			return this;
 		}
 
-		//		/// <summary>
-		//		/// 添加查询表达式
-		//		/// </summary>
-		//		/// <param name="expression">查询表达式</param>
-		//		/// <param name="catchType">连接操作符类型</param>
-		//		/// <returns> 枚举查询器</returns>
-		//		public JoinTable Where (QueryExpression expression, CatchOperatorsType catchType)
-		//		{
-		//			if (catchType == CatchOperatorsType.AND) {
-		//				_query = QueryExpression.And (_query, expression);
-		//			}
-		//			else {
-		//				_query = QueryExpression.Or (_query, expression);
-		//			}
-		//			return this;
-		//		}
+		/// <summary>
+		/// and catch where expression.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public JoinTable WhereWithAnd (QueryExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = QueryExpression.And (_query, expression);
+			return this;
+		}
 
-
+		/// <summary>
+		/// or catch where expression.
+		/// </summary>
+		/// <returns>LEnumerables.</returns>
+		/// <param name="expression">Expression.</param>
+		public JoinTable WhereWithOr (QueryExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = QueryExpression.Or (_query, expression);
+			return this;
+		}
 
 		/// <summary>
 		/// 添加排序表达式
@@ -398,7 +498,22 @@ namespace Light.Data
 		/// <returns> 枚举查询器</returns>
 		public JoinTable OrderBy (OrderExpression expression)
 		{
-			_order &= expression;
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_order = expression;
+			return this;
+		}
+
+		/// <summary>
+		/// Orders the by catch.
+		/// </summary>
+		/// <returns>The by catch.</returns>
+		/// <param name="expression">Expression.</param>
+		public JoinTable OrderByCatch (OrderExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_order = OrderExpression.Catch (_order, expression);
 			return this;
 		}
 
@@ -409,6 +524,16 @@ namespace Light.Data
 		public JoinTable OrderByRandom ()
 		{
 			_order = new RandomOrderExpression (this._modelList [0].Mapping);
+			return this;
+		}
+
+		/// <summary>
+		/// Orders the by reset.
+		/// </summary>
+		/// <returns>The by reset.</returns>
+		public JoinTable OrderByReset ()
+		{
+			_order = null;
 			return this;
 		}
 
@@ -462,6 +587,16 @@ namespace Light.Data
 				_region.Start = start;
 				_region.Size = size;
 			}
+			return this;
+		}
+
+		/// <summary>
+		/// reset the range
+		/// </summary>
+		/// <returns>The reset.</returns>
+		public JoinTable RangeReset ()
+		{
+			_region = null;
 			return this;
 		}
 

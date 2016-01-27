@@ -60,73 +60,108 @@ namespace Light.Data
 
 		#region LEnumerable<T> 成员
 
-		/// <summary>
-		/// 重置条件语句
-		/// </summary>
-		/// <returns> 枚举查询器</returns>
-		public LEnumerable<T> Reset ()
-		{
-			_query = null;
-			_order = null;
-			_region = null;
-			_level = SafeLevel.Default;
-			return this;
-		}
-
-		/// <summary>
-		/// 添加查询表达式
-		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns> 枚举查询器</returns>
-		public LEnumerable<T> Where (QueryExpression expression)
-		{
-			_query &= expression;
-			return this;
-		}
-
-		/// <summary>
-		/// 添加查询表达式
-		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns> 枚举查询器</returns>
-		public LEnumerable<T> WhereWithOr (QueryExpression expression)
-		{
-			_query |= expression;
-			return this;
-		}
-
 		//		/// <summary>
-		//		/// 添加查询表达式
+		//		/// 重置条件语句
 		//		/// </summary>
-		//		/// <param name="expression">查询表达式</param>
-		//		/// <param name="catchType">连接操作符类型</param>
 		//		/// <returns> 枚举查询器</returns>
-		//		public LEnumerable<T> Where (QueryExpression expression, CatchOperatorsType catchType)
+		//		public LEnumerable<T> Reset ()
 		//		{
-		//			if (catchType == CatchOperatorsType.AND) {
-		//				_query = QueryExpression.And (_query, expression);
-		//			}
-		//			else {
-		//				_query = QueryExpression.Or (_query, expression);
-		//			}
+		//			_query = null;
+		//			_order = null;
+		//			_region = null;
+		//			_level = SafeLevel.Default;
 		//			return this;
 		//		}
 
 		/// <summary>
-		/// 添加排序表达式
+		/// reset where expression.
 		/// </summary>
-		/// <param name="expression"></param>
-		/// <returns> 枚举查询器</returns>
-		public LEnumerable<T> OrderBy (OrderExpression expression)
+		/// <returns>The reset.</returns>
+		public LEnumerable<T> WhereReset ()
 		{
-			_order &= expression;
+			_query = null;
 			return this;
 		}
 
 		/// <summary>
-		/// Orders the by random.
+		/// replace where expression
 		/// </summary>
-		/// <returns>The by random.</returns>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public LEnumerable<T> Where (QueryExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = expression;
+			return this;
+		}
+
+		/// <summary>
+		/// and catch where expression.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public LEnumerable<T> WhereWithAnd (QueryExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = QueryExpression.And (_query, expression);
+			return this;
+		}
+
+		/// <summary>
+		/// or catch where expression.
+		/// </summary>
+		/// <returns>LEnumerables.</returns>
+		/// <param name="expression">Expression.</param>
+		public LEnumerable<T> WhereWithOr (QueryExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_query = QueryExpression.Or (_query, expression);
+			return this;
+		}
+
+		/// <summary>
+		/// catch order by expression.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public LEnumerable<T> OrderByCatch (OrderExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_order = OrderExpression.Catch (_order, expression);
+			return this;
+		}
+
+		/// <summary>
+		/// replace order by expression.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="expression">Expression.</param>
+		public LEnumerable<T> OrderBy (OrderExpression expression)
+		{
+//			if (expression == null)
+//				throw new ArgumentNullException ("expression");
+			_order = expression;
+			return this;
+		}
+
+		/// <summary>
+		/// reset order by expression
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		public LEnumerable<T> OrderByReset ()
+		{
+			_order = null;
+			return this;
+		}
+
+		/// <summary>
+		/// order by random.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
 		public LEnumerable<T> OrderByRandom ()
 		{
 			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof(T)));
@@ -183,6 +218,16 @@ namespace Light.Data
 				_region.Start = start;
 				_region.Size = size;
 			}
+			return this;
+		}
+
+		/// <summary>
+		/// reset the range
+		/// </summary>
+		/// <returns>The reset.</returns>
+		public LEnumerable<T> RangeReset ()
+		{
+			_region = null;
 			return this;
 		}
 
@@ -580,6 +625,35 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Join the specified query and on.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, on);
+		}
+
+		/// <summary>
+		/// Join the specified query.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable Join<K> (QueryExpression query) where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, null);
+		}
+
+		/// <summary>
 		/// Join the specified le.
 		/// </summary>
 		/// <param name="le">Le.</param>
@@ -632,6 +706,37 @@ namespace Light.Data
 		/// Lefts the join.
 		/// </summary>
 		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, on);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable LeftJoin<K> (QueryExpression query) where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, null);
+		}
+
+		/// <summary>
+		/// Lefts the join.
+		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable LeftJoin<K> (LEnumerable<K> le) where K : class, new()
@@ -648,6 +753,8 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable LeftJoin<K> (DataFieldExpression on) where K : class, new()
 		{
+			if (on == null)
+				throw new ArgumentNullException ("on");
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, null, on);
 		}
 
@@ -672,6 +779,25 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, on);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <param name="on">On.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			if (on == null)
+				throw new ArgumentNullException ("on");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, on);
 		}
 
@@ -685,6 +811,20 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
+			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, null);
+		}
+
+		/// <summary>
+		/// Rights the join.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public JoinTable RightJoin<K> (QueryExpression query) where K : class, new()
+		{
+			if (query == null)
+				throw new ArgumentNullException ("query");
+			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, null);
 		}
 

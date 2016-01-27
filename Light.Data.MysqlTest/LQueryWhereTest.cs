@@ -7,7 +7,33 @@ namespace Light.Data.MysqlTest
 	[TestFixture ()]
 	public class LQueryWhereTest:BaseTest
 	{
+		[Test ()]
+		public void TestCase_QueryWhere_AndOr ()
+		{
+			InitialUserTable (21);
+			List<TeUser> listAnd = context.LQuery<TeUser> ().Where (TeUser.IdField >= 5 & TeUser.IdField <= 10).ToList ();
+			Assert.AreEqual (6, listAnd.Count);
+			Assert.IsTrue (listAnd.TrueForAll (x => x.Id >= 5 && x.Id <= 10));
 
+			listAnd = context.LQuery<TeUser> ().Where (TeUser.IdField >= 5).WhereWithAnd( TeUser.IdField <= 10).ToList ();
+			Assert.AreEqual (6, listAnd.Count);
+			Assert.IsTrue (listAnd.TrueForAll (x => x.Id >= 5 && x.Id <= 10));
+
+			List<TeUser> listOr = context.LQuery<TeUser> ().Where (TeUser.IdField < 5 | TeUser.IdField > 10).ToList ();
+			Assert.AreEqual (15, listOr.Count);
+			Assert.IsTrue (listOr.TrueForAll (x => x.Id < 5 || x.Id > 10));
+
+			listOr = context.LQuery<TeUser> ().Where (TeUser.IdField < 5).WhereWithOr(TeUser.IdField > 10).ToList ();
+			Assert.AreEqual (15, listOr.Count);
+			Assert.IsTrue (listOr.TrueForAll (x => x.Id < 5 || x.Id > 10));
+
+			List<TeUser> listWhereReplace = context.LQuery<TeUser> ().Where (TeUser.IdField >= 5).Where (TeUser.IdField <= 10).ToList ();
+			Assert.AreEqual (10, listWhereReplace.Count);
+			Assert.IsTrue (listWhereReplace.TrueForAll (x => x.Id <= 10));
+
+			List<TeUser> listWhereReset = context.LQuery<TeUser> ().Where (TeUser.IdField >= 5).WhereReset().ToList ();
+			Assert.AreEqual (21, listWhereReset.Count);
+		}
 
 
 		[Test ()]
