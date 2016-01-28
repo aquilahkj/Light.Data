@@ -11,8 +11,6 @@ namespace Light.Data
 
 		readonly object _defaultValue = null;
 
-		//		Dictionary<int, object> _dict = new Dictionary<int, object> ();
-
 		public EnumFieldType EnumType {
 			get {
 				return _enumType;
@@ -35,34 +33,16 @@ namespace Light.Data
 		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
-//			ObjectType = type;
-//			Name = fieldName;
-//			IndexName = indexName;
-//			TypeMapping = mapping;
-//			if(dbType!=null && 
-
 			if (dbType != null && textRegex.IsMatch (dbType)) {
 				EnumType = EnumFieldType.EnumToString;
 			}
 			else {
 				EnumType = EnumFieldType.EnumToNumerics;
 			}
-//			if (string.IsNullOrEmpty (dbType) || dbType.Contains ("char")) {
-//				EnumType = EnumFieldType.EnumToInt;
-//			}
-//			else {
-//				EnumType = EnumFieldType.EnumToString;
-//			}
-//			DBType = dbType;
 			Type itemstype = System.Type.GetType ("System.Nullable`1");
 			nullableType = itemstype.MakeGenericType (type);
 			Array values = Enum.GetValues (ObjectType);
 			_defaultValue = values.GetValue (0);
-//
-//			for (int i = 0; i < values.Length; i++) {
-//				object obj = values.GetValue (i);
-//				_dict.Add (Convert.ToInt32 (obj), obj);
-//			}
 		}
 
 		public override object ToProperty (object value)

@@ -239,7 +239,6 @@
     <Compile Include="Mappings\PrimitiveDataDefine.cs" />
     <Compile Include="SafeLevel.cs" />
     <Compile Include="LEnumerable.cs" />
-    <Compile Include="Mappings\AggregateFieldMapping.cs" />
     <Compile Include="Mappings\AggregateTableMapping.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -295,6 +294,9 @@
     <Compile Include="DataField\AliasDataFieldInfo.cs" />
     <Compile Include="JoinSelector.cs" />
     <Compile Include="Function\AggregateFunctionInfo.cs" />
+    <Compile Include="Function\ConditionMaxFunction.cs" />
+    <Compile Include="Function\ConditionMinFunction.cs" />
+    <Compile Include="Mappings\AggregateFieldMapping_Old.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

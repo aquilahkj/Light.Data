@@ -101,6 +101,18 @@ namespace Light.Data.MysqlTest
 					Assert.Less (list [i - 1].Id, list [i].Id);
 				}
 			}
+
+			list = context.LQuery<TeUser> ().OrderBy (TeUser.LevelIdField.OrderByDesc ()).OrderBy (TeUser.IdField.OrderByAsc ()).ToList ();
+			Assert.AreEqual (21, list.Count);
+			for (int i = 1; i < list.Count; i++) {
+				Assert.Less (list [i - 1].Id, list [i].Id);
+			}
+
+			list = context.LQuery<TeUser> ().OrderBy (TeUser.LevelIdField.OrderByDesc ()).OrderByReset().ToList ();
+			Assert.AreEqual (21, list.Count);
+			for (int i = 1; i < list.Count; i++) {
+				Assert.Less (list [i - 1].Id, list [i].Id);
+			}
 		}
 
 		[Test ()]
@@ -136,13 +148,13 @@ namespace Light.Data.MysqlTest
 				Assert.Greater (list [i - 1].Id, list [i].Id);
 			}
 
-			list = context.LQuery<TeUser> ().OrderByRandom ().OrderBy (TeUser.IdField.OrderByDesc ()).OrderByReset().ToList ();
+			list = context.LQuery<TeUser> ().OrderByRandom ().OrderBy (TeUser.IdField.OrderByDesc ()).OrderByReset ().ToList ();
 			Assert.AreEqual (21, list.Count);
 			for (int i = 1; i < list.Count; i++) {
 				Assert.Less (list [i - 1].Id, list [i].Id);
 			}
 
-			list = context.LQuery<TeUser> ().OrderByRandom ().OrderBy (TeUser.IdField.OrderByDesc ()).OrderBy(TeUser.IdField.OrderByAsc()).ToList ();
+			list = context.LQuery<TeUser> ().OrderByRandom ().OrderBy (TeUser.IdField.OrderByDesc ()).OrderBy (TeUser.IdField.OrderByAsc ()).ToList ();
 			Assert.AreEqual (21, list.Count);
 			for (int i = 1; i < list.Count; i++) {
 				Assert.Less (list [i - 1].Id, list [i].Id);

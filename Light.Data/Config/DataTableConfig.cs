@@ -5,59 +5,54 @@ using System.Text;
 
 namespace Light.Data
 {
-    class DataTableConfig : TableConfig,IDataTableConfig
-    {
-        //Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig>();
+	class DataTableConfig : TableConfig,IDataTableConfig
+	{
+		//Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig>();
 
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        public DataTableConfig(Type dataType)
-        {
-            if (dataType == null)
-            {
-                throw new ArgumentException("DataType");
-            }
-            DataType = dataType;
-            IsEntityTable = true;
-        }
+		/// <summary>
+		/// 构造函数
+		/// </summary>
+		public DataTableConfig (Type dataType)
+		{
+			if (dataType == null) {
+				throw new ArgumentNullException ("dataType");
+			}
+			DataType = dataType;
+			IsEntityTable = true;
+		}
 
-        /// <summary>
-        /// 数据表名
-        /// </summary>
-        public Type DataType
-        {
-            get;
-            private set;
-        }
+		/// <summary>
+		/// 数据表名
+		/// </summary>
+		public Type DataType {
+			get;
+			private set;
+		}
 
-        /// <summary>
-        /// 数据表名
-        /// </summary>
-        public string TableName
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// 数据表名
+		/// </summary>
+		public string TableName {
+			get;
+			set;
+		}
 
-        /// <summary>
-        /// 扩展参数
-        /// </summary>
-        public string ExtendParams
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// 扩展参数
+		/// </summary>
+		public string ExtendParams {
+			get;
+			set;
+		}
 
-        /// <summary>
-        /// 是否有实体表对应关系
-        /// </summary>
-        public bool IsEntityTable
-        {
-            get;
-            set;
-        }
-        /*
+		/// <summary>
+		/// 是否有实体表对应关系
+		/// </summary>
+		public bool IsEntityTable {
+			get;
+			set;
+		}
+		/*
         public void SetField(IConfiguratorFieldConfig config)
         {
             this.SetField(config.FieldName, config);
@@ -120,6 +115,6 @@ namespace Light.Data
                 yield return kv.Value;
             }
         }
-         */ 
-    }
+         */
+	}
 }

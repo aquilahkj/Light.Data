@@ -14,7 +14,7 @@ namespace Light.Data
 		public AggregateTableConfig (Type dataType, Type relateType)
 		{
 			if (dataType == null) {
-				throw new ArgumentNullException ("DataType");
+				throw new ArgumentNullException ("dataType");
 			}
 			//if (relateType == null)
 			//{

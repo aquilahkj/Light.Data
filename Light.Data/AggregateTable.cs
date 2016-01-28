@@ -34,18 +34,18 @@ namespace Light.Data
 			_enetityMapping = DataMapping.GetEntityMapping (typeof(T));
 		}
 
-		/// <summary>
-		/// 重置条件语句
-		/// </summary>
-		/// <returns>统计表生成器</returns>
-		public AggregateTable<T> Reset ()
-		{
-			_query = null;
-			_order = null;
-			_having = null;
-			_level = SafeLevel.Default;
-			return this;
-		}
+//		/// <summary>
+//		/// 重置条件语句
+//		/// </summary>
+//		/// <returns>统计表生成器</returns>
+//		public AggregateTable<T> Reset ()
+//		{
+//			_query = null;
+//			_order = null;
+//			_having = null;
+//			_level = SafeLevel.Default;
+//			return this;
+//		}
 
 		/// <summary>
 		/// 生成统计表的DataTable

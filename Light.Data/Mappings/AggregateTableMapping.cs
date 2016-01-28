@@ -89,7 +89,9 @@ namespace Light.Data
 					Type type = pi.PropertyType;
 					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
 
-					AggregateFieldMapping mapping = new AggregateFieldMapping (type, name, pi.Name, this);
+//					AggregateFieldMapping mapping = new AggregateFieldMapping (type, name, pi.Name, this);
+
+					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (type, pi, name, pi.Name, config, this);
 					mapping.Handler = new PropertyHandler (pi);
 					//_fieldMappingDictionary.Add(mapping.Name, mapping);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
@@ -126,7 +128,7 @@ namespace Light.Data
 
 		private void LoadDataField (object source, IFieldCollection collection, IDataReader datareader)
 		{
-			foreach (AggregateFieldMapping field in collection.GetFieldMappings()) {
+			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
 				if (field == null)
 					continue;
 				object obj = datareader [field.Name];
@@ -146,7 +148,7 @@ namespace Light.Data
 
 		private void LoadDataField (object source, IFieldCollection collection, DataRow datarow)
 		{
-			foreach (AggregateFieldMapping field in collection.GetFieldMappings()) {
+			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
 				if (field == null)
 					continue;
 				object obj = datarow [field.Name];

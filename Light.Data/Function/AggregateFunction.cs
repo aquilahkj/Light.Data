@@ -471,6 +471,17 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// 条件计数语句
+		/// </summary>
+		/// <param name="expression">条件表达式</param>
+		/// <param name="fieldInfo">统计字段</param>
+		/// <returns>函数对象</returns>
+		public static AggregateFunction Count (QueryExpression expression, DataFieldInfo fieldInfo)
+		{
+			return Count (expression, fieldInfo, false);
+		}
+
+		/// <summary>
 		/// 对字段计算统计
 		/// </summary>
 		/// <param name="fieldInfo">统计字段</param>
@@ -620,6 +631,19 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Max the specified expression and fieldInfo.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
+		public static AggregateFunction Max (QueryExpression expression, DataFieldInfo fieldInfo)
+		{
+			if (Object.Equals (fieldInfo, null)) {
+				throw new ArgumentNullException ("fieldInfo");
+			}
+			return new ConditionMaxFunction (fieldInfo.TableMapping, expression, fieldInfo);
+		}
+
+		/// <summary>
 		/// 统计最小值
 		/// </summary>
 		/// <param name="fieldInfo">统计字段</param>
@@ -630,6 +654,19 @@ namespace Light.Data
 				throw new ArgumentNullException ("fieldInfo");
 			}
 			return new MinFunction (fieldInfo.TableMapping, fieldInfo);
+		}
+
+		/// <summary>
+		/// Minimum the specified expression and fieldInfo.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
+		public static AggregateFunction Min (QueryExpression expression, DataFieldInfo fieldInfo)
+		{
+			if (Object.Equals (fieldInfo, null)) {
+				throw new ArgumentNullException ("fieldInfo");
+			}
+			return new ConditionMinFunction (fieldInfo.TableMapping, expression, fieldInfo);
 		}
 
 		/// <summary>

@@ -770,6 +770,7 @@ namespace Light.Data
 					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
 				}
 				string groupbyField = fieldInfo.CreateDataFieldSql (this);
+				groupbyList [index] = groupbyField;
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
 				if (!Object.Equals (aliasInfo, null)) {
 					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false);
@@ -1078,7 +1079,7 @@ namespace Light.Data
 
 		public virtual string CreateConditionSumSql (string expressionSql, string fieldName, bool isDistinct)
 		{
-			return string.Format ("sum({2}case when {0} then {1} else 0 end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
+			return string.Format ("sum({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
 		public virtual string CreateAvgSql (string fieldName, bool isDistinct)
@@ -1088,7 +1089,7 @@ namespace Light.Data
 
 		public virtual string CreateConditionAvgSql (string expressionSql, string fieldName, bool isDistinct)
 		{
-			return string.Format ("avg({2}case when {0} then {1} else 0 end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
+			return string.Format ("avg({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
 		public virtual string CreateMaxSql (string fieldName)
@@ -1096,9 +1097,19 @@ namespace Light.Data
 			return string.Format ("max({0})", fieldName);
 		}
 
+		public virtual string CreateConditionMaxSql (string expressionSql, string fieldName)
+		{
+			return string.Format ("max(case when {0} then {1} else null end)", expressionSql, fieldName);
+		}
+
 		public virtual string CreateMinSql (string fieldName)
 		{
 			return string.Format ("min({0})", fieldName);
+		}
+
+		public virtual string CreateConditionMinSql (string expressionSql, string fieldName)
+		{
+			return string.Format ("min(case when {0} then {1} else null end)", expressionSql, fieldName);
 		}
 
 		public virtual string CreateAliasSql (string field, string alias)

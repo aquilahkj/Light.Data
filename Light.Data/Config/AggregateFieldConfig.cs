@@ -17,7 +17,7 @@ namespace Light.Data
         {
             if (string.IsNullOrEmpty(fieldName))
             {
-                throw new ArgumentNullException("FieldName");
+                throw new ArgumentNullException ("fieldName");
             }
             FieldName = fieldName;
         }
@@ -41,5 +41,21 @@ namespace Light.Data
             get;
             private set;
         }
+
+		/// <summary>
+		/// 是否可空
+		/// </summary>
+		public bool IsNullable {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// 默认值
+		/// </summary>
+		public object DefaultValue {
+			get;
+			set;
+		}
     }
 }

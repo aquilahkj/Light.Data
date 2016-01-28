@@ -34,5 +34,21 @@ namespace Light.Data
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// 是否可空
+		/// </summary>
+		public bool IsNullable {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// 默认值
+		/// </summary>
+		public object DefaultValue {
+			get;
+			set;
+		}
 	}
 }

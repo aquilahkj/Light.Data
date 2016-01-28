@@ -10,11 +10,11 @@ namespace Light.Data
         {
             if (string.IsNullOrEmpty(masterKey))
             {
-                throw new ArgumentNullException("MasterKey");
+                throw new ArgumentNullException ("masterKey");
             }
             if (string.IsNullOrEmpty(relateKey))
             {
-                throw new ArgumentNullException("RelateKey");
+                throw new ArgumentNullException ("relateKey");
             }
             MasterKey = masterKey;
             RelateKey = relateKey;

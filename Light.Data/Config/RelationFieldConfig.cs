@@ -12,7 +12,7 @@ namespace Light.Data
         {
             if (string.IsNullOrEmpty(fieldName))
             {
-                throw new ArgumentNullException("FieldName");
+                throw new ArgumentNullException ("fieldName");
             }
             FieldName = fieldName;
         }

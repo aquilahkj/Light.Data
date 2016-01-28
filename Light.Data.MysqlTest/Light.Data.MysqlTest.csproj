@@ -49,6 +49,11 @@
     <Compile Include="LQueryPageTest.cs" />
     <Compile Include="LQueryMultiTest.cs" />
     <Compile Include="LQuerySingleFileldTest.cs" />
+    <Compile Include="LAggregateGroupByTest.cs" />
+    <Compile Include="Model\AggregateSchema.cs" />
+    <Compile Include="LAggregateOrderByTest.cs" />
+    <Compile Include="LAggregateWhereTest.cs" />
+    <Compile Include="LAggregateHavingTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

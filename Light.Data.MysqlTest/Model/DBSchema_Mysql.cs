@@ -667,6 +667,8 @@ namespace Light.Data.MysqlTest
 
 		static readonly DataFieldInfo checkLevelTypeField = DataFieldInfo<TeUser>.Create("CheckLevelType");
 
+		static readonly DataFieldInfo loginTimesField = DataFieldInfo<TeUser>.Create("LoginTimes");
+
     	#endregion
 
     	#region "Static DataFieldInfo"
@@ -807,6 +809,13 @@ namespace Light.Data.MysqlTest
         {
             get {
                 return checkLevelTypeField;
+            }
+        }
+
+		public static DataFieldInfo LoginTimesField
+        {
+            get {
+                return loginTimesField;
             }
         }
 
@@ -1131,6 +1140,22 @@ namespace Light.Data.MysqlTest
             }
             set { 
             	this.checkLevelType = value; 
+            }
+        }
+		private int loginTimes;
+
+		/// <summary>
+		/// LoginTimes
+		/// </summary>
+		/// <value></value>
+		[DataField("LoginTimes")]
+        public int LoginTimes
+        {
+            get { 
+            	return this.loginTimes; 
+            }
+            set { 
+            	this.loginTimes = value; 
             }
         }
 		#endregion

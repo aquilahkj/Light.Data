@@ -49,7 +49,7 @@ namespace Light.Data.MysqlTest
 				userInsert.LevelId = i % 10 == 0 ? 10 : i % 10;
 				userInsert.HotRate = 1 + i * 0.01d;
 				userInsert.DeleteFlag = i % 2 == 0;
-
+				userInsert.LoginTimes = i % 6 == 0 ? 6 : i % 6;
 				userInsert.Address = i % 2 == 0 ? "addr" + userInsert.Account : null;
 
 				if (i % 2 == 0) {
@@ -118,6 +118,7 @@ namespace Light.Data.MysqlTest
 				user1.Area == user2.Area &&
 				user1.DeleteFlag == user2.DeleteFlag &&
 				user1.RefereeId == user2.RefereeId &&
+				user1.LoginTimes == user2.LoginTimes &&
 				user1.HotRate == user2.HotRate;
 			if (checkId) {
 				ret = ret && (user1.Id == user2.Id);

@@ -30,7 +30,7 @@ namespace Light.Data
 					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
 					string filedName = string.Format ("{0}_{1}", Name, name);
 					string indexName = string.Format ("{0}_{1}", IndexName, pi.Name);
-					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (type, pi, filedName, indexName, config, EntityMapping, ObjectType);
+					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (type, pi, filedName, indexName, config, EntityMapping);
 					PrimitiveFieldMapping primitiveFieldMapping = mapping as PrimitiveFieldMapping;
 					if (primitiveFieldMapping != null) {
 						primitiveFieldMapping.IsIdentity = false;

@@ -124,7 +124,7 @@ namespace Light.Data
 				if (config != null) {
 					Type type = pi.PropertyType;
 					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
-					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (type, pi, name, pi.Name, config, this, ObjectType);
+					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (type, pi, name, pi.Name, config, this);
 					mapping.Handler = new PropertyHandler (pi);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					if (mapping.Name != mapping.IndexName) {

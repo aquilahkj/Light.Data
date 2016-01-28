@@ -9,7 +9,7 @@ namespace Light.Data
 		public IgnoraFieldConfig (string fieldName)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("FieldName");
+				throw new ArgumentNullException ("fieldName");
 			}
 			FieldName = fieldName;
 		}
