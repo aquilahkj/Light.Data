@@ -196,7 +196,7 @@ namespace Light.Data
 		/// <returns>查询表达式</returns>
 		public QueryExpression Eq (object value)
 		{
-			if (value == null) {
+			if (Object.Equals (value, null)) {
 				return IsNull ();
 			}
 			else if (value is System.Collections.IEnumerable && !(value is string)) {
@@ -258,7 +258,7 @@ namespace Light.Data
 		/// <returns>查询表达式</returns>
 		public QueryExpression NotEq (object value)
 		{
-			if (value == null) {
+			if (Object.Equals (value, null)) {
 				return IsNotNull ();
 			}
 			else if (value is System.Collections.IEnumerable && !(value is string)) {
@@ -726,28 +726,6 @@ namespace Light.Data
 			return MatchValue (values, false, true, true);
 		}
 
-
-		///// <summary>
-		///// 模糊匹配(倒转)
-		///// </summary>
-		///// <param name="value">匹配值</param>
-		///// <returns>查询表达式</returns>
-		//public QueryExpression ReverseMatch(object value)
-		//{
-		//    return MatchValue(value, true, true, false);
-		//}
-
-
-		///// <summary>
-		///// not like 模糊匹配(倒转)
-		///// </summary>
-		///// <param name="value">匹配值</param>
-		///// <returns>查询表达式</returns>
-		//public QueryExpression ReverseNotMatch(object value)
-		//{
-		//    return MatchValue(value, true, true, true);
-		//}
-
 		/// <summary>
 		/// 查询字段是否空值
 		/// </summary>
@@ -1165,6 +1143,8 @@ namespace Light.Data
 			return new SubStringDataFieldInfo (this, start, 0);
 		}
 
+		#region math operate int
+
 		/// <summary>
 		/// 加
 		/// </summary>
@@ -1173,7 +1153,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator + (DataFieldInfo field, int value)
 		{
-			return field.TransformMathCalculate (MathOperator.Puls, value);
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (int value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
 
 		/// <summary>
@@ -1184,7 +1175,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator - (DataFieldInfo field, int value)
 		{
-			return field.TransformMathCalculate (MathOperator.Minus, value);
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (int value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
 
 		/// <summary>
@@ -1195,7 +1197,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator * (DataFieldInfo field, int value)
 		{
-			return field.TransformMathCalculate (MathOperator.Multiply, value);
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (int value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
 
 		/// <summary>
@@ -1206,7 +1219,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator / (DataFieldInfo field, int value)
 		{
-			return field.TransformMathCalculate (MathOperator.Divided, value);
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (int value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
 
 		/// <summary>
@@ -1217,7 +1241,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator % (DataFieldInfo field, int value)
 		{
-			return field.TransformMathCalculate (MathOperator.Mod, value);
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (int value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
 
 		/// <summary>
@@ -1228,8 +1263,973 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, int value)
 		{
-			return field.TransformMathCalculate (MathOperator.Power, value);
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (int value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+		#endregion
+
+		#region math operate long
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, long value)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (long value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (DataFieldInfo field, long value)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (long value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (DataFieldInfo field, long value)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (long value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (DataFieldInfo field, long value)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (long value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (DataFieldInfo field, long value)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (long value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (DataFieldInfo field, long value)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (long value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+
+
+
+		#endregion
+
+		#region math operate short
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, short value)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (short value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (DataFieldInfo field, short value)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (short value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (DataFieldInfo field, short value)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (short value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (DataFieldInfo field, short value)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (short value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (DataFieldInfo field, short value)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (short value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (DataFieldInfo field, short value)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (short value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+		#endregion
+
+		#region math operate uint
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, uint value)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (uint value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (DataFieldInfo field, uint value)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (uint value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (DataFieldInfo field, uint value)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (uint value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (DataFieldInfo field, uint value)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (uint value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (DataFieldInfo field, uint value)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (uint value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (DataFieldInfo field, uint value)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (uint value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+		#endregion
+
+		#region math operate ulong
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, ulong value)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (ulong value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (DataFieldInfo field, ulong value)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (ulong value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (DataFieldInfo field, ulong value)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (ulong value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (DataFieldInfo field, ulong value)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (ulong value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (DataFieldInfo field, ulong value)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (ulong value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (DataFieldInfo field, ulong value)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (ulong value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+
+
+
+		#endregion
+
+		#region math operate ushort
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, ushort value)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (ushort value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (DataFieldInfo field, ushort value)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (ushort value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (DataFieldInfo field, ushort value)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (ushort value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (DataFieldInfo field, ushort value)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (ushort value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (DataFieldInfo field, ushort value)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (ushort value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (DataFieldInfo field, ushort value)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (ushort value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+		#endregion
+
+		#region math operate float
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, float value)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (float value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (DataFieldInfo field, float value)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (float value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (DataFieldInfo field, float value)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (float value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (DataFieldInfo field, float value)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (float value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (DataFieldInfo field, float value)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (float value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (DataFieldInfo field, float value)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (float value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+		#endregion
+
+		#region math operate double
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, double value)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (double value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (DataFieldInfo field, double value)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (double value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (DataFieldInfo field, double value)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (double value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (DataFieldInfo field, double value)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (double value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (DataFieldInfo field, double value)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (double value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (DataFieldInfo field, double value)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
+		}
+
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (double value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+		#endregion
+
+		#region math operate decimal
 
 		/// <summary>
 		/// 加
@@ -1239,7 +2239,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator + (DataFieldInfo field, decimal value)
 		{
-			return field.TransformMathCalculate (MathOperator.Puls, value);
+			return field.TransformMathCalculate (MathOperator.Puls, value, true);
+		}
+
+		/// <summary>
+		/// 加
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator + (decimal value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
 
 		/// <summary>
@@ -1250,7 +2261,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator - (DataFieldInfo field, decimal value)
 		{
-			return field.TransformMathCalculate (MathOperator.Minus, value);
+			return field.TransformMathCalculate (MathOperator.Minus, value, true);
+		}
+
+		/// <summary>
+		/// 减
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator - (decimal value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
 
 		/// <summary>
@@ -1261,7 +2283,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator * (DataFieldInfo field, decimal value)
 		{
-			return field.TransformMathCalculate (MathOperator.Multiply, value);
+			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
+		}
+
+		/// <summary>
+		/// 乘
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator * (decimal value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
 
 		/// <summary>
@@ -1272,7 +2305,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator / (DataFieldInfo field, decimal value)
 		{
-			return field.TransformMathCalculate (MathOperator.Divided, value);
+			return field.TransformMathCalculate (MathOperator.Divided, value, true);
+		}
+
+		/// <summary>
+		/// 除
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator / (decimal value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
 
 		/// <summary>
@@ -1283,7 +2327,18 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator % (DataFieldInfo field, decimal value)
 		{
-			return field.TransformMathCalculate (MathOperator.Mod, value);
+			return field.TransformMathCalculate (MathOperator.Mod, value, true);
+		}
+
+		/// <summary>
+		/// 余
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator % (decimal value, DataFieldInfo field)
+		{
+			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
 
 		/// <summary>
@@ -1294,13 +2349,24 @@ namespace Light.Data
 		/// <returns></returns>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, decimal value)
 		{
-			return field.TransformMathCalculate (MathOperator.Power, value);
+			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
 
-
-		private DataFieldInfo TransformMathCalculate (MathOperator opera, object value)
+		/// <summary>
+		/// 幂
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static DataFieldInfo operator ^ (decimal value, DataFieldInfo field)
 		{
-			return new MathCalculateDataFieldInfo (this, opera, value);
+			return field.TransformMathCalculate (MathOperator.Power, value, false);
+		}
+		#endregion
+
+		private DataFieldInfo TransformMathCalculate (MathOperator opera, object value, bool forward)
+		{
+			return new MathCalculateDataFieldInfo (this, opera, value, forward);
 		}
 
 		/// <summary>
@@ -1566,6 +2632,11 @@ namespace Light.Data
 			}
 			DataFieldMatchExpression exp = new DataFieldMatchExpression (this, field, predicate);
 			return exp;
+		}
+
+		internal virtual object ToColumn(object value)
+		{
+			return base.DataField.ToColumn (value);
 		}
 
 	}

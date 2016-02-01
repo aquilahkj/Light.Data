@@ -70,18 +70,18 @@ namespace Light.Data
 //				}
 //			}
 			if (_values != null) {
-				foreach (object value in _values) {
+				foreach (string value in _values) {
 					string pn = factory.CreateTempParamName ();
-					list.Add (new DataParameter (pn, _fieldInfo.DataField.ToColumn (value), _fieldInfo.DBType));
+					list.Add (new DataParameter (pn, value, _fieldInfo.DBType));
 				}
 				if (list.Count == 0) {
 					string pn = factory.CreateTempParamName ();
-					list.Add (new DataParameter (pn, _fieldInfo.DataField.ToColumn (string.Empty), _fieldInfo.DBType));
+					list.Add (new DataParameter (pn, string.Empty, _fieldInfo.DBType));
 				}
 			}
 			else {
 				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, _fieldInfo.DataField.ToColumn (_value), _fieldInfo.DBType));
+				list.Add (new DataParameter (pn, _value, _fieldInfo.DBType));
 			}
 			dataParameters = list.ToArray ();
 			return factory.CreateCollectionMatchQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isReverse, _starts, _ends, _isNot, list);

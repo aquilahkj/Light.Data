@@ -193,6 +193,7 @@ namespace Light.Data
 
 		public override string CreateSubStringSql (string field, int start, int size)
 		{
+			start++;
 			if (size == 0) {
 				return string.Format ("substring({0},{1},len({0})-{1}+1)", field, start);
 			}
@@ -201,14 +202,24 @@ namespace Light.Data
 			}
 		}
 
-		public override string CreateDividedSql (string field, object value)
+		public override string CreateDividedSql (string field, object value, bool forward)
 		{
-			return string.Format ("convert(float,{0})/{1}", field, value);
+			if (forward) {
+				return string.Format ("convert(float,{0})/{1}", field, value);
+			}
+			else {
+				return string.Format ("convert(float,{0})/{1}", value, field);
+			}
 		}
 
-		public override string CreatePowerSql (string field, object value)
+		public override string CreatePowerSql (string field, object value, bool forward)
 		{
-			return string.Format ("power({0},{1})", field, value);
+			if (forward) {
+				return string.Format ("power({0},{1})", field, value);
+			}
+			else {
+				return string.Format ("power({0},{1})", value, field);
+			}
 		}
 
 		public override string CreateDataBaseTimeSql ()

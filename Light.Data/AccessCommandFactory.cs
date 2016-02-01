@@ -233,6 +233,7 @@ namespace Light.Data
 
 		public override string CreateSubStringSql (string field, int start, int size)
 		{
+			start++;
 			if (size == 0) {
 				return string.Format ("mid({0},{1})", field, start);
 			}
@@ -241,9 +242,14 @@ namespace Light.Data
 			}
 		}
 
-		public override string CreateModSql (string field, object value)
+		public override string CreateModSql (string field, object value, bool forward)
 		{
-			return string.Format ("{0} mod {1}", field, value);
+			if (forward) {
+				return string.Format ("({0} mod {1})", field, value);
+			}
+			else {
+				return string.Format ("({0} mod {1})", value, field);
+			}
 		}
 
 		public override string CreateAtanSql (string field)

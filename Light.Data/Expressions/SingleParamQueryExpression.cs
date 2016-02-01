@@ -6,6 +6,26 @@ namespace Light.Data
 {
 	class SingleParamQueryExpression : QueryExpression
 	{
+		readonly static HashSet<TypeCode> SupportTypeCodes = new HashSet<TypeCode> ();
+
+		static SingleParamQueryExpression ()
+		{
+			SupportTypeCodes.Add (TypeCode.Byte);
+			SupportTypeCodes.Add (TypeCode.Char);
+			SupportTypeCodes.Add (TypeCode.DateTime);
+			SupportTypeCodes.Add (TypeCode.Decimal);
+			SupportTypeCodes.Add (TypeCode.Double);
+			SupportTypeCodes.Add (TypeCode.Int16);
+			SupportTypeCodes.Add (TypeCode.Int32);
+			SupportTypeCodes.Add (TypeCode.Int64);
+			SupportTypeCodes.Add (TypeCode.SByte);
+			SupportTypeCodes.Add (TypeCode.Single);
+			SupportTypeCodes.Add (TypeCode.UInt16);
+			SupportTypeCodes.Add (TypeCode.UInt32);
+			SupportTypeCodes.Add (TypeCode.UInt64);
+			SupportTypeCodes.Add (TypeCode.String);
+		}
+
 		DataFieldInfo _fieldInfo = null;
 
 		QueryPredicate _predicate;
@@ -17,6 +37,10 @@ namespace Light.Data
 		public SingleParamQueryExpression (DataFieldInfo fieldInfo, QueryPredicate predicate, object value, bool isReverse)
 			: base (fieldInfo.TableMapping)
 		{
+			TypeCode typeCode = Type.GetTypeCode (value.GetType ());
+			if (!SupportTypeCodes.Contains (typeCode)) {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
 			_fieldInfo = fieldInfo;
 			_predicate = predicate;
 			_value = value;
@@ -26,7 +50,7 @@ namespace Light.Data
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _fieldInfo.DataField.ToColumn (_value), _fieldInfo.DBType);
+			DataParameter dataParameter = new DataParameter (pn, _fieldInfo.ToColumn (_value), _fieldInfo.DBType);
 			dataParameters = new DataParameter[] { dataParameter };
 			return factory.CreateSingleParamSql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, _isReverse, dataParameter);
 		}
@@ -44,5 +68,6 @@ namespace Light.Data
 				return false;
 			}
 		}
+
 	}
 }

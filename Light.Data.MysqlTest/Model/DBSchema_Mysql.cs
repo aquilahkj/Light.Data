@@ -669,6 +669,8 @@ namespace Light.Data.MysqlTest
 
 		static readonly DataFieldInfo loginTimesField = DataFieldInfo<TeUser>.Create("LoginTimes");
 
+		static readonly DataFieldInfo markField = DataFieldInfo<TeUser>.Create("Mark");
+
     	#endregion
 
     	#region "Static DataFieldInfo"
@@ -816,6 +818,13 @@ namespace Light.Data.MysqlTest
         {
             get {
                 return loginTimesField;
+            }
+        }
+
+		public static DataFieldInfo MarkField
+        {
+            get {
+                return markField;
             }
         }
 
@@ -1158,6 +1167,22 @@ namespace Light.Data.MysqlTest
             	this.loginTimes = value; 
             }
         }
+		private int mark;
+
+		/// <summary>
+		/// Mark
+		/// </summary>
+		/// <value></value>
+		[DataField("Mark")]
+        public int Mark
+        {
+            get { 
+            	return this.mark; 
+            }
+            set { 
+            	this.mark = value; 
+            }
+        }
 		#endregion
     }
 
@@ -1270,6 +1295,145 @@ namespace Light.Data.MysqlTest
             }
             set { 
             	this.remark = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_VData")]
+    public partial class TeVData : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeVData>.Create("Id");
+
+		static readonly DataFieldInfo nameField = DataFieldInfo<TeVData>.Create("Name");
+
+		static readonly DataFieldInfo v1Field = DataFieldInfo<TeVData>.Create("V1");
+
+		static readonly DataFieldInfo v2Field = DataFieldInfo<TeVData>.Create("V2");
+
+		static readonly DataFieldInfo v3Field = DataFieldInfo<TeVData>.Create("V3");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo NameField
+        {
+            get {
+                return nameField;
+            }
+        }
+
+		public static DataFieldInfo V1Field
+        {
+            get {
+                return v1Field;
+            }
+        }
+
+		public static DataFieldInfo V2Field
+        {
+            get {
+                return v2Field;
+            }
+        }
+
+		public static DataFieldInfo V3Field
+        {
+            get {
+                return v3Field;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private string name;
+
+		/// <summary>
+		/// Name
+		/// </summary>
+		/// <value></value>
+		[DataField("Name")]
+        public string Name
+        {
+            get { 
+            	return this.name; 
+            }
+            set { 
+            	this.name = value; 
+            }
+        }
+		private int v1;
+
+		/// <summary>
+		/// V1
+		/// </summary>
+		/// <value></value>
+		[DataField("V1")]
+        public int V1
+        {
+            get { 
+            	return this.v1; 
+            }
+            set { 
+            	this.v1 = value; 
+            }
+        }
+		private int v2;
+
+		/// <summary>
+		/// V2
+		/// </summary>
+		/// <value></value>
+		[DataField("V2")]
+        public int V2
+        {
+            get { 
+            	return this.v2; 
+            }
+            set { 
+            	this.v2 = value; 
+            }
+        }
+		private int v3;
+
+		/// <summary>
+		/// V3
+		/// </summary>
+		/// <value></value>
+		[DataField("V3")]
+        public int V3
+        {
+            get { 
+            	return this.v3; 
+            }
+            set { 
+            	this.v3 = value; 
             }
         }
 		#endregion

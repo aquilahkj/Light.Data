@@ -29,7 +29,7 @@ namespace Light.Data.MysqlTest
 			user.LevelId = 1;
 			user.NickName = "nicktest";
 			user.Password = "imtest";
-			user.RegTime = new DateTime (2016, 1, 1, 18, 0, 0);
+			user.RegTime = new DateTime (2015, 12, 30, 18, 0, 0);
 			user.Status = 1;
 			user.Telephone = "12345678";
 			user.HotRate = 1.0d;
@@ -44,14 +44,14 @@ namespace Light.Data.MysqlTest
 			for (int i = 1; i <= count; i++) {
 				TeUser userInsert = CreateTestUser (false);
 				userInsert.Account += i;
-				userInsert.RegTime = userInsert.RegTime.AddMinutes (i);
+				userInsert.RegTime = userInsert.RegTime.AddMinutes (i * 300);
 				userInsert.Gender = i % 2 == 0 ? GenderType.Male : GenderType.Female;
 				userInsert.LevelId = i % 10 == 0 ? 10 : i % 10;
 				userInsert.HotRate = 1 + i * 0.01d;
 				userInsert.DeleteFlag = i % 2 == 0;
 				userInsert.LoginTimes = i % 6 == 0 ? 6 : i % 6;
 				userInsert.Address = i % 2 == 0 ? "addr" + userInsert.Account : null;
-
+	
 				if (i % 2 == 0) {
 					userInsert.LastLoginTime = userInsert.RegTime.AddMinutes (i);
 					userInsert.Area = i;
@@ -60,9 +60,11 @@ namespace Light.Data.MysqlTest
 					userInsert.DeleteFlag = true;
 					userInsert.CheckStatus = true;
 					userInsert.CheckLevelType = CheckLevelType.Low;
+					userInsert.Mark = i % 5;
 				}
 				if (i % 3 == 0) {
 					userInsert.CheckLevelType = CheckLevelType.Normal;
+					userInsert.Mark = i % 5 * -1;
 				}
 				if (i % 5 == 0) {
 					userInsert.CheckLevelType = CheckLevelType.High;
@@ -119,6 +121,7 @@ namespace Light.Data.MysqlTest
 				user1.DeleteFlag == user2.DeleteFlag &&
 				user1.RefereeId == user2.RefereeId &&
 				user1.LoginTimes == user2.LoginTimes &&
+				user1.Mark == user2.Mark &&
 				user1.HotRate == user2.HotRate;
 			if (checkId) {
 				ret = ret && (user1.Id == user2.Id);

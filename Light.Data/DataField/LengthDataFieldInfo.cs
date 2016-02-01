@@ -24,6 +24,12 @@ namespace Light.Data
 			}
 		}
 
+		internal override object ToColumn (object value)
+		{
+			return Convert.ToInt32 (value);
+//			return base.ToColumn (value);
+		}
+
 //		internal override string DBType {
 //			get {
 //				return string.Empty;

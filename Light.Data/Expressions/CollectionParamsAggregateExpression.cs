@@ -7,6 +7,25 @@ namespace Light.Data
 {
 	class CollectionParamsAggregateExpression : AggregateHavingExpression
 	{
+		readonly static HashSet<TypeCode> SupportTypeCodes = new HashSet<TypeCode> ();
+
+		static CollectionParamsAggregateExpression ()
+		{
+			SupportTypeCodes.Add (TypeCode.Byte);
+			SupportTypeCodes.Add (TypeCode.Char);
+			SupportTypeCodes.Add (TypeCode.DateTime);
+			SupportTypeCodes.Add (TypeCode.Decimal);
+			SupportTypeCodes.Add (TypeCode.Double);
+			SupportTypeCodes.Add (TypeCode.Int16);
+			SupportTypeCodes.Add (TypeCode.Int32);
+			SupportTypeCodes.Add (TypeCode.Int64);
+			SupportTypeCodes.Add (TypeCode.SByte);
+			SupportTypeCodes.Add (TypeCode.Single);
+			SupportTypeCodes.Add (TypeCode.UInt16);
+			SupportTypeCodes.Add (TypeCode.UInt32);
+			SupportTypeCodes.Add (TypeCode.UInt64);
+		}
+
 		AggregateFunction _function = null;
 
 		QueryCollectionPredicate _predicate;
@@ -16,6 +35,12 @@ namespace Light.Data
 		public CollectionParamsAggregateExpression (AggregateFunction function, QueryCollectionPredicate predicate, IEnumerable values)
 			: base (function.TableMapping)
 		{
+			Type type = values.GetType ();
+			Type elementType = type.GetElementType ();
+			TypeCode typeCode = Type.GetTypeCode (elementType);
+			if (!SupportTypeCodes.Contains (typeCode)) {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
 			_function = function;
 			_predicate = predicate;
 			_values = values;

@@ -54,6 +54,7 @@
     <Compile Include="LAggregateOrderByTest.cs" />
     <Compile Include="LAggregateWhereTest.cs" />
     <Compile Include="LAggregateHavingTest.cs" />
+    <Compile Include="LAggregateDataFieldTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

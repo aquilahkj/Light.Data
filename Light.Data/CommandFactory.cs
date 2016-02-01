@@ -1223,34 +1223,64 @@ namespace Light.Data
 			return value ? "true" : "false";
 		}
 
-		public virtual string CreatePlusSql (string field, object value)
+		public virtual string CreatePlusSql (string field, object value, bool forward)
 		{
-			return string.Format ("{0}+{1}", field, value);
+			if (forward) {
+				return string.Format ("({0}+{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}+{1})", value, field);
+			}
 		}
 
-		public virtual string CreateMinusSql (string field, object value)
+		public virtual string CreateMinusSql (string field, object value, bool forward)
 		{
-			return string.Format ("{0}-{1}", field, value);
+			if (forward) {
+				return string.Format ("({0}-{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}-{1})", value, field);
+			}
 		}
 
-		public virtual string CreateMultiplySql (string field, object value)
+		public virtual string CreateMultiplySql (string field, object value, bool forward)
 		{
-			return string.Format ("{0}*{1}", field, value);
+			if (forward) {
+				return string.Format ("({0}*{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}*{1})", value, field);
+			}
 		}
 
-		public virtual string CreateDividedSql (string field, object value)
+		public virtual string CreateDividedSql (string field, object value, bool forward)
 		{
-			return string.Format ("{0}/{1}", field, value);
+			if (forward) {
+				return string.Format ("({0}/{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}/{1})", value, field);
+			}
 		}
 
-		public virtual string CreateModSql (string field, object value)
+		public virtual string CreateModSql (string field, object value, bool forward)
 		{
-			return string.Format ("{0}%{1}", field, value);
+			if (forward) {
+				return string.Format ("({0}%{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}%{1})", value, field);
+			}
 		}
 
-		public virtual string CreatePowerSql (string field, object value)
+		public virtual string CreatePowerSql (string field, object value, bool forward)
 		{
-			return string.Format ("{0}^{1}", field, value);
+			if (forward) {
+				return string.Format ("({0}^{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}^{1})", value, field);
+			}
 		}
 
 		public virtual string CreateAbsSql (string field)
@@ -1260,7 +1290,7 @@ namespace Light.Data
 
 		public virtual string CreateLogSql (string field)
 		{
-			return string.Format ("log({0})", field);
+			return string.Format ("ln({0})", field);
 		}
 
 		public virtual string CreateExpSql (string field)

@@ -23,7 +23,6 @@ namespace Light.Data
 			_queryExpression = queryExpression;
 		}
 
-
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string queryString = null;

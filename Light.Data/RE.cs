@@ -285,6 +285,8 @@ namespace Light.Data
 
 		public const string UnsupportDataDefineType = "unsupport data define type";
 
+		public const string UnsupportValueType = "unsupport value type";
+
 		public const string UnmatchDataDefineType = "unmatch data define type";
 	}
 }

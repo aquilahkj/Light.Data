@@ -96,10 +96,13 @@ namespace Light.Data
 			}
 			if (string.IsNullOrEmpty (alias)) {
 				alias = fieldInfo.FieldName;
+				if (fieldInfo is ExtendDataFieldInfo) {
+					fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
+				}
 			}
-//			else {
-//				fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
-//			}
+			else {
+				fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
+			}
 			if (_dataFieldInfoDictionary.ContainsKey (alias)) {
 				throw new LightDataException (string.Format (RE.GroupNameFieldIsExists, alias));
 			}

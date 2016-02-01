@@ -26,7 +26,15 @@ namespace Light.Data
 		/// <returns>查询表达式</returns>
 		public AggregateHavingExpression Eq (object value)
 		{
-			return SingleParam (QueryPredicate.Eq, value);
+			if (Object.Equals (value, null)) {
+				return IsNull ();
+			}
+			else if (value is System.Collections.IEnumerable && !(value is string)) {
+				return In ((System.Collections.IEnumerable)value);
+			}
+			else {
+				return SingleParam (QueryPredicate.Eq, value);
+			}
 		}
 
 		/// <summary>
@@ -76,7 +84,15 @@ namespace Light.Data
 		/// <returns>查询表达式</returns>
 		public AggregateHavingExpression NotEq (object value)
 		{
-			return SingleParam (QueryPredicate.NotEq, value);
+			if (Object.Equals (value, null)) {
+				return IsNotNull ();
+			}
+			else if (value is System.Collections.IEnumerable && !(value is string)) {
+				return NotIn ((System.Collections.IEnumerable)value);
+			}
+			else {
+				return SingleParam (QueryPredicate.NotEq, value);
+			}
 		}
 
 		/// <summary>
@@ -146,6 +162,16 @@ namespace Light.Data
 		/// <summary>
 		/// 大于All子查询
 		/// </summary>
+		/// <param name="values">数据枚举集</param>
+		/// <returns>查询表达式</returns>
+		public AggregateHavingExpression GtAll (System.Collections.IEnumerable values)
+		{
+			return CollectionParams (QueryCollectionPredicate.GtAll, values);
+		}
+
+		/// <summary>
+		/// 大于All子查询
+		/// </summary>
 		/// <param name="field">子查询字段</param>
 		/// <param name="expression">子查询表达式</param>
 		/// <returns>查询表达式</returns>
@@ -162,6 +188,16 @@ namespace Light.Data
 		public AggregateHavingExpression GtAll (DataFieldInfo field)
 		{
 			return GtAll (field, null);
+		}
+
+		/// <summary>
+		/// 小于All子查询
+		/// </summary>
+		/// <param name="values">数据枚举集</param>
+		/// <returns>查询表达式</returns>
+		public AggregateHavingExpression LtAll (System.Collections.IEnumerable values)
+		{
+			return CollectionParams (QueryCollectionPredicate.LtAll, values);
 		}
 
 		/// <summary>
@@ -188,6 +224,16 @@ namespace Light.Data
 		/// <summary>
 		/// 大于Any子查询
 		/// </summary>
+		/// <param name="values">数据枚举集</param>
+		/// <returns>查询表达式</returns>
+		public AggregateHavingExpression GtAny (System.Collections.IEnumerable values)
+		{
+			return CollectionParams (QueryCollectionPredicate.GtAny, values);
+		}
+
+		/// <summary>
+		/// 大于Any子查询
+		/// </summary>
 		/// <param name="field">子查询字段</param>
 		/// <param name="expression">子查询表达式</param>
 		/// <returns>查询表达式</returns>
@@ -204,6 +250,16 @@ namespace Light.Data
 		public AggregateHavingExpression GtAny (DataFieldInfo field)
 		{
 			return GtAny (field, null);
+		}
+
+		/// <summary>
+		/// 小于Any子查询
+		/// </summary>
+		/// <param name="values">数据枚举集</param>
+		/// <returns>查询表达式</returns>
+		public AggregateHavingExpression LtAny (System.Collections.IEnumerable values)
+		{
+			return CollectionParams (QueryCollectionPredicate.LtAny, values);
 		}
 
 		/// <summary>
@@ -305,8 +361,6 @@ namespace Light.Data
 			AggregateHavingExpression exp = new SubAggregateExpression (this, predicate, field, expression);
 			return exp;
 		}
-
-
 
 		private AggregateHavingExpression BetweenParams (bool isNot, object fromValue, object toValue)
 		{

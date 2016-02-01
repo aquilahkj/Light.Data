@@ -6,6 +6,25 @@ namespace Light.Data
 {
 	class SingleParamAggregateExpression : AggregateHavingExpression
 	{
+		readonly static HashSet<TypeCode> SupportTypeCodes = new HashSet<TypeCode> ();
+
+		static SingleParamAggregateExpression ()
+		{
+			SupportTypeCodes.Add (TypeCode.Byte);
+			SupportTypeCodes.Add (TypeCode.Char);
+			SupportTypeCodes.Add (TypeCode.DateTime);
+			SupportTypeCodes.Add (TypeCode.Decimal);
+			SupportTypeCodes.Add (TypeCode.Double);
+			SupportTypeCodes.Add (TypeCode.Int16);
+			SupportTypeCodes.Add (TypeCode.Int32);
+			SupportTypeCodes.Add (TypeCode.Int64);
+			SupportTypeCodes.Add (TypeCode.SByte);
+			SupportTypeCodes.Add (TypeCode.Single);
+			SupportTypeCodes.Add (TypeCode.UInt16);
+			SupportTypeCodes.Add (TypeCode.UInt32);
+			SupportTypeCodes.Add (TypeCode.UInt64);
+		}
+
 		AggregateFunction _function = null;
 
 		QueryPredicate _predicate;
@@ -17,6 +36,10 @@ namespace Light.Data
 		public SingleParamAggregateExpression (AggregateFunction function, QueryPredicate predicate, object value, bool isReverse)
 			: base (function.TableMapping)
 		{
+			TypeCode typeCode = Type.GetTypeCode (value.GetType ());
+			if (!SupportTypeCodes.Contains (typeCode)) {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
 			_function = function;
 			_predicate = predicate;
 			_value = value;

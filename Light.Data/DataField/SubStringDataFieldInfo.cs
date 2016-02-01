@@ -13,7 +13,7 @@ namespace Light.Data
 		internal SubStringDataFieldInfo (DataFieldInfo info, int start, int size)
 			: base (info)
 		{
-			if (start <= 0) {
+			if (start < 0) {
 				throw new ArgumentOutOfRangeException ("start");
 			}
 			if (size < 0) {
@@ -32,6 +32,16 @@ namespace Light.Data
 		internal override string DBType {
 			get {
 				return "string";
+			}
+		}
+
+		internal override object ToColumn (object value)
+		{
+			if (value is string) {
+				return value;
+			}
+			else {
+				return value.ToString ();
 			}
 		}
 

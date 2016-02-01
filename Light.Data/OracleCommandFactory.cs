@@ -218,8 +218,8 @@ namespace Light.Data
 
 			StringBuilder sql = new StringBuilder ();
 			DataParameter[] parameters;
-			string queryString = GetQueryString ( query, out parameters);
-			string orderString = GetOrderString ( order);
+			string queryString = GetQueryString (query, out parameters);
+			string orderString = GetOrderString (order);
 
 			if (region.Start == 0 && orderString == null) {
 				sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
@@ -382,6 +382,7 @@ namespace Light.Data
 
 		public override string CreateSubStringSql (string field, int start, int size)
 		{
+			start++;
 			if (size == 0) {
 				return string.Format ("substr({0},{1})", field, start);
 			}
@@ -405,24 +406,34 @@ namespace Light.Data
 			return string.Format ("round({0},{1})", field, _roundScale);
 		}
 
-		public override string CreateDividedSql (string field, object value)
+		public override string CreateDividedSql (string field, object value, bool forward)
 		{
 			field = ClearRound (field);
-			field = base.CreateDividedSql (field, value);
+			field = base.CreateDividedSql (field, value, forward);
 			return AddRound (field);
 		}
 
-		public override string CreateModSql (string field, object value)
+		public override string CreateModSql (string field, object value, bool forward)
 		{
 			field = ClearRound (field);
-			field = string.Format ("mod({0},{1})", field, value);
+			if (forward) {
+				field = string.Format ("mod({0},{1})", field, value);
+			}
+			else {
+				field = string.Format ("mod({0},{1})", value, field);
+			}
 			return AddRound (field);
 		}
 
-		public override string CreatePowerSql (string field, object value)
+		public override string CreatePowerSql (string field, object value, bool forward)
 		{
 			field = ClearRound (field);
-			field = string.Format ("power({0},{1})", field, value);
+			if (forward) {
+				field = string.Format ("power({0},{1})", field, value);
+			}
+			else {
+				field = string.Format ("power({0},{1})", value, field);
+			}
 			return AddRound (field);
 		}
 
@@ -481,7 +492,7 @@ namespace Light.Data
 			return "sysdate";
 		}
 
-		public override string CreateParamName(string name)
+		public override string CreateParamName (string name)
 		{
 			if (!name.StartsWith (":")) {
 				return ":" + name;
