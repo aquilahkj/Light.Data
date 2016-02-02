@@ -216,6 +216,13 @@ namespace Light.Data
 			return new ConstantSelectFieldInfo (value);
 		}
 
+		/// <param name="value">If set to <c>true</c> value.</param>
+		public static implicit operator SelectFieldInfo (Enum value)
+		{
+			return new EnumSelectFieldInfo (value);
+		}
+
+
 		/// <param name="value">Value.</param>
 		public static implicit operator SelectFieldInfo (string value)
 		{

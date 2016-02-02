@@ -301,6 +301,7 @@
     <Compile Include="DataField\DataSelectFieldInfo.cs" />
     <Compile Include="DataField\ConstantSelectFieldInfo.cs" />
     <Compile Include="SelectInsterExecutor.cs" />
+    <Compile Include="DataField\EnumSelectFieldInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

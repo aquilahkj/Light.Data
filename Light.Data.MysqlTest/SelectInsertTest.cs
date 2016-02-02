@@ -51,6 +51,17 @@ namespace Light.Data.MysqlTest
 			for (int i = 0; i < listEx.Count; i++) {
 				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
 			}
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).Insert<TeDataLogHistory> ().Execute ();
+			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField > 20).Insert<TeDataLogHistory> ().Execute ();
+
+			listEx = list;
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
 		}
 
 		[Test ()]
@@ -105,6 +116,16 @@ namespace Light.Data.MysqlTest
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => x.ArticleId == 200 && x.RecordTime == DateTime.Now.Date.AddHours (18) && x.CheckId == null && x.CheckPoint == null && x.CheckTime == null && x.CheckData == null));
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ()
+				.SetInsertField (TeDataLogHistory.IdField, TeDataLogHistory.UserIdField, TeDataLogHistory.ArticleIdField, TeDataLogHistory.RecordTimeField, TeDataLogHistory.StatusField, TeDataLogHistory.ActionField, TeDataLogHistory.RequestUrlField)
+				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, CheckLevelType.High, DateTime.Now.Date.AddHours (18), TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField)
+				.Execute ();
+			listEx = list;
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => x.ArticleId == (int)CheckLevelType.High && x.RecordTime == DateTime.Now.Date.AddHours (18) && x.CheckId == null && x.CheckPoint == null && x.CheckTime == null && x.CheckData == null));
 
 		}
 

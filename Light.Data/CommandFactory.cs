@@ -667,24 +667,28 @@ namespace Light.Data
 			string select = null;
 			int insertCount;
 			int selectCount = 0;
+			FieldMapping[] insertFieldMappings;
 			if (insertFields != null && insertFields.Length > 0) {
+				insertFieldMappings = new FieldMapping[insertFields.Length];
 				insertCount = insertFields.Length;
 				string[] insertFieldNames = new string[insertFields.Length];
 				for (int i = 0; i < insertFields.Length; i++) {
 					if (!insertMapping.Equals (insertFields [i].TableMapping)) {
 						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 					}
-					if (insertFields [i] is CommonDataFieldInfo) {
-						throw new LightDataException (RE.InsertFieldIsNotDataFieldInfo);
-					}
+//					if (insertFields [i] is CommonDataFieldInfo) {
+//						throw new LightDataException (RE.InsertFieldIsNotDataFieldInfo);
+//					}
 					if (insertFields [i] is ExtendDataFieldInfo) {
 						throw new LightDataException (RE.InsertFieldIsNotDataFieldInfo);
 					}
+					insertFieldMappings [i] = insertFields [i].DataField;
 					insertFieldNames [i] = insertFields [i].CreateDataFieldSql (this);
 					insert = string.Join (",", insertFieldNames);
 				}
 			}
 			else {
+				
 				insertCount = insertMapping.FieldCount;
 				insert = GetSelectString (insertMapping);
 			}
@@ -698,7 +702,7 @@ namespace Light.Data
 //						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 //					}
 					DataParameter dp;
-					selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this,out dp);
+					selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this, out dp);
 					select = string.Join (",", selectFieldNames);
 					if (dp != null) {
 						totalParameters.Add (dp);

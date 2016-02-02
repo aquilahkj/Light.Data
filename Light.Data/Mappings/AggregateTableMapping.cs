@@ -13,29 +13,10 @@ namespace Light.Data
 
 		static object _synobj = new object ();
 
-//		static Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> _assemblyMapping = new Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> ();
-
 		static Dictionary<Type, AggregateTableMapping> _defaultMapping = new Dictionary<Type, AggregateTableMapping> ();
-
 
 		public static AggregateTableMapping GetAggregateMapping (Type type)
 		{
-//			Assembly callingAssembly = DataContext.CallingAssembly;
-//			Dictionary<Type, AggregateTableMapping> mappings = null;
-//			if (callingAssembly == null) {
-//				mappings = _defaultMapping;
-//			}
-//			else {
-//				if (!_assemblyMapping.ContainsKey (callingAssembly)) {
-//					lock (_synobj) {
-//						if (!_assemblyMapping.ContainsKey (callingAssembly)) {
-//							_assemblyMapping.Add (callingAssembly, new Dictionary<Type, AggregateTableMapping> ());
-//						}
-//					}
-//				}
-//				mappings = _assemblyMapping [callingAssembly];
-//			}
-
 			Dictionary<Type, AggregateTableMapping> mappings = _defaultMapping;
 			AggregateTableMapping mapping = null;
 			if (!mappings.TryGetValue (type, out mapping)) {
@@ -88,12 +69,8 @@ namespace Light.Data
 				if (config != null) {
 					Type type = pi.PropertyType;
 					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
-
-//					AggregateFieldMapping mapping = new AggregateFieldMapping (type, name, pi.Name, this);
-
 					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (type, pi, name, pi.Name, config, this);
 					mapping.Handler = new PropertyHandler (pi);
-					//_fieldMappingDictionary.Add(mapping.Name, mapping);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 				}
 			}
