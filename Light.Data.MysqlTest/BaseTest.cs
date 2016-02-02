@@ -129,6 +129,74 @@ namespace Light.Data.MysqlTest
 			return ret;
 		}
 
+
+		public TeDataLog CreateTestLog (bool useContext)
+		{
+			TeDataLog log;
+			if (useContext) {
+				log = context.CreateNew<TeDataLog> ();
+			}
+			else {
+				log = new TeDataLog ();
+			}
+			log.UserId = 1;
+			log.ArticleId = 10;
+			log.RecordTime = new DateTime (2001, 10, 20);
+			log.Status = 1;
+			log.Action = 1;
+			log.RequestUrl = "http://light.data/test";
+
+			return log;
+		}
+
+		protected List<TeDataLog> InitialDataLogTable (int count, bool insert = true)
+		{
+			context.TruncateTable<TeDataLog> ();
+			context.TruncateTable<TeDataLogHistory> ();
+			List<TeDataLog> lists = new List<TeDataLog> ();
+			for (int i = 1; i <= count; i++) {
+				TeDataLog logInsert = CreateTestLog (false);
+				logInsert.UserId = i % 20 == 0 ? 20 : i % 20;
+				logInsert.RecordTime = logInsert.RecordTime.AddMinutes (i * 300);
+				logInsert.Action = i % 10 == 0 ? 10 : i % 10;
+				logInsert.RequestUrl += ("?id=" + i);
+
+				if (i % 2 == 0) {
+					logInsert.CheckTime = logInsert.RecordTime.AddMinutes (i);
+					logInsert.Status = 1;
+					logInsert.CheckPoint = i * 0.01d;
+					logInsert.CheckData = "eeeee";
+				}
+				if (i % 3 == 0) {
+					logInsert.CheckId = i % 7 == 0 ? 7 : i % 7;
+				}
+
+				lists.Add (logInsert);
+			}
+			if (insert) {
+				context.BulkInsert (lists.ToArray ());
+			}
+			return lists;
+		}
+
+		public bool EqualLog (TeDataLog log1, TeDataLogHistory log2, bool checkId = true)
+		{
+			bool ret =
+				log1.UserId == log2.UserId &&
+				log1.ArticleId == log2.ArticleId &&
+				log1.Action == log2.Action &&
+				log1.RecordTime == log2.RecordTime &&
+				log1.RequestUrl == log2.RequestUrl &&
+				log1.CheckPoint == log2.CheckPoint &&
+				log1.CheckData == log2.CheckData &&
+				log1.CheckTime == log2.CheckTime &&
+				log1.CheckId == log2.CheckId;
+			if (checkId) {
+				ret = ret && (log1.Id == log2.Id);
+			}
+			return ret;
+		}
+
 		protected DateTime GetNow ()
 		{
 			DateTime now = DateTime.Now;

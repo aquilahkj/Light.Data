@@ -55,6 +55,7 @@
     <Compile Include="LAggregateWhereTest.cs" />
     <Compile Include="LAggregateHavingTest.cs" />
     <Compile Include="LAggregateDataFieldTest.cs" />
+    <Compile Include="SelectIntoTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1291,10 +1291,10 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listEx;
 			List<TeUser> listAc;
 
-//			listEx = list.FindAll (x => x.LevelId == Math.Abs (x.Mark));
-//			listAc = context.LQuery<TeUser> ().Where (TeUser.LevelIdField == TeUser.MarkField.TransformAbs ()).ToList ();
-//			Assert.AreEqual (listEx.Count, listAc.Count);
-//			listAc.TrueForAll (x => x.LevelId == Math.Abs (x.Mark));
+			listEx = list.FindAll (x => x.LevelId == Math.Abs (x.Mark));
+			listAc = context.LQuery<TeUser> ().Where (TeUser.LevelIdField == TeUser.MarkField.TransformAbs ()).ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			listAc.TrueForAll (x => x.LevelId == Math.Abs (x.Mark));
 
 			listEx = list.FindAll (x => {
 				double d = Math.Log (x.Mark);

@@ -15,7 +15,6 @@ namespace Light.Data
 		{
 			_queryExpression = expression;
 			_isNot = isNot;
-//			IgnoreConsistency = true;
 		}
 
 
