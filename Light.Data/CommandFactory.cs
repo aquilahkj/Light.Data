@@ -660,7 +660,7 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateSelectIntoCommand (DataTableEntityMapping insertMapping, DataFieldInfo[] insertFields, DataTableEntityMapping selectMapping, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
+		public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertMapping, DataFieldInfo[] insertFields, DataTableEntityMapping selectMapping, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
 		{
 			StringBuilder sql = new StringBuilder ();
 			string insert = null;
@@ -688,15 +688,21 @@ namespace Light.Data
 				insertCount = insertMapping.FieldCount;
 				insert = GetSelectString (insertMapping);
 			}
+			List<DataParameter> totalParameters = new List<DataParameter> ();
 			if (selectFields != null && selectFields.Length > 0) {
 				selectCount = selectFields.Length;
 				string[] selectFieldNames = new string[selectFields.Length];
+				
 				for (int i = 0; i < selectFields.Length; i++) {
-					if (!(selectFields [i] is CommonDataFieldInfo) && !selectMapping.Equals (selectFields [i].TableMapping)) {
-						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-					}
-					selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this);
+//					if (!(selectFields [i] is CommonDataFieldInfo) && !selectMapping.Equals (selectFields [i].TableMapping)) {
+//						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
+//					}
+					DataParameter dp;
+					selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this,out dp);
 					select = string.Join (",", selectFieldNames);
+					if (dp != null) {
+						totalParameters.Add (dp);
+					}
 				}
 			}
 			else {
@@ -719,7 +725,10 @@ namespace Light.Data
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
 			}
-			CommandData command = new CommandData (sql.ToString (), parameters);
+			if (parameters != null && parameters.Length > 0) {
+				totalParameters.AddRange (parameters);
+			}
+			CommandData command = new CommandData (sql.ToString (), totalParameters);
 			command.TransParamName = true;
 			return command;
 		}
@@ -1211,6 +1220,11 @@ namespace Light.Data
 				value = value.Replace ("\'", "\\'");
 			}
 			return string.Format ("'{0}'", value);
+		}
+
+		public virtual string CreateNullSql ()
+		{
+			return "null";
 		}
 
 		public virtual string CreateNumberSql (object value)

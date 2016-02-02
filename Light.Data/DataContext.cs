@@ -578,76 +578,76 @@ namespace Light.Data
 			return results;
 		}
 
-		/// <summary>
-		/// Select into 
-		/// </summary>
-		/// <returns>process result line</returns>
-		/// <param name="insertFields">Insert fields.</param>
-		/// <param name="selectFields">Select fields.</param>
-		/// <param name="query">Query Expression</param>
-		/// <param name="order">Order Expression</param>
-		/// <typeparam name="T">insert type parameter.</typeparam>
-		/// <typeparam name="K">select type parameter.</typeparam>
-		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
-		{
-			return SelectInto (typeof(T), insertFields, typeof(K), selectFields, query, order);
-		}
+//		/// <summary>
+//		/// Select into 
+//		/// </summary>
+//		/// <returns>process result line</returns>
+//		/// <param name="insertFields">Insert fields.</param>
+//		/// <param name="selectFields">Select fields.</param>
+//		/// <param name="query">Query Expression</param>
+//		/// <param name="order">Order Expression</param>
+//		/// <typeparam name="T">insert type parameter.</typeparam>
+//		/// <typeparam name="K">select type parameter.</typeparam>
+//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
+//		{
+//			return SelectInto (typeof(T), insertFields, typeof(K), selectFields, query, order);
+//		}
+//
+//		/// <summary>
+//		/// Selects the into.
+//		/// </summary>
+//		/// <returns>The into.</returns>
+//		/// <typeparam name="T">insert type parameter.</typeparam>
+//		/// <typeparam name="K">select type parameter.</typeparam>
+//		public int SelectInto<T,K> ()
+//		{
+//			return SelectInto<T,K> (null, null, null, null);
+//		}
+//
+//		/// <summary>
+//		/// Selects the into.
+//		/// </summary>
+//		/// <returns>The into.</returns>
+//		/// <param name="query">Query.</param>
+//		/// <typeparam name="T">insert type parameter.</typeparam>
+//		/// <typeparam name="K">select type parameter.</typeparam>
+//		public int SelectInto<T,K> (QueryExpression query)
+//		{
+//			return SelectInto<T,K> (null, null, query, null);
+//		}
+//
+//		/// <summary>
+//		/// Selects the into.
+//		/// </summary>
+//		/// <returns>The into.</returns>
+//		/// <param name="query">Query.</param>
+//		/// <param name="order">Order.</param>
+//		/// <typeparam name="T">insert type parameter.</typeparam>
+//		/// <typeparam name="K">select type parameter.</typeparam>
+//		public int SelectInto<T,K> (QueryExpression query, OrderExpression order)
+//		{
+//			return SelectInto<T,K> (null, null, query, order);
+//		}
+//
+//		/// <summary>
+//		/// Selects the into.
+//		/// </summary>
+//		/// <returns>The into.</returns>
+//		/// <param name="insertFields">Insert fields.</param>
+//		/// <param name="selectFields">Select fields.</param>
+//		/// <typeparam name="T">insert type parameter.</typeparam>
+//		/// <typeparam name="K">select type parameter.</typeparam>
+//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields)
+//		{
+//			return SelectInto<T,K> (insertFields, selectFields, null, null);
+//		}
 
-		/// <summary>
-		/// Selects the into.
-		/// </summary>
-		/// <returns>The into.</returns>
-		/// <typeparam name="T">insert type parameter.</typeparam>
-		/// <typeparam name="K">select type parameter.</typeparam>
-		public int SelectInto<T,K> ()
-		{
-			return SelectInto<T,K> (null, null, null, null);
-		}
-
-		/// <summary>
-		/// Selects the into.
-		/// </summary>
-		/// <returns>The into.</returns>
-		/// <param name="query">Query.</param>
-		/// <typeparam name="T">insert type parameter.</typeparam>
-		/// <typeparam name="K">select type parameter.</typeparam>
-		public int SelectInto<T,K> (QueryExpression query)
-		{
-			return SelectInto<T,K> (null, null, query, null);
-		}
-
-		/// <summary>
-		/// Selects the into.
-		/// </summary>
-		/// <returns>The into.</returns>
-		/// <param name="query">Query.</param>
-		/// <param name="order">Order.</param>
-		/// <typeparam name="T">insert type parameter.</typeparam>
-		/// <typeparam name="K">select type parameter.</typeparam>
-		public int SelectInto<T,K> (QueryExpression query, OrderExpression order)
-		{
-			return SelectInto<T,K> (null, null, query, order);
-		}
-
-		/// <summary>
-		/// Selects the into.
-		/// </summary>
-		/// <returns>The into.</returns>
-		/// <param name="insertFields">Insert fields.</param>
-		/// <param name="selectFields">Select fields.</param>
-		/// <typeparam name="T">insert type parameter.</typeparam>
-		/// <typeparam name="K">select type parameter.</typeparam>
-		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields)
-		{
-			return SelectInto<T,K> (insertFields, selectFields, null, null);
-		}
-
-		internal int SelectInto (Type insertType, DataFieldInfo[] insertFields, Type selectType, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
+		internal int SelectInto (Type insertType, DataFieldInfo[] insertFields, Type selectType, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
 		{
 			DataTableEntityMapping insertMapping = DataMapping.GetTableMapping (insertType);
 			DataTableEntityMapping selectMapping = DataMapping.GetTableMapping (selectType);
 			int rInt = 0;
-			CommandData commandData = _dataBase.Factory.CreateSelectIntoCommand (insertMapping, insertFields, selectMapping, selectFields, query, order);
+			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, insertFields, selectMapping, selectFields, query, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}

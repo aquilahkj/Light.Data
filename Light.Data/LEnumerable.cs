@@ -849,5 +849,10 @@ namespace Light.Data
 		{
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, null, null);
 		}
+
+		public SelectInsterExecutor Insert<K>()
+		{
+			return new SelectInsterExecutor (this._context, typeof(K), typeof(T), this._query, this._order);
+		}
 	}
 }

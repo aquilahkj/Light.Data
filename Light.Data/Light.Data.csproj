@@ -297,6 +297,10 @@
     <Compile Include="Function\ConditionMaxFunction.cs" />
     <Compile Include="Function\ConditionMinFunction.cs" />
     <Compile Include="Mappings\AggregateFieldMapping_Old.cs" />
+    <Compile Include="DataField\SelectFieldInfo.cs" />
+    <Compile Include="DataField\DataSelectFieldInfo.cs" />
+    <Compile Include="DataField\ConstantSelectFieldInfo.cs" />
+    <Compile Include="SelectInsterExecutor.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

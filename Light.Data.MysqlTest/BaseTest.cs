@@ -152,7 +152,6 @@ namespace Light.Data.MysqlTest
 		protected List<TeDataLog> InitialDataLogTable (int count, bool insert = true)
 		{
 			context.TruncateTable<TeDataLog> ();
-			context.TruncateTable<TeDataLogHistory> ();
 			List<TeDataLog> lists = new List<TeDataLog> ();
 			for (int i = 1; i <= count; i++) {
 				TeDataLog logInsert = CreateTestLog (false);
@@ -169,6 +168,10 @@ namespace Light.Data.MysqlTest
 				}
 				if (i % 3 == 0) {
 					logInsert.CheckId = i % 7 == 0 ? 7 : i % 7;
+				}
+
+				if (i % 5 == 0) {
+					logInsert.CheckData = "bbb";
 				}
 
 				lists.Add (logInsert);
