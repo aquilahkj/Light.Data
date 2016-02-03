@@ -193,7 +193,9 @@ namespace Light.Data.MysqlTest
 				log1.CheckPoint == log2.CheckPoint &&
 				log1.CheckData == log2.CheckData &&
 				log1.CheckTime == log2.CheckTime &&
-				log1.CheckId == log2.CheckId;
+				log1.CheckId == log2.CheckId &&
+				log1.CheckLevelTypeInt == log2.CheckLevelTypeInt &&
+				log1.CheckLevelTypeString == log2.CheckLevelTypeString;
 			if (checkId) {
 				ret = ret && (log1.Id == log2.Id);
 			}

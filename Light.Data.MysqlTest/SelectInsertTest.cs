@@ -15,7 +15,7 @@ namespace Light.Data.MysqlTest
 			List<TeDataLogHistory> listAc;
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ().Execute ();
+			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ();
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
@@ -24,16 +24,7 @@ namespace Light.Data.MysqlTest
 			}
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).Insert<TeDataLogHistory> ().Execute ();
-			listEx = list.FindAll (x => x.Id <= 20);
-			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
-
-			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ().Where (TeDataLog.IdField <= 20).Execute ();
+			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).Insert<TeDataLogHistory> ();
 			listEx = list.FindAll (x => x.Id <= 20);
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
@@ -43,18 +34,47 @@ namespace Light.Data.MysqlTest
 
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ().Where (TeDataLog.IdField <= 20).OrderBy (TeDataLog.IdField.OrderByDesc ()).Execute ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Execute ();
+			listEx = list;
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).CreateInsertor<TeDataLogHistory> ().Execute ();
+			listEx = list.FindAll (x => x.Id <= 20);
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Where (TeDataLog.IdField <= 20).Execute ();
+			listEx = list.FindAll (x => x.Id <= 20);
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
+
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Where (TeDataLog.IdField <= 20).OrderBy (TeDataLog.IdField.OrderByDesc ()).Execute ();
 			listEx = list.FindAll (x => x.Id <= 20);
 			listEx.Sort ((x, y) => x.Id < y.Id ? 1 : -1);
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			for (int i = 0; i < listEx.Count; i++) {
+				Console.WriteLine (i);
 				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
 			}
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).Insert<TeDataLogHistory> ().Execute ();
-			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField > 20).Insert<TeDataLogHistory> ().Execute ();
+			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).CreateInsertor<TeDataLogHistory> ().Execute ();
+			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField > 20).CreateInsertor<TeDataLogHistory> ().Execute ();
 
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
@@ -72,7 +92,7 @@ namespace Light.Data.MysqlTest
 			List<TeDataLogHistory> listAc;
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ()
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ()
 				.SetInsertField (TeDataLogHistory.IdField, TeDataLogHistory.UserIdField, TeDataLogHistory.ArticleIdField, TeDataLogHistory.RecordTimeField, TeDataLogHistory.StatusField, TeDataLogHistory.ActionField, TeDataLogHistory.RequestUrlField)
 				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField)
 				.Execute ();
@@ -80,6 +100,37 @@ namespace Light.Data.MysqlTest
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => x.CheckId == null && x.CheckPoint == null && x.CheckTime == null && x.CheckData == null));
+		
+
+		}
+
+		[Test ()]
+		public void TestCase_CommonInsert ()
+		{
+			List<TeDataLog> list = InitialDataLogTable (57);
+			List<TeDataLog> listEx;
+			List<TeDataLogHistory> listAc;
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ()
+				.SetInsertField (TeDataLogHistory.IdField, TeDataLogHistory.UserIdField, TeDataLogHistory.ArticleIdField, TeDataLogHistory.RecordTimeField, TeDataLogHistory.StatusField, TeDataLogHistory.ActionField, TeDataLogHistory.RequestUrlField, TeDataLogHistory.CheckIdField, TeDataLogHistory.CheckPointField, TeDataLogHistory.CheckTimeField, TeDataLogHistory.CheckDataField, TeDataLogHistory.CheckLevelTypeIntField, TeDataLogHistory.CheckLevelTypeStringField)
+				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, TeDataLog.CheckIdField, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, TeDataLog.CheckDataField, TeDataLog.CheckLevelTypeIntField, TeDataLog.CheckLevelTypeStringField)
+				.Execute ();
+			listEx = list;
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, TeDataLog.CheckIdField, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, TeDataLog.CheckDataField, TeDataLog.CheckLevelTypeIntField, TeDataLog.CheckLevelTypeStringField);
+			listEx = list;
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
 		}
 
 		[Test ()]
@@ -90,8 +141,15 @@ namespace Light.Data.MysqlTest
 			List<TeDataLogHistory> listAc;
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ()
-				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, 3, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, TeDataLog.CheckDataField)
+			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, 3, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, TeDataLog.CheckDataField, TeDataLog.CheckLevelTypeIntField, TeDataLog.CheckLevelTypeStringField);
+			listEx = list;
+			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => x.CheckId == 3));
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ()
+				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, 3, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, TeDataLog.CheckDataField, TeDataLog.CheckLevelTypeIntField, TeDataLog.CheckLevelTypeStringField)
 				.Execute ();
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
@@ -99,8 +157,8 @@ namespace Light.Data.MysqlTest
 			Assert.IsTrue (listAc.TrueForAll (x => x.CheckId == 3));
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ()
-				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, TeDataLog.CheckIdField, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, SelectFieldInfo.Null)
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ()
+				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, TeDataLog.CheckIdField, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, SelectFieldInfo.Null, TeDataLog.CheckLevelTypeIntField, TeDataLog.CheckLevelTypeStringField)
 				.Execute ();
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
@@ -108,7 +166,7 @@ namespace Light.Data.MysqlTest
 			Assert.IsTrue (listAc.TrueForAll (x => x.CheckData == null));
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ()
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ()
 				.SetInsertField (TeDataLogHistory.IdField, TeDataLogHistory.UserIdField, TeDataLogHistory.ArticleIdField, TeDataLogHistory.RecordTimeField, TeDataLogHistory.StatusField, TeDataLogHistory.ActionField, TeDataLogHistory.RequestUrlField)
 				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, 200, DateTime.Now.Date.AddHours (18), TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField)
 				.Execute ();
@@ -118,14 +176,14 @@ namespace Light.Data.MysqlTest
 			Assert.IsTrue (listAc.TrueForAll (x => x.ArticleId == 200 && x.RecordTime == DateTime.Now.Date.AddHours (18) && x.CheckId == null && x.CheckPoint == null && x.CheckTime == null && x.CheckData == null));
 
 			context.TruncateTable<TeDataLogHistory> ();
-			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ()
-				.SetInsertField (TeDataLogHistory.IdField, TeDataLogHistory.UserIdField, TeDataLogHistory.ArticleIdField, TeDataLogHistory.RecordTimeField, TeDataLogHistory.StatusField, TeDataLogHistory.ActionField, TeDataLogHistory.RequestUrlField)
-				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, CheckLevelType.High, DateTime.Now.Date.AddHours (18), TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField)
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ()
+				.SetInsertField (TeDataLogHistory.IdField, TeDataLogHistory.UserIdField, TeDataLogHistory.ArticleIdField, TeDataLogHistory.RecordTimeField, TeDataLogHistory.StatusField, TeDataLogHistory.ActionField, TeDataLogHistory.RequestUrlField, TeDataLogHistory.CheckLevelTypeIntField, TeDataLogHistory.CheckLevelTypeStringField)
+				.SetSelectField (TeDataLog.IdField, TeDataLog.UserIdField, 200, DateTime.Now.Date.AddHours (18), TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, CheckLevelType.High, CheckLevelType.Low)
 				.Execute ();
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => x.ArticleId == (int)CheckLevelType.High && x.RecordTime == DateTime.Now.Date.AddHours (18) && x.CheckId == null && x.CheckPoint == null && x.CheckTime == null && x.CheckData == null));
+			Assert.IsTrue (listAc.TrueForAll (x => x.ArticleId == 200 && x.RecordTime == DateTime.Now.Date.AddHours (18) && x.CheckId == null && x.CheckPoint == null && x.CheckTime == null && x.CheckData == null && x.CheckLevelTypeInt == CheckLevelType.High && x.CheckLevelTypeString == CheckLevelType.Low));
 
 		}
 

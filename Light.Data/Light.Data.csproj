@@ -283,11 +283,6 @@
     <Compile Include="Expressions\DataFieldMatchExpression.cs" />
     <Compile Include="JoinModel.cs" />
     <Compile Include="ErrorDataMapping.cs" />
-    <Compile Include="DataField\DbTimeDataFieldInfo.cs" />
-    <Compile Include="DataField\StringDataFieldInfo.cs" />
-    <Compile Include="DataField\NumberDataFieldInfo.cs" />
-    <Compile Include="DataField\CommonDataFieldInfo.cs" />
-    <Compile Include="BooleanDataFieldInfo.cs" />
     <Compile Include="DataContextSetting.cs" />
     <Compile Include="CommandData.cs" />
     <Compile Include="JoinConnect.cs" />
@@ -300,8 +295,8 @@
     <Compile Include="DataField\SelectFieldInfo.cs" />
     <Compile Include="DataField\DataSelectFieldInfo.cs" />
     <Compile Include="DataField\ConstantSelectFieldInfo.cs" />
-    <Compile Include="SelectInsterExecutor.cs" />
     <Compile Include="DataField\EnumSelectFieldInfo.cs" />
+    <Compile Include="SelectInsertor.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

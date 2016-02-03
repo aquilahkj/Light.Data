@@ -15,33 +15,10 @@ namespace Light.Data
 
 		static object _synobj = new object ();
 
-		//        static Dictionary<Assembly, Dictionary<Type, DataMapping>> _assemblyMapping = new Dictionary<Assembly, Dictionary<Type, DataMapping>>();
-
 		static Dictionary<Type, DataMapping> _defaultMapping = new Dictionary<Type, DataMapping> ();
 
 		public static DataMapping GetMapping (Type type)
 		{
-//            Assembly callingAssembly = DataContext.CallingAssembly;
-//            Dictionary<Type, DataMapping> mappings = null;
-//            if (callingAssembly == null)
-//            {
-//                mappings = _defaultMapping;
-//            }
-//            else
-//            {
-//                if (!_assemblyMapping.ContainsKey(callingAssembly))
-//                {
-//                    lock (_synobj)
-//                    {
-//                        if (!_assemblyMapping.ContainsKey(callingAssembly))
-//                        {
-//                            _assemblyMapping.Add(callingAssembly, new Dictionary<Type, DataMapping>());
-//                        }
-//                    }
-//                }
-//                mappings = _assemblyMapping[callingAssembly];
-//            }
-
 			Dictionary<Type, DataMapping> mappings = _defaultMapping;
 			DataMapping mapping = null;
 			mappings.TryGetValue (type, out mapping);
@@ -142,33 +119,49 @@ namespace Light.Data
 
 		#endregion
 
+		protected Dictionary<string, FieldMapping> _fieldMappingDictionary = new Dictionary<string, FieldMapping> ();
+
+		//		protected Dictionary<string, FieldMapping> _fieldMappingAlterNameDictionary = new Dictionary<string, FieldMapping> ();
+		//
+		//		protected Dictionary<string, FieldMapping> _fieldMappingAllNameDictionary = new Dictionary<string, FieldMapping> ();
+
+		protected List<FieldMapping> _fieldList = new List<FieldMapping> ();
+
+		protected List<string> _fieldNames = new List<string> ();
+
 		protected DataMapping (Type type)
 		{
-			ObjectType = type;
+			this.objectType = type;
+
 		}
+
+		Type objectType;
 
 		/// <summary>
 		/// 映射数据类型
 		/// </summary>
-		internal Type ObjectType {
-			get;
-			set;
+		public Type ObjectType {
+			get {
+				return objectType;
+			}
+			private set {
+				objectType = value;
+			}
 		}
+
+		ExtendParamsCollection extentParams;
 
 		/// <summary>
 		/// 扩展参数集合
 		/// </summary>
-		internal ExtendParamsCollection ExtentParams {
-			get;
-			set;
+		public ExtendParamsCollection ExtentParams {
+			get {
+				return extentParams;
+			}
+			set {
+				extentParams = value;
+			}
 		}
-
-		protected Dictionary<string, FieldMapping> _fieldMappingDictionary = new Dictionary<string, FieldMapping> ();
-
-		protected Dictionary<string, FieldMapping> _fieldMappingAlterNameDictionary = new Dictionary<string, FieldMapping> ();
-
-		protected Dictionary<string, FieldMapping> _fieldMappingAllNameDictionary = new Dictionary<string, FieldMapping> ();
-
 
 		/// <summary>
 		/// 获取字段名数组
@@ -176,77 +169,104 @@ namespace Light.Data
 		/// <returns></returns>
 		public string[] GetFieldNames ()
 		{
-			return GetFieldNames (GetFieldMappings ());
+//			return GetFieldNames (GetFieldMappings ());
+			return this._fieldNames.ToArray();
 		}
 
-		private string[] GetFieldNames (IEnumerable<FieldMapping> fields)
-		{
-			List<string> list = new List<string> ();
-			foreach (DataFieldMapping field in fields) {
-				ComplexFieldMapping cmField = field as ComplexFieldMapping;
-				if (cmField != null) {
-					list.AddRange (GetFieldNames (cmField.GetFieldMappings ()));
-				}
-				else {
-					list.Add (field.Name);
-				}
-			}
-			return list.ToArray ();
-		}
+		//		private string[] GetFieldNames (IEnumerable<FieldMapping> fields)
+		//		{
+		//			List<string> list = new List<string> ();
+		//			foreach (DataFieldMapping field in fields) {
+		////				ComplexFieldMapping cmField = field as ComplexFieldMapping;
+		////				if (cmField != null) {
+		////					list.AddRange (GetFieldNames (cmField.GetFieldMappings ()));
+		////				}
+		////				else {
+		////					list.Add (field.Name);
+		////				}
+		//				list.Add (field.Name);
+		//			}
+		//			return list.ToArray ();
+		//		}
 
 		#region IFieldCollection 成员
 
-		public virtual IEnumerable<FieldMapping> GetFieldMappings ()
+//		public virtual IEnumerable<FieldMapping> GetFieldMappings ()
+//		{
+//			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
+//				yield return kv.Value;
+//			}
+//		}
+
+		public FieldMapping[] GetFieldMappings ()
 		{
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-				yield return kv.Value;
+			return this._fieldList.ToArray ();
+		}
+
+		public int FieldCount {
+			get {
+				return this._fieldList.Count;
 			}
 		}
 
 		public virtual FieldMapping FindFieldMapping (string fieldName)
 		{
-			if (!_fieldMappingAllNameDictionary.ContainsKey (fieldName)) {
-				lock (_fieldMappingAllNameDictionary) {
-					if (!_fieldMappingAllNameDictionary.ContainsKey (fieldName)) {
-						FieldMapping mapping = SearchFieldMapping (fieldName);
-						if (mapping != null) {
-							_fieldMappingAllNameDictionary [fieldName] = mapping;
-						}
-						return mapping;
-					}
-				}
-			}
-			return _fieldMappingAllNameDictionary [fieldName];
+//			if (!_fieldMappingAllNameDictionary.ContainsKey (fieldName)) {
+//				lock (_fieldMappingAllNameDictionary) {
+//					if (!_fieldMappingAllNameDictionary.ContainsKey (fieldName)) {
+//						FieldMapping mapping = SearchFieldMapping (fieldName);
+//						if (mapping != null) {
+//							_fieldMappingAllNameDictionary [fieldName] = mapping;
+//						}
+//						return mapping;
+//					}
+//				}
+//			}
+//			return _fieldMappingAllNameDictionary [fieldName];
+			FieldMapping mapping;
+			_fieldMappingDictionary.TryGetValue (fieldName, out mapping);
+			return mapping;
+
 		}
 
-		private FieldMapping SearchFieldMapping (string fieldName)
-		{
-			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
-				FieldMapping m = _fieldMappingDictionary [fieldName];
-				if (m is PrimitiveFieldMapping || m is EnumFieldMapping) {
-					return m;
-				}
-			}
-			if (_fieldMappingAlterNameDictionary.ContainsKey (fieldName)) {
-				FieldMapping m = _fieldMappingAlterNameDictionary [fieldName];
-				if (m is PrimitiveFieldMapping || m is EnumFieldMapping) {
-					return m;
-				}
-			}
-
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-				if (fieldName.StartsWith (kv.Key + "_") && kv.Value is ComplexFieldMapping) {
-					return ((ComplexFieldMapping)kv.Value).FindFieldMapping (fieldName);
-				}
-			}
-
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingAlterNameDictionary) {
-				if (fieldName.StartsWith (kv.Key + "_") && kv.Value is ComplexFieldMapping) {
-					return ((ComplexFieldMapping)kv.Value).FindFieldMapping (fieldName);
-				}
-			}
-			return null;
-		}
+		//		private FieldMapping SearchFieldMapping (string fieldName)
+		//		{
+		//			FieldMapping mapping;
+		//			if (_fieldMappingDictionary.TryGetValue (fieldName, out mapping)) {
+		//				return mapping;
+		//			}
+		//			if (_fieldMappingAlterNameDictionary.TryGetValue (fieldName, out mapping)) {
+		//				return mapping;
+		//			}
+		//			return null;
+		////			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
+		////				FieldMapping m = _fieldMappingDictionary [fieldName];
+		////				if (m is PrimitiveFieldMapping || m is EnumFieldMapping) {
+		////					return m;
+		////				}
+		////			}
+		////			if (_fieldMappingAlterNameDictionary.ContainsKey (fieldName)) {
+		////				FieldMapping m = _fieldMappingAlterNameDictionary [fieldName];
+		////				if (m is PrimitiveFieldMapping || m is EnumFieldMapping) {
+		////					return m;
+		////				}
+		////			}
+		//
+		////			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
+		////				if (fieldName.StartsWith (kv.Key + "_") && kv.Value is ComplexFieldMapping) {
+		////					return ((ComplexFieldMapping)kv.Value).FindFieldMapping (fieldName);
+		////				}
+		////			}
+		////
+		////			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingAlterNameDictionary) {
+		////				if (fieldName.StartsWith (kv.Key + "_") && kv.Value is ComplexFieldMapping) {
+		////					return ((ComplexFieldMapping)kv.Value).FindFieldMapping (fieldName);
+		////				}
+		////			}
+		////			return null;
+		//		}
+		//
+		//		public abstract void InitialDataFieldMapping ();
 
 		public abstract object LoadData (DataContext context, IDataReader datareader);
 

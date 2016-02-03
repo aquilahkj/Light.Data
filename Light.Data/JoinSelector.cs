@@ -17,11 +17,10 @@ namespace Light.Data
 			if (entityMapping == null)
 				throw new ArgumentNullException ("entityMapping");
 			foreach (DataFieldMapping fieldMapping in entityMapping.GetFieldMappings()) {
-				if (fieldMapping == null) {
-					continue;
+				if (fieldMapping != null) {
+					DataFieldInfo info = new DataFieldInfo (fieldMapping);
+					this.infoList [info.FieldName] = info;
 				}
-				DataFieldInfo info = new DataFieldInfo (fieldMapping);
-				this.infoList [info.FieldName] = info;
 			}
 		}
 

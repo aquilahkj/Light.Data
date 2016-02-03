@@ -6,7 +6,7 @@ namespace Light.Data
 {
 	interface IFieldCollection : IDataDefine
 	{
-		IEnumerable<FieldMapping> GetFieldMappings ();
+		FieldMapping[] GetFieldMappings ();
 
 		FieldMapping FindFieldMapping (string fieldName);
 

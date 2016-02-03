@@ -129,15 +129,15 @@ namespace Light.Data
 					DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
 					paramList.Add (dataParameter);
 				}
-				else if (field is ComplexFieldMapping) {
-					ComplexFieldMapping complexFieldMapping = field as ComplexFieldMapping;
-					object obj = complexFieldMapping.Handler.Get (source);
-					if (obj == null) {
-						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, complexFieldMapping.Name));
-					}
-					List<DataParameter> subParamList = GetDataParameters (complexFieldMapping.GetFieldMappings (), obj);
-					paramList.AddRange (subParamList);
-				}
+//				else if (field is ComplexFieldMapping) {
+//					ComplexFieldMapping complexFieldMapping = field as ComplexFieldMapping;
+//					object obj = complexFieldMapping.Handler.Get (source);
+//					if (obj == null) {
+//						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, complexFieldMapping.Name));
+//					}
+//					List<DataParameter> subParamList = GetDataParameters (complexFieldMapping.GetFieldMappings (), obj);
+//					paramList.AddRange (subParamList);
+//				}
 			}
 			return paramList;
 		}
@@ -319,11 +319,11 @@ namespace Light.Data
 //			int count;
 //			return GetSelectString (mapping, out count);
 			string[] names = mapping.GetFieldNames ();
-			string[] values = new string[names.Length];
+//			string[] values = new string[names.Length];
 			for (int i = 0; i < names.Length; i++) {
-				values [i] = CreateDataFieldSql (names [i]);
+				names [i] = CreateDataFieldSql (names [i]);
 			}
-			return string.Join (",", values);
+			return string.Join (",", names);
 		}
 
 		public virtual string GetQueryString (QueryExpression query, out DataParameter[] parameters, bool fullFieldName = false)
@@ -666,7 +666,7 @@ namespace Light.Data
 			string insert = null;
 			string select = null;
 			int insertCount;
-			int selectCount = 0;
+//			int selectCount = 0;
 			FieldMapping[] insertFieldMappings;
 			if (insertFields != null && insertFields.Length > 0) {
 				insertFieldMappings = new FieldMapping[insertFields.Length];
@@ -684,38 +684,51 @@ namespace Light.Data
 					}
 					insertFieldMappings [i] = insertFields [i].DataField;
 					insertFieldNames [i] = insertFields [i].CreateDataFieldSql (this);
-					insert = string.Join (",", insertFieldNames);
 				}
+				insert = string.Join (",", insertFieldNames);
 			}
 			else {
-				
+				insertFieldMappings = insertMapping.GetFieldMappings ();
 				insertCount = insertMapping.FieldCount;
 				insert = GetSelectString (insertMapping);
 			}
+
 			List<DataParameter> totalParameters = new List<DataParameter> ();
 			if (selectFields != null && selectFields.Length > 0) {
-				selectCount = selectFields.Length;
+//				selectCount = selectFields.Length;
+				if (selectFields.Length != insertCount) {
+					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
+				}
 				string[] selectFieldNames = new string[selectFields.Length];
 				
 				for (int i = 0; i < selectFields.Length; i++) {
 //					if (!(selectFields [i] is CommonDataFieldInfo) && !selectMapping.Equals (selectFields [i].TableMapping)) {
 //						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 //					}
+					if (selectFields [i].TableMapping != null && !selectMapping.Equals (selectFields [i].TableMapping)) {
+						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
+					}
 					DataParameter dp;
-					selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this, out dp);
-					select = string.Join (",", selectFieldNames);
+					EnumSelectFieldInfo enuminfo = selectFields [i] as EnumSelectFieldInfo;
+					if (enuminfo != null && enuminfo.EnumType == insertFieldMappings [i].ObjectType) {
+						EnumFieldMapping enumMapping = insertFieldMappings [i] as EnumFieldMapping;
+						selectFieldNames [i] = enuminfo.CreateDataFieldSql (this, enumMapping.EnumType, out dp);
+					}
+					else {
+						selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this, out dp);
+					}
+
 					if (dp != null) {
 						totalParameters.Add (dp);
 					}
 				}
+				select = string.Join (",", selectFieldNames);
 			}
 			else {
-				selectCount = selectMapping.FieldCount;
+				if (selectMapping.FieldCount != insertCount) {
+					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
+				}
 				select = GetSelectString (selectMapping);
-			}
-
-			if (insertCount != selectCount) {
-				throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
 			}
 
 			DataParameter[] parameters;

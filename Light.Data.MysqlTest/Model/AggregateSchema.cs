@@ -170,7 +170,7 @@ namespace Light.Data.MysqlTest
 	{
 		CheckLevelType? checkLevel;
 
-		[AggregateField("CheckLevelType")]
+		[AggregateField("Check_LevelType")]
 		public CheckLevelType? CheckLevelType {
 			get {
 				return checkLevel;

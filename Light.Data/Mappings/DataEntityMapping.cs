@@ -52,12 +52,19 @@ namespace Light.Data
 
 		public RelationFieldMapping FindRelateionMapping (string keyName)
 		{
-			if (_relationMappingDictionary.ContainsKey (keyName)) {
+			RelationFieldMapping mapping;
+			if (_relationMappingDictionary.TryGetValue (keyName, out mapping)) {
 				return _relationMappingDictionary [keyName];
 			}
 			else {
 				throw new LightDataException (string.Format (RE.RelationMappingIsNotExists, keyName));
 			}
+//			if (_relationMappingDictionary.ContainsKey (keyName)) {
+//				return _relationMappingDictionary [keyName];
+//			}
+//			else {
+//				throw new LightDataException (string.Format (RE.RelationMappingIsNotExists, keyName));
+//			}
 		}
 
 		bool _isDataEntity = false;
@@ -66,7 +73,6 @@ namespace Light.Data
 			get {
 				return _isDataEntity;
 			}
-
 		}
 
 		string _tableName = null;
@@ -80,23 +86,6 @@ namespace Light.Data
 					return _tableName;
 				}
 			}
-
-		}
-
-		[ThreadStatic]
-		static string _aliasName = null;
-
-		public void SetAliasName (string name)
-		{
-			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
-			}
-			DataEntityMapping._aliasName = name;
-		}
-
-		public void ClearAliasName ()
-		{
-			DataEntityMapping._aliasName = null;
 		}
 
 		public bool Equals (DataEntityMapping mapping)
@@ -106,18 +95,19 @@ namespace Light.Data
 			return this.ObjectType.Equals (mapping.ObjectType);
 		}
 
-		int _fieldCount = 0;
+//		int _fieldCount = 0;
 
-		public int FieldCount {
-			get {
-				return this._fieldCount;
-			}
-		}
+//		public int FieldCount {
+//			get {
+////				return this._fieldCount;
+//				return this._fieldList.Count;
+//			}
+//		}
 
 		protected void InitialDataFieldMapping ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-			int fieldCount = 0;
+//			int fieldCount = 0;
 			foreach (PropertyInfo pi in propertys) {
 				//字段属性
 				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
@@ -128,21 +118,26 @@ namespace Light.Data
 					mapping.Handler = new PropertyHandler (pi);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					if (mapping.Name != mapping.IndexName) {
-						_fieldMappingAlterNameDictionary.Add (mapping.Name, mapping);
+						_fieldMappingDictionary.Add (mapping.Name, mapping);
 					}
-					ComplexFieldMapping complex = mapping as ComplexFieldMapping;
-					if (complex != null) {
-						fieldCount += complex.SubDataFieldCount;
-					}
-					else {
-						fieldCount++;
-					}
+					_fieldList.Add (mapping);
+					_fieldNames.Add (mapping.Name);
+//					if (mapping.Name != mapping.IndexName) {
+//						_fieldMappingAlterNameDictionary.Add (mapping.Name, mapping);
+//					}
+//					ComplexFieldMapping complex = mapping as ComplexFieldMapping;
+//					if (complex != null) {
+//						fieldCount += complex.SubDataFieldCount;
+//					}
+//					else {
+//						fieldCount++;
+//					}
 				}
 			}
 			if (_fieldMappingDictionary.Count == 0) {
 				throw new LightDataException (RE.DataFieldsIsNotExists);
 			}
-			this._fieldCount = fieldCount;
+//			this._fieldCount = fieldCount;
 		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
@@ -163,8 +158,9 @@ namespace Light.Data
 				if (field == null)
 					continue;
 
-				if (field is IFieldCollection) {
-					IFieldCollection ifc = field as IFieldCollection;
+				IFieldCollection fieldCollection = field as IFieldCollection;
+				if (fieldCollection != null) {
+					IFieldCollection ifc = fieldCollection;
 					object obj = ifc.LoadData (context, datareader);
 					field.Handler.Set (source, obj);
 				}
@@ -244,14 +240,15 @@ namespace Light.Data
 			return item;
 		}
 
-		private void InitalDataField (object source, IFieldCollection collection)
+		private static void InitalDataField (object source, IFieldCollection collection)
 		{
 			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
 				if (field == null)
 					continue;
 
-				if (field is IFieldCollection) {
-					IFieldCollection ifc = field as IFieldCollection;
+				IFieldCollection fieldCollection = field as IFieldCollection;
+				if (fieldCollection != null) {
+					IFieldCollection ifc = fieldCollection;
 					object obj = ifc.InitialData ();
 					field.Handler.Set (source, obj);
 				}
@@ -265,5 +262,25 @@ namespace Light.Data
 				}
 			}
 		}
+
+		#region alise
+
+		[ThreadStatic]
+		static string _aliasName = null;
+
+		public void SetAliasName (string name)
+		{
+			if (string.IsNullOrEmpty (name)) {
+				throw new ArgumentNullException ("name");
+			}
+			DataEntityMapping._aliasName = name;
+		}
+
+		public void ClearAliasName ()
+		{
+			DataEntityMapping._aliasName = null;
+		}
+
+		#endregion
 	}
 }

@@ -642,7 +642,7 @@ namespace Light.Data
 //			return SelectInto<T,K> (insertFields, selectFields, null, null);
 //		}
 
-		internal int SelectInto (Type insertType, DataFieldInfo[] insertFields, Type selectType, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
+		internal int SelectInsert (Type insertType, DataFieldInfo[] insertFields, Type selectType, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
 		{
 			DataTableEntityMapping insertMapping = DataMapping.GetTableMapping (insertType);
 			DataTableEntityMapping selectMapping = DataMapping.GetTableMapping (selectType);
@@ -989,9 +989,9 @@ namespace Light.Data
 		/// <returns>数据集合</returns>
 		internal IList QueryDynamicAggregateList (DataEntityMapping mapping, AggregateTableMapping amapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
-			if (amapping.RelateType != null && amapping.RelateType != mapping.ObjectType) {
-				throw new LightDataException (string.Format (RE.AggregateTypeIsNotSpecifyType, amapping.RelateType.FullName));
-			}
+//			if (amapping.RelateType != null && amapping.RelateType != mapping.ObjectType) {
+//				throw new LightDataException (string.Format (RE.AggregateTypeIsNotSpecifyType, amapping.RelateType.FullName));
+//			}
 			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				IList items = CreateList (amapping.ObjectType);

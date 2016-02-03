@@ -649,6 +649,10 @@ namespace Light.Data.MysqlTest
 
 		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLog>.Create("CheckData");
 
+		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLog>.Create("CheckLevelTypeInt");
+
+		static readonly DataFieldInfo checkLevelTypeStringField = DataFieldInfo<TeDataLog>.Create("CheckLevelTypeString");
+
     	#endregion
 
     	#region "Static DataFieldInfo"
@@ -726,6 +730,20 @@ namespace Light.Data.MysqlTest
         {
             get {
                 return checkDataField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelTypeIntField
+        {
+            get {
+                return checkLevelTypeIntField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelTypeStringField
+        {
+            get {
+                return checkLevelTypeStringField;
             }
         }
 
@@ -908,6 +926,38 @@ namespace Light.Data.MysqlTest
             	this.checkData = value; 
             }
         }
+		private CheckLevelType? checkLevelTypeInt;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("Check_LevelTypeInt", IsNullable = true)]
+        public CheckLevelType? CheckLevelTypeInt
+        {
+            get { 
+            	return this.checkLevelTypeInt; 
+            }
+            set { 
+            	this.checkLevelTypeInt = value; 
+            }
+        }
+		private CheckLevelType? checkLevelTypeString;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("Check_LevelTypeString", IsNullable = true, DBType = "varchar")]
+        public CheckLevelType? CheckLevelTypeString
+        {
+            get { 
+            	return this.checkLevelTypeString; 
+            }
+            set { 
+            	this.checkLevelTypeString = value; 
+            }
+        }
 		#endregion
     }
 
@@ -937,6 +987,10 @@ namespace Light.Data.MysqlTest
 		static readonly DataFieldInfo checkTimeField = DataFieldInfo<TeDataLogHistory>.Create("CheckTime");
 
 		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLogHistory>.Create("CheckData");
+
+		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLogHistory>.Create("CheckLevelTypeInt");
+
+		static readonly DataFieldInfo checkLevelTypeStringField = DataFieldInfo<TeDataLogHistory>.Create("CheckLevelTypeString");
 
     	#endregion
 
@@ -1018,6 +1072,20 @@ namespace Light.Data.MysqlTest
             }
         }
 
+		public static DataFieldInfo CheckLevelTypeIntField
+        {
+            get {
+                return checkLevelTypeIntField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelTypeStringField
+        {
+            get {
+                return checkLevelTypeStringField;
+            }
+        }
+
     	#endregion
 
     	#region "Data Property"
@@ -1027,7 +1095,7 @@ namespace Light.Data.MysqlTest
 		/// Id
 		/// </summary>
 		/// <value></value>
-		[DataField("Id", IsPrimaryKey = true)]
+		[DataField("Id")]
         public int Id
         {
             get { 
@@ -1195,6 +1263,38 @@ namespace Light.Data.MysqlTest
             }
             set { 
             	this.checkData = value; 
+            }
+        }
+		private CheckLevelType? checkLevelTypeInt;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("Check_LevelTypeInt", IsNullable = true)]
+        public CheckLevelType? CheckLevelTypeInt
+        {
+            get { 
+            	return this.checkLevelTypeInt; 
+            }
+            set { 
+            	this.checkLevelTypeInt = value; 
+            }
+        }
+		private CheckLevelType? checkLevelTypeString;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("Check_LevelTypeString", IsNullable = true, DBType = "varchar")]
+        public CheckLevelType? CheckLevelTypeString
+        {
+            get { 
+            	return this.checkLevelTypeString; 
+            }
+            set { 
+            	this.checkLevelTypeString = value; 
             }
         }
 		#endregion
@@ -1684,10 +1784,10 @@ namespace Light.Data.MysqlTest
 		private double? checkPoint;
 
 		/// <summary>
-		/// CheckPoint
+		/// Check_Point
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckPoint", IsNullable = true)]
+		[DataField("Check_Point", IsNullable = true)]
         public double? CheckPoint
         {
             get { 
@@ -1700,10 +1800,10 @@ namespace Light.Data.MysqlTest
 		private bool? checkStatus;
 
 		/// <summary>
-		/// CheckStatus
+		/// Check_Status
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckStatus", IsNullable = true)]
+		[DataField("Check_Status", IsNullable = true)]
         public bool? CheckStatus
         {
             get { 
@@ -1719,7 +1819,7 @@ namespace Light.Data.MysqlTest
 		/// #EnumType:CheckLevelType#level
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckLevelType", IsNullable = true)]
+		[DataField("Check_LevelType", IsNullable = true)]
         public CheckLevelType? CheckLevelType
         {
             get { 

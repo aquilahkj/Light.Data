@@ -26,7 +26,7 @@ namespace Light.Data
 		void GetPrimaryKey ()
 		{
 			List<PrimitiveFieldMapping> primaryKeys = new List<PrimitiveFieldMapping> ();
-			foreach (DataFieldMapping field in GetFieldMappings()) {
+			foreach (FieldMapping field in _fieldList) {
 				PrimitiveFieldMapping mapping = field as PrimitiveFieldMapping;
 				if (mapping != null) {
 					if (mapping.IsIdentity) {

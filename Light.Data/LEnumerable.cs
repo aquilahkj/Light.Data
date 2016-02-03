@@ -421,33 +421,33 @@ namespace Light.Data
 			return _context.SelectSingle (_mapping, _query, _order, index, _level) as T;
 		}
 
-		/// <summary>
-		/// 批量删除
-		/// </summary>
-		/// <returns>受影响数据</returns>
-		public int DeleteMass ()
-		{
-			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
-			if (dtMapping == null) {
-				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
-			}
-			return _context.DeleteMass (dtMapping, _query);
-		}
-
-		/// <summary>
-		/// 批量更新
-		/// </summary>
-		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
-		/// <returns>受影响数据</returns>
-		public int UpdateMass (UpdateSetValue[] updates)
-		{
-			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
-			if (dtMapping == null) {
-				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
-			}
-			return _context.UpdateMass (dtMapping, updates, _query);
-		}
-
+//		/// <summary>
+//		/// 批量删除
+//		/// </summary>
+//		/// <returns>受影响数据</returns>
+//		public int DeleteMass ()
+//		{
+//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
+//			if (dtMapping == null) {
+//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
+//			}
+//			return _context.DeleteMass (dtMapping, _query);
+//		}
+//
+//		/// <summary>
+//		/// 批量更新
+//		/// </summary>
+//		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
+//		/// <returns>受影响数据</returns>
+//		public int UpdateMass (UpdateSetValue[] updates)
+//		{
+//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
+//			if (dtMapping == null) {
+//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
+//			}
+//			return _context.UpdateMass (dtMapping, updates, _query);
+//		}
+//
 
 		/// <summary>
 		/// 是否存在
@@ -850,9 +850,54 @@ namespace Light.Data
 			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, null, null);
 		}
 
-		public SelectInsterExecutor Insert<K>()
+		/// <summary>
+		/// Creates the insertor.
+		/// </summary>
+		/// <returns>The insertor.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public SelectInsertor CreateInsertor<K> ()
 		{
-			return new SelectInsterExecutor (this._context, typeof(K), typeof(T), this._query, this._order);
+			return new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+		}
+
+		/// <summary>
+		/// Insert the specified selectInfos.
+		/// </summary>
+		/// <param name="selectInfos">Select infos.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public int Insert<K> (params SelectFieldInfo[] selectInfos)
+		{
+			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+			if (selectInfos != null && selectInfos.Length > 0) {
+				insertor.SetSelectField (selectInfos);
+			}
+			return insertor.Execute ();
+		}
+
+		/// <summary>
+		/// Insert this instance.
+		/// </summary>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public int Insert<K> ()
+		{
+			return Insert<K> (null);
+		}
+
+		/// <summary>
+		/// Update the specified updates.
+		/// </summary>
+		/// <param name="updates">Updates.</param>
+		public int Update (UpdateSetValue[] updates)
+		{
+			return _context.UpdateMass<T> (updates, this._query);
+		}
+
+		/// <summary>
+		/// Delete this instance.
+		/// </summary>
+		public int Delete()
+		{
+			return _context.DeleteMass<T> (this._query);
 		}
 	}
 }

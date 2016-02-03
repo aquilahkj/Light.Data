@@ -90,29 +90,29 @@ namespace Light.Data
 			}
 			AggregateTableConfig config = null;
 			Type dataType = null;
-			Type relateType = null;
+//			Type relateType = null;
 			string dataTypeName = null;
-			string relateTypeName = null;
+//			string relateTypeName = null;
 			if (typeNode.Attributes ["Type"] != null) {
 				dataTypeName = typeNode.Attributes ["Type"].Value;
 			}
 			if (string.IsNullOrEmpty (dataTypeName)) {
 				throw new LightDataException (string.Format (RE.ConfigDataTypeValueIsEmpty, "Type"));
 			}
-			if (typeNode.Attributes ["RelateType"] != null) {
-				relateTypeName = typeNode.Attributes ["RelateType"].Value;
-			}
+//			if (typeNode.Attributes ["RelateType"] != null) {
+//				relateTypeName = typeNode.Attributes ["RelateType"].Value;
+//			}
 			//if (string.IsNullOrEmpty(relateTypeName))
 			//{
 			//    throw new LightDataException(string.Format(RE.ConfigDataTypeValueIsEmpty, "RelateType"));
 			//}
 
 			dataType = System.Type.GetType (dataTypeName, true);
-			if (!string.IsNullOrEmpty (relateTypeName)) {
-				relateType = System.Type.GetType (relateTypeName, true);
-			}
-			config = new AggregateTableConfig (dataType, relateType);
-
+//			if (!string.IsNullOrEmpty (relateTypeName)) {
+//				relateType = System.Type.GetType (relateTypeName, true);
+//			}
+//			config = new AggregateTableConfig (dataType, relateType);
+			config = new AggregateTableConfig (dataType);
 			if (typeNode.Attributes ["ExtendParams"] != null) {
 				config.ExtendParams = typeNode.Attributes ["ExtendParams"].Value;
 			}

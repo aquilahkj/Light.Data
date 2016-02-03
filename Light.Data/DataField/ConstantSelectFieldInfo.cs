@@ -26,6 +26,12 @@ namespace Light.Data
 			}
 		}
 
+		internal override DataEntityMapping TableMapping {
+			get {
+				return null;
+			}
+		}
+
 		#endregion
 	}
 }

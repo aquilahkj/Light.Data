@@ -2,7 +2,7 @@
 
 namespace Light.Data
 {
-	public class SelectInsterExecutor
+	public class SelectInsertor
 	{
 		OrderExpression _order;
 
@@ -18,7 +18,7 @@ namespace Light.Data
 
 		DataContext _context;
 
-		internal SelectInsterExecutor (DataContext context, Type insertType, Type selectType, QueryExpression query, OrderExpression order)
+		internal SelectInsertor (DataContext context, Type insertType, Type selectType, QueryExpression query, OrderExpression order)
 		{
 			if (context == null)
 				throw new ArgumentNullException ("context");
@@ -37,7 +37,7 @@ namespace Light.Data
 		/// reset where expression.
 		/// </summary>
 		/// <returns>The reset.</returns>
-		public SelectInsterExecutor WhereReset ()
+		public SelectInsertor WhereReset ()
 		{
 			_query = null;
 			return this;
@@ -48,7 +48,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
-		public SelectInsterExecutor Where (QueryExpression expression)
+		public SelectInsertor Where (QueryExpression expression)
 		{
 			//			if (expression == null)
 			//				throw new ArgumentNullException ("expression");
@@ -61,7 +61,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
-		public SelectInsterExecutor WhereWithAnd (QueryExpression expression)
+		public SelectInsertor WhereWithAnd (QueryExpression expression)
 		{
 			//			if (expression == null)
 			//				throw new ArgumentNullException ("expression");
@@ -74,7 +74,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerables.</returns>
 		/// <param name="expression">Expression.</param>
-		public SelectInsterExecutor WhereWithOr (QueryExpression expression)
+		public SelectInsertor WhereWithOr (QueryExpression expression)
 		{
 			//			if (expression == null)
 			//				throw new ArgumentNullException ("expression");
@@ -87,7 +87,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
-		public SelectInsterExecutor OrderByCatch (OrderExpression expression)
+		public SelectInsertor OrderByCatch (OrderExpression expression)
 		{
 			//			if (expression == null)
 			//				throw new ArgumentNullException ("expression");
@@ -100,7 +100,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
-		public SelectInsterExecutor OrderBy (OrderExpression expression)
+		public SelectInsertor OrderBy (OrderExpression expression)
 		{
 			//			if (expression == null)
 			//				throw new ArgumentNullException ("expression");
@@ -112,7 +112,7 @@ namespace Light.Data
 		/// reset order by expression
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
-		public SelectInsterExecutor OrderByReset ()
+		public SelectInsertor OrderByReset ()
 		{
 			_order = null;
 			return this;
@@ -122,19 +122,19 @@ namespace Light.Data
 		/// order by random.
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
-		public SelectInsterExecutor OrderByRandom ()
+		public SelectInsertor OrderByRandom ()
 		{
 			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (_selectType));
 			return this;
 		}
 
-		public SelectInsterExecutor SetInsertField (params DataFieldInfo[] infos)
+		public SelectInsertor SetInsertField (params DataFieldInfo[] infos)
 		{
 			this._insertFields = infos;
 			return this;
 		}
 
-		public SelectInsterExecutor SetSelectField (params SelectFieldInfo[] infos)
+		public SelectInsertor SetSelectField (params SelectFieldInfo[] infos)
 		{
 			this._selectFields = infos;
 			return this;
@@ -142,7 +142,7 @@ namespace Light.Data
 
 		public int Execute ()
 		{
-			return this._context.SelectInto (_insertType, _insertFields, _selectType, _selectFields, _query, _order);
+			return this._context.SelectInsert (_insertType, _insertFields, _selectType, _selectFields, _query, _order);
 		}
 	}
 }

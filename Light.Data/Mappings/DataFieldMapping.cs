@@ -42,13 +42,6 @@ namespace Light.Data
 					}
 					else if (config.DefaultValue.GetType () == type) {
 						enumFieldMapping.DefaultValue = config.DefaultValue;
-//						Array arr = Enum.GetValues (type);
-//						foreach (object obj in arr) {
-//							if (obj.Equals (config.DefaultValue)) {
-//								enumFieldMapping.DefaultValue = config.DefaultValue;
-//								break;
-//							}
-//						}
 					}
 				}
 				fieldMapping = enumFieldMapping;
@@ -61,10 +54,10 @@ namespace Light.Data
 				if (code == TypeCode.Empty) {
 					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 				}
-				else if (code == TypeCode.Object && type.FullName != "System.Byte[]") {
-					ComplexFieldMapping complexFieldMapping = new ComplexFieldMapping (type, fieldName, indexName, mapping, isNullable);
-					fieldMapping = complexFieldMapping;
-				}
+//				else if (code == TypeCode.Object && type.FullName != "System.Byte[]") {
+//					ComplexFieldMapping complexFieldMapping = new ComplexFieldMapping (type, fieldName, indexName, mapping, isNullable);
+//					fieldMapping = complexFieldMapping;
+//				}
 				else {
 					PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType);
 					primitiveFieldMapping.IsIdentity = config.IsIdentity;
@@ -138,10 +131,10 @@ namespace Light.Data
 				if (code == TypeCode.Empty) {
 					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 				}
-				else if (code == TypeCode.Object && type.FullName != "System.Byte[]") {
-					ComplexFieldMapping complexFieldMapping = new ComplexFieldMapping (type, fieldName, indexName, mapping, isNullable);
-					fieldMapping = complexFieldMapping;
-				}
+//				else if (code == TypeCode.Object && type.FullName != "System.Byte[]") {
+//					ComplexFieldMapping complexFieldMapping = new ComplexFieldMapping (type, fieldName, indexName, mapping, isNullable);
+//					fieldMapping = complexFieldMapping;
+//				}
 				else {
 					PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType);
 					if (config.DefaultValue != null) {

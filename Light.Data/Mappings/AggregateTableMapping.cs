@@ -32,36 +32,44 @@ namespace Light.Data
 
 		private static AggregateTableMapping CreateMapping (Type type)
 		{
-			Type relateType = null;
+//			Type relateType = null;
 			string extendParam = null;
 			AggregateTableMapping aggregateMapping = null;
 			IAggregateTableConfig config = ConfigManager.LoadAggregateTableConfig (type);
 			if (config != null) {
-				relateType = config.RelateType;
+//				relateType = config.RelateType;
 				extendParam = config.ExtendParams;
 			}
-			aggregateMapping = new AggregateTableMapping (type, relateType);
+//			aggregateMapping = new AggregateTableMapping (type, relateType);
+			aggregateMapping = new AggregateTableMapping (type);
 			aggregateMapping.ExtentParams = new ExtendParamsCollection (extendParam);
 			return aggregateMapping;
 		}
 
 		#endregion
 
-		AggregateTableMapping (Type type, Type relateType)
+//		AggregateTableMapping (Type type, Type relateType)
+//			: base (type)
+//		{
+//			if (relateType != null && relateType != type) {
+//				RelateType = relateType;
+//			}
+//			InitialDataFieldMapping ();
+//		}
+
+
+		AggregateTableMapping (Type type)
 			: base (type)
 		{
-			if (relateType != null && relateType != type) {
-				RelateType = relateType;
-			}
 			InitialDataFieldMapping ();
 		}
 
-		public Type RelateType {
-			get;
-			private set;
-		}
+//		public Type RelateType {
+//			get;
+//			private set;
+//		}
 
-		protected void InitialDataFieldMapping ()
+		private void InitialDataFieldMapping ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
 			foreach (PropertyInfo pi in propertys) {
@@ -72,6 +80,7 @@ namespace Light.Data
 					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (type, pi, name, pi.Name, config, this);
 					mapping.Handler = new PropertyHandler (pi);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
+					_fieldList.Add (mapping);
 				}
 			}
 			if (_fieldMappingDictionary.Count == 0) {
@@ -79,22 +88,22 @@ namespace Light.Data
 			}
 		}
 
-		public override IEnumerable<FieldMapping> GetFieldMappings ()
-		{
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-				yield return kv.Value;
-			}
-		}
+//		public override IEnumerable<FieldMapping> GetFieldMappings ()
+//		{
+//			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
+//				yield return kv.Value;
+//			}
+//		}
 
-		public override FieldMapping FindFieldMapping (string fieldName)
-		{
-			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
-				return _fieldMappingDictionary [fieldName];
-			}
-			else {
-				throw new LightDataException (string.Format (RE.FieldMappingIsNotExists, fieldName));
-			}
-		}
+//		public override FieldMapping FindFieldMapping (string fieldName)
+//		{
+//			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
+//				return _fieldMappingDictionary [fieldName];
+//			}
+//			else {
+//				throw new LightDataException (string.Format (RE.FieldMappingIsNotExists, fieldName));
+//			}
+//		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{

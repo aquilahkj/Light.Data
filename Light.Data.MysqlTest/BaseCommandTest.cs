@@ -76,68 +76,221 @@ namespace Light.Data.MysqlTest
 		}
 
 		[Test ()]
-		public void TestCase_CUD_Bluck ()
+		public void TestCase_BulkInsert ()
 		{
-			context.TruncateTable<TeUser> ();
-			List<TeUser> list1 = new List<TeUser> ();
+			List<TeUser> listEx = new List<TeUser> ();
 			const int count = 33;
-			const int rdd = 10;
 			for (int i = 0; i < count; i++) {
 				TeUser userInsert = CreateTestUser (false);
 				userInsert.Account += i;
 				userInsert.RegTime = userInsert.RegTime.AddSeconds (i);
-				list1.Add (userInsert);
+				listEx.Add (userInsert);
 			}
-			int resultInsert = context.BulkInsert (list1.ToArray ());
 
-			Assert.AreEqual (resultInsert, count);
+			int result;
+			List<TeUser> listAc;
 
-			List<TeUser> list2 = context.LQuery<TeUser> ().ToList ();
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray ());
+			Assert.AreEqual (result, count);
+			listAc = context.LQuery<TeUser> ().ToList ();
 			for (int i = 0; i < count; i++) {
-				Assert.True (EqualUser (list1 [i], list2 [i], true));
+				Assert.True (EqualUser (listEx [i], listAc [i], true));
 			}
 
-			List<UpdateSetValue> updates1 = new List<UpdateSetValue> ();
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray (), 20);
+			Assert.AreEqual (result, count);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			for (int i = 0; i < count; i++) {
+				Assert.True (EqualUser (listEx [i], listAc [i], true));
+			}
+
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray (), 100);
+			Assert.AreEqual (result, count);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			for (int i = 0; i < count; i++) {
+				Assert.True (EqualUser (listEx [i], listAc [i], true));
+			}
+		}
+
+		[Test ()]
+		public void TestCase_UpdateMass ()
+		{
+			List<TeUser> listEx = new List<TeUser> ();
+			const int count = 33;
+			for (int i = 0; i < count; i++) {
+				TeUser userInsert = CreateTestUser (false);
+				userInsert.Account += i;
+				userInsert.RegTime = userInsert.RegTime.AddSeconds (i);
+				listEx.Add (userInsert);
+			}
+
+			int result;
+			List<TeUser> listAc;
+			List<UpdateSetValue> updates;
+
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray ());
+			Assert.AreEqual (result, count);
+
+			updates = new List<UpdateSetValue> ();
 			DateTime uptime = GetNow ();
-			updates1.Add (new UpdateSetValue (TeUser.LastLoginTimeField, uptime));
-			updates1.Add (new UpdateSetValue (TeUser.StatusField, 2));
-			int resultUpdate1 = context.UpdateMass<TeUser> (updates1.ToArray ());
-			Assert.AreEqual (count, resultUpdate1);
-			List<TeUser> list3 = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (count, list3.Count);
-			Assert.IsTrue (list3.TrueForAll (x => x.LastLoginTime == uptime && x.Status == 2));
+			updates.Add (new UpdateSetValue (TeUser.LastLoginTimeField, uptime));
+			updates.Add (new UpdateSetValue (TeUser.StatusField, 2));
+			result = context.UpdateMass<TeUser> (updates.ToArray ());
+			Assert.AreEqual (count, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => x.LastLoginTime == uptime && x.Status == 2));
 
+			const int rdd = 20;
 
-			List<UpdateSetValue> updates2 = new List<UpdateSetValue> ();
-			updates2.Add (new UpdateSetValue (TeUser.StatusField, 3));
-			int resultUpdate2 = context.UpdateMass<TeUser> (updates2.ToArray (), TeUser.IdField.Between (1, rdd));
-			Assert.AreEqual (rdd, resultUpdate2);
-			List<TeUser> list4 = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (count, list4.Count);
-			Assert.IsTrue (list4.TrueForAll (x => {
+			updates = new List<UpdateSetValue> ();
+			updates.Add (new UpdateSetValue (TeUser.StatusField, 3));
+			result = context.UpdateMass<TeUser> (updates.ToArray (), TeUser.IdField.Between (1, rdd));
+			Assert.AreEqual (rdd, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => {
 				if (x.Id <= rdd) {
 					return x.Status == 3;
 				}
 				else {
-					return x.Status == 2;
+					return true;
 				}
 			}));
 
+			updates = new List<UpdateSetValue> ();
+			updates.Add (new UpdateSetValue (TeUser.AreaField, 4));
+			updates.Add (new UpdateSetValue (TeUser.CheckLevelTypeField, CheckLevelType.High));
+			result = context.LQuery<TeUser> ().Update (updates.ToArray ());
+			Assert.AreEqual (count, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => x.Area == 4 && x.CheckLevelType == CheckLevelType.High));
 
-			int resultDelete1 = context.DeleteMass<TeUser> (TeUser.IdField.Between (1, rdd));
-			Assert.AreEqual (rdd, resultDelete1);
-			List<TeUser> list5 = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (count - rdd, list5.Count);
-
-			Assert.IsTrue (list3.TrueForAll (x => x.Status == 2));
-
-			int resultDelete2 = context.DeleteMass<TeUser> ();
-			Assert.AreEqual (count - rdd, resultDelete2);
-			List<TeUser> list6 = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (0, list6.Count);
-
+			updates = new List<UpdateSetValue> ();
+			updates.Add (new UpdateSetValue (TeUser.StatusField, 6));
+			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (1, rdd)).Update (updates.ToArray ());
+			Assert.AreEqual (rdd, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => {
+				if (x.Id <= rdd) {
+					return x.Status == 6;
+				}
+				else {
+					return true;
+				}
+			}));
 		}
-	
+
+
+		[Test ()]
+		public void TestCase_DeleteMass1 ()
+		{
+			List<TeUser> listEx = new List<TeUser> ();
+			const int count = 33;
+			for (int i = 0; i < count; i++) {
+				TeUser userInsert = CreateTestUser (false);
+				userInsert.Account += i;
+				userInsert.RegTime = userInsert.RegTime.AddSeconds (i);
+				listEx.Add (userInsert);
+			}
+
+			int result;
+			List<TeUser> listAc;
+
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray ());
+			Assert.AreEqual (result, count);
+
+			result = context.DeleteMass<TeUser> ();
+			Assert.AreEqual (count, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (0, listAc.Count);
+		}
+
+
+		[Test ()]
+		public void TestCase_DeleteMass2 ()
+		{
+			List<TeUser> listEx = new List<TeUser> ();
+			const int count = 33;
+			for (int i = 0; i < count; i++) {
+				TeUser userInsert = CreateTestUser (false);
+				userInsert.Account += i;
+				userInsert.RegTime = userInsert.RegTime.AddSeconds (i);
+				listEx.Add (userInsert);
+			}
+
+			int result;
+			List<TeUser> listAc;
+
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray ());
+			Assert.AreEqual (result, count);
+
+			result = context.LQuery<TeUser> ().Delete ();
+			Assert.AreEqual (count, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (0, listAc.Count);
+		}
+
+		[Test ()]
+		public void TestCase_DeleteMass3 ()
+		{
+			List<TeUser> listEx = new List<TeUser> ();
+			const int count = 33;
+			for (int i = 0; i < count; i++) {
+				TeUser userInsert = CreateTestUser (false);
+				userInsert.Account += i;
+				userInsert.RegTime = userInsert.RegTime.AddSeconds (i);
+				listEx.Add (userInsert);
+			}
+
+			int result;
+			List<TeUser> listAc;
+			int rdd = 20;
+
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray ());
+			Assert.AreEqual (result, count);
+
+			result = context.DeleteMass<TeUser> (TeUser.IdField.Between (1, rdd));
+			Assert.AreEqual (rdd, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (count - rdd, listAc.Count);
+		}
+
+		[Test ()]
+		public void TestCase_DeleteMass4 ()
+		{
+			List<TeUser> listEx = new List<TeUser> ();
+			const int count = 33;
+			for (int i = 0; i < count; i++) {
+				TeUser userInsert = CreateTestUser (false);
+				userInsert.Account += i;
+				userInsert.RegTime = userInsert.RegTime.AddSeconds (i);
+				listEx.Add (userInsert);
+			}
+
+			int result;
+			List<TeUser> listAc;
+			int rdd = 20;
+
+			context.TruncateTable<TeUser> ();
+			result = context.BulkInsert (listEx.ToArray ());
+			Assert.AreEqual (result, count);
+
+			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (1, rdd)).Delete ();
+			Assert.AreEqual (rdd, result);
+			listAc = context.LQuery<TeUser> ().ToList ();
+			Assert.AreEqual (count - rdd, listAc.Count);
+		}
+
 
 	}
 }

@@ -28,7 +28,7 @@ namespace Light.Data
 			}
 		}
 
-		Regex textRegex = new Regex ("char|text", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		Regex textRegex = new Regex ("char|text|string", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)

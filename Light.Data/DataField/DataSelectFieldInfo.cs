@@ -20,6 +20,12 @@ namespace Light.Data
 			dataParameter = null;
 			return info.CreateDataFieldSql (factory);
 		}
+			
+		internal override DataEntityMapping TableMapping {
+			get {
+				return info.TableMapping;
+			}
+		}
 
 		#endregion
 	}
