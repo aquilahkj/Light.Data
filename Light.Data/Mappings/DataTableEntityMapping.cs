@@ -13,14 +13,23 @@ namespace Light.Data
 			GetPrimaryKey ();
 		}
 
+		PrimitiveFieldMapping _identityField;
+
 		public PrimitiveFieldMapping IdentityField {
-			get;
-			private set;
+			get {
+				return _identityField;
+			}
 		}
 
-		public PrimitiveFieldMapping[] PrimaryKeyFields {
-			get;
-			private set;
+		//		<PrimitiveFieldMapping> _primaryKeyFields;
+
+		DataFieldMapping[] _primaryKeyFields;
+
+		public DataFieldMapping[] PrimaryKeyFields {
+			get {
+				
+				return _primaryKeyFields;
+			}
 		}
 
 		void GetPrimaryKey ()
@@ -33,7 +42,7 @@ namespace Light.Data
 						if (IdentityField == null) {
 							TypeCode code = Type.GetTypeCode (mapping.ObjectType);
 							if (code == TypeCode.Int32 || code == TypeCode.Int64 || code == TypeCode.UInt32 || code == TypeCode.UInt64) {
-								IdentityField = mapping;
+								_identityField = mapping;
 							}
 							else {
 								throw new LightDataException (RE.TheTypeOfIdentityFieldError);
@@ -48,7 +57,7 @@ namespace Light.Data
 					}
 				}
 			}
-			PrimaryKeyFields = primaryKeys.ToArray ();
+			_primaryKeyFields = primaryKeys.ToArray ();
 		}
 	}
 }

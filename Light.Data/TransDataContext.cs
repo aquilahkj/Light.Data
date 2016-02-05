@@ -81,6 +81,38 @@ namespace Light.Data
 			return _trconnection;
 		}
 
+		internal override int[] ExecuteBluckInsertCommands (IDbCommand[] insertCommands, IDbCommand indentityCommand, SafeLevel level, out object lastId)
+		{
+			int[] rInts = new int[insertCommands.Length];
+			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
+				transaction.Open ();
+				try {
+					int index = 0;
+					foreach (IDbCommand dbcommand in insertCommands) {
+						transaction.SetupCommand (dbcommand);
+						OutputCommand ("ExecuteMultiCommands", dbcommand, level);
+						rInts [index] = dbcommand.ExecuteNonQuery ();
+						index++;
+					}
+					if (indentityCommand != null) {
+						transaction.SetupCommand (indentityCommand);
+						OutputCommand ("ExecuteInsertCommand_Indentity", indentityCommand, level);
+						lastId = indentityCommand.ExecuteScalar ();
+					}
+					else {
+						lastId = null;
+					}
+					transaction.Commit ();
+
+				} catch (Exception ex) {
+					lastId = null;
+					transaction.Rollback ();
+					throw ex;
+				}
+			}
+			return rInts;
+		}
+
 		internal override int[] ExecuteMultiCommands (IDbCommand[] dbcommands, SafeLevel level)
 		{
 			int[] rInts = new int[dbcommands.Length];

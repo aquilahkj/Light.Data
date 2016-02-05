@@ -48,14 +48,14 @@ namespace Light.Data
 
 		#endregion
 
-//		AggregateTableMapping (Type type, Type relateType)
-//			: base (type)
-//		{
-//			if (relateType != null && relateType != type) {
-//				RelateType = relateType;
-//			}
-//			InitialDataFieldMapping ();
-//		}
+		//		AggregateTableMapping (Type type, Type relateType)
+		//			: base (type)
+		//		{
+		//			if (relateType != null && relateType != type) {
+		//				RelateType = relateType;
+		//			}
+		//			InitialDataFieldMapping ();
+		//		}
 
 
 		AggregateTableMapping (Type type)
@@ -64,10 +64,10 @@ namespace Light.Data
 			InitialDataFieldMapping ();
 		}
 
-//		public Type RelateType {
-//			get;
-//			private set;
-//		}
+		//		public Type RelateType {
+		//			get;
+		//			private set;
+		//		}
 
 		private void InitialDataFieldMapping ()
 		{
@@ -75,10 +75,11 @@ namespace Light.Data
 			foreach (PropertyInfo pi in propertys) {
 				IAggregateFieldConfig config = ConfigManager.LoadAggregateFieldConfig (pi);
 				if (config != null) {
-					Type type = pi.PropertyType;
-					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
-					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (type, pi, name, pi.Name, config, this);
-					mapping.Handler = new PropertyHandler (pi);
+//					Type type = pi.PropertyType;
+//					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
+//					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (type, pi, name, pi.Name, config, this);
+//					mapping.Handler = new PropertyHandler (pi);
+					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (pi, config, this);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					_fieldList.Add (mapping);
 				}
@@ -88,62 +89,92 @@ namespace Light.Data
 			}
 		}
 
-//		public override IEnumerable<FieldMapping> GetFieldMappings ()
-//		{
-//			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-//				yield return kv.Value;
-//			}
-//		}
+		//		public override IEnumerable<FieldMapping> GetFieldMappings ()
+		//		{
+		//			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
+		//				yield return kv.Value;
+		//			}
+		//		}
 
-//		public override FieldMapping FindFieldMapping (string fieldName)
-//		{
-//			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
-//				return _fieldMappingDictionary [fieldName];
-//			}
-//			else {
-//				throw new LightDataException (string.Format (RE.FieldMappingIsNotExists, fieldName));
-//			}
-//		}
+		//		public override FieldMapping FindFieldMapping (string fieldName)
+		//		{
+		//			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
+		//				return _fieldMappingDictionary [fieldName];
+		//			}
+		//			else {
+		//				throw new LightDataException (string.Format (RE.FieldMappingIsNotExists, fieldName));
+		//			}
+		//		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{
 			object item = Activator.CreateInstance (ObjectType);
-			LoadDataField (item, this, datareader);
-			return item;
-		}
-
-		private void LoadDataField (object source, IFieldCollection collection, IDataReader datareader)
-		{
-			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
+//			LoadDataField (item, this._fieldList, datareader);
+			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
 				object obj = datareader [field.Name];
-				bool isnull = Object.Equals (obj, DBNull.Value);
-				if (!isnull) {
-					field.Handler.Set (source, field.ToProperty (obj));
+				object value = field.ToProperty (obj);
+				if (!Object.Equals (value, null)) {
+					field.Handler.Set (item, value);
 				}
 			}
+			return item;
 		}
+
+		//		private void LoadDataField (object source, IEnumerable<FieldMapping> fields, IDataReader datareader)
+		//		{
+		//			foreach (DataFieldMapping field in fields) {
+		//				if (field == null)
+		//					continue;
+		//				object obj = datareader [field.Name];
+		//				object value = field.ToProperty (obj);
+		//				if (!Object.Equals (value, null)) {
+		//					field.Handler.Set (source, value);
+		//				}
+		////				bool isnull = Object.Equals (obj, DBNull.Value);
+		////				if (!isnull) {
+		////					field.Handler.Set (source, field.ToProperty (obj));
+		////				}
+		//			}
+		//		}
 
 		public override object LoadData (DataContext context, DataRow datarow)
 		{
 			object item = Activator.CreateInstance (ObjectType);
-			LoadDataField (item, this, datarow);
-			return item;
-		}
-
-		private void LoadDataField (object source, IFieldCollection collection, DataRow datarow)
-		{
-			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
+//			LoadDataField (item, this._fieldList, datarow);
+			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
 				object obj = datarow [field.Name];
-				bool isnull = Object.Equals (obj, DBNull.Value);
-				if (!isnull) {
-					field.Handler.Set (source, field.ToProperty (obj));
+				object value = field.ToProperty (obj);
+				if (!Object.Equals (value, null)) {
+					field.Handler.Set (item, value);
 				}
 			}
+			return item;
 		}
+
+		//		private void LoadDataField (object source, IEnumerable<FieldMapping> fields, DataRow datarow)
+		//		{
+		//			foreach (DataFieldMapping field in fields) {
+		//				if (field == null)
+		//					continue;
+		//				object obj = datarow [field.Name];
+		//				object value = field.ToProperty (obj);
+		//				if (!Object.Equals (value, null)) {
+		//					field.Handler.Set (source, value);
+		//				}
+		//
+		////				bool isnull = Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null);
+		////				if (!isnull) {
+		////					field.Handler.Set (source, field.ToProperty (obj));
+		////				}
+		////				else if (!field.IsNullable && field.IsString) {
+		////					field.Handler.Set (source, string.Empty);
+		////				}
+		//			}
+		//		}
 
 		public override object InitialData ()
 		{

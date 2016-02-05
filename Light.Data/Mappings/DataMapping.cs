@@ -121,10 +121,6 @@ namespace Light.Data
 
 		protected Dictionary<string, FieldMapping> _fieldMappingDictionary = new Dictionary<string, FieldMapping> ();
 
-		//		protected Dictionary<string, FieldMapping> _fieldMappingAlterNameDictionary = new Dictionary<string, FieldMapping> ();
-		//
-		//		protected Dictionary<string, FieldMapping> _fieldMappingAllNameDictionary = new Dictionary<string, FieldMapping> ();
-
 		protected List<FieldMapping> _fieldList = new List<FieldMapping> ();
 
 		protected List<string> _fieldNames = new List<string> ();
@@ -132,7 +128,6 @@ namespace Light.Data
 		protected DataMapping (Type type)
 		{
 			this.objectType = type;
-
 		}
 
 		Type objectType;

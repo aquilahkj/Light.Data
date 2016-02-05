@@ -9,50 +9,65 @@ namespace Light.Data
 	{
 		EnumFieldType _enumType = EnumFieldType.EnumToNumerics;
 
+		readonly object _minValue = null;
+
 		readonly object _defaultValue = null;
 
 		public EnumFieldType EnumType {
 			get {
 				return _enumType;
 			}
-			private set {
-				_enumType = value;
-			}
 		}
 
-		Type nullableType;
+		Type _nullableType;
 
 		public Type NullableType {
 			get {
-				return nullableType;
+				return _nullableType;
 			}
 		}
 
 		Regex textRegex = new Regex ("char|text|string", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
+		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
 			if (dbType != null && textRegex.IsMatch (dbType)) {
-				EnumType = EnumFieldType.EnumToString;
+				_enumType = EnumFieldType.EnumToString;
 			}
 			else {
-				EnumType = EnumFieldType.EnumToNumerics;
+				_enumType = EnumFieldType.EnumToNumerics;
 			}
-			Type itemstype = System.Type.GetType ("System.Nullable`1");
-			nullableType = itemstype.MakeGenericType (type);
+			Type itemstype = Type.GetType ("System.Nullable`1");
+			_nullableType = itemstype.MakeGenericType (type);
 			Array values = Enum.GetValues (ObjectType);
-			_defaultValue = values.GetValue (0);
+			object value = values.GetValue (0);
+
+			if (_enumType == EnumFieldType.EnumToString) {
+				_minValue = value.ToString ();
+			}
+			else {
+				_minValue = value;
+			}
+			if (defaultValue != null) {
+				string str = defaultValue as String;
+				if (str != null) {
+					_defaultValue = Enum.Parse (type, str, true);
+				}
+				else if (defaultValue.GetType () == type) {
+					_defaultValue = defaultValue;
+				}
+			}
 		}
 
 		public override object ToProperty (object value)
 		{
-			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
-				if (IsNullable) {
-					return null;
+			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
+				if (_defaultValue != null) {
+					return _defaultValue;
 				}
 				else {
-					return _defaultValue;
+					return null;
 				}
 			}
 			else {
@@ -60,13 +75,6 @@ namespace Light.Data
 					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {
-//					int result = Convert.ToInt32 (value);//value.GetHashCode();
-//					if (_dict.ContainsKey (result)) {
-//						return _dict [result];
-//					}
-//					else {
-//						throw new LightDataException (string.Format (RE.ValueNotInEnumType, result, ObjectType));
-//					}
 					return value;
 				}
 			}
@@ -79,14 +87,16 @@ namespace Light.Data
 					return null;
 				}
 				else {
-					value = _defaultValue;
+					return _minValue;
 				}
 			}
-			if (EnumType == EnumFieldType.EnumToString) {
-				return value.ToString ();
-			}
 			else {
-				return value;
+				if (_enumType == EnumFieldType.EnumToString) {
+					return value.ToString ();
+				}
+				else {
+					return value;
+				}
 			}
 		}
 	}

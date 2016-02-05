@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Light.Data")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MS")]
+[assembly: AssemblyCompany("LD")]
 [assembly: AssemblyProduct("Light.Data")]
 [assembly: AssemblyCopyright("Copyright © MS 2009")]
 [assembly: AssemblyTrademark("")]

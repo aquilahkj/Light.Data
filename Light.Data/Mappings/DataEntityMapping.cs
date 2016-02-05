@@ -94,16 +94,7 @@ namespace Light.Data
 				return false;
 			return this.ObjectType.Equals (mapping.ObjectType);
 		}
-
-//		int _fieldCount = 0;
-
-//		public int FieldCount {
-//			get {
-////				return this._fieldCount;
-//				return this._fieldList.Count;
-//			}
-//		}
-
+			
 		protected void InitialDataFieldMapping ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
@@ -112,10 +103,12 @@ namespace Light.Data
 				//字段属性
 				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
 				if (config != null) {
-					Type type = pi.PropertyType;
-					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
-					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (type, pi, name, pi.Name, config, this);
-					mapping.Handler = new PropertyHandler (pi);
+//					Type type = pi.PropertyType;
+//					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
+//					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (type, pi, name, pi.Name, config, this);
+//					mapping.Handler = new PropertyHandler (pi);
+					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, this);
+
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					if (mapping.Name != mapping.IndexName) {
 						_fieldMappingDictionary.Add (mapping.Name, mapping);
@@ -143,18 +136,8 @@ namespace Light.Data
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{
 			object item = Activator.CreateInstance (ObjectType);
-			LoadDataField (item, this, context, datareader);
-			if (IsDataEntity) {
-				DataEntity de = item as DataEntity;
-				de.SetContext (context);
-				de.LoadDataComplete ();
-			}
-			return item;
-		}
-
-		void LoadDataField (object source, IFieldCollection collection, DataContext context, IDataReader datareader)
-		{
-			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
+//			LoadDataField (item, this._fieldList, context, datareader);
+			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
 
@@ -162,35 +145,29 @@ namespace Light.Data
 				if (fieldCollection != null) {
 					IFieldCollection ifc = fieldCollection;
 					object obj = ifc.LoadData (context, datareader);
-					field.Handler.Set (source, obj);
+					if (!Object.Equals (obj, null)) {
+						field.Handler.Set (item, obj);
+					}
 				}
 				else {
 					object obj = field.DataOrder.HasValue ? datareader [field.DataOrder.Value] : datareader [field.Name];
-					bool isnull = Object.Equals (obj, DBNull.Value);
-					if (field.SpecifiedHandler != null) {
-						if (isnull && field.DefaultValue == null) {
-							field.SpecifiedHandler.Set (source, false);
-						}
-						else {
-							field.SpecifiedHandler.Set (source, true);
-						}
+					object value = field.ToProperty (obj);
+					if (!Object.Equals (value, null)) {
+						field.Handler.Set (item, value);
 					}
-					if (!isnull) {
-						field.Handler.Set (source, field.ToProperty (obj));
-					}
-					else {
-						if (field.DefaultValue != null) {
-							field.Handler.Set (source, field.ToProperty (field.DefaultValue));
-						}
-					}
+//					bool flag;
+//					if (!Object.Equals (value, null)) {
+//						field.Handler.Set (item, value);
+//						flag = true;
+//					}
+//					else {
+//						flag = false;
+//					}
+//					if (field.SpecifiedHandler != null) {
+//						field.SpecifiedHandler.Set (item, flag);
+//					}
 				}
 			}
-		}
-
-		public override object LoadData (DataContext context, DataRow datarow)
-		{
-			object item = Activator.CreateInstance (ObjectType);
-			LoadDataField (item, this, context, datarow);
 			if (IsDataEntity) {
 				DataEntity de = item as DataEntity;
 				de.SetContext (context);
@@ -199,39 +176,131 @@ namespace Light.Data
 			return item;
 		}
 
-		void LoadDataField (object source, IFieldCollection collection, DataContext context, DataRow datarow)
+		//		void LoadDataField (object source, IEnumerable<FieldMapping> fields, DataContext context, IDataReader datareader)
+		//		{
+		//			foreach (DataFieldMapping field in fields) {
+		//				if (field == null)
+		//					continue;
+		//
+		//				IFieldCollection fieldCollection = field as IFieldCollection;
+		//				if (fieldCollection != null) {
+		//					IFieldCollection ifc = fieldCollection;
+		//					object obj = ifc.LoadData (context, datareader);
+		//					field.Handler.Set (source, obj);
+		//				}
+		//				else {
+		//					object obj = field.DataOrder.HasValue ? datareader [field.DataOrder.Value] : datareader [field.Name];
+		//					object value = field.ToProperty (obj);
+		//					bool flag;
+		//					if (!Object.Equals (value, null)) {
+		//						field.Handler.Set (source, value);
+		//						flag = true;
+		//					}
+		//					else {
+		//						flag = false;
+		//					}
+		//					if (field.SpecifiedHandler != null) {
+		//						field.SpecifiedHandler.Set (source, flag);
+		//					}
+		////					bool isnull = Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null);
+		////					if (field.SpecifiedHandler != null) {
+		////						if (isnull && field.DefaultValue == null) {
+		////							field.SpecifiedHandler.Set (source, false);
+		////						}
+		////						else {
+		////							field.SpecifiedHandler.Set (source, true);
+		////						}
+		////					}
+		////					if (!isnull) {
+		////						field.Handler.Set (source, field.ToProperty (obj));
+		////					}
+		////					else {
+		////						if (field.DefaultValue != null) {
+		////							field.Handler.Set (source, field.ToProperty (field.DefaultValue));
+		////						}
+		////						else if (!field.IsNullable && field.IsString) {
+		////							field.Handler.Set (source, string.Empty);
+		////						}
+		////					}
+		//				}
+		//			}
+		//		}
+
+		public override object LoadData (DataContext context, DataRow datarow)
 		{
-			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
+			object item = Activator.CreateInstance (ObjectType);
+			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
 
-				if (field is IFieldCollection) {
-					IFieldCollection ifc = field as IFieldCollection;
+				IFieldCollection fieldCollection = field as IFieldCollection;
+				if (fieldCollection != null) {
+					IFieldCollection ifc = fieldCollection;
 					object obj = ifc.LoadData (context, datarow);
-					field.Handler.Set (source, obj);
+					if (!Object.Equals (obj, null)) {
+						field.Handler.Set (item, obj);
+					}
 				}
 				else {
 					object obj = field.DataOrder.HasValue ? datarow [field.DataOrder.Value] : datarow [field.Name];
-					bool isnull = Object.Equals (obj, DBNull.Value);
-					if (field.SpecifiedHandler != null) {
-						if (isnull && field.DefaultValue == null) {
-							field.SpecifiedHandler.Set (source, false);
-						}
-						else {
-							field.SpecifiedHandler.Set (source, true);
-						}
+					object value = field.ToProperty (obj);
+					if (!Object.Equals (value, null)) {
+						field.Handler.Set (item, value);
 					}
-					if (!isnull) {
-						field.Handler.Set (source, field.ToProperty (obj));
-					}
-					else {
-						if (field.DefaultValue != null) {
-							field.Handler.Set (source, field.ToProperty (field.DefaultValue));
-						}
-					}
+//					bool flag;
+//					if (!Object.Equals (value, null)) {
+//						field.Handler.Set (item, value);
+//						flag = true;
+//					}
+//					else {
+//						flag = false;
+//					}
+//					if (field.SpecifiedHandler != null) {
+//						field.SpecifiedHandler.Set (item, flag);
+//					}
 				}
 			}
+			if (IsDataEntity) {
+				DataEntity de = item as DataEntity;
+				de.SetContext (context);
+				de.LoadDataComplete ();
+			}
+			return item;
 		}
+
+		//		void LoadDataField (object source, IFieldCollection collection, DataContext context, DataRow datarow)
+		//		{
+		//			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
+		//				if (field == null)
+		//					continue;
+		//
+		//				if (field is IFieldCollection) {
+		//					IFieldCollection ifc = field as IFieldCollection;
+		//					object obj = ifc.LoadData (context, datarow);
+		//					field.Handler.Set (source, obj);
+		//				}
+		//				else {
+		//					object obj = field.DataOrder.HasValue ? datarow [field.DataOrder.Value] : datarow [field.Name];
+		//					bool isnull = Object.Equals (obj, DBNull.Value);
+		//					if (field.SpecifiedHandler != null) {
+		//						if (isnull && field.DefaultValue == null) {
+		//							field.SpecifiedHandler.Set (source, false);
+		//						}
+		//						else {
+		//							field.SpecifiedHandler.Set (source, true);
+		//						}
+		//					}
+		//					if (!isnull) {
+		//						field.Handler.Set (source, field.ToProperty (obj));
+		//					}
+		//					else {
+		//						if (field.DefaultValue != null) {
+		//							field.Handler.Set (source, field.ToProperty (field.DefaultValue));
+		//						}
+		//					}
+		//				}
+		//			}
+		//		}
 
 		public override object InitialData ()
 		{
@@ -253,11 +322,9 @@ namespace Light.Data
 					field.Handler.Set (source, obj);
 				}
 				else {
-					if (field.DefaultValue != null) {
-						if (field.SpecifiedHandler != null) {
-							field.SpecifiedHandler.Set (source, true);
-						}
-						field.Handler.Set (source, field.ToProperty (field.DefaultValue));
+					object obj = field.ToProperty (null);
+					if (!Object.Equals (obj, null)) {
+						field.Handler.Set (source, obj);
 					}
 				}
 			}

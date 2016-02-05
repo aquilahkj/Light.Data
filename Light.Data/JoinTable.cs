@@ -25,7 +25,7 @@ namespace Light.Data
 			}
 			JoinModel model2;
 			if (right != null) {
-				model2 = new JoinModel (right.Mapping, null, right.Query, right.Order);
+				model2 = new JoinModel (right.Mapping, connect, right.Query, right.Order);
 			}
 			else {
 				model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), connect, null, null);
@@ -308,7 +308,7 @@ namespace Light.Data
 			JoinConnect connect = new JoinConnect (joinType, on);
 			JoinModel model2;
 			if (right != null) {
-				model2 = new JoinModel (right.Mapping, null, right.Query, right.Order);
+				model2 = new JoinModel (right.Mapping, connect, right.Query, right.Order);
 			}
 			else {
 				model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), connect, null, null);
@@ -360,6 +360,17 @@ namespace Light.Data
 			JoinModel model = this._modelList [this._modelList.Count - 1];
 			JoinConnect connect = model.Connect;
 			connect.On = DataFieldExpression.Or (connect.On, expression);
+			return this;
+		}
+
+		/// <summary>
+		/// Raises the reset event.
+		/// </summary>
+		public JoinTable OnReset ()
+		{
+			JoinModel model = this._modelList [this._modelList.Count - 1];
+			JoinConnect connect = model.Connect;
+			connect.On = null;
 			return this;
 		}
 

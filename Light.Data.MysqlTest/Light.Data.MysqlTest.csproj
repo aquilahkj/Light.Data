@@ -56,7 +56,11 @@
     <Compile Include="LAggregateHavingTest.cs" />
     <Compile Include="LAggregateDataFieldTest.cs" />
     <Compile Include="SelectInsertTest.cs" />
-    <Compile Include="JoinTableTest.cs" />
+    <Compile Include="Model\JoinTableSchema.cs" />
+    <Compile Include="JoinTableOrderByTest.cs" />
+    <Compile Include="JoinTableWhereTest.cs" />
+    <Compile Include="JoinTableBaseTest.cs" />
+    <Compile Include="JoinTableOnTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

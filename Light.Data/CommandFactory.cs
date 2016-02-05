@@ -98,36 +98,37 @@ namespace Light.Data
 		{
 			List<DataParameter> paramList = new List<DataParameter> ();
 			foreach (DataFieldMapping field in mappings) {
-				if (field is PrimitiveFieldMapping) {
-					PrimitiveFieldMapping primitiveFieldMapping = field as PrimitiveFieldMapping;
-
+				PrimitiveFieldMapping primitiveFieldMapping = field as PrimitiveFieldMapping;
+				if (primitiveFieldMapping != null) {
 					object obj = primitiveFieldMapping.Handler.Get (source);
-					if (primitiveFieldMapping.SpecifiedHandler != null) {
-						bool hasdata = Convert.ToBoolean (primitiveFieldMapping.SpecifiedHandler.Get (source));
-						if (!hasdata) {
-							obj = null;
-						}
-					}
-					if (obj == null && !primitiveFieldMapping.IsNullable) {
-						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, primitiveFieldMapping.Name));
-					}
+//					if (primitiveFieldMapping.SpecifiedHandler != null) {
+//						bool hasdata = Convert.ToBoolean (primitiveFieldMapping.SpecifiedHandler.Get (source));
+//						if (!hasdata) {
+//							obj = null;
+//						}
+//					}
+//					if (obj == null && !primitiveFieldMapping.IsNullable) {
+//						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, primitiveFieldMapping.Name));
+//					}
 					DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
 					paramList.Add (dataParameter);
+					continue;
 				}
-				else if (field is EnumFieldMapping) {
-					EnumFieldMapping enumFieldMapping = field as EnumFieldMapping;
+				EnumFieldMapping enumFieldMapping = field as EnumFieldMapping;
+				if (enumFieldMapping != null) {
 					object obj = enumFieldMapping.Handler.Get (source);
-					if (enumFieldMapping.SpecifiedHandler != null) {
-						bool hasdata = Convert.ToBoolean (enumFieldMapping.SpecifiedHandler.Get (source));
-						if (!hasdata) {
-							obj = null;
-						}
-					}
-					if (obj == null && !enumFieldMapping.IsNullable) {
-						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, enumFieldMapping.Name));
-					}
+//					if (enumFieldMapping.SpecifiedHandler != null) {
+//						bool hasdata = Convert.ToBoolean (enumFieldMapping.SpecifiedHandler.Get (source));
+//						if (!hasdata) {
+//							obj = null;
+//						}
+//					}
+//					if (obj == null && !enumFieldMapping.IsNullable) {
+//						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, enumFieldMapping.Name));
+//					}
 					DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
 					paramList.Add (dataParameter);
+					continue;
 				}
 //				else if (field is ComplexFieldMapping) {
 //					ComplexFieldMapping complexFieldMapping = field as ComplexFieldMapping;
@@ -488,7 +489,7 @@ namespace Light.Data
 			foreach (DataFieldInfo fieldInfo in fields) {
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
 				if (!Object.Equals (aliasInfo, null)) {
-					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false);
+					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, true);
 				}
 				else {
 					selectList [index] = fieldInfo.CreateDataFieldSql (this, true);
@@ -509,26 +510,9 @@ namespace Light.Data
 		/// <param name="order">Order.</param>
 		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
 		{
-			DataEntityMapping mapping = modelList [0].Mapping;
 			List<DataParameter> listParameters = new List<DataParameter> ();
-//			List<string> selectList = new List<string> ();
 			StringBuilder tables = new StringBuilder ();
 			foreach (JoinModel model in modelList) {
-//				if (model.SelectAllField) {
-//					foreach (string item in model.Mapping.GetFieldNames()) {
-//						string fieldName = CreateFullDataFieldSql (model.Mapping.TableName, item);
-//						selectList.Add (fieldName);
-//					}
-//				}
-//				else {
-//					DataFieldInfo[] infos = model.GetFields ();
-//					if (infos != null && infos.Length > 0) {
-//						foreach (DataFieldInfo info in infos) {
-//							string fieldName = info.CreateDataFieldSql (this, true);
-//							selectList.Add (fieldName);
-//						}
-//					}
-//				}
 				if (model.Connect != null) {
 					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
 				}
@@ -666,24 +650,18 @@ namespace Light.Data
 			string insert = null;
 			string select = null;
 			int insertCount;
-//			int selectCount = 0;
 			FieldMapping[] insertFieldMappings;
 			if (insertFields != null && insertFields.Length > 0) {
 				insertFieldMappings = new FieldMapping[insertFields.Length];
 				insertCount = insertFields.Length;
 				string[] insertFieldNames = new string[insertFields.Length];
 				for (int i = 0; i < insertFields.Length; i++) {
-					if (!insertMapping.Equals (insertFields [i].TableMapping)) {
+					DataFieldInfo info = insertFields [i];
+					if (!insertMapping.Equals (info.TableMapping)) {
 						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 					}
-//					if (insertFields [i] is CommonDataFieldInfo) {
-//						throw new LightDataException (RE.InsertFieldIsNotDataFieldInfo);
-//					}
-					if (insertFields [i] is ExtendDataFieldInfo) {
-						throw new LightDataException (RE.InsertFieldIsNotDataFieldInfo);
-					}
-					insertFieldMappings [i] = insertFields [i].DataField;
-					insertFieldNames [i] = insertFields [i].CreateDataFieldSql (this);
+					insertFieldMappings [i] = info.DataField;
+					insertFieldNames [i] = info.CreateDataFieldSql (this);
 				}
 				insert = string.Join (",", insertFieldNames);
 			}
@@ -705,17 +683,18 @@ namespace Light.Data
 //					if (!(selectFields [i] is CommonDataFieldInfo) && !selectMapping.Equals (selectFields [i].TableMapping)) {
 //						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 //					}
-					if (selectFields [i].TableMapping != null && !selectMapping.Equals (selectFields [i].TableMapping)) {
+					SelectFieldInfo info = selectFields [i];
+					if (info.TableMapping != null && !selectMapping.Equals (info.TableMapping)) {
 						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 					}
 					DataParameter dp;
-					EnumSelectFieldInfo enuminfo = selectFields [i] as EnumSelectFieldInfo;
+					EnumSelectFieldInfo enuminfo = info as EnumSelectFieldInfo;
 					if (enuminfo != null && enuminfo.EnumType == insertFieldMappings [i].ObjectType) {
 						EnumFieldMapping enumMapping = insertFieldMappings [i] as EnumFieldMapping;
 						selectFieldNames [i] = enuminfo.CreateDataFieldSql (this, enumMapping.EnumType, out dp);
 					}
 					else {
-						selectFieldNames [i] = selectFields [i].CreateDataFieldSql (this, out dp);
+						selectFieldNames [i] = info.CreateDataFieldSql (this, out dp);
 					}
 
 					if (dp != null) {

@@ -12,7 +12,7 @@ namespace Light.Data.MysqlTest
 			context = DataContext.Create ("mysql");
 		}
 
-		public TeUser CreateTestUser (bool useContext)
+		protected TeUser CreateTestUser (bool useContext)
 		{
 			TeUser user;
 			if (useContext) {
@@ -54,7 +54,7 @@ namespace Light.Data.MysqlTest
 	
 				if (i % 2 == 0) {
 					userInsert.LastLoginTime = userInsert.RegTime.AddMinutes (i);
-					userInsert.Area = i;
+					userInsert.Area = i % 10 == 0 ? 10 : i % 10;
 					userInsert.RefereeId = i % 6;
 					userInsert.CheckPoint = i * 0.01d;
 					userInsert.DeleteFlag = true;
@@ -85,12 +85,13 @@ namespace Light.Data.MysqlTest
 				TeUserLevel level = new TeUserLevel ();
 				level.Id = i;
 				level.LevelName = "level" + i;
-				if (i % 2 == 0) {
-					level.Status = 0;
-				}
-				else {
-					level.Status = 1;
-				}
+//				if (i % 2 == 0) {
+//					level.Status = 0;
+//				}
+//				else {
+//					level.Status = 1;
+//				}
+				level.Status = i % 6 == 0 ? 6 : i % 6;
 				lists.Add (level);
 			}
 			if (insert) {
@@ -99,7 +100,7 @@ namespace Light.Data.MysqlTest
 			return lists;
 		}
 
-		public bool EqualUser (TeUser user1, TeUser user2, bool checkId = true)
+		protected bool EqualUser (TeUser user1, TeUser user2, bool checkId = true)
 		{
 			bool ret =
 				user1.Account == user2.Account &&
@@ -129,8 +130,7 @@ namespace Light.Data.MysqlTest
 			return ret;
 		}
 
-
-		public TeDataLog CreateTestLog (bool useContext)
+		protected TeDataLog CreateTestLog (bool useContext)
 		{
 			TeDataLog log;
 			if (useContext) {
@@ -182,7 +182,7 @@ namespace Light.Data.MysqlTest
 			return lists;
 		}
 
-		public bool EqualLog (TeDataLog log1, TeDataLogHistory log2, bool checkId = true)
+		protected bool EqualLog (TeDataLog log1, TeDataLogHistory log2, bool checkId = true)
 		{
 			bool ret =
 				log1.UserId == log2.UserId &&
@@ -198,6 +198,62 @@ namespace Light.Data.MysqlTest
 				log1.CheckLevelTypeString == log2.CheckLevelTypeString;
 			if (checkId) {
 				ret = ret && (log1.Id == log2.Id);
+			}
+			return ret;
+		}
+
+		protected TeAreaInfo CreateTestAreaInfo (bool useContext)
+		{
+			TeAreaInfo info;
+			if (useContext) {
+				info = context.CreateNew<TeAreaInfo> ();
+			}
+			else {
+				info = new TeAreaInfo ();
+			}
+			info.Name = "area";
+			info.V1 = 1;
+			info.V2 = 2;
+			info.V3 = 3;
+			return info;
+		}
+
+		protected List<TeAreaInfo> InitialAreaInfoTable (int count, bool insert = true)
+		{
+			context.TruncateTable<TeAreaInfo> ();
+			List<TeAreaInfo> lists = new List<TeAreaInfo> ();
+			for (int i = 1; i <= count; i++) {
+				TeAreaInfo infoInsert = CreateTestAreaInfo (false);
+				infoInsert.Name += i;
+
+				if (i % 2 == 0) {
+					infoInsert.V1 = i % 8 == 0 ? 8 : i % 8;
+				}
+				if (i % 3 == 0) {
+					infoInsert.V2 = i % 7 == 0 ? 7 : i % 7;
+				}
+
+				if (i % 5 == 0) {
+					infoInsert.V3 = i % 5 == 0 ? 5 : i % 5;
+				}
+
+				lists.Add (infoInsert);
+			}
+			if (insert) {
+				context.BulkInsert (lists.ToArray ());
+			}
+			return lists;
+		}
+
+		protected bool EqualLog (TeAreaInfo info1, TeAreaInfo info2, bool checkId = true)
+		{
+			bool ret =
+				info1.Name == info2.Name &&
+				info1.V1 == info2.V1 &&
+				info1.V2 == info2.V2 &&
+				info1.V3 == info2.V3;
+			if (checkId) {
+				ret = ret && (info1.Id == info2.Id);
 			}
 			return ret;
 		}

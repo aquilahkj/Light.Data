@@ -10,10 +10,33 @@ namespace Light.Data
 	class CustomFieldMapping : DataFieldMapping
 	{
 		public CustomFieldMapping (string fieldName, DataEntityMapping mapping)
-			: base (null, fieldName, null, mapping, false, null)
+			: base (null, fieldName, null, mapping, true, null)
 		{
-//			Name = fieldName;
-//			TypeMapping = mapping;
+
 		}
+
+		#region implemented abstract members of FieldMapping
+
+		public override object ToProperty (object value)
+		{
+			if (Object.Equals (value, DBNull.Value)) {
+				return null;
+			}
+			else {
+				return value;
+			}
+		}
+
+		public override object ToColumn (object value)
+		{
+			if (Object.Equals (value, DBNull.Value)) {
+				return null;
+			}
+			else {
+				return value;
+			}
+		}
+
+		#endregion
 	}
 }
