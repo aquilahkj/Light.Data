@@ -61,6 +61,8 @@
     <Compile Include="JoinTableWhereTest.cs" />
     <Compile Include="JoinTableBaseTest.cs" />
     <Compile Include="JoinTableOnTest.cs" />
+    <Compile Include="TransContextTest.cs" />
+    <Compile Include="SqlExecutorTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

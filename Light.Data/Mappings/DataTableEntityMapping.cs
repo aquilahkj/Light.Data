@@ -13,51 +13,101 @@ namespace Light.Data
 			GetPrimaryKey ();
 		}
 
-		PrimitiveFieldMapping _identityField;
+		DataFieldMapping _identityField;
 
-		public PrimitiveFieldMapping IdentityField {
+		public DataFieldMapping IdentityField {
 			get {
 				return _identityField;
 			}
 		}
 
-		//		<PrimitiveFieldMapping> _primaryKeyFields;
-
-		DataFieldMapping[] _primaryKeyFields;
-
-		public DataFieldMapping[] PrimaryKeyFields {
+		public IEnumerable<DataFieldMapping> NoIdentityFields {
 			get {
-				
-				return _primaryKeyFields;
+				foreach (DataFieldMapping item in _noIdentityFieldList) {
+					yield return item;
+				}
 			}
 		}
 
+		readonly List<DataFieldMapping> _noIdentityFieldList = new List<DataFieldMapping> ();
+
+		public IEnumerable<DataFieldMapping> PrimaryKeyFields {
+			get {
+				foreach (DataFieldMapping item in _primaryKeyFieldList) {
+					yield return item;
+				}
+			}
+		}
+
+		readonly List<DataFieldMapping> _primaryKeyFieldList = new List<DataFieldMapping> ();
+
+		public IEnumerable<DataFieldMapping> NoPrimaryKeyFields {
+			get {
+				foreach (DataFieldMapping item in _noPrimaryKeyFieldList) {
+					yield return item;
+				}
+			}
+		}
+
+		readonly List<DataFieldMapping> _noPrimaryKeyFieldList = new List<DataFieldMapping> ();
+
+		public bool HasIdentity {
+			get {
+				return _identityField != null;
+			}
+		}
+
+		public bool HasPrimaryKey {
+			get {
+				return _primaryKeyFieldList.Count > 0;
+			}
+		}
+
+		public int PrimaryKeyCount {
+			get {
+				return _primaryKeyFieldList.Count;
+			}
+		}
+
+		//		DataFieldMapping[] _primaryKeyFields;
+		//
+		//		public DataFieldMapping[] PrimaryKeyFields {
+		//			get {
+		//				return _primaryKeyFields;
+		//			}
+		//		}
+
 		void GetPrimaryKey ()
 		{
-			List<PrimitiveFieldMapping> primaryKeys = new List<PrimitiveFieldMapping> ();
+//			List<PrimitiveFieldMapping> primaryKeys = new List<PrimitiveFieldMapping> ();
 			foreach (FieldMapping field in _fieldList) {
-				PrimitiveFieldMapping mapping = field as PrimitiveFieldMapping;
-				if (mapping != null) {
-					if (mapping.IsIdentity) {
+				PrimitiveFieldMapping pfmapping = field as PrimitiveFieldMapping;
+				if (pfmapping != null) {
+					if (pfmapping.IsIdentity) {
 						if (IdentityField == null) {
-							TypeCode code = Type.GetTypeCode (mapping.ObjectType);
-							if (code == TypeCode.Int32 || code == TypeCode.Int64 || code == TypeCode.UInt32 || code == TypeCode.UInt64) {
-								_identityField = mapping;
-							}
-							else {
-								throw new LightDataException (RE.TheTypeOfIdentityFieldError);
-							}
+							_identityField = pfmapping;
 						}
 						else {
 							throw new LightDataException (RE.DataTableNotAllowMoreIdentityField);
 						}
 					}
-					if (mapping.IsPrimaryKey) {
-						primaryKeys.Add (mapping);
+					else {
+						_noIdentityFieldList.Add (pfmapping);
+					}
+					if (pfmapping.IsPrimaryKey) {
+						_primaryKeyFieldList.Add (pfmapping);
+					}
+					else {
+						_noPrimaryKeyFieldList.Add (pfmapping);
 					}
 				}
+				else {
+					DataFieldMapping mapping = field as DataFieldMapping;
+					_noIdentityFieldList.Add (mapping);
+					_noPrimaryKeyFieldList.Add (mapping);
+				}
 			}
-			_primaryKeyFields = primaryKeys.ToArray ();
+//			_primaryKeyFields = primaryKeys.ToArray ();
 		}
 	}
 }

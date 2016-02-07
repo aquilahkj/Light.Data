@@ -10,33 +10,13 @@ namespace Light.Data
 		/// 构造函数
 		/// </summary>
 		/// <param name="dataType">数据类型</param>
-		/// <param name="relateType">关联类型</param>
 		public AggregateTableConfig (Type dataType)
 		{
 			if (dataType == null) {
 				throw new ArgumentNullException ("dataType");
 			}
 			DataType = dataType;
-//			RelateType = relateType;
 		}
-
-//		/// <summary>
-//		/// 构造函数
-//		/// </summary>
-//		/// <param name="dataType">数据类型</param>
-//		/// <param name="relateType">关联类型</param>
-//		public AggregateTableConfig (Type dataType, Type relateType)
-//		{
-//			if (dataType == null) {
-//				throw new ArgumentNullException ("dataType");
-//			}
-//			//if (relateType == null)
-//			//{
-//			//    throw new ArgumentNullException("RelateType");
-//			//}
-//			DataType = dataType;
-//			RelateType = relateType;
-//		}
 
 		/// <summary>
 		/// 数据表名
@@ -45,14 +25,6 @@ namespace Light.Data
 			get;
 			private set;
 		}
-
-//		/// <summary>
-//		/// 关联表类型
-//		/// </summary>
-//		public Type RelateType {
-//			get;
-//			private set;
-//		}
 
 		/// <summary>
 		/// 扩展参数

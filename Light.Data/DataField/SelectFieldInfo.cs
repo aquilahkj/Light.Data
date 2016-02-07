@@ -231,6 +231,10 @@ namespace Light.Data
 
 		static readonly ConstantSelectFieldInfo NullInstance = new ConstantSelectFieldInfo (null);
 
+		/// <summary>
+		/// Gets the null.
+		/// </summary>
+		/// <value>The null.</value>
 		public static SelectFieldInfo Null {
 			get {
 				return NullInstance;

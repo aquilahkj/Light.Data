@@ -18,15 +18,13 @@ namespace Light.Data
 
 		protected string _name = null;
 
-		protected int? _dataOrder = null;
-
 		protected string _indexName = null;
 
 		protected DataMapping _typeMapping = null;
 
 		protected PropertyHandler _handler = null;
 
-//		protected object _defaultValue = null;
+		//		protected object _defaultValue = null;
 
 		protected TypeCode _typeCode = TypeCode.Empty;
 
@@ -58,23 +56,23 @@ namespace Light.Data
 			}
 		}
 
-//		public int? DataOrder {
-//			get {
-//				return _dataOrder;
-//			}
-//			protected set {
-//				_dataOrder = value;
-//			}
-//		}
-//
-//		public PropertyHandler Handler {
-//			get {
-//				return _handler;
-//			}
-//			set {
-//				_handler = value;
-//			}
-//		}
+		//		public int? DataOrder {
+		//			get {
+		//				return _dataOrder;
+		//			}
+		//			protected set {
+		//				_dataOrder = value;
+		//			}
+		//		}
+		//
+		//		public PropertyHandler Handler {
+		//			get {
+		//				return _handler;
+		//			}
+		//			set {
+		//				_handler = value;
+		//			}
+		//		}
 
 		public string IndexName {
 			get {
@@ -90,20 +88,20 @@ namespace Light.Data
 
 
 
-//		public object DefaultValue {
-//			get {
-//				return _defaultValue;
-//			}
-//			set {
-//				_defaultValue = value;
-//			}
-//		}
+		//		public object DefaultValue {
+		//			get {
+		//				return _defaultValue;
+		//			}
+		//			set {
+		//				_defaultValue = value;
+		//			}
+		//		}
 
-//		public virtual object DefaultValue {
-//			get {
-//				return null;
-//			}
-//		}
+		//		public virtual object DefaultValue {
+		//			get {
+		//				return null;
+		//			}
+		//		}
 
 		public TypeCode TypeCode {
 			get {
@@ -140,46 +138,46 @@ namespace Light.Data
 		//			}
 		//		}
 
-//		public virtual object ToProperty (object value)
-//		{
-//			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
-//				if (DefaultValue != null) {
-//					return DefaultValue;
-//				}
-//				else if (this._typeCode == TypeCode.String && !IsNullable) {
-//					return string.Empty;
-//				}
-//				else {
-//					return null;
-//				}
-//			}
-//			else {
-//				if (ObjectType != null && value.GetType () != ObjectType) {
-//					value = Convert.ChangeType (value, ObjectType);
-//				}
-//				return value;
-//			}
-//		}
-//
-//		public virtual object ToColumn (object value)
-//		{
-//			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
-//				if (IsNullable) {
-//					return null;
-//				}
-//				else {
-//					return MinValue;
-//				}
-//			}
-//			else {
-//				if (ObjectType != null && value.GetType () != ObjectType) {
-//					return Convert.ChangeType (value, ObjectType);
-//				}
-//				else {
-//					return value;
-//				}
-//			}
-//		}
+		//		public virtual object ToProperty (object value)
+		//		{
+		//			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
+		//				if (DefaultValue != null) {
+		//					return DefaultValue;
+		//				}
+		//				else if (this._typeCode == TypeCode.String && !IsNullable) {
+		//					return string.Empty;
+		//				}
+		//				else {
+		//					return null;
+		//				}
+		//			}
+		//			else {
+		//				if (ObjectType != null && value.GetType () != ObjectType) {
+		//					value = Convert.ChangeType (value, ObjectType);
+		//				}
+		//				return value;
+		//			}
+		//		}
+		//
+		//		public virtual object ToColumn (object value)
+		//		{
+		//			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
+		//				if (IsNullable) {
+		//					return null;
+		//				}
+		//				else {
+		//					return MinValue;
+		//				}
+		//			}
+		//			else {
+		//				if (ObjectType != null && value.GetType () != ObjectType) {
+		//					return Convert.ChangeType (value, ObjectType);
+		//				}
+		//				else {
+		//					return value;
+		//				}
+		//			}
+		//		}
 
 		#endregion
 	}

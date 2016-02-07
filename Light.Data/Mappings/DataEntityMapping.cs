@@ -94,41 +94,59 @@ namespace Light.Data
 				return false;
 			return this.ObjectType.Equals (mapping.ObjectType);
 		}
-			
+
 		protected void InitialDataFieldMapping ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
 //			int fieldCount = 0;
+			bool useOrder = false;
+			int index = 0;
 			foreach (PropertyInfo pi in propertys) {
 				//字段属性
 				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
 				if (config != null) {
-//					Type type = pi.PropertyType;
-//					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
-//					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (type, pi, name, pi.Name, config, this);
-//					mapping.Handler = new PropertyHandler (pi);
-					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, this);
+					index++;
+					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, index, this);
 
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					if (mapping.Name != mapping.IndexName) {
 						_fieldMappingDictionary.Add (mapping.Name, mapping);
 					}
 					_fieldList.Add (mapping);
-					_fieldNames.Add (mapping.Name);
-//					if (mapping.Name != mapping.IndexName) {
-//						_fieldMappingAlterNameDictionary.Add (mapping.Name, mapping);
-//					}
-//					ComplexFieldMapping complex = mapping as ComplexFieldMapping;
-//					if (complex != null) {
-//						fieldCount += complex.SubDataFieldCount;
-//					}
-//					else {
-//						fieldCount++;
-//					}
+					if (mapping.DataOrder != null) {
+						useOrder = true;
+					}
 				}
 			}
-			if (_fieldMappingDictionary.Count == 0) {
+			if (_fieldList.Count == 0) {
 				throw new LightDataException (RE.DataFieldsIsNotExists);
+			}
+			if (useOrder) {
+				_fieldList.Sort ((x, y) => {
+					DataFieldMapping m1 = x as DataFieldMapping;
+					DataFieldMapping m2 = y as DataFieldMapping;
+					if (m1.DataOrder.HasValue && m2.DataOrder.HasValue) {
+						if (m1.DataOrder > m2.DataOrder) {
+							return  1;
+						}
+						else if (m1.DataOrder < m2.DataOrder) {
+							return -1;
+						}
+						else {
+							return m1.PositionOrder > m2.PositionOrder ? 1 : -1;
+						}
+					}
+					else if (m1.DataOrder.HasValue && !m2.DataOrder.HasValue) {
+						return  -1;
+					}
+					else if (!m1.DataOrder.HasValue && m2.DataOrder.HasValue) {
+						return  1;
+					}
+					else {
+						return m1.PositionOrder > m2.PositionOrder ? 1 : -1;
+					}
+				});
+				
 			}
 //			this._fieldCount = fieldCount;
 		}
@@ -311,7 +329,7 @@ namespace Light.Data
 
 		private static void InitalDataField (object source, IFieldCollection collection)
 		{
-			foreach (DataFieldMapping field in collection.GetFieldMappings()) {
+			foreach (DataFieldMapping field in collection.FieldMappings) {
 				if (field == null)
 					continue;
 

@@ -202,6 +202,26 @@ namespace Light.Data.MysqlTest
 			return ret;
 		}
 
+		protected bool EqualLog (TeDataLog log1, TeDataLogHistory2 log2, bool checkId = true)
+		{
+			bool ret =
+				log1.UserId == log2.UserId &&
+				log1.ArticleId == log2.ArticleId &&
+				log1.Action == log2.Action &&
+				log1.RecordTime == log2.RecordTime &&
+				log1.RequestUrl == log2.RequestUrl &&
+				log1.CheckPoint == log2.CheckPoint &&
+				log1.CheckData == log2.CheckData &&
+				log1.CheckTime == log2.CheckTime &&
+				log1.CheckId == log2.CheckId &&
+				log1.CheckLevelTypeInt == log2.CheckLevelTypeInt &&
+				log1.CheckLevelTypeString == log2.CheckLevelTypeString;
+			if (checkId) {
+				ret = ret && (log1.Id == log2.Id);
+			}
+			return ret;
+		}
+
 		protected TeAreaInfo CreateTestAreaInfo (bool useContext)
 		{
 			TeAreaInfo info;

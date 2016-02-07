@@ -54,12 +54,12 @@ namespace Light.Data
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
 
-			List<FieldMapping> fields = new List<FieldMapping> ();
-			fields.AddRange (mapping.GetFieldMappings ());
-			if (mapping.IdentityField != null) {
-				fields.Remove (mapping.IdentityField);
-			}
-			List<DataParameter> paramList = GetDataParameters (fields, entity);
+//			List<FieldMapping> fields = new List<FieldMapping> ();
+//			fields.AddRange (mapping.GetFieldMappings ());
+//			if (mapping.IdentityField != null) {
+//				fields.Remove (mapping.IdentityField);
+//			}
+			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, entity);
 
 			string[] insertList = new string[paramList.Count];
 			string[] valuesList = new string[paramList.Count];
@@ -111,21 +111,16 @@ namespace Light.Data
 			object tmpEntity = entitys.GetValue (0);
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
-			List<FieldMapping> fields = new List<FieldMapping> ();
 			int totalCount = entitys.Length;
-			fields.AddRange (mapping.GetFieldMappings ());
-			if (mapping.IdentityField != null) {
-				fields.Remove (mapping.IdentityField);
-			}
-
-
-			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
-//			string[] insertList = new string[paramList.Count];
-//			int index = 0;
-//			foreach (DataParameter dataParameter in paramList) {
-//				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-//				index++;
+//			List<FieldMapping> fields = new List<FieldMapping> ();
+//
+//			fields.AddRange (mapping.GetFieldMappings ());
+//			if (mapping.IdentityField != null) {
+//				fields.Remove (mapping.IdentityField);
 //			}
+
+
+			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, tmpEntity);
 			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
 				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
@@ -151,7 +146,7 @@ namespace Light.Data
 			List<CommandData> commands = new List<CommandData> ();
 
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = GetDataParameters (fields, entity);
+				List<DataParameter> entityParams = GetDataParameters (mapping.NoIdentityFields, entity);
 				string[] valueList = new string[entitys.Length];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {

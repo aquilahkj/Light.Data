@@ -40,7 +40,15 @@ namespace Light.Data
 					this._defaultValue = Convert.ChangeType (defaultValue, type);
 				}
 			}
-			_isIdentity = isIdentity;
+			if (isIdentity) {
+				if (_typeCode == TypeCode.Int32 || _typeCode == TypeCode.Int64 || _typeCode == TypeCode.UInt32 || _typeCode == TypeCode.UInt64) {
+					_isIdentity = true;
+				}
+				else {
+					throw new LightDataException (RE.TheTypeOfIdentityFieldError);
+				}
+			}
+
 			_isPrimaryKey = isPrimaryKey;
 			if (_typeCode == TypeCode.String) {
 				_minValue = string.Empty;

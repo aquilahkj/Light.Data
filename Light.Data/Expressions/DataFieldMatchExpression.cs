@@ -28,6 +28,10 @@ namespace Light.Data
 			return factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 		}
 
+		/// <summary>
+		/// Converts the query expression.
+		/// </summary>
+		/// <returns>The query expression.</returns>
 		protected override QueryExpression ConvertQueryExpression ()
 		{
 			QueryExpression expression;

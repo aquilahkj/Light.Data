@@ -78,48 +78,66 @@ namespace Light.Data
 			int intRandomNumber = rnd.Next () * -1;
 
 			DataFieldMapping keyfield = null;
+			string fieldNames = null;
 			DataTableEntityMapping tableMapping = mapping as DataTableEntityMapping;
 			if (tableMapping != null) {
-				if (tableMapping.IdentityField != null) {
-					keyfield = tableMapping.IdentityField;
+				if (tableMapping.HasIdentity) {
+					fieldNames = CreateRandomField (tableMapping.IdentityField, mapping.TableName, fullFieldName);
 				}
-				else if (tableMapping.PrimaryKeyFields != null && tableMapping.PrimaryKeyFields.Length > 0) {
-					keyfield = tableMapping.PrimaryKeyFields [0];
+				else if (tableMapping.HasPrimaryKey) {
+					List<string> list = new List<string> ();
+					foreach (DataFieldMapping item in tableMapping.PrimaryKeyFields) {
+						string name = CreateRandomField (item, mapping.TableName, fullFieldName);
+						list.Add (name);
+					}
+					fieldNames = string.Join ("*", list);
 				}
 			}
 			if (keyfield == null) {
-				foreach (DataFieldMapping df in mapping.GetFieldMappings()) {
-					if (df.ObjectType == typeof(int)) {
-						keyfield = df;
+				FieldMapping stringField = null;
+				FieldMapping numberField = null;
+				foreach (FieldMapping field in mapping.FieldMappings) {
+					if (field.TypeCode == TypeCode.Boolean || field.TypeCode == TypeCode.DBNull || field.TypeCode == TypeCode.Empty || field.TypeCode == TypeCode.Object) {
+						continue;
+					}
+					else if (field.TypeCode == TypeCode.String) {
+						if (stringField != null) {
+							stringField = field;
+						}
+					}
+					else {
+						numberField = field;
 						break;
 					}
 				}
-			}
-			if (keyfield == null) {
-				foreach (DataFieldMapping df in mapping.GetFieldMappings()) {
-					if (df.ObjectType == typeof(string)) {
-						keyfield = df;
-						break;
-					}
+				if (numberField != null) {
+					fieldNames = CreateRandomField (numberField, mapping.TableName, fullFieldName);
+				}
+				else if (stringField != null) {
+					fieldNames = CreateRandomField (stringField, mapping.TableName, fullFieldName);
 				}
 			}
-			if (keyfield != null) {
-				string field;
-				if (fullFieldName) {
-					field = CreateFullDataFieldSql (mapping.TableName, keyfield.Name);
-				}
-				else {
-					field = CreateDataFieldSql (keyfield.Name);
-				}
-				if (keyfield.ObjectType == typeof(string)) {
-					field = string.Format ("len({0})", field);
-				}
-				return string.Format ("rnd({0}*{1})", intRandomNumber, field);
+			if (fieldNames != null) {
+				return string.Format ("rnd({0}*{1})", intRandomNumber, fieldNames);
 			}
 			else {
 				throw new LightDataException (RE.DataFieldIsNotStringType);
 			}
+		}
 
+		private string CreateRandomField (FieldMapping keyfield, string tableName, bool fullFieldName)
+		{
+			string field;
+			if (fullFieldName) {
+				field = CreateFullDataFieldSql (tableName, keyfield.Name);
+			}
+			else {
+				field = CreateDataFieldSql (keyfield.Name);
+			}
+			if (keyfield.TypeCode == TypeCode.String) {
+				field = string.Format ("len({0})", field);
+			}
+			return field;
 		}
 
 		public override string CreateMatchSql (string field, bool left, bool right)

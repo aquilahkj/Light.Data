@@ -123,7 +123,7 @@ namespace Light.Data
 
 		protected List<FieldMapping> _fieldList = new List<FieldMapping> ();
 
-		protected List<string> _fieldNames = new List<string> ();
+//		protected List<string> _fieldNames = new List<string> ();
 
 		protected DataMapping (Type type)
 		{
@@ -139,7 +139,7 @@ namespace Light.Data
 			get {
 				return objectType;
 			}
-			private set {
+			protected set {
 				objectType = value;
 			}
 		}
@@ -153,49 +153,40 @@ namespace Light.Data
 			get {
 				return extentParams;
 			}
-			set {
+			protected set {
 				extentParams = value;
 			}
 		}
 
-		/// <summary>
-		/// 获取字段名数组
-		/// </summary>
-		/// <returns></returns>
-		public string[] GetFieldNames ()
-		{
-//			return GetFieldNames (GetFieldMappings ());
-			return this._fieldNames.ToArray();
-		}
-
-		//		private string[] GetFieldNames (IEnumerable<FieldMapping> fields)
-		//		{
-		//			List<string> list = new List<string> ();
-		//			foreach (DataFieldMapping field in fields) {
-		////				ComplexFieldMapping cmField = field as ComplexFieldMapping;
-		////				if (cmField != null) {
-		////					list.AddRange (GetFieldNames (cmField.GetFieldMappings ()));
-		////				}
-		////				else {
-		////					list.Add (field.Name);
-		////				}
-		//				list.Add (field.Name);
-		//			}
-		//			return list.ToArray ();
-		//		}
+//		/// <summary>
+//		/// 获取字段名数组
+//		/// </summary>
+//		/// <returns></returns>
+//		public string[] GetFieldNames ()
+//		{
+//			return this._fieldNames.ToArray ();
+//		}
 
 		#region IFieldCollection 成员
 
-//		public virtual IEnumerable<FieldMapping> GetFieldMappings ()
+		//		public virtual IEnumerable<FieldMapping> GetFieldMappings ()
+		//		{
+		//			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
+		//				yield return kv.Value;
+		//			}
+		//		}
+
+//		public FieldMapping[] GetFieldMappings ()
 //		{
-//			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-//				yield return kv.Value;
-//			}
+//			return this._fieldList.ToArray ();
 //		}
 
-		public FieldMapping[] GetFieldMappings ()
-		{
-			return this._fieldList.ToArray ();
+		public IEnumerable<FieldMapping> FieldMappings {
+			get {
+				foreach (FieldMapping item in this._fieldList) {
+					yield return item;
+				}
+			}
 		}
 
 		public int FieldCount {

@@ -288,6 +288,12 @@ namespace Light.Data
 		public const string UnsupportValueType = "unsupport value type";
 
 		public const string UnmatchDataDefineType = "unmatch data define type";
+
+		public const string TransactionAlreadyDisposed = "transaction already disposed";
+
+		public const string TransactionNotStarted = "transaction not started";
+
+		public const string TransactionAlreadyStarted = "transaction already started";
 	}
 }
 

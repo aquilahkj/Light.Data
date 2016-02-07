@@ -13,20 +13,6 @@ namespace Light.Data
 	/// </summary>
 	public class DataContext
 	{
-		//		static DataContext _currentInstance = null;
-		//
-		//		/// <summary>
-		//		/// 当前数据连接上下文
-		//		/// </summary>
-		//		public static DataContext Current {
-		//			get {
-		//				return DataContext._currentInstance;
-		//			}
-		//			set {
-		//				DataContext._currentInstance = value;
-		//			}
-		//		}
-
 		static Dictionary<string,DataContextSetting> Settings = new Dictionary<string, DataContextSetting> ();
 
 		static DataContextSetting DefaultContextSetting;
@@ -129,17 +115,17 @@ namespace Light.Data
 		/// <summary>
 		/// 连接字符串
 		/// </summary>
-		protected string _connectionString = null;
+		protected string _connectionString;
 
 		/// <summary>
 		/// 数据库对象
 		/// </summary>
-		internal Database _dataBase = null;
+		internal Database _dataBase;
 
 		/// <summary>
 		/// 数据库配置名称
 		/// </summary>
-		protected string _configName = null;
+		protected string _configName;
 
 		/// <summary>
 		/// 获取数据库对象
@@ -254,7 +240,7 @@ namespace Light.Data
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
 			object obj;
-			int rInt = 0;
+			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateInsertCommand (data);
 			CommandData commandDataIdentity = null;
 			if (mapping.IdentityField != null) {
@@ -308,8 +294,6 @@ namespace Light.Data
 			Region region = new Region (0, 1);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
-				//= PrimitiveDataDefine.Create (typeof(Int32), 0);
-				//PrimitiveDataDefine.TryParseDefine (typeof(Int32), out pm); 
 				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default)) {
 					exists = true;
 				}
@@ -332,7 +316,7 @@ namespace Light.Data
 		/// <returns>受影响行数</returns>
 		public int Update (object data, string[] updateFields)
 		{
-			int rInt = 0;
+			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateUpdateCommand (data, updateFields);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
@@ -347,7 +331,7 @@ namespace Light.Data
 		/// <returns>受影响行数</returns>
 		public int Delete (object data)
 		{
-			int rInt = 0;
+			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateDeleteCommand (data);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
@@ -417,7 +401,7 @@ namespace Light.Data
 		/// <returns>受影响行数</returns>
 		internal int DeleteMass (DataTableEntityMapping mapping, QueryExpression query)
 		{
-			int rInt = 0;
+			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateDeleteMassCommand (mapping, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
@@ -473,7 +457,7 @@ namespace Light.Data
 		/// <returns>受影响行数</returns>
 		internal int UpdateMass (DataTableEntityMapping mapping, UpdateSetValue[] updates, QueryExpression query)
 		{
-			int rInt = 0;
+			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (mapping, updates, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
@@ -578,75 +562,75 @@ namespace Light.Data
 			return results;
 		}
 
-//		/// <summary>
-//		/// Select into 
-//		/// </summary>
-//		/// <returns>process result line</returns>
-//		/// <param name="insertFields">Insert fields.</param>
-//		/// <param name="selectFields">Select fields.</param>
-//		/// <param name="query">Query Expression</param>
-//		/// <param name="order">Order Expression</param>
-//		/// <typeparam name="T">insert type parameter.</typeparam>
-//		/// <typeparam name="K">select type parameter.</typeparam>
-//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
-//		{
-//			return SelectInto (typeof(T), insertFields, typeof(K), selectFields, query, order);
-//		}
-//
-//		/// <summary>
-//		/// Selects the into.
-//		/// </summary>
-//		/// <returns>The into.</returns>
-//		/// <typeparam name="T">insert type parameter.</typeparam>
-//		/// <typeparam name="K">select type parameter.</typeparam>
-//		public int SelectInto<T,K> ()
-//		{
-//			return SelectInto<T,K> (null, null, null, null);
-//		}
-//
-//		/// <summary>
-//		/// Selects the into.
-//		/// </summary>
-//		/// <returns>The into.</returns>
-//		/// <param name="query">Query.</param>
-//		/// <typeparam name="T">insert type parameter.</typeparam>
-//		/// <typeparam name="K">select type parameter.</typeparam>
-//		public int SelectInto<T,K> (QueryExpression query)
-//		{
-//			return SelectInto<T,K> (null, null, query, null);
-//		}
-//
-//		/// <summary>
-//		/// Selects the into.
-//		/// </summary>
-//		/// <returns>The into.</returns>
-//		/// <param name="query">Query.</param>
-//		/// <param name="order">Order.</param>
-//		/// <typeparam name="T">insert type parameter.</typeparam>
-//		/// <typeparam name="K">select type parameter.</typeparam>
-//		public int SelectInto<T,K> (QueryExpression query, OrderExpression order)
-//		{
-//			return SelectInto<T,K> (null, null, query, order);
-//		}
-//
-//		/// <summary>
-//		/// Selects the into.
-//		/// </summary>
-//		/// <returns>The into.</returns>
-//		/// <param name="insertFields">Insert fields.</param>
-//		/// <param name="selectFields">Select fields.</param>
-//		/// <typeparam name="T">insert type parameter.</typeparam>
-//		/// <typeparam name="K">select type parameter.</typeparam>
-//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields)
-//		{
-//			return SelectInto<T,K> (insertFields, selectFields, null, null);
-//		}
+		//		/// <summary>
+		//		/// Select into
+		//		/// </summary>
+		//		/// <returns>process result line</returns>
+		//		/// <param name="insertFields">Insert fields.</param>
+		//		/// <param name="selectFields">Select fields.</param>
+		//		/// <param name="query">Query Expression</param>
+		//		/// <param name="order">Order Expression</param>
+		//		/// <typeparam name="T">insert type parameter.</typeparam>
+		//		/// <typeparam name="K">select type parameter.</typeparam>
+		//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
+		//		{
+		//			return SelectInto (typeof(T), insertFields, typeof(K), selectFields, query, order);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Selects the into.
+		//		/// </summary>
+		//		/// <returns>The into.</returns>
+		//		/// <typeparam name="T">insert type parameter.</typeparam>
+		//		/// <typeparam name="K">select type parameter.</typeparam>
+		//		public int SelectInto<T,K> ()
+		//		{
+		//			return SelectInto<T,K> (null, null, null, null);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Selects the into.
+		//		/// </summary>
+		//		/// <returns>The into.</returns>
+		//		/// <param name="query">Query.</param>
+		//		/// <typeparam name="T">insert type parameter.</typeparam>
+		//		/// <typeparam name="K">select type parameter.</typeparam>
+		//		public int SelectInto<T,K> (QueryExpression query)
+		//		{
+		//			return SelectInto<T,K> (null, null, query, null);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Selects the into.
+		//		/// </summary>
+		//		/// <returns>The into.</returns>
+		//		/// <param name="query">Query.</param>
+		//		/// <param name="order">Order.</param>
+		//		/// <typeparam name="T">insert type parameter.</typeparam>
+		//		/// <typeparam name="K">select type parameter.</typeparam>
+		//		public int SelectInto<T,K> (QueryExpression query, OrderExpression order)
+		//		{
+		//			return SelectInto<T,K> (null, null, query, order);
+		//		}
+		//
+		//		/// <summary>
+		//		/// Selects the into.
+		//		/// </summary>
+		//		/// <returns>The into.</returns>
+		//		/// <param name="insertFields">Insert fields.</param>
+		//		/// <param name="selectFields">Select fields.</param>
+		//		/// <typeparam name="T">insert type parameter.</typeparam>
+		//		/// <typeparam name="K">select type parameter.</typeparam>
+		//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields)
+		//		{
+		//			return SelectInto<T,K> (insertFields, selectFields, null, null);
+		//		}
 
 		internal int SelectInsert (Type insertType, DataFieldInfo[] insertFields, Type selectType, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
 		{
 			DataTableEntityMapping insertMapping = DataMapping.GetTableMapping (insertType);
 			DataTableEntityMapping selectMapping = DataMapping.GetTableMapping (selectType);
-			int rInt = 0;
+			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, insertFields, selectMapping, selectFields, query, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
@@ -664,22 +648,37 @@ namespace Light.Data
 		public T SelectSingleFromKey<T> (params object[] primaryKeys)
             where T : class, new()
 		{
-			DataTableEntityMapping dtmapping = DataMapping.GetTableMapping (typeof(T));
-			if (primaryKeys.Length != dtmapping.PrimaryKeyFields.Length) {
+			if (primaryKeys == null || primaryKeys.Length == 0)
+				throw new ArgumentNullException ("primaryKeys");
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(T));
+			if (primaryKeys.Length != mapping.PrimaryKeyCount) {
 				throw new LightDataException (RE.TheNumberOfPrimaryKeysIsNotMatch);
+			}
+			if (!mapping.HasPrimaryKey) {
+				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
 			DataFieldInfo[] primaryKeyInfos = new DataFieldInfo[primaryKeys.Length];
 			QueryExpression query = null;
-			for (int i = 0; i < primaryKeys.Length; i++) {
-				primaryKeyInfos [i] = new DataFieldInfo (dtmapping.PrimaryKeyFields [i]);
+			int i = 0;
+			foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
+				primaryKeyInfos [i] = new DataFieldInfo (fieldMapping);
 				if (i == 0) {
 					query = primaryKeyInfos [i] == primaryKeys [i];
 				}
 				else {
-					query = query & primaryKeyInfos [i] == primaryKeys [i];
+					query = QueryExpression.And (query, primaryKeyInfos [i] == primaryKeys [i]);
 				}
 			}
-			return SelectSingle (dtmapping, query, null, 0, SafeLevel.None) as T;
+//			for (int i = 0; i < primaryKeys.Length; i++) {
+//				primaryKeyInfos [i] = new DataFieldInfo (mapping.PrimaryKeyFields [i]);
+//				if (i == 0) {
+//					query = primaryKeyInfos [i] == primaryKeys [i];
+//				}
+//				else {
+//					query = query & primaryKeyInfos [i] == primaryKeys [i];
+//				}
+//			}
+			return SelectSingle (mapping, query, null, 0, SafeLevel.None) as T;
 		}
 
 		/// <summary>
@@ -834,36 +833,17 @@ namespace Light.Data
 			}
 		}
 
-		//		/// <summary>
-		//		/// 查询单列数据
-		//		/// </summary>
-		//		/// <param name="fieldInfo">单列数据字段</param>
-		//		/// <param name="query">查询表达式</param>
-		//		/// <param name="order">排序表达式</param>
-		//		/// <param name="region">查询范围</param>
-		//		/// <param name="distinct">是否排除重复</param>
-		//		/// <param name="level">安全级别</param>
-		//		/// <returns>单列数据枚举</returns>
-		//		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
-		//		{
-		//			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
-		//			IDbCommand command = commandData.CreateCommand (_dataBase);
-		//			DataDefine define = TransferDataDefine (fieldInfo.DataField);
-		//			return QueryDataReader (define, command, region, level);
-		//		}
-
 		/// <summary>
-		/// 查询单列数据
+		/// Queries the colume enumerable.
 		/// </summary>
-		/// <param name="fieldInfo">字段信息</param>
-		/// <param name="outputType">输出类型</param>
-		/// <param name="isNullable">是否可空</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围</param>
-		/// <param name="distinct">是否排除重复</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>单列数据枚举</returns>
+		/// <returns>The colume enumerable.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="outputType">Output type.</param>
+		/// <param name="query">Query.</param>
+		/// <param name="order">Order.</param>
+		/// <param name="region">Region.</param>
+		/// <param name="distinct">If set to <c>true</c> distinct.</param>
+		/// <param name="level">Level.</param>
 		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
@@ -871,45 +851,6 @@ namespace Light.Data
 			DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
 			return QueryDataReader (define, command, region, level);
 		}
-
-
-		//		/// <summary>
-		//		/// 查询单列数据
-		//		/// </summary>
-		//		/// <param name="fieldInfo">单列数据字段</param>
-		//		/// <param name="query">查询表达式</param>
-		//		/// <param name="order">排序表达式</param>
-		//		/// <param name="region">查询范围</param>
-		//		/// <param name="distinct">是否排除重复</param>
-		//		/// <param name="level">安全级别</param>
-		//		/// <returns>数据集合</returns>
-		//		internal IList QueryColumeList (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
-		//		{
-		//			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
-		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//				DataDefine define = TransferDataDefine (fieldInfo.DataField);
-		//				IList items = CreateList (define.ObjectType);
-		//
-		//				IEnumerable ie = QueryDataReader (define, command, region, level);
-		//				if (define.IsNullable) {
-		//					MethodInfo addMethod = items.GetType ().GetMethod ("Add");
-		//					foreach (object obj in ie) {
-		//						if (Object.Equals (obj, null)) {
-		//							addMethod.Invoke (items, new object[] { null });
-		//						}
-		//						else {
-		//							items.Add (obj);
-		//						}
-		//					}
-		//				}
-		//				else {
-		//					foreach (object obj in ie) {
-		//						items.Add (obj);
-		//					}
-		//				}
-		//				return items;
-		//			}
-		//		}
 
 		/// <summary>
 		/// 查询单列数据
@@ -928,29 +869,10 @@ namespace Light.Data
 			List<K> list = new List<K> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
-//				IList items = CreateList (define.ObjectType);
-
 				IEnumerable ie = QueryDataReader (define, command, region, level);
 				foreach (K obj in ie) {
 					list.Add (obj);
 				}
-//				if (define.IsNullable) {
-//					MethodInfo addMethod = items.GetType ().GetMethod ("Add");
-//					foreach (object obj in ie) {
-//						if (Object.Equals (obj, null)) {
-//							addMethod.Invoke (items, new object[] { null });
-//						}
-//						else {
-//							items.Add (obj);
-//						}
-//					}
-//				}
-//				else {
-//					foreach (object obj in ie) {
-//						items.Add (obj);
-//					}
-//				}
-//				return items;
 			}
 			return list;
 		}
@@ -1093,9 +1015,6 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
-//				PrimitiveDataDefine pm;
-				//= PrimitiveDataDefine.Create (typeof(Int32), 0);
-//				PrimitiveDataDefine.TryParseDefine (typeof(Int32), out pm); 
 				foreach (object obj in QueryDataReader(pm, command, region, level)) {
 					exists = true;
 				}
@@ -1147,6 +1066,29 @@ namespace Light.Data
 					list [index] = new DataParameter (value.ParameterName, value.Value, value.DbType.ToString (), value.Direction);
 					index++;
 				}
+				this.output.Output (action, command.CommandText, list, command.CommandType, command.Transaction != null, level);
+			}
+		}
+
+		/// <summary>
+		/// Outputs the command.
+		/// </summary>
+		/// <param name="action">Action.</param>
+		/// <param name="command">Command.</param>
+		/// <param name="level">Level.</param>
+		/// <param name="start">Start.</param>
+		/// <param name="size">Size.</param>
+		protected virtual void OutputCommand (string action, IDbCommand command, SafeLevel level, int start, int size)
+		{
+			if (this.output != null) {
+				int count = command.Parameters.Count;
+				DataParameter[] list = new DataParameter[count];
+				int index = 0;
+				foreach (IDataParameter value in command.Parameters) {
+					list [index] = new DataParameter (value.ParameterName, value.Value, value.DbType.ToString (), value.Direction);
+					index++;
+				}
+				action = string.Format ("{0}[{1},{2}]", action, start, size);
 				this.output.Output (action, command.CommandText, list, command.CommandType, command.Transaction != null, level);
 			}
 		}
@@ -1239,7 +1181,7 @@ namespace Light.Data
 
 		internal virtual int ExecuteNonQuery (IDbCommand dbcommand, SafeLevel level)
 		{
-			int rInt = 0;
+			int rInt;
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				try {
@@ -1257,7 +1199,7 @@ namespace Light.Data
 
 		internal virtual object ExecuteScalar (IDbCommand dbcommand, SafeLevel level)
 		{
-			object result = null;
+			object result;
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				try {
@@ -1307,7 +1249,7 @@ namespace Light.Data
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				transaction.SetupCommand (dbcommand);
-				OutputCommand (string.Format ("QueryDataReader({0}-{1})", start, size), dbcommand, level);
+				OutputCommand ("QueryDataReader", dbcommand, level, start, size);
 				using (IDataReader reader = dbcommand.ExecuteReader ()) {
 					int index = 0;
 					int count = 0;
@@ -1554,7 +1496,7 @@ namespace Light.Data
 
 		private static IList CreateList (Type type)
 		{
-			IList items = null;
+			IList items;
 			Type itemstype = System.Type.GetType ("System.Collections.Generic.List`1");
 			itemstype = itemstype.MakeGenericType (type);
 			items = (IList)Activator.CreateInstance (itemstype);

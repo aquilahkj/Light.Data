@@ -11,7 +11,13 @@ namespace Light.Data
 
         IDbConnection _connection = null;
 
-        SafeLevel _level = SafeLevel.Default;
+		SafeLevel _level = SafeLevel.Default;
+
+		public SafeLevel Level {
+			get {
+				return _level;
+			}
+		}
 
         bool _isDisposed = false;
 

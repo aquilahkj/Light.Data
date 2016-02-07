@@ -1440,6 +1440,345 @@ namespace Light.Data.MysqlTest
     }
 
     [Serializable]
+    [DataTable("Te_DataLogHistory2")]
+    public partial class TeDataLogHistory2 : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeDataLogHistory2>.Create("Id");
+
+		static readonly DataFieldInfo userIdField = DataFieldInfo<TeDataLogHistory2>.Create("UserId");
+
+		static readonly DataFieldInfo articleIdField = DataFieldInfo<TeDataLogHistory2>.Create("ArticleId");
+
+		static readonly DataFieldInfo recordTimeField = DataFieldInfo<TeDataLogHistory2>.Create("RecordTime");
+
+		static readonly DataFieldInfo statusField = DataFieldInfo<TeDataLogHistory2>.Create("Status");
+
+		static readonly DataFieldInfo actionField = DataFieldInfo<TeDataLogHistory2>.Create("Action");
+
+		static readonly DataFieldInfo requestUrlField = DataFieldInfo<TeDataLogHistory2>.Create("RequestUrl");
+
+		static readonly DataFieldInfo checkIdField = DataFieldInfo<TeDataLogHistory2>.Create("CheckId");
+
+		static readonly DataFieldInfo checkPointField = DataFieldInfo<TeDataLogHistory2>.Create("CheckPoint");
+
+		static readonly DataFieldInfo checkTimeField = DataFieldInfo<TeDataLogHistory2>.Create("CheckTime");
+
+		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLogHistory2>.Create("CheckData");
+
+		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLogHistory2>.Create("CheckLevelTypeInt");
+
+		static readonly DataFieldInfo checkLevelTypeStringField = DataFieldInfo<TeDataLogHistory2>.Create("CheckLevelTypeString");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo UserIdField
+        {
+            get {
+                return userIdField;
+            }
+        }
+
+		public static DataFieldInfo ArticleIdField
+        {
+            get {
+                return articleIdField;
+            }
+        }
+
+		public static DataFieldInfo RecordTimeField
+        {
+            get {
+                return recordTimeField;
+            }
+        }
+
+		public static DataFieldInfo StatusField
+        {
+            get {
+                return statusField;
+            }
+        }
+
+		public static DataFieldInfo ActionField
+        {
+            get {
+                return actionField;
+            }
+        }
+
+		public static DataFieldInfo RequestUrlField
+        {
+            get {
+                return requestUrlField;
+            }
+        }
+
+		public static DataFieldInfo CheckIdField
+        {
+            get {
+                return checkIdField;
+            }
+        }
+
+		public static DataFieldInfo CheckPointField
+        {
+            get {
+                return checkPointField;
+            }
+        }
+
+		public static DataFieldInfo CheckTimeField
+        {
+            get {
+                return checkTimeField;
+            }
+        }
+
+		public static DataFieldInfo CheckDataField
+        {
+            get {
+                return checkDataField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelTypeIntField
+        {
+            get {
+                return checkLevelTypeIntField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelTypeStringField
+        {
+            get {
+                return checkLevelTypeStringField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int userId;
+
+		/// <summary>
+		/// UserId
+		/// </summary>
+		/// <value></value>
+		[DataField("UserId")]
+        public int UserId
+        {
+            get { 
+            	return this.userId; 
+            }
+            set { 
+            	this.userId = value; 
+            }
+        }
+		private int articleId;
+
+		/// <summary>
+		/// ArticleId
+		/// </summary>
+		/// <value></value>
+		[DataField("ArticleId")]
+        public int ArticleId
+        {
+            get { 
+            	return this.articleId; 
+            }
+            set { 
+            	this.articleId = value; 
+            }
+        }
+		private DateTime recordTime;
+
+		/// <summary>
+		/// RecordTime
+		/// </summary>
+		/// <value></value>
+		[DataField("RecordTime")]
+        public DateTime RecordTime
+        {
+            get { 
+            	return this.recordTime; 
+            }
+            set { 
+            	this.recordTime = value; 
+            }
+        }
+		private int status;
+
+		/// <summary>
+		/// Status
+		/// </summary>
+		/// <value></value>
+		[DataField("Status")]
+        public int Status
+        {
+            get { 
+            	return this.status; 
+            }
+            set { 
+            	this.status = value; 
+            }
+        }
+		private int action;
+
+		/// <summary>
+		/// Action
+		/// </summary>
+		/// <value></value>
+		[DataField("Action")]
+        public int Action
+        {
+            get { 
+            	return this.action; 
+            }
+            set { 
+            	this.action = value; 
+            }
+        }
+		private string requestUrl;
+
+		/// <summary>
+		/// RequestUrl
+		/// </summary>
+		/// <value></value>
+		[DataField("RequestUrl")]
+        public string RequestUrl
+        {
+            get { 
+            	return this.requestUrl; 
+            }
+            set { 
+            	this.requestUrl = value; 
+            }
+        }
+		private int? checkId;
+
+		/// <summary>
+		/// CheckId
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckId", IsNullable = true)]
+        public int? CheckId
+        {
+            get { 
+            	return this.checkId; 
+            }
+            set { 
+            	this.checkId = value; 
+            }
+        }
+		private double? checkPoint;
+
+		/// <summary>
+		/// CheckPoint
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckPoint", IsNullable = true)]
+        public double? CheckPoint
+        {
+            get { 
+            	return this.checkPoint; 
+            }
+            set { 
+            	this.checkPoint = value; 
+            }
+        }
+		private DateTime? checkTime;
+
+		/// <summary>
+		/// CheckTime
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckTime", IsNullable = true)]
+        public DateTime? CheckTime
+        {
+            get { 
+            	return this.checkTime; 
+            }
+            set { 
+            	this.checkTime = value; 
+            }
+        }
+		private string checkData;
+
+		/// <summary>
+		/// CheckData
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckData", IsNullable = true)]
+        public string CheckData
+        {
+            get { 
+            	return this.checkData; 
+            }
+            set { 
+            	this.checkData = value; 
+            }
+        }
+		private CheckLevelType? checkLevelTypeInt;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("Check_LevelTypeInt", IsNullable = true)]
+        public CheckLevelType? CheckLevelTypeInt
+        {
+            get { 
+            	return this.checkLevelTypeInt; 
+            }
+            set { 
+            	this.checkLevelTypeInt = value; 
+            }
+        }
+		private CheckLevelType? checkLevelTypeString;
+
+		/// <summary>
+		/// #EnumType:CheckLevelType#level
+		/// </summary>
+		/// <value></value>
+		[DataField("Check_LevelTypeString", IsNullable = true, DBType = "varchar")]
+        public CheckLevelType? CheckLevelTypeString
+        {
+            get { 
+            	return this.checkLevelTypeString; 
+            }
+            set { 
+            	this.checkLevelTypeString = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
     [DataTable("Te_User")]
     public partial class TeUser : DataTableEntity
     {

@@ -11,8 +11,30 @@ namespace Light.Data
 	/// 枚举查询器
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class LEnumerable<T> : IEnumerable where T : class, new()
+	public class LEnumerable<T> : IEnumerable<T> where T : class, new()
 	{
+		#region IEnumerable implementation
+
+		public IEnumerator<T> GetEnumerator ()
+		{
+			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator () as IEnumerator<T>;
+		}
+
+		#endregion
+
+		#region IEnumerable implementation
+
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
+		}
+
+		#endregion
+
+		
+
+		
+
 		DataEntityMapping _mapping = null;
 
 		internal DataEntityMapping Mapping {
@@ -51,10 +73,15 @@ namespace Light.Data
 
 		#region IEnumerable 成员
 
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
-		}
+//		public IEnumerator<T> GetEnumerator ()
+//		{
+//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator () as IEnumerator<T>;
+//		}
+
+//		IEnumerator IEnumerable.GetEnumerator ()
+//		{
+//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
+//		}
 
 		#endregion
 
@@ -880,8 +907,20 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public int Insert<K> ()
 		{
-			return Insert<K> (null);
+			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+			return insertor.Execute ();
 		}
+
+//		/// <summary>
+//		/// Insert this instance.
+//		/// </summary>
+//		/// <typeparam name="K">The 1st type parameter.</typeparam>
+//		public int InsertWithOutIdentity<K> ()
+//		{
+//			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+//			insertor.WithOutIdentity ();
+//			return insertor.Execute ();
+//		}
 
 		/// <summary>
 		/// Update the specified updates.

@@ -2,6 +2,9 @@
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Select insertor.
+	/// </summary>
 	public class SelectInsertor
 	{
 		OrderExpression _order;
@@ -18,6 +21,8 @@ namespace Light.Data
 
 		DataContext _context;
 
+//		bool _withoutIdentity = false;
+
 		internal SelectInsertor (DataContext context, Type insertType, Type selectType, QueryExpression query, OrderExpression order)
 		{
 			if (context == null)
@@ -33,6 +38,26 @@ namespace Light.Data
 			this._order = order;
 		}
 
+//		/// <summary>
+//		/// Withs the out identity.
+//		/// </summary>
+//		/// <returns>The out identity.</returns>
+//		public SelectInsertor WithOutIdentity ()
+//		{
+//			_withoutIdentity = true;
+//			return this;
+//		}
+//
+//		/// <summary>
+//		/// Withs the identity.
+//		/// </summary>
+//		/// <returns>The identity.</returns>
+//		public SelectInsertor WithIdentity ()
+//		{
+//			_withoutIdentity = false;
+//			return this;
+//		}
+//
 		/// <summary>
 		/// reset where expression.
 		/// </summary>
@@ -128,18 +153,31 @@ namespace Light.Data
 			return this;
 		}
 
+		/// <summary>
+		/// Sets the insert field.
+		/// </summary>
+		/// <returns>The insert field.</returns>
+		/// <param name="infos">Infos.</param>
 		public SelectInsertor SetInsertField (params DataFieldInfo[] infos)
 		{
 			this._insertFields = infos;
 			return this;
 		}
 
+		/// <summary>
+		/// Sets the select field.
+		/// </summary>
+		/// <returns>The select field.</returns>
+		/// <param name="infos">Infos.</param>
 		public SelectInsertor SetSelectField (params SelectFieldInfo[] infos)
 		{
 			this._selectFields = infos;
 			return this;
 		}
 
+		/// <summary>
+		/// Execute this instance.
+		/// </summary>
 		public int Execute ()
 		{
 			return this._context.SelectInsert (_insertType, _insertFields, _selectType, _selectFields, _query, _order);

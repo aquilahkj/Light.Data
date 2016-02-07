@@ -16,7 +16,7 @@ namespace Light.Data
 		{
 			if (entityMapping == null)
 				throw new ArgumentNullException ("entityMapping");
-			foreach (DataFieldMapping fieldMapping in entityMapping.GetFieldMappings()) {
+			foreach (DataFieldMapping fieldMapping in entityMapping.FieldMappings) {
 				if (fieldMapping != null) {
 					DataFieldInfo info = new DataFieldInfo (fieldMapping);
 					this.infoList [info.FieldName] = info;

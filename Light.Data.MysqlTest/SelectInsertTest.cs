@@ -187,7 +187,63 @@ namespace Light.Data.MysqlTest
 
 		}
 
+		[Test ()]
+		public void TestCase_IdentityInsert ()
+		{
+			InitialDataLogTable (3);
+			List<TeDataLog> listEx;
+			List<TeDataLogHistory2> listAc;
+			List<TeDataLogHistory> listAce;
+			List<TeDataLog> listTemp;
 
+			context.TruncateTable<TeDataLogHistory2> ();
+			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory2> ();
+			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory2> ();
+			listTemp = context.LQuery<TeDataLog> ().ToList ();
+			listEx = new List<TeDataLog> ();
+			listEx.AddRange (listTemp);
+			listTemp = context.LQuery<TeDataLog> ().ToList ();
+			listTemp.ForEach (x => {
+				x.Id += listTemp.Count;
+			});
+			listEx.AddRange (listTemp);
+			listAc = context.LQuery<TeDataLogHistory2> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
+
+			context.TruncateTable<TeDataLogHistory2> ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory2> ().Execute ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory2> ().Execute ();
+			listTemp = context.LQuery<TeDataLog> ().ToList ();
+			listEx = new List<TeDataLog> ();
+			listEx.AddRange (listTemp);
+			listTemp = context.LQuery<TeDataLog> ().ToList ();
+			listTemp.ForEach (x => {
+				x.Id += listTemp.Count;
+			});
+			listEx.AddRange (listTemp);
+			listAc = context.LQuery<TeDataLogHistory2> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
+			}
+
+			context.TruncateTable<TeDataLogHistory> ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Execute ();
+			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Execute ();
+			listTemp = context.LQuery<TeDataLog> ().ToList ();
+			listEx = new List<TeDataLog> ();
+			listEx.AddRange (listTemp);
+			listTemp = context.LQuery<TeDataLog> ().ToList ();
+			listEx.AddRange (listTemp);
+			listAce = context.LQuery<TeDataLogHistory> ().ToList ();
+			Assert.AreEqual (listEx.Count, listAce.Count);
+			for (int i = 0; i < listEx.Count; i++) {
+				Assert.IsTrue (EqualLog (listEx [i], listAce [i]));
+			}
+		}
 	}
 }
 

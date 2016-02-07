@@ -98,47 +98,23 @@ namespace Light.Data
 		{
 			List<DataParameter> paramList = new List<DataParameter> ();
 			foreach (DataFieldMapping field in mappings) {
-				PrimitiveFieldMapping primitiveFieldMapping = field as PrimitiveFieldMapping;
-				if (primitiveFieldMapping != null) {
-					object obj = primitiveFieldMapping.Handler.Get (source);
-//					if (primitiveFieldMapping.SpecifiedHandler != null) {
-//						bool hasdata = Convert.ToBoolean (primitiveFieldMapping.SpecifiedHandler.Get (source));
-//						if (!hasdata) {
-//							obj = null;
-//						}
-//					}
-//					if (obj == null && !primitiveFieldMapping.IsNullable) {
-//						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, primitiveFieldMapping.Name));
-//					}
-					DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
-					paramList.Add (dataParameter);
-					continue;
-				}
-				EnumFieldMapping enumFieldMapping = field as EnumFieldMapping;
-				if (enumFieldMapping != null) {
-					object obj = enumFieldMapping.Handler.Get (source);
-//					if (enumFieldMapping.SpecifiedHandler != null) {
-//						bool hasdata = Convert.ToBoolean (enumFieldMapping.SpecifiedHandler.Get (source));
-//						if (!hasdata) {
-//							obj = null;
-//						}
-//					}
-//					if (obj == null && !enumFieldMapping.IsNullable) {
-//						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, enumFieldMapping.Name));
-//					}
-					DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
-					paramList.Add (dataParameter);
-					continue;
-				}
-//				else if (field is ComplexFieldMapping) {
-//					ComplexFieldMapping complexFieldMapping = field as ComplexFieldMapping;
-//					object obj = complexFieldMapping.Handler.Get (source);
-//					if (obj == null) {
-//						throw new LightDataException (string.Format (RE.DataValueIsNotAllowEmply, complexFieldMapping.Name));
-//					}
-//					List<DataParameter> subParamList = GetDataParameters (complexFieldMapping.GetFieldMappings (), obj);
-//					paramList.AddRange (subParamList);
+//				PrimitiveFieldMapping primitiveFieldMapping = field as PrimitiveFieldMapping;
+//				if (primitiveFieldMapping != null) {
+//					object obj = primitiveFieldMapping.Handler.Get (source);
+//					DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
+//					paramList.Add (dataParameter);
+//					continue;
 //				}
+//				EnumFieldMapping enumFieldMapping = field as EnumFieldMapping;
+//				if (enumFieldMapping != null) {
+//					object obj = enumFieldMapping.Handler.Get (source);
+//					DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
+//					paramList.Add (dataParameter);
+//					continue;
+//				}
+				object obj = field.Handler.Get (source);
+				DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
+				paramList.Add (dataParameter);
 			}
 			return paramList;
 		}
@@ -151,12 +127,12 @@ namespace Light.Data
 		public virtual CommandData CreateInsertCommand (object entity)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
-			List<FieldMapping> fields = new List<FieldMapping> ();
-			fields.AddRange (mapping.GetFieldMappings ());
-			if (mapping.IdentityField != null) {
-				fields.Remove (mapping.IdentityField);
-			}
-			List<DataParameter> paramList = GetDataParameters (fields, entity);
+//			List<FieldMapping> fields = new List<FieldMapping> ();
+//			fields.AddRange (mapping.GetFieldMappings ());
+//			if (mapping.IdentityField != null) {
+//				fields.Remove (mapping.IdentityField);
+//			}
+			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, entity);
 			string[] insertList = new string[paramList.Count];
 			string[] valuesList = new string[paramList.Count];
 			int index = 0;
@@ -183,37 +159,62 @@ namespace Light.Data
 		public virtual CommandData CreateUpdateCommand (object entity, string[] updatefieldNames)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
-			if (mapping.PrimaryKeyFields == null || mapping.PrimaryKeyFields.Length == 0) {
+//			if (mapping.PrimaryKeyFields == null || mapping.PrimaryKeyFields.Length == 0) {
+//				throw new LightDataException (RE.PrimaryKeyIsNotExist);
+//			}
+			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
 
-			List<FieldMapping> fields = null;
+//			List<FieldMapping> fields = null;
+//
+//			if (updatefieldNames != null && updatefieldNames.Length > 0) {
+//				List<FieldMapping> updateFields = new List<FieldMapping> ();
+//				foreach (string name in updatefieldNames) {
+//					FieldMapping fm = mapping.FindFieldMapping (name);
+//
+//					if (fm != null && !updateFields.Contains (fm)) {
+//						updateFields.Add (fm);
+//					}
+//				}
+//				fields = updateFields;
+//			}
+//
+//			if (fields == null) {
+//				fields = new List<FieldMapping> ();
+//				fields.AddRange (mapping.GetFieldMappings ());
+//			}
+//
+//			if (mapping.IdentityField != null) {
+//				fields.Remove (mapping.IdentityField);
+//			}
+//			foreach (DataFieldMapping primaryField in mapping.PrimaryKeyFields) {
+//				fields.Remove (primaryField);
+//			}
+			IEnumerable<FieldMapping> columnFields;
 
 			if (updatefieldNames != null && updatefieldNames.Length > 0) {
 				List<FieldMapping> updateFields = new List<FieldMapping> ();
 				foreach (string name in updatefieldNames) {
 					FieldMapping fm = mapping.FindFieldMapping (name);
-
-					if (fm != null && !updateFields.Contains (fm)) {
+					if (fm == null) {
+						continue;
+					}
+					PrimitiveFieldMapping pfm = fm as PrimitiveFieldMapping;
+					if (pfm != null && pfm.IsPrimaryKey) {
+						continue;
+					}
+					if (!updateFields.Contains (fm)) {
 						updateFields.Add (fm);
 					}
 				}
-				fields = updateFields;
+				columnFields = updateFields;
+			}
+			else {
+				columnFields = mapping.NoPrimaryKeyFields;
 			}
 
-			if (fields == null) {
-				fields = new List<FieldMapping> ();
-				fields.AddRange (mapping.GetFieldMappings ());
-			}
-
-			if (mapping.IdentityField != null) {
-				fields.Remove (mapping.IdentityField);
-			}
-			foreach (DataFieldMapping primaryField in mapping.PrimaryKeyFields) {
-				fields.Remove (primaryField);
-			}
-
-			List<DataParameter> columnList = GetDataParameters (fields, entity);
+			List<DataParameter> columnList = GetDataParameters (columnFields, entity);
 			List<DataParameter> primaryList = GetDataParameters (mapping.PrimaryKeyFields, entity);
 			if (columnList.Count == 0) {
 				throw new LightDataException (RE.UpdateFieldIsNotExists);
@@ -254,7 +255,10 @@ namespace Light.Data
 		public virtual CommandData CreateDeleteCommand (object entity)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
-			if (mapping.PrimaryKeyFields == null || mapping.PrimaryKeyFields.Length == 0) {
+//			if (mapping.PrimaryKeyFields == null || mapping.PrimaryKeyFields.Length == 0) {
+//				throw new LightDataException (RE.PrimaryKeyIsNotExist);
+//			}
+			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
 			List<DataParameter> primaryList = GetDataParameters (mapping.PrimaryKeyFields, entity);
@@ -275,7 +279,10 @@ namespace Light.Data
 		public virtual CommandData CreateEntityExistsCommand (object entity)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
-			if (mapping.PrimaryKeyFields == null || mapping.PrimaryKeyFields.Length == 0) {
+//			if (mapping.PrimaryKeyFields == null || mapping.PrimaryKeyFields.Length == 0) {
+//				throw new LightDataException (RE.PrimaryKeyIsNotExist);
+//			}
+			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
 			List<DataParameter> primaryList = GetDataParameters (mapping.PrimaryKeyFields, entity);
@@ -315,17 +322,15 @@ namespace Light.Data
 		//			return string.Join (",", values);
 		//		}
 
-		public virtual string GetSelectString (DataEntityMapping mapping)
-		{
-//			int count;
-//			return GetSelectString (mapping, out count);
-			string[] names = mapping.GetFieldNames ();
-//			string[] values = new string[names.Length];
-			for (int i = 0; i < names.Length; i++) {
-				names [i] = CreateDataFieldSql (names [i]);
-			}
-			return string.Join (",", names);
-		}
+		//		public virtual string GetSelectString (DataEntityMapping mapping)
+		//		{
+		//			string[] names = mapping.GetFieldNames ();
+		////			string[] values = new string[names.Length];
+		//			for (int i = 0; i < names.Length; i++) {
+		//				names [i] = CreateDataFieldSql (names [i]);
+		//			}
+		//			return string.Join (",", names);
+		//		}
 
 		public virtual string GetQueryString (QueryExpression query, out DataParameter[] parameters, bool fullFieldName = false)
 		{
@@ -344,9 +349,10 @@ namespace Light.Data
 			if (having != null) {
 				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
 					string alias = null;
-					if (obj is AggregateFunction) {
+					AggregateFunction aggregateFunction = obj as AggregateFunction;
+					if (!Object.Equals (aggregateFunction, null)) {
 						foreach (AggregateFunctionInfo info in functions) {
-							if (Object.ReferenceEquals (obj, info.Function)) {
+							if (Object.ReferenceEquals (aggregateFunction, info.Function)) {
 								alias = info.Name;
 							}
 						}
@@ -431,8 +437,15 @@ namespace Light.Data
 			if (region != null && !_canInnerPage) {
 				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
 			}
-			string select = GetSelectString (mapping);
-			return this.CreateSelectBaseCommand (mapping, select, query, order, region);
+//			string select = GetSelectString (mapping);
+			string[] fieldNames = new string[mapping.FieldCount];
+			int i = 0;
+			foreach (FieldMapping field in mapping.FieldMappings) {
+				fieldNames [i] = CreateDataFieldSql (field.Name);
+				i++;
+			}
+			string selectString = string.Join (",", fieldNames);
+			return this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
 		}
 
 		public virtual CommandData CreateSelectSingleFieldCommand (DataFieldInfo fieldinfo, QueryExpression query, OrderExpression order, bool distinct, Region region)
@@ -647,28 +660,49 @@ namespace Light.Data
 		public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertMapping, DataFieldInfo[] insertFields, DataTableEntityMapping selectMapping, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
 		{
 			StringBuilder sql = new StringBuilder ();
-			string insert = null;
-			string select = null;
+			string insertString = null;
+			string selectString = null;
 			int insertCount;
+			bool noidentity = false;
 			FieldMapping[] insertFieldMappings;
 			if (insertFields != null && insertFields.Length > 0) {
 				insertFieldMappings = new FieldMapping[insertFields.Length];
-				insertCount = insertFields.Length;
-				string[] insertFieldNames = new string[insertFields.Length];
+				string[] fieldNames = new string[insertFields.Length];
 				for (int i = 0; i < insertFields.Length; i++) {
 					DataFieldInfo info = insertFields [i];
 					if (!insertMapping.Equals (info.TableMapping)) {
 						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 					}
 					insertFieldMappings [i] = info.DataField;
-					insertFieldNames [i] = info.CreateDataFieldSql (this);
+					fieldNames [i] = info.CreateDataFieldSql (this);
 				}
-				insert = string.Join (",", insertFieldNames);
+				insertCount = fieldNames.Length;
+				insertString = string.Join (",", fieldNames);
+			}
+			else if (insertMapping.HasIdentity && selectMapping.HasIdentity && insertMapping.IdentityField.DataOrder == selectMapping.IdentityField.DataOrder) {
+				insertFieldMappings = new FieldMapping[insertMapping.FieldCount - 1];
+				string[] fieldNames = new string[insertMapping.FieldCount - 1];
+				int i = 0;
+				foreach (DataFieldMapping field in insertMapping.NoIdentityFields) {
+					insertFieldMappings [i] = field;
+					fieldNames [i] = CreateDataFieldSql (field.Name);
+					i++;
+				}
+				insertCount = fieldNames.Length;
+				insertString = string.Join (",", fieldNames);
+				noidentity = true;
 			}
 			else {
-				insertFieldMappings = insertMapping.GetFieldMappings ();
-				insertCount = insertMapping.FieldCount;
-				insert = GetSelectString (insertMapping);
+				insertFieldMappings = new FieldMapping[insertMapping.FieldCount];
+				string[] fieldNames = new string[insertMapping.FieldCount];
+				int i = 0;
+				foreach (FieldMapping field in insertMapping.FieldMappings) {
+					insertFieldMappings [i] = field;
+					fieldNames [i] = CreateDataFieldSql (field.Name);
+					i++;
+				}
+				insertCount = fieldNames.Length;
+				insertString = string.Join (",", fieldNames);
 			}
 
 			List<DataParameter> totalParameters = new List<DataParameter> ();
@@ -701,20 +735,38 @@ namespace Light.Data
 						totalParameters.Add (dp);
 					}
 				}
-				select = string.Join (",", selectFieldNames);
+				selectString = string.Join (",", selectFieldNames);
+			}
+			else if (noidentity) {
+				if (selectMapping.FieldCount - 1 != insertCount) {
+					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
+				}
+				string[] fieldNames = new string[selectMapping.FieldCount - 1];
+				int i = 0;
+				foreach (DataFieldMapping field in selectMapping.NoIdentityFields) {
+					fieldNames [i] = CreateDataFieldSql (field.Name);
+					i++;
+				}
+				selectString = string.Join (",", fieldNames);
 			}
 			else {
 				if (selectMapping.FieldCount != insertCount) {
 					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
 				}
-				select = GetSelectString (selectMapping);
+				string[] fieldNames = new string[insertCount];
+				int i = 0;
+				foreach (FieldMapping field in selectMapping.FieldMappings) {
+					fieldNames [i] = CreateDataFieldSql (field.Name);
+					i++;
+				}
+				selectString = string.Join (",", fieldNames);
 			}
 
 			DataParameter[] parameters;
 			string queryString = GetQueryString (query, out parameters);
 			string orderString = GetOrderString (order);
-			sql.AppendFormat ("insert into {0}({1})", CreateDataTableSql (insertMapping.TableName), insert);
-			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (selectMapping.TableName));
+			sql.AppendFormat ("insert into {0}({1})", CreateDataTableSql (insertMapping.TableName), insertString);
+			sql.AppendFormat ("select {0} from {1}", selectString, CreateDataTableSql (selectMapping.TableName));
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
 			}
@@ -841,13 +893,14 @@ namespace Light.Data
 			}
 			object tmpEntity = entitys.GetValue (0);
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
-			List<FieldMapping> fields = new List<FieldMapping> ();
 			int totalCount = entitys.Length;
-			fields.AddRange (mapping.GetFieldMappings ());
-			if (mapping.IdentityField != null) {
-				fields.Remove (mapping.IdentityField);
-			}
-			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
+//			List<FieldMapping> fields = new List<FieldMapping> ();
+//			
+//			fields.AddRange (mapping.GetFieldMappings ());
+//			if (mapping.IdentityField != null) {
+//				fields.Remove (mapping.IdentityField);
+//			}
+			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, tmpEntity);
 			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
 				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
@@ -863,7 +916,7 @@ namespace Light.Data
 			List<CommandData> commands = new List<CommandData> ();
 			int i = 0;
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = i == 0 ? paramList : GetDataParameters (fields, entity);
+				List<DataParameter> entityParams = i == 0 ? paramList : GetDataParameters (mapping.NoIdentityFields, entity);
 				string[] valueList = new string[paramList.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
