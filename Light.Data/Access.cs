@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data.OleDb;
 using System.Data;
-using System.Text.RegularExpressions;
+using System.Data.OleDb;
 
 namespace Light.Data
 {
@@ -78,11 +75,11 @@ namespace Light.Data
 
 		#endregion
 
-		bool ParseOleDbType (string dbType, out OleDbType type)
+		static bool ParseOleDbType (string dbType, out OleDbType type)
 		{
 			type = OleDbType.VarChar;
 			int index = dbType.IndexOf ('(');
-			string typeString = string.Empty;
+			string typeString;
 			if (index < 0) {
 				typeString = dbType;
 			}

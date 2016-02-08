@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,16 +9,9 @@ namespace Light.Data
 	{
 		byte _roundScale = 8;
 
-		Regex _roundCaptureRegex = null;
+		Regex _roundCaptureRegex;
 
-		Regex _roundReplaceRegex = null;
-
-		//		public OracleCommandFactory (Database database)
-		//			: base (database)
-		//		{
-		//			_canInnerPage = true;
-		//			LoadRoundRegex ();
-		//		}
+		Regex _roundReplaceRegex;
 
 		public OracleCommandFactory ()
 		{
@@ -54,11 +46,6 @@ namespace Light.Data
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
 
-//			List<FieldMapping> fields = new List<FieldMapping> ();
-//			fields.AddRange (mapping.GetFieldMappings ());
-//			if (mapping.IdentityField != null) {
-//				fields.Remove (mapping.IdentityField);
-//			}
 			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, entity);
 
 			string[] insertList = new string[paramList.Count];
@@ -112,13 +99,6 @@ namespace Light.Data
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
 			int totalCount = entitys.Length;
-//			List<FieldMapping> fields = new List<FieldMapping> ();
-//
-//			fields.AddRange (mapping.GetFieldMappings ());
-//			if (mapping.IdentityField != null) {
-//				fields.Remove (mapping.IdentityField);
-//			}
-
 
 			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, tmpEntity);
 			List<string> insertList = new List<string> ();
@@ -192,9 +172,12 @@ namespace Light.Data
 			}
 		}
 
-		private string GetIndentitySeq (DataTableEntityMapping mapping)
+		private static string GetIndentitySeq (DataTableEntityMapping mapping)
 		{
-			string seq = null;
+			if (mapping.IdentityField == null) {
+				throw new LightDataException (RE.DataTableNotIdentityField);
+			}
+			string seq;
 			string oracleIdentity = mapping.ExtentParams ["OracleIdentitySeq"];
 			if (!string.IsNullOrEmpty (oracleIdentity)) {
 				seq = oracleIdentity;
@@ -212,14 +195,19 @@ namespace Light.Data
 			}
 
 			StringBuilder sql = new StringBuilder ();
-			DataParameter[] parameters;
-			string queryString = GetQueryString (query, out parameters);
-			string orderString = GetOrderString (order);
+			List<DataParameter> parameters = new List<DataParameter> ();
+			DataParameter[] queryparameters;
+			DataParameter[] orderparameters;
+			string queryString = GetQueryString (query, out queryparameters);
+			string orderString = GetOrderString (order, out orderparameters);
 
 			if (region.Start == 0 && orderString == null) {
 				sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					sql.AppendFormat (" {0}", queryString);
+					if (queryparameters != null) {
+						parameters.AddRange (queryparameters);
+					}
 					sql.AppendFormat (" and ROWNUM<={0}", region.Size);
 				}
 				else {
@@ -240,9 +228,15 @@ namespace Light.Data
 				innerSQL.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					innerSQL.AppendFormat (" {0}", queryString);
+					if (queryparameters != null) {
+						parameters.AddRange (queryparameters);
+					}
 				}
 				if (!string.IsNullOrEmpty (orderString)) {
 					innerSQL.AppendFormat (" {0}", orderString);
+					if (orderparameters != null) {
+						parameters.AddRange (orderparameters);
+					}
 				}
 				string tempRowNumber = CreateCustomFiledName ();
 				sql.AppendFormat ("select {4} from (select a.*,ROWNUM {3} from ({0})a where ROWNUM<={2})b where {3}>{1}",
@@ -291,7 +285,7 @@ namespace Light.Data
 			}
 			else {
 				string format1 = format.ToUpper ();
-				string sqlformat = null;
+				string sqlformat;
 				switch (format1) {
 				case "YMD":
 					sqlformat = "yyyymmdd";

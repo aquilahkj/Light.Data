@@ -668,7 +668,7 @@ namespace Light.Data
 		public List<K> ToList<K> () where K : class, new()
 		{
 			DataMapping mapping = DataMapping.GetMapping (typeof(K));
-			List<K> list = _context.QueryJoinDataList (mapping, _selector, _modelList, _query, _order, _region, _level) as List<K>;
+			List<K> list = _context.QueryJoinDataList<K> (mapping, _selector, _modelList, _query, _order, _region, _level);
 			return list;
 		}
 

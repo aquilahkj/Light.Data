@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -10,21 +8,19 @@ namespace Light.Data
 
 		#region 私有变量
 
-		protected string _dbType = null;
+		protected string _dbType;
 
-		protected bool _isNullable = false;
+		protected bool _isNullable;
 
-		protected Type _objectType = null;
+		protected Type _objectType;
 
-		protected string _name = null;
+		protected string _name;
 
-		protected string _indexName = null;
+		protected string _indexName;
 
-		protected DataMapping _typeMapping = null;
+		protected DataMapping _typeMapping;
 
-		protected PropertyHandler _handler = null;
-
-		//		protected object _defaultValue = null;
+		protected PropertyHandler _handler;
 
 		protected TypeCode _typeCode = TypeCode.Empty;
 

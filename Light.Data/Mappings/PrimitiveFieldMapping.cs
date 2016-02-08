@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -26,7 +24,7 @@ namespace Light.Data
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
 			if (type != typeof(string)) {
-				Type itemstype = System.Type.GetType ("System.Nullable`1");
+				Type itemstype = Type.GetType ("System.Nullable`1");
 				_nullableType = itemstype.MakeGenericType (type);
 			}
 			else {

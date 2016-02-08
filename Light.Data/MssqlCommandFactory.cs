@@ -41,9 +41,11 @@ namespace Light.Data
 			}
 
 			StringBuilder sql = new StringBuilder ();
-			DataParameter[] parameters;
-			string queryString = GetQueryString (query, out parameters);
-			string orderString = GetOrderString (order);
+			List<DataParameter> parameters = new List<DataParameter> ();
+			DataParameter[] queryparameters;
+			DataParameter[] orderparameters;
+			string queryString = GetQueryString (query, out queryparameters);
+			string orderString = GetOrderString (order, out orderparameters);
 			bool distinct = false;
 			if (customSelect.StartsWith ("distinct ", StringComparison.OrdinalIgnoreCase)) {
 				distinct = true;
@@ -53,9 +55,15 @@ namespace Light.Data
 				sql.AppendFormat ("select {3}top {2} {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Size, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					sql.AppendFormat (" {0}", queryString);
+					if (queryparameters != null) {
+						parameters.AddRange (queryparameters);
+					}
 				}
 				if (!string.IsNullOrEmpty (orderString)) {
 					sql.AppendFormat (" {0}", orderString);
+					if (orderparameters != null) {
+						parameters.AddRange (orderparameters);
+					}
 				}
 			}
 			else {
@@ -72,7 +80,7 @@ namespace Light.Data
 				sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
 					innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
 			}
-			CommandData command = new CommandData (sql.ToString (), parameters);
+			CommandData command = new CommandData (sql.ToString (), queryparameters);
 			command.TransParamName = true;
 			return command;
 		}

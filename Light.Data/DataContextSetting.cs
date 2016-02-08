@@ -10,7 +10,7 @@ namespace Light.Data
 			if (setting == null) {
 				throw new ArgumentException (RE.ConnectionSettingIsNotExists);
 			}
-			Type type = null;
+			Type type;
 			string connection = setting.ConnectionString;
 			string args = null;
 			int index = connection.IndexOf ("--extendparam:");
@@ -19,10 +19,10 @@ namespace Light.Data
 				connection = connection.Substring (0, index).Trim ();
 			}
 			if (!string.IsNullOrEmpty (setting.ProviderName)) {
-				type = System.Type.GetType (setting.ProviderName, throwOnError);
+				type = Type.GetType (setting.ProviderName, throwOnError);
 			}
 			else {
-				type = System.Type.GetType ("Light.Data.Mssql,Light.Data", throwOnError);
+				type = Type.GetType ("Light.Data.Mssql,Light.Data", throwOnError);
 			}
 			if (type == null) {
 				return null;

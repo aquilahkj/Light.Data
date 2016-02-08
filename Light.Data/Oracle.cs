@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.OracleClient;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
@@ -86,11 +83,11 @@ namespace Light.Data
 		#endregion
 
 
-		bool ParseOracleType (string dbType, out OracleType type)
+		private static bool ParseOracleType (string dbType, out OracleType type)
 		{
 			type = OracleType.VarChar;
 			int index = dbType.IndexOf ('(');
-			string typeString = string.Empty;
+			string typeString;
 			if (index < 0) {
 				typeString = dbType;
 			}

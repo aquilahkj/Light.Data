@@ -56,7 +56,7 @@ namespace Light.Data
 			}
 		}
 
-		bool transParamName = false;
+		bool transParamName;
 
 		public bool TransParamName {
 			get {

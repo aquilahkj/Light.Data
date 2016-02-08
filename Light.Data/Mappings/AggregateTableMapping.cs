@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
@@ -18,7 +16,7 @@ namespace Light.Data
 		public static AggregateTableMapping GetAggregateMapping (Type type)
 		{
 			Dictionary<Type, AggregateTableMapping> mappings = _defaultMapping;
-			AggregateTableMapping mapping = null;
+			AggregateTableMapping mapping;
 			if (!mappings.TryGetValue (type, out mapping)) {
 				lock (_synobj) {
 					if (!mappings.ContainsKey (type)) {
@@ -32,15 +30,12 @@ namespace Light.Data
 
 		private static AggregateTableMapping CreateMapping (Type type)
 		{
-//			Type relateType = null;
 			string extendParam = null;
-			AggregateTableMapping aggregateMapping = null;
+			AggregateTableMapping aggregateMapping;
 			IAggregateTableConfig config = ConfigManager.LoadAggregateTableConfig (type);
 			if (config != null) {
-//				relateType = config.RelateType;
 				extendParam = config.ExtendParams;
 			}
-//			aggregateMapping = new AggregateTableMapping (type, relateType);
 			aggregateMapping = new AggregateTableMapping (type);
 			aggregateMapping.ExtentParams = new ExtendParamsCollection (extendParam);
 			return aggregateMapping;
@@ -122,27 +117,9 @@ namespace Light.Data
 			return item;
 		}
 
-		//		private void LoadDataField (object source, IEnumerable<FieldMapping> fields, IDataReader datareader)
-		//		{
-		//			foreach (DataFieldMapping field in fields) {
-		//				if (field == null)
-		//					continue;
-		//				object obj = datareader [field.Name];
-		//				object value = field.ToProperty (obj);
-		//				if (!Object.Equals (value, null)) {
-		//					field.Handler.Set (source, value);
-		//				}
-		////				bool isnull = Object.Equals (obj, DBNull.Value);
-		////				if (!isnull) {
-		////					field.Handler.Set (source, field.ToProperty (obj));
-		////				}
-		//			}
-		//		}
-
 		public override object LoadData (DataContext context, DataRow datarow)
 		{
 			object item = Activator.CreateInstance (ObjectType);
-//			LoadDataField (item, this._fieldList, datarow);
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
@@ -154,27 +131,6 @@ namespace Light.Data
 			}
 			return item;
 		}
-
-		//		private void LoadDataField (object source, IEnumerable<FieldMapping> fields, DataRow datarow)
-		//		{
-		//			foreach (DataFieldMapping field in fields) {
-		//				if (field == null)
-		//					continue;
-		//				object obj = datarow [field.Name];
-		//				object value = field.ToProperty (obj);
-		//				if (!Object.Equals (value, null)) {
-		//					field.Handler.Set (source, value);
-		//				}
-		//
-		////				bool isnull = Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null);
-		////				if (!isnull) {
-		////					field.Handler.Set (source, field.ToProperty (obj));
-		////				}
-		////				else if (!field.IsNullable && field.IsString) {
-		////					field.Handler.Set (source, string.Empty);
-		////				}
-		//			}
-		//		}
 
 		public override object InitialData ()
 		{

@@ -149,14 +149,6 @@ namespace Light.Data
 		/// </summary>
 		public const string RandomOrderForbitCatch = "random order forbit catch";
 		/// <summary>
-		/// 取值范围数量值不合法
-		/// </summary>
-		public const string RegionSizeInvaild = "region size invaild";
-		/// <summary>
-		/// 取值范围开始值不合法
-		/// </summary>
-		public const string RegionStartInvaild = "region start invaild";
-		/// <summary>
 		/// 关联键值{0}并非原始数据字段
 		/// </summary>
 		public const string RelationKeyIsNotPrimitiveField = "relation key {0} is not primitive field";

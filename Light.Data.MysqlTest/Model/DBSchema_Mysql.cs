@@ -1779,6 +1779,145 @@ namespace Light.Data.MysqlTest
     }
 
     [Serializable]
+    [DataTable("Te_TagInfo")]
+    public partial class TeTagInfo : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo groupCodeField = DataFieldInfo<TeTagInfo>.Create("GroupCode");
+
+		static readonly DataFieldInfo tagCodeField = DataFieldInfo<TeTagInfo>.Create("TagCode");
+
+		static readonly DataFieldInfo tagNameField = DataFieldInfo<TeTagInfo>.Create("TagName");
+
+		static readonly DataFieldInfo remarkField = DataFieldInfo<TeTagInfo>.Create("Remark");
+
+		static readonly DataFieldInfo statusField = DataFieldInfo<TeTagInfo>.Create("Status");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo GroupCodeField
+        {
+            get {
+                return groupCodeField;
+            }
+        }
+
+		public static DataFieldInfo TagCodeField
+        {
+            get {
+                return tagCodeField;
+            }
+        }
+
+		public static DataFieldInfo TagNameField
+        {
+            get {
+                return tagNameField;
+            }
+        }
+
+		public static DataFieldInfo RemarkField
+        {
+            get {
+                return remarkField;
+            }
+        }
+
+		public static DataFieldInfo StatusField
+        {
+            get {
+                return statusField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private string groupCode;
+
+		/// <summary>
+		/// GroupCode
+		/// </summary>
+		/// <value></value>
+		[DataField("GroupCode", IsPrimaryKey = true)]
+        public string GroupCode
+        {
+            get { 
+            	return this.groupCode; 
+            }
+            set { 
+            	this.groupCode = value; 
+            }
+        }
+		private string tagCode;
+
+		/// <summary>
+		/// TagCode
+		/// </summary>
+		/// <value></value>
+		[DataField("TagCode", IsPrimaryKey = true)]
+        public string TagCode
+        {
+            get { 
+            	return this.tagCode; 
+            }
+            set { 
+            	this.tagCode = value; 
+            }
+        }
+		private string tagName;
+
+		/// <summary>
+		/// TagName
+		/// </summary>
+		/// <value></value>
+		[DataField("TagName")]
+        public string TagName
+        {
+            get { 
+            	return this.tagName; 
+            }
+            set { 
+            	this.tagName = value; 
+            }
+        }
+		private string remark;
+
+		/// <summary>
+		/// Remark
+		/// </summary>
+		/// <value></value>
+		[DataField("Remark", IsNullable = true)]
+        public string Remark
+        {
+            get { 
+            	return this.remark; 
+            }
+            set { 
+            	this.remark = value; 
+            }
+        }
+		private int status;
+
+		/// <summary>
+		/// Status
+		/// </summary>
+		/// <value></value>
+		[DataField("Status")]
+        public int Status
+        {
+            get { 
+            	return this.status; 
+            }
+            set { 
+            	this.status = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
     [DataTable("Te_User")]
     public partial class TeUser : DataTableEntity
     {

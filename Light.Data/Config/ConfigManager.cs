@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Light.Data
 {
@@ -9,18 +7,10 @@ namespace Light.Data
 	{
 		static readonly string SECTION_NAME = "LightDataConfig";
 
-		static LightDataConfig _lightDataConfig = null;
-
-		//        static Dictionary<Assembly, LightDataConfig> _assemblyConfig = new Dictionary<Assembly, LightDataConfig>();
+		static LightDataConfig _lightDataConfig ;
 
 		static ConfigManager ()
 		{
-//			Configurator configuator = null;
-			//if (DataContextConfiguration.CallingAssembly != null)
-			//{
-			//    configuator = Configurator.LoadConfiguratorFromAssembly(DataContextConfiguration.CallingAssembly, SECTION_NAME);
-			//}
-
 			LightDataConfig dataConfig = new LightDataConfig ();
 
 			Configurator systemConfiguator = Configurator.LoadConfiguratorFromSystemConfig (SECTION_NAME);

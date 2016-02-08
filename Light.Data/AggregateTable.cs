@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Light.Data
 {
@@ -12,15 +10,15 @@ namespace Light.Data
 	/// <typeparam name="T">要统计的表类型</typeparam>
 	public class AggregateTable<T> where T : class, new()
 	{
-		DataEntityMapping _enetityMapping = null;
+		DataEntityMapping _enetityMapping;
 
-		DataContext _context = null;
+		DataContext _context;
 
-		QueryExpression _query = null;
+		QueryExpression _query;
 
-		AggregateHavingExpression _having = null;
+		AggregateHavingExpression _having;
 
-		OrderExpression _order = null;
+		OrderExpression _order;
 
 		SafeLevel _level = SafeLevel.Default;
 
@@ -34,18 +32,18 @@ namespace Light.Data
 			_enetityMapping = DataMapping.GetEntityMapping (typeof(T));
 		}
 
-//		/// <summary>
-//		/// 重置条件语句
-//		/// </summary>
-//		/// <returns>统计表生成器</returns>
-//		public AggregateTable<T> Reset ()
-//		{
-//			_query = null;
-//			_order = null;
-//			_having = null;
-//			_level = SafeLevel.Default;
-//			return this;
-//		}
+		//		/// <summary>
+		//		/// 重置条件语句
+		//		/// </summary>
+		//		/// <returns>统计表生成器</returns>
+		//		public AggregateTable<T> Reset ()
+		//		{
+		//			_query = null;
+		//			_order = null;
+		//			_having = null;
+		//			_level = SafeLevel.Default;
+		//			return this;
+		//		}
 
 		/// <summary>
 		/// 生成统计表的DataTable
@@ -67,8 +65,7 @@ namespace Light.Data
 		{
 			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
 			List<AggregateFunctionInfo> functions = new List<AggregateFunctionInfo> (_aggregateFunctionDictionary.Values);
-			AggregateTableMapping aggregateMapping = AggregateTableMapping.GetAggregateMapping (typeof(K));
-			List<K> list = _context.QueryDynamicAggregateList (_enetityMapping, aggregateMapping, fields, functions, _query, _having, _order, _level) as List<K>;
+			List<K> list = _context.QueryDynamicAggregateList<K> (_enetityMapping, fields, functions, _query, _having, _order, _level);
 			return list;
 		}
 

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data.SqlClient;
 using System.Data;
-using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
@@ -82,11 +79,11 @@ namespace Light.Data
 
 		#endregion
 
-		bool ParseSqlDbType (string dbType, out SqlDbType type)
+		private static bool ParseSqlDbType (string dbType, out SqlDbType type)
 		{
 			type = SqlDbType.VarChar;
 			int index = dbType.IndexOf ('(');
-			string typeString = string.Empty;
+			string typeString;
 			if (index < 0) {
 				typeString = dbType;
 			}

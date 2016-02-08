@@ -38,26 +38,6 @@ namespace Light.Data
 			this._order = order;
 		}
 
-//		/// <summary>
-//		/// Withs the out identity.
-//		/// </summary>
-//		/// <returns>The out identity.</returns>
-//		public SelectInsertor WithOutIdentity ()
-//		{
-//			_withoutIdentity = true;
-//			return this;
-//		}
-//
-//		/// <summary>
-//		/// Withs the identity.
-//		/// </summary>
-//		/// <returns>The identity.</returns>
-//		public SelectInsertor WithIdentity ()
-//		{
-//			_withoutIdentity = false;
-//			return this;
-//		}
-//
 		/// <summary>
 		/// reset where expression.
 		/// </summary>

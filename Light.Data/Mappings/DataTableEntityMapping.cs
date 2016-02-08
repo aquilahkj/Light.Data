@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 
 namespace Light.Data
 {
@@ -69,17 +67,8 @@ namespace Light.Data
 			}
 		}
 
-		//		DataFieldMapping[] _primaryKeyFields;
-		//
-		//		public DataFieldMapping[] PrimaryKeyFields {
-		//			get {
-		//				return _primaryKeyFields;
-		//			}
-		//		}
-
 		void GetPrimaryKey ()
 		{
-//			List<PrimitiveFieldMapping> primaryKeys = new List<PrimitiveFieldMapping> ();
 			foreach (FieldMapping field in _fieldList) {
 				PrimitiveFieldMapping pfmapping = field as PrimitiveFieldMapping;
 				if (pfmapping != null) {
@@ -107,7 +96,6 @@ namespace Light.Data
 					_noPrimaryKeyFieldList.Add (mapping);
 				}
 			}
-//			_primaryKeyFields = primaryKeys.ToArray ();
 		}
 	}
 }

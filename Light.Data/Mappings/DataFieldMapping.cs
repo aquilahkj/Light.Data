@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Light.Data
@@ -17,7 +15,7 @@ namespace Light.Data
 				throw new LightDataException (RE.FieldNameIsInvalid);
 			}
 
-			DataFieldMapping fieldMapping = null;
+			DataFieldMapping fieldMapping;
 
 			bool isNullable = false;
 			string dbType = config.DBType;
@@ -70,7 +68,7 @@ namespace Light.Data
 				throw new LightDataException (RE.FieldNameIsInvalid);
 			}
 
-			DataFieldMapping fieldMapping = null;
+			DataFieldMapping fieldMapping;
 			string dbType = null;
 			bool isNullable = false;
 			if (type.IsGenericType) {
@@ -113,9 +111,9 @@ namespace Light.Data
 			return fieldMapping;
 		}
 
-		protected int? _dataOrder = null;
+		protected int? _dataOrder;
 
-		protected int _positionOrder = 0;
+		protected int _positionOrder;
 
 		public int? DataOrder {
 			get {

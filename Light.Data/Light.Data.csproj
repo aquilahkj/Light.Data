@@ -253,7 +253,6 @@
     <Compile Include="Mappings\IFieldCollection.cs" />
     <Compile Include="Mappings\PrimitiveFieldMapping.cs" />
     <Compile Include="Mappings\RelationFieldMapping.cs" />
-    <Compile Include="Mappings\SpecifiedFieldMapping.cs" />
     <Compile Include="Mssql.cs" />
     <Compile Include="Access.cs" />
     <Compile Include="MssqlCommandFactory.cs" />

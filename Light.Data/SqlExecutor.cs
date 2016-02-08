@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.Collections;
 
@@ -14,12 +13,12 @@ namespace Light.Data
 		/// <summary>
 		/// 数据库命令
 		/// </summary>
-		IDbCommand _command = null;
+		IDbCommand _command;
 
 		/// <summary>
 		/// 数据库上下文
 		/// </summary>
-		DataContext _context = null;
+		DataContext _context;
 
 		/// <summary>
 		/// 安全级别
@@ -137,9 +136,8 @@ namespace Light.Data
 		private List<T> QueryList<T> (Region region) where T : class, new()
 		{
 			List<T> list = new List<T> ();
-			foreach (T target in _context.QueryDataReader(DataMapping.GetMapping(typeof(T)), _command, region, _level)) {
-				list.Add (target);
-			}
+			IEnumerable<T> ie = _context.QueryDataMappingReader<T> (DataMapping.GetMapping (typeof(T)), _command, region, _level);
+			list.AddRange (ie);
 			return list;
 		}
 
@@ -187,7 +185,7 @@ namespace Light.Data
 				throw new ArgumentOutOfRangeException ("size");
 			}
 			Region region = new Region (start, size);
-			return QueryList<T> (region);
+			return Query<T> (region);
 		}
 
 		/// <summary>
@@ -198,7 +196,7 @@ namespace Light.Data
 		/// <returns>枚举数据</returns>
 		private IEnumerable<T> Query<T> (Region region) where T : class, new()
 		{
-			return _context.QueryDataReader (DataMapping.GetMapping (typeof(T)), _command, region, _level) as IEnumerable<T>;
+			return _context.QueryDataMappingReader<T> (DataMapping.GetMapping (typeof(T)), _command, region, _level);
 		}
 
 		/// <summary>

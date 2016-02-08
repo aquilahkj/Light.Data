@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -10,9 +7,9 @@ namespace Light.Data
 	/// </summary>
 	public class UpdateSetValue
 	{
-		DataFieldInfo _dataField = null;
+		readonly DataFieldInfo _dataField = null;
 
-		object _value = null;
+		readonly object _value = null;
 
 		/// <summary>
 		/// 构造函数
@@ -52,47 +49,5 @@ namespace Light.Data
 			DataParameter dataParameter = new DataParameter (pn, _dataField.DataField.ToColumn (_value), _dataField.DataField.DBType);
 			return dataParameter;
 		}
-
-		//static DataFieldInfo<T> ChangeType(DataFieldInfo dataField)
-		//{
-		//    if (Object.Equals(dataField, null))
-		//    {
-		//        return null;
-		//    }
-		//    else
-		//    {
-		//        DataFieldInfo<T> dataFiledT = dataField as DataFieldInfo<T>;
-		//        if (Object.Equals(dataFiledT, null))
-		//        {
-		//            throw new LightDataException(RE.UpdateFieldTypeIsError);
-		//        }
-		//        else
-		//        {
-		//            return dataFiledT;
-		//        }
-		//    }
-		//}
-
-
-		//public void Set(DataFieldInfo<T> dataField, object value)
-		//{
-		//    if (Object.Equals(dataField, null))
-		//    {
-		//        throw new ArgumentNullException("DataField");
-		//    }
-		//}
-
-		//public void Set(DataFieldInfo dataField, object value)
-		//{
-		//    if (Object.Equals(dataField, null))
-		//    {
-		//        throw new ArgumentNullException("DataField");
-		//    }
-		//    DataFieldInfo<T> dataFiledT = dataField as DataFieldInfo<T>;
-		//    if (Object.Equals(dataFiledT, null))
-		//    {
-		//        Type type = typeof(T);
-		//    }
-		//}
 	}
 }

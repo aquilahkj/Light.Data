@@ -15,9 +15,13 @@ namespace Light.Data
 	{
 		#region IEnumerable implementation
 
+		/// <summary>
+		/// Gets the enumerator.
+		/// </summary>
+		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator () as IEnumerator<T>;
+			return _context.QueryDataMappingEnumerable<T> (_mapping, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -26,14 +30,11 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryDataMappingEnumerable<T> (_mapping, _query, _order, _region, _level).GetEnumerator ();
+//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
-
-		
-
-		
 
 		DataEntityMapping _mapping = null;
 
@@ -73,32 +74,14 @@ namespace Light.Data
 
 		#region IEnumerable 成员
 
-//		public IEnumerator<T> GetEnumerator ()
-//		{
-//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator () as IEnumerator<T>;
-//		}
-
-//		IEnumerator IEnumerable.GetEnumerator ()
-//		{
-//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
-//		}
+		//		IEnumerator IEnumerable.GetEnumerator ()
+		//		{
+		//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
+		//		}
 
 		#endregion
 
 		#region LEnumerable<T> 成员
-
-		//		/// <summary>
-		//		/// 重置条件语句
-		//		/// </summary>
-		//		/// <returns> 枚举查询器</returns>
-		//		public LEnumerable<T> Reset ()
-		//		{
-		//			_query = null;
-		//			_order = null;
-		//			_region = null;
-		//			_level = SafeLevel.Default;
-		//			return this;
-		//		}
 
 		/// <summary>
 		/// reset where expression.
@@ -435,7 +418,7 @@ namespace Light.Data
 		/// <returns>数据对象</returns>
 		public T Single ()
 		{
-			return _context.SelectSingle (_mapping, _query, _order, 0, _level) as T;
+			return _context.SelectSingle<T> (_mapping, _query, _order, 0, _level);
 		}
 
 		/// <summary>
@@ -445,36 +428,36 @@ namespace Light.Data
 		/// <returns></returns>
 		public T ElementAt (int index)
 		{
-			return _context.SelectSingle (_mapping, _query, _order, index, _level) as T;
+			return _context.SelectSingle<T> (_mapping, _query, _order, index, _level);
 		}
 
-//		/// <summary>
-//		/// 批量删除
-//		/// </summary>
-//		/// <returns>受影响数据</returns>
-//		public int DeleteMass ()
-//		{
-//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
-//			if (dtMapping == null) {
-//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
-//			}
-//			return _context.DeleteMass (dtMapping, _query);
-//		}
-//
-//		/// <summary>
-//		/// 批量更新
-//		/// </summary>
-//		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
-//		/// <returns>受影响数据</returns>
-//		public int UpdateMass (UpdateSetValue[] updates)
-//		{
-//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
-//			if (dtMapping == null) {
-//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
-//			}
-//			return _context.UpdateMass (dtMapping, updates, _query);
-//		}
-//
+		//		/// <summary>
+		//		/// 批量删除
+		//		/// </summary>
+		//		/// <returns>受影响数据</returns>
+		//		public int DeleteMass ()
+		//		{
+		//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
+		//			if (dtMapping == null) {
+		//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
+		//			}
+		//			return _context.DeleteMass (dtMapping, _query);
+		//		}
+		//
+		//		/// <summary>
+		//		/// 批量更新
+		//		/// </summary>
+		//		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
+		//		/// <returns>受影响数据</returns>
+		//		public int UpdateMass (UpdateSetValue[] updates)
+		//		{
+		//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
+		//			if (dtMapping == null) {
+		//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
+		//			}
+		//			return _context.UpdateMass (dtMapping, updates, _query);
+		//		}
+		//
 
 		/// <summary>
 		/// 是否存在
@@ -596,14 +579,14 @@ namespace Light.Data
 			return QuerySingleFieldList<K> (fieldInfo, isDistinct).ToArray ();
 		}
 
-
 		/// <summary>
 		/// 转换为集合
 		/// </summary>
 		/// <returns>泛型集合</returns>
 		public List<T> ToList ()
 		{
-			return _context.QueryDataList (_mapping, _query, _order, _region, _level) as List<T>;
+//			return _context.QueryDataList (_mapping, _query, _order, _region, _level) as List<T>;
+			return _context.QueryDataList<T> (_query, _order, _region, _level);
 		}
 
 		/// <summary>
@@ -911,16 +894,16 @@ namespace Light.Data
 			return insertor.Execute ();
 		}
 
-//		/// <summary>
-//		/// Insert this instance.
-//		/// </summary>
-//		/// <typeparam name="K">The 1st type parameter.</typeparam>
-//		public int InsertWithOutIdentity<K> ()
-//		{
-//			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
-//			insertor.WithOutIdentity ();
-//			return insertor.Execute ();
-//		}
+		//		/// <summary>
+		//		/// Insert this instance.
+		//		/// </summary>
+		//		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		//		public int InsertWithOutIdentity<K> ()
+		//		{
+		//			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+		//			insertor.WithOutIdentity ();
+		//			return insertor.Execute ();
+		//		}
 
 		/// <summary>
 		/// Update the specified updates.
@@ -934,7 +917,7 @@ namespace Light.Data
 		/// <summary>
 		/// Delete this instance.
 		/// </summary>
-		public int Delete()
+		public int Delete ()
 		{
 			return _context.DeleteMass<T> (this._query);
 		}

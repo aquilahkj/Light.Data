@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections;
-using System.Text;
+using System.Collections.Generic;
 using System.Configuration;
-using System.Reflection;
 using System.Data;
 
 namespace Light.Data
@@ -139,7 +137,7 @@ namespace Light.Data
 		/// <summary>
 		/// 命令输出接口
 		/// </summary>
-		protected ICommandOutput output = null;
+		protected ICommandOutput output;
 
 		/// <summary>
 		/// Sets the commanf output.
@@ -348,14 +346,14 @@ namespace Light.Data
             where T : class, new()
 		{
 			DataTableEntityMapping rawmapping = DataMapping.GetTableMapping (typeof(T));
-			T obj = rawmapping.InitialData () as T;
+			object obj = rawmapping.InitialData ();
 			if (rawmapping.IsDataEntity) {
 				DataEntity data = obj as DataEntity;
 				if (data != null) {
 					data.SetContext (this);
 				}
 			}
-			return obj;
+			return obj as T;
 		}
 
 		/// <summary>
@@ -558,73 +556,8 @@ namespace Light.Data
 					results [i] = id--;
 				}
 			}
-
 			return results;
 		}
-
-		//		/// <summary>
-		//		/// Select into
-		//		/// </summary>
-		//		/// <returns>process result line</returns>
-		//		/// <param name="insertFields">Insert fields.</param>
-		//		/// <param name="selectFields">Select fields.</param>
-		//		/// <param name="query">Query Expression</param>
-		//		/// <param name="order">Order Expression</param>
-		//		/// <typeparam name="T">insert type parameter.</typeparam>
-		//		/// <typeparam name="K">select type parameter.</typeparam>
-		//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
-		//		{
-		//			return SelectInto (typeof(T), insertFields, typeof(K), selectFields, query, order);
-		//		}
-		//
-		//		/// <summary>
-		//		/// Selects the into.
-		//		/// </summary>
-		//		/// <returns>The into.</returns>
-		//		/// <typeparam name="T">insert type parameter.</typeparam>
-		//		/// <typeparam name="K">select type parameter.</typeparam>
-		//		public int SelectInto<T,K> ()
-		//		{
-		//			return SelectInto<T,K> (null, null, null, null);
-		//		}
-		//
-		//		/// <summary>
-		//		/// Selects the into.
-		//		/// </summary>
-		//		/// <returns>The into.</returns>
-		//		/// <param name="query">Query.</param>
-		//		/// <typeparam name="T">insert type parameter.</typeparam>
-		//		/// <typeparam name="K">select type parameter.</typeparam>
-		//		public int SelectInto<T,K> (QueryExpression query)
-		//		{
-		//			return SelectInto<T,K> (null, null, query, null);
-		//		}
-		//
-		//		/// <summary>
-		//		/// Selects the into.
-		//		/// </summary>
-		//		/// <returns>The into.</returns>
-		//		/// <param name="query">Query.</param>
-		//		/// <param name="order">Order.</param>
-		//		/// <typeparam name="T">insert type parameter.</typeparam>
-		//		/// <typeparam name="K">select type parameter.</typeparam>
-		//		public int SelectInto<T,K> (QueryExpression query, OrderExpression order)
-		//		{
-		//			return SelectInto<T,K> (null, null, query, order);
-		//		}
-		//
-		//		/// <summary>
-		//		/// Selects the into.
-		//		/// </summary>
-		//		/// <returns>The into.</returns>
-		//		/// <param name="insertFields">Insert fields.</param>
-		//		/// <param name="selectFields">Select fields.</param>
-		//		/// <typeparam name="T">insert type parameter.</typeparam>
-		//		/// <typeparam name="K">select type parameter.</typeparam>
-		//		public int SelectInto<T,K> (DataFieldInfo[] insertFields, DataFieldInfo[] selectFields)
-		//		{
-		//			return SelectInto<T,K> (insertFields, selectFields, null, null);
-		//		}
 
 		internal int SelectInsert (Type insertType, DataFieldInfo[] insertFields, Type selectType, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
 		{
@@ -657,28 +590,14 @@ namespace Light.Data
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
-			DataFieldInfo[] primaryKeyInfos = new DataFieldInfo[primaryKeys.Length];
 			QueryExpression query = null;
 			int i = 0;
 			foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
-				primaryKeyInfos [i] = new DataFieldInfo (fieldMapping);
-				if (i == 0) {
-					query = primaryKeyInfos [i] == primaryKeys [i];
-				}
-				else {
-					query = QueryExpression.And (query, primaryKeyInfos [i] == primaryKeys [i]);
-				}
+				DataFieldInfo info = new DataFieldInfo (fieldMapping);
+				query = QueryExpression.And (query, info == primaryKeys [i]);
+				i++;
 			}
-//			for (int i = 0; i < primaryKeys.Length; i++) {
-//				primaryKeyInfos [i] = new DataFieldInfo (mapping.PrimaryKeyFields [i]);
-//				if (i == 0) {
-//					query = primaryKeyInfos [i] == primaryKeys [i];
-//				}
-//				else {
-//					query = query & primaryKeyInfos [i] == primaryKeys [i];
-//				}
-//			}
-			return SelectSingle (mapping, query, null, 0, SafeLevel.None) as T;
+			return SelectSingle<T> (mapping, query, null, 0, SafeLevel.None);
 		}
 
 		/// <summary>
@@ -744,7 +663,7 @@ namespace Light.Data
 			}
 			DataFieldInfo idfield = new DataFieldInfo (dtmapping.IdentityField);
 			QueryExpression query = idfield == id;
-			return SelectSingle (dtmapping, query, null, 0, SafeLevel.None) as T;
+			return SelectSingle<T> (dtmapping, query, null, 0, SafeLevel.None);
 		}
 
 		/// <summary>
@@ -774,13 +693,30 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The table.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int TruncateTable<T> ()
+		public int TruncateTable<T> () 
+			where T : class, new()
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(T));
 			CommandData commandData = _dataBase.Factory.CreateTruncatCommand (mapping);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
+
+		//		/// <summary>
+		//		/// 生成数据查询枚举
+		//		/// </summary>
+		//		/// <param name="mapping">数据映射</param>
+		//		/// <param name="query">查询表达式</param>
+		//		/// <param name="order">排序表达式</param>
+		//		/// <param name="region">查询范围</param>
+		//		/// <param name="level">安全级别</param>
+		//		/// <returns>数据枚举</returns>
+		//		internal IEnumerable QueryDataEnumerable (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		//		{
+		//			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+		//			IDbCommand command = commandData.CreateCommand (_dataBase);
+		//			return QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
+		//		}
 
 		/// <summary>
 		/// 生成数据查询枚举
@@ -791,46 +727,80 @@ namespace Light.Data
 		/// <param name="region">查询范围</param>
 		/// <param name="level">安全级别</param>
 		/// <returns>数据枚举</returns>
-		internal IEnumerable QueryDataEnumerable (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable<T> QueryDataMappingEnumerable<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+			where T:class, new()
 		{
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
-			return QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
+			return QueryDataMappingReader<T> (mapping, command, !IsInnerPager ? region : null, level);
 		}
+
+		//		/// <summary>
+		//		/// 生成数据查询枚举
+		//		/// </summary>
+		//		/// <param name="mapping">数据映射</param>
+		//		/// <param name="query">查询表达式</param>
+		//		/// <param name="order">排序表达式</param>
+		//		/// <param name="region">查询范围</param>
+		//		/// <param name="level">安全级别</param>
+		//		/// <returns>数据集合</returns>
+		//		internal IList QueryDataList (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		//		{
+		//			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//				IList items = CreateList (mapping.ObjectType);
+		//				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
+		//				foreach (object obj in ie) {
+		//					items.Add (obj);
+		//				}
+		//				return items;
+		//			}
+		//		}
 
 		/// <summary>
 		/// 生成数据查询枚举
 		/// </summary>
-		/// <param name="mapping">数据映射</param>
 		/// <param name="query">查询表达式</param>
 		/// <param name="order">排序表达式</param>
 		/// <param name="region">查询范围</param>
 		/// <param name="level">安全级别</param>
 		/// <returns>数据集合</returns>
-		internal IList QueryDataList (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal List<T> QueryDataList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+			where T:class, new()
 		{
+			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof(T));
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IList items = CreateList (mapping.ObjectType);
-				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
-				foreach (object obj in ie) {
-					items.Add (obj);
-				}
-				return items;
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, !IsInnerPager ? region : null, level);
+				list.AddRange (ie);
 			}
+			return list;
 		}
 
-		internal IList QueryJoinDataList (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		//		internal IList QueryJoinDataList (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		//		{
+		//			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
+		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//				IList items = CreateList (mapping.ObjectType);
+		//				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
+		//				foreach (object obj in ie) {
+		//					items.Add (obj);
+		//				}
+		//				return items;
+		//			}
+		//		}
+
+		internal List<T> QueryJoinDataList<T> (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+			where T:class, new()
 		{
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
+			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IList items = CreateList (mapping.ObjectType);
-				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
-				foreach (object obj in ie) {
-					items.Add (obj);
-				}
-				return items;
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, !IsInnerPager ? region : null, level);
+				list.AddRange (ie);
 			}
+			return list;
 		}
 
 		/// <summary>
@@ -898,31 +868,28 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 动态统计数据到数据集合中
+		/// Queries the dynamic aggregate list.
 		/// </summary>
-		/// <param name="mapping">数据映射</param>
-		/// <param name="amapping">统计结果类型</param>
-		/// <param name="fields">统计字段信息</param>
-		/// <param name="functions">统计方法信息</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="having">统计查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>数据集合</returns>
-		internal IList QueryDynamicAggregateList (DataEntityMapping mapping, AggregateTableMapping amapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		/// <returns>The dynamic aggregate list.</returns>
+		/// <param name="mapping">Mapping.</param>
+		/// <param name="fields">Fields.</param>
+		/// <param name="functions">Functions.</param>
+		/// <param name="query">Query.</param>
+		/// <param name="having">Having.</param>
+		/// <param name="order">Order.</param>
+		/// <param name="level">Level.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+			where T:class, new()
 		{
-//			if (amapping.RelateType != null && amapping.RelateType != mapping.ObjectType) {
-//				throw new LightDataException (string.Format (RE.AggregateTypeIsNotSpecifyType, amapping.RelateType.FullName));
-//			}
+			AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof(T));
 			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
+			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IList items = CreateList (amapping.ObjectType);
-				IEnumerable ie = QueryDataReader (amapping, command, null, level);
-				foreach (object obj in ie) {
-					items.Add (obj);
-				}
-				return items;
+				IEnumerable<T> ie = QueryDataMappingReader<T> (amapping, command, null, level);
+				list.AddRange (ie);
 			}
+			return list;
 		}
 
 		/// <summary>
@@ -934,19 +901,42 @@ namespace Light.Data
 		/// <param name="index">数据索引</param>
 		/// <param name="level">安全级别</param>
 		/// <returns>数据对象</returns>
-		internal object SelectSingle (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		internal T SelectSingle<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+			where T:class, new()
 		{
-			object target = null;
+			T target = default(T);
 			Region region = new Region (index, 1);
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				//target = LExecuteReaderSingle(mapping, command, index, level);
-				foreach (object obj in QueryDataReader(mapping, command, region, level)) {
+				foreach (T obj in QueryDataMappingReader<T>(mapping, command, region, level)) {
 					target = obj;
 				}
 			}
 			return target;
 		}
+
+		//		/// <summary>
+		//		/// 获取查询单个数据
+		//		/// </summary>
+		//		/// <param name="mapping">数据对象映射表</param>
+		//		/// <param name="query">查询表达式</param>
+		//		/// <param name="order">排序表达式</param>
+		//		/// <param name="index">数据索引</param>
+		//		/// <param name="level">安全级别</param>
+		//		/// <returns>数据对象</returns>
+		//		internal object SelectSingle (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		//		{
+		//			object target = null;
+		//			Region region = new Region (index, 1);
+		//			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//				//target = LExecuteReaderSingle(mapping, command, index, level);
+		//				foreach (object obj in QueryDataReader(mapping, command, region, level)) {
+		//					target = obj;
+		//				}
+		//			}
+		//			return target;
+		//		}
 
 		/// <summary>
 		/// 统计行数
@@ -1274,6 +1264,48 @@ namespace Light.Data
 			}
 		}
 
+		internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level)
+			where T :class, new()
+		{
+			int start;
+			int size;
+			if (region != null) {
+				start = region.Start;
+				size = region.Size;
+			}
+			else {
+				start = 0;
+				size = int.MaxValue;
+			}
+			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
+				transaction.Open ();
+				transaction.SetupCommand (dbcommand);
+				OutputCommand ("QueryDataMappingReader", dbcommand, level, start, size);
+				using (IDataReader reader = dbcommand.ExecuteReader ()) {
+					int index = 0;
+					int count = 0;
+					bool over = false;
+					while (reader.Read ()) {
+						if (over) {
+							dbcommand.Cancel ();
+							break;
+						}
+						if (index >= start) {
+							count++;
+							object item = source.LoadData (this, reader);
+							if (count >= size) {
+								over = true;
+							}
+							yield return item as T;
+						}
+						index++;
+					}
+				}
+				transaction.Commit ();
+			}
+		}
+
+
 		#endregion
 
 		#region 基础方法
@@ -1497,7 +1529,7 @@ namespace Light.Data
 		private static IList CreateList (Type type)
 		{
 			IList items;
-			Type itemstype = System.Type.GetType ("System.Collections.Generic.List`1");
+			Type itemstype = Type.GetType ("System.Collections.Generic.List`1");
 			itemstype = itemstype.MakeGenericType (type);
 			items = (IList)Activator.CreateInstance (itemstype);
 			return items;

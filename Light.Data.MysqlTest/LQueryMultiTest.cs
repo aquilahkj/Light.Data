@@ -36,6 +36,34 @@ namespace Light.Data.MysqlTest
 		}
 
 		[Test ()]
+		public void TestCase_QueryDoubleKey ()
+		{
+			context.TruncateTable<TeTagInfo> ();
+			List<TeTagInfo> infos = new List<TeTagInfo> ();
+			for (int i = 1; i <= 10; i++) {
+				for (int j = 1; j <= 10; j++) {
+					TeTagInfo tag = new TeTagInfo (){ GroupCode = i.ToString(), TagCode = j.ToString(), TagName = "A" + i + "B" + j, Status = 1 };
+					infos.Add (tag);
+				}
+			}
+			context.BulkInsert (infos.ToArray ());
+			TeTagInfo info;
+
+			info = context.SelectSingleFromKey<TeTagInfo> ("2", "6");
+			Assert.IsNotNull (info);
+			Assert.AreEqual ("2", info.GroupCode);
+			Assert.AreEqual ("6", info.TagCode);
+
+			info = context.SelectSingleFromKey<TeTagInfo> ("9", "9");
+			Assert.IsNotNull (info);
+			Assert.AreEqual ("9", info.GroupCode);
+			Assert.AreEqual ("9", info.TagCode);
+
+			info = context.SelectSingleFromKey<TeTagInfo> ("11", "11");
+			Assert.IsNull (info);
+		}
+
+		[Test ()]
 		public void TeatCase_List_Array_Le ()
 		{
 			const int count = 57;

@@ -48,7 +48,7 @@ namespace Light.Data
 		/// <summary>
 		///  线程同步锁
 		/// </summary>
-		object synobj2 = new object ();
+//		object synobj2 = new object ();
 
 		/// <summary>
 		/// 关联数据储存
@@ -84,7 +84,7 @@ namespace Light.Data
 			}
 		}
 
-
+		/*
 		/// <summary>
 		/// 读取关联数据
 		/// </summary>
@@ -215,7 +215,7 @@ namespace Light.Data
 				}
 			}
 		}
-
+		*/
 		/// <summary>
 		/// 数据读取完成
 		/// </summary>
