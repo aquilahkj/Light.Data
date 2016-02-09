@@ -93,20 +93,15 @@ namespace Light.Data
 		public override object ToColumn (object value)
 		{
 			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
-				if (_defaultValue != null) {
-					return _defaultValue;
+				if (IsNullable) {
+					return null;
 				}
 				else {
-					if (IsNullable) {
-						return null;
+					if (_defaultValue != null) {
+						return _defaultValue;
 					}
 					else {
-						if (_enumType == EnumFieldType.EnumToString) {
-							return _minValue.ToString ();
-						}
-						else {
-							return _minValue;
-						}
+						return _minValue;
 					}
 				}
 			}

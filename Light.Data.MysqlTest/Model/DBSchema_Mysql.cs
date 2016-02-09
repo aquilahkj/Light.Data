@@ -762,6 +762,195 @@ namespace Light.Data.MysqlTest
     }
 
     [Serializable]
+    [DataTable("Te_CheckValue")]
+    public partial class TeCheckValue : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeCheckValue>.Create("Id");
+
+		static readonly DataFieldInfo checkIdField = DataFieldInfo<TeCheckValue>.Create("CheckId");
+
+		static readonly DataFieldInfo checkRateField = DataFieldInfo<TeCheckValue>.Create("CheckRate");
+
+		static readonly DataFieldInfo checkTimeField = DataFieldInfo<TeCheckValue>.Create("CheckTime");
+
+		static readonly DataFieldInfo checkDateField = DataFieldInfo<TeCheckValue>.Create("CheckDate");
+
+		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeCheckValue>.Create("CheckData");
+
+		static readonly DataFieldInfo checkLevelField = DataFieldInfo<TeCheckValue>.Create("CheckLevel");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo CheckIdField
+        {
+            get {
+                return checkIdField;
+            }
+        }
+
+		public static DataFieldInfo CheckRateField
+        {
+            get {
+                return checkRateField;
+            }
+        }
+
+		public static DataFieldInfo CheckTimeField
+        {
+            get {
+                return checkTimeField;
+            }
+        }
+
+		public static DataFieldInfo CheckDateField
+        {
+            get {
+                return checkDateField;
+            }
+        }
+
+		public static DataFieldInfo CheckDataField
+        {
+            get {
+                return checkDataField;
+            }
+        }
+
+		public static DataFieldInfo CheckLevelField
+        {
+            get {
+                return checkLevelField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int? checkId;
+
+		/// <summary>
+		/// CheckId
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckId", IsNullable = true)]
+        public int? CheckId
+        {
+            get { 
+            	return this.checkId; 
+            }
+            set { 
+            	this.checkId = value; 
+            }
+        }
+		private double? checkRate;
+
+		/// <summary>
+		/// CheckRate
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckRate", IsNullable = true)]
+        public double? CheckRate
+        {
+            get { 
+            	return this.checkRate; 
+            }
+            set { 
+            	this.checkRate = value; 
+            }
+        }
+		private DateTime? checkTime;
+
+		/// <summary>
+		/// CheckTime
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckTime", IsNullable = true)]
+        public DateTime? CheckTime
+        {
+            get { 
+            	return this.checkTime; 
+            }
+            set { 
+            	this.checkTime = value; 
+            }
+        }
+		private DateTime? checkDate;
+
+		/// <summary>
+		/// CheckDate
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckDate", IsNullable = true)]
+        public DateTime? CheckDate
+        {
+            get { 
+            	return this.checkDate; 
+            }
+            set { 
+            	this.checkDate = value; 
+            }
+        }
+		private string checkData;
+
+		/// <summary>
+		/// CheckData
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckData", IsNullable = true)]
+        public string CheckData
+        {
+            get { 
+            	return this.checkData; 
+            }
+            set { 
+            	this.checkData = value; 
+            }
+        }
+		private int? checkLevel;
+
+		/// <summary>
+		/// CheckLevel
+		/// </summary>
+		/// <value></value>
+		[DataField("CheckLevel", IsNullable = true)]
+        public int? CheckLevel
+        {
+            get { 
+            	return this.checkLevel; 
+            }
+            set { 
+            	this.checkLevel = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
     [DataTable("Te_DataLog")]
     public partial class TeDataLog : DataTableEntity
     {

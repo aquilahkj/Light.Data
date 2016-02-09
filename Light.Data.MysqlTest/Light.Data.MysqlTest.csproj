@@ -63,6 +63,8 @@
     <Compile Include="JoinTableOnTest.cs" />
     <Compile Include="TransContextTest.cs" />
     <Compile Include="SqlExecutorTest.cs" />
+    <Compile Include="Model\ExSchema.cs" />
+    <Compile Include="DefaultValueTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

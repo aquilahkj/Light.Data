@@ -20,6 +20,8 @@ namespace Light.Data
 	
 		readonly object _defaultValue = null;
 
+		readonly DefaultTimeFunction _defaultTimeFunction = null;
+
 		public PrimitiveFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue, bool isIdentity, bool isPrimaryKey)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
@@ -31,7 +33,11 @@ namespace Light.Data
 				_nullableType = type;
 			}
 			if (defaultValue != null) {
-				if (defaultValue.GetType () == type) {
+				Type defaultValueType = defaultValue.GetType ();
+				if (_typeCode == TypeCode.DateTime && defaultValueType == typeof(DefaultTime)) {
+					this._defaultTimeFunction = DefaultTimeFunction.GetFunction ((DefaultTime)defaultValue);
+				}
+				else if (defaultValueType == type) {
 					this._defaultValue = defaultValue;
 				}
 				else {
@@ -146,15 +152,23 @@ namespace Light.Data
 		public override object ToColumn (object value)
 		{
 			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
-				if (_defaultValue != null) {
-					return _defaultValue;
-				}
-				else if (IsNullable) {
+				if (IsNullable) {
 					return null;
 				}
 				else {
-					return _minValue;
+					if (_typeCode == TypeCode.DateTime && _defaultTimeFunction != null) {
+						return _defaultTimeFunction.GetValue ();
+					}
+					else if (_defaultValue != null) {
+						return _defaultValue;
+					}
+					else {
+						return _minValue;
+					}
 				}
+			}
+			else if (_typeCode == TypeCode.DateTime && Object.Equals (value, DateTime.MinValue) && _defaultTimeFunction != null) {
+				return this._defaultTimeFunction.GetValue ();
 			}
 			else {
 				if (ObjectType != null && value.GetType () != ObjectType) {

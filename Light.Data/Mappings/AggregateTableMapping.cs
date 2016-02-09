@@ -104,7 +104,6 @@ namespace Light.Data
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{
 			object item = Activator.CreateInstance (ObjectType);
-//			LoadDataField (item, this._fieldList, datareader);
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;

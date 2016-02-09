@@ -296,6 +296,8 @@
     <Compile Include="DataField\ConstantSelectFieldInfo.cs" />
     <Compile Include="DataField\EnumSelectFieldInfo.cs" />
     <Compile Include="SelectInsertor.cs" />
+    <Compile Include="Mappings\DefaultTimeFunction.cs" />
+    <Compile Include="Mappings\DefaultTime.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

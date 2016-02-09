@@ -17,17 +17,17 @@ namespace Light.Data
 
 			DataFieldMapping fieldMapping;
 
-			bool isNullable = false;
-			string dbType = config.DBType;
+//			bool isNullable = false;
+//			string dbType = config.DBType;
 			if (type.IsGenericType) {
 				Type frameType = type.GetGenericTypeDefinition ();
 				if (frameType.FullName == "System.Nullable`1") {
 					Type[] arguments = type.GetGenericArguments ();
 					type = arguments [0];
-					isNullable = true;
+//					isNullable = true;
 				}
 			}
-			isNullable = isNullable || config.IsNullable;
+//			isNullable = isNullable || config.IsNullable;
 			if (type.IsArray && type.FullName != "System.Byte[]") {
 				throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 			}
@@ -35,7 +35,7 @@ namespace Light.Data
 				throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 			}
 			else if (type.IsEnum) {
-				EnumFieldMapping enumFieldMapping = new EnumFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType, config.DefaultValue);
+				EnumFieldMapping enumFieldMapping = new EnumFieldMapping (type, fieldName, indexName, mapping, config.IsNullable, config.DBType, config.DefaultValue);
 				fieldMapping = enumFieldMapping;
 			}
 			else {
@@ -47,7 +47,7 @@ namespace Light.Data
 					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 				}
 				else {
-					PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType, config.DefaultValue, config.IsIdentity, config.IsPrimaryKey);
+					PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping (type, fieldName, indexName, mapping, config.IsNullable, config.DBType, config.DefaultValue, config.IsIdentity, config.IsPrimaryKey);
 					fieldMapping = primitiveFieldMapping;
 				}
 			}
@@ -115,7 +115,7 @@ namespace Light.Data
 
 		protected int _positionOrder;
 
-		protected int _fieldOreder;
+//		protected int _fieldOrder;
 
 		public int? DataOrder {
 			get {
@@ -129,11 +129,14 @@ namespace Light.Data
 			}
 		}
 
-		public int FieldOreder {
-			get {
-				return _fieldOreder;
-			}
-		}
+//		public int FieldOrder {
+//			get {
+//				return _fieldOrder;
+//			}
+//			internal set {
+//				_fieldOrder = value;
+//			}
+//		}
 
 		public PropertyHandler Handler {
 			get {

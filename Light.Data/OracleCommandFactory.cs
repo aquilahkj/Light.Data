@@ -46,7 +46,7 @@ namespace Light.Data
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
 
-			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, entity);
+			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
 
 			string[] insertList = new string[paramList.Count];
 			string[] valuesList = new string[paramList.Count];
@@ -100,7 +100,7 @@ namespace Light.Data
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
 			int totalCount = entitys.Length;
 
-			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, tmpEntity);
+			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
 			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
 				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
@@ -126,7 +126,7 @@ namespace Light.Data
 			List<CommandData> commands = new List<CommandData> ();
 
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = GetDataParameters (mapping.NoIdentityFields, entity);
+				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
 				string[] valueList = new string[entitys.Length];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {

@@ -56,6 +56,20 @@ namespace Light.Data
 			DataField = fieldMapping;
 		}
 
+		/// <summary>
+		/// Gets the position.
+		/// </summary>
+		/// <value>The position.</value>
+		public int Position {
+			get {
+				if (DataField != null) {
+					return DataField.PositionOrder;
+				}
+				else {
+					return -1;
+				}
+			}
+		}
 
 		/// <summary>
 		/// 等于
@@ -1144,6 +1158,7 @@ namespace Light.Data
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
+
 		#endregion
 
 		#region math operate long
@@ -1417,6 +1432,7 @@ namespace Light.Data
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
+
 		#endregion
 
 		#region math operate uint
@@ -1552,6 +1568,7 @@ namespace Light.Data
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
+
 		#endregion
 
 		#region math operate ulong
@@ -1825,6 +1842,7 @@ namespace Light.Data
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
+
 		#endregion
 
 		#region math operate float
@@ -1960,6 +1978,7 @@ namespace Light.Data
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
+
 		#endregion
 
 		#region math operate double
@@ -2095,6 +2114,7 @@ namespace Light.Data
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
+
 		#endregion
 
 		#region math operate decimal
@@ -2230,6 +2250,7 @@ namespace Light.Data
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
+
 		#endregion
 
 		private DataFieldInfo TransformMathCalculate (MathOperator opera, object value, bool forward)
@@ -2502,7 +2523,7 @@ namespace Light.Data
 			return exp;
 		}
 
-		internal virtual object ToParameter(object value)
+		internal virtual object ToParameter (object value)
 		{
 			return base.DataField.ToParameter (value);
 		}

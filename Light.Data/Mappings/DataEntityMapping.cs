@@ -97,55 +97,110 @@ namespace Light.Data
 		protected void InitialDataFieldMapping ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-			bool useOrder = false;
 			int index = 0;
+			List<FieldInfo> list = new List<FieldInfo> ();
 			foreach (PropertyInfo pi in propertys) {
 				//字段属性
 				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
 				if (config != null) {
 					index++;
-					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, index, this);
-
-					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
-					if (mapping.Name != mapping.IndexName) {
-						_fieldMappingDictionary.Add (mapping.Name, mapping);
-					}
-					_fieldList.Add (mapping);
-					if (mapping.DataOrder != null) {
-						useOrder = true;
-					}
+					FieldInfo info = new FieldInfo (pi, config, index);
+					list.Add (info);
 				}
 			}
-			if (_fieldList.Count == 0) {
+			if (list.Count == 0) {
 				throw new LightDataException (RE.DataFieldsIsNotExists);
 			}
-			if (useOrder) {
-				_fieldList.Sort ((x, y) => {
-					DataFieldMapping m1 = x as DataFieldMapping;
-					DataFieldMapping m2 = y as DataFieldMapping;
-					if (m1.DataOrder.HasValue && m2.DataOrder.HasValue) {
-						if (m1.DataOrder > m2.DataOrder) {
-							return  1;
-						}
-						else if (m1.DataOrder < m2.DataOrder) {
-							return -1;
-						}
-						else {
-							return m1.PositionOrder > m2.PositionOrder ? 1 : -1;
-						}
-					}
-					else if (m1.DataOrder.HasValue && !m2.DataOrder.HasValue) {
-						return  -1;
-					}
-					else if (!m1.DataOrder.HasValue && m2.DataOrder.HasValue) {
+			list.Sort ((x, y) => {
+				if (x.DataOrder.HasValue && y.DataOrder.HasValue) {
+					if (x.DataOrder > y.DataOrder) {
 						return  1;
 					}
-					else {
-						return m1.PositionOrder > m2.PositionOrder ? 1 : -1;
+					else if (x.DataOrder < y.DataOrder) {
+						return -1;
 					}
-				});
+					else {
+						return x.FieldOrder > y.FieldOrder ? 1 : -1;
+					}
+				}
+				else if (x.DataOrder.HasValue && !y.DataOrder.HasValue) {
+					return  -1;
+				}
+				else if (!x.DataOrder.HasValue && y.DataOrder.HasValue) {
+					return  1;
+				}
+				else {
+					return x.FieldOrder > y.FieldOrder ? 1 : -1;
+				}
+			});
+
+			for (int i = 0; i < list.Count; i++) {
+				FieldInfo info = list [i];
+				DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (info.Property, info.Config, i+1, this);
+				_fieldMappingDictionary.Add (mapping.IndexName, mapping);
+				if (mapping.Name != mapping.IndexName) {
+					_fieldMappingDictionary.Add (mapping.Name, mapping);
+				}
+				_fieldList.Add (mapping);
 			}
 		}
+
+//		protected void InitialDataFieldMapping ()
+//		{
+//			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
+//			bool useOrder = false;
+//			int index = 0;
+//			List<DataFieldMapping> list = new List<DataFieldMapping> ();
+//			foreach (PropertyInfo pi in propertys) {
+//				//字段属性
+//				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
+//				if (config != null) {
+//					index++;
+//					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, index, this);
+//
+//					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
+//					if (mapping.Name != mapping.IndexName) {
+//						_fieldMappingDictionary.Add (mapping.Name, mapping);
+//					}
+//					list.Add (mapping);
+//					if (mapping.DataOrder != null) {
+//						useOrder = true;
+//					}
+//				}
+//			}
+//			if (list.Count == 0) {
+//				throw new LightDataException (RE.DataFieldsIsNotExists);
+//			}
+//			if (useOrder) {
+//				list.Sort ((x, y) => {
+//					if (x.DataOrder.HasValue && y.DataOrder.HasValue) {
+//						if (x.DataOrder > y.DataOrder) {
+//							return  1;
+//						}
+//						else if (x.DataOrder < y.DataOrder) {
+//							return -1;
+//						}
+//						else {
+//							return x.PositionOrder > y.PositionOrder ? 1 : -1;
+//						}
+//					}
+//					else if (x.DataOrder.HasValue && !y.DataOrder.HasValue) {
+//						return  -1;
+//					}
+//					else if (!x.DataOrder.HasValue && y.DataOrder.HasValue) {
+//						return  1;
+//					}
+//					else {
+//						return x.PositionOrder > y.PositionOrder ? 1 : -1;
+//					}
+//				});
+//			}
+//
+//			for (int i = 0; i < list.Count; i++) {
+//				list [i].FieldOrder = i + 1;
+//			}
+//			_fieldList.AddRange (list);
+//		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{
@@ -163,7 +218,8 @@ namespace Light.Data
 					}
 				}
 				else {
-					object obj = field.DataOrder.HasValue ? datareader [field.DataOrder.Value] : datareader [field.Name];
+//					object obj = field.DataOrder.HasValue ? datareader [field.DataOrder.Value] : datareader [field.Name];
+					object obj = datareader [field.Name];
 					object value = field.ToProperty (obj);
 					if (!Object.Equals (value, null)) {
 						field.Handler.Set (item, value);
@@ -194,7 +250,8 @@ namespace Light.Data
 					}
 				}
 				else {
-					object obj = field.DataOrder.HasValue ? datarow [field.DataOrder.Value] : datarow [field.Name];
+//					object obj = field.DataOrder.HasValue ? datarow [field.DataOrder.Value] : datarow [field.Name];
+					object obj = datarow [field.Name];
 					object value = field.ToProperty (obj);
 					if (!Object.Equals (value, null)) {
 						field.Handler.Set (item, value);
@@ -256,5 +313,48 @@ namespace Light.Data
 		}
 
 		#endregion
+
+		class FieldInfo
+		{
+			public FieldInfo (PropertyInfo property, IDataFieldConfig config, int fieldOrder)
+			{
+				this.property = property;
+				this.config = config;
+				this.fieldOrder = fieldOrder;
+				this.dataOrder = config.DataOrder;
+			}
+
+			PropertyInfo property;
+
+			public PropertyInfo Property {
+				get {
+					return property;
+				}
+			}
+
+			IDataFieldConfig config;
+
+			public IDataFieldConfig Config {
+				get {
+					return config;
+				}
+			}
+
+			int? dataOrder;
+
+			public int? DataOrder {
+				get {
+					return dataOrder;
+				}
+			}
+
+			int fieldOrder;
+
+			public int FieldOrder {
+				get {
+					return fieldOrder;
+				}
+			}
+		}
 	}
 }

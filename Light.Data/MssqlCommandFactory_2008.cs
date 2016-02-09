@@ -29,7 +29,7 @@ namespace Light.Data
 //				fields.Remove (mapping.IdentityField);
 //			}
 
-			List<DataParameter> paramList = GetDataParameters (mapping.NoIdentityFields, tmpEntity);
+			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
 			List<string> insertList = new List<string> ();
 			foreach (DataParameter dataParameter in paramList) {
 				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
@@ -45,7 +45,7 @@ namespace Light.Data
 			List<DataParameter> dataParams = new List<DataParameter> ();
 			List<CommandData> commands = new List<CommandData> ();
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = GetDataParameters (mapping.NoIdentityFields, entity);
+				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
 				string[] valueList = new string[paramList.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
