@@ -485,13 +485,13 @@ namespace Light.Data
 			sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null) {
+				if (queryparameters != null && queryparameters.Length > 0) {
 					parameters.AddRange (queryparameters);
 				}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderparameters != null) {
+				if (orderparameters != null && orderparameters.Length > 0) {
 					parameters.AddRange (orderparameters);
 				}
 			}
@@ -529,7 +529,7 @@ namespace Light.Data
 		/// <param name="order">Order.</param>
 		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
 		{
-			List<DataParameter> listParameters = new List<DataParameter> ();
+			List<DataParameter> parameters = new List<DataParameter> ();
 			StringBuilder tables = new StringBuilder ();
 			foreach (JoinModel model in modelList) {
 				if (model.Connect != null) {
@@ -543,20 +543,17 @@ namespace Light.Data
 					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
 					if (!string.IsNullOrEmpty (mqueryString)) {
 						tables.AppendFormat (" {0}", mqueryString);
-						if (queryparameters_sub != null) {
-							listParameters.AddRange (queryparameters_sub);
+						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
+							parameters.AddRange (queryparameters_sub);
 						}
 					}
 					if (!string.IsNullOrEmpty (morderString)) {
 						tables.AppendFormat (" {0}", morderString);
-						if (orderparameters_sub != null) {
-							listParameters.AddRange (orderparameters_sub);
+						if (orderparameters_sub != null && orderparameters_sub.Length > 0) {
+							parameters.AddRange (orderparameters_sub);
 						}
 					}
 					tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
-					if (queryparameters_sub != null) {
-						listParameters.AddRange (queryparameters_sub);
-					}
 				}
 				else {
 					tables.Append (CreateDataTableSql (model.Mapping.TableName));
@@ -566,8 +563,8 @@ namespace Light.Data
 					string onString = GetOnString (model.Connect.On, out onparameters);
 					if (!string.IsNullOrEmpty (onString)) {
 						tables.AppendFormat (" {0}", onString);
-						if (onparameters != null) {
-							listParameters.AddRange (onparameters);
+						if (onparameters != null && onparameters.Length > 0) {
+							parameters.AddRange (onparameters);
 						}
 					}
 				}
@@ -581,17 +578,17 @@ namespace Light.Data
 			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null) {
-					listParameters.AddRange (queryparameters);
+				if (queryparameters != null && queryparameters.Length > 0) {
+					parameters.AddRange (queryparameters);
 				}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderparameters != null) {
-					listParameters.AddRange (orderparameters);
+				if (orderparameters != null && orderparameters.Length > 0) {
+					parameters.AddRange (orderparameters);
 				}
 			}
-			CommandData command = new CommandData (sql.ToString (), listParameters);
+			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
 		}
@@ -784,13 +781,13 @@ namespace Light.Data
 			sql.AppendFormat ("select {0} from {1}", selectString, CreateDataTableSql (selectMapping.TableName));
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null) {
+				if (queryparameters != null && queryparameters.Length > 0) {
 					parameters.AddRange (queryparameters);
 				}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderparameters != null) {
+				if (orderparameters != null && orderparameters.Length > 0) {
 					parameters.AddRange (orderparameters);
 				}
 			}
@@ -866,7 +863,9 @@ namespace Light.Data
 				string aggField = function.CreateSqlString (this, false, out aggparameters);
 				string selectField = CreateAliasSql (aggField, functionInfo.Name);
 				selectList [index] = selectField;
-				parameterlist.AddRange (aggparameters);
+				if (aggparameters != null && aggparameters.Length > 0) {
+					parameterlist.AddRange (aggparameters);
+				}
 				index++;
 			}
 			string select = string.Join (",", selectList);
@@ -882,19 +881,25 @@ namespace Light.Data
 
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				parameterlist.AddRange (queryparameters);
+				if (queryparameters != null && queryparameters.Length > 0) {
+					parameterlist.AddRange (queryparameters);
+				}
 			}
 
 			sql.AppendFormat (" group by {0}", groupby);
 
 			if (!string.IsNullOrEmpty (havingString)) {
 				sql.AppendFormat (" {0}", havingString);
-				parameterlist.AddRange (havingparameters);
+				if (havingparameters != null && havingparameters.Length > 0) {
+					parameterlist.AddRange (havingparameters);
+				}
 			}
 
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				parameterlist.AddRange (orderbyparameters);
+				if (orderbyparameters != null && orderbyparameters.Length > 0) {
+					parameterlist.AddRange (orderbyparameters);
+				}
 			}
 
 			CommandData command = new CommandData (sql.ToString (), parameterlist);

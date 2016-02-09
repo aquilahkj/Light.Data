@@ -51,37 +51,19 @@ namespace Light.Data
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			List<DataParameter> list = new List<DataParameter> ();
-//			Type objType = _value.GetType ();
-//			object obj = null;
-//			if (objType == typeof(byte[])) {
-//				obj = Encoding.UTF8.GetString ((byte[])_value);
-//			}
-//			else if (objType == typeof(char[])) {
-//				obj = new string ((char[])_value);
-//			}
-//			else {
-//				obj = _value;
-//			}
-//			if (_value is System.Collections.IEnumerable && obj.GetType () != typeof(string)) {
-//				System.Collections.IEnumerable values = (System.Collections.IEnumerable)obj;
-//				foreach (object value in values) {
-//					string pn = factory.CreateTempParamName ();
-//					list.Add (new DataParameter (pn, _fieldInfo.DataField.ToColumn (value), _fieldInfo.DBType));
-//				}
-//			}
 			if (_values != null) {
 				foreach (string value in _values) {
 					string pn = factory.CreateTempParamName ();
-					list.Add (new DataParameter (pn, value, _fieldInfo.DBType));
+					list.Add (new DataParameter (pn, _fieldInfo.ToParameter (value)));
 				}
 				if (list.Count == 0) {
 					string pn = factory.CreateTempParamName ();
-					list.Add (new DataParameter (pn, string.Empty, _fieldInfo.DBType));
+					list.Add (new DataParameter (pn, string.Empty));
 				}
 			}
 			else {
 				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, _value, _fieldInfo.DBType));
+				list.Add (new DataParameter (pn, _fieldInfo.ToParameter (_value)));
 			}
 			dataParameters = list.ToArray ();
 			return factory.CreateCollectionMatchQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isReverse, _starts, _ends, _isNot, list);

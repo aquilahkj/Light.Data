@@ -53,7 +53,7 @@ namespace Light.Data
 			List<DataParameter> list = new List<DataParameter> ();
 			foreach (object value in _values) {
 				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, _fieldInfo.ToColumn (value), _fieldInfo.DBType));
+				list.Add (new DataParameter (pn, _fieldInfo.ToParameter (value)));
 			}
 			dataParameters = list.ToArray ();
 			return factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, list);

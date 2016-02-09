@@ -61,12 +61,7 @@ namespace Light.Data
 		public override object ToProperty (object value)
 		{
 			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
-				if (_defaultValue != null) {
-					return _defaultValue;
-				}
-				else {
-					return null;
-				}
+				return null;
 			}
 			else {
 				if (EnumType == EnumFieldType.EnumToString) {
@@ -78,14 +73,41 @@ namespace Light.Data
 			}
 		}
 
-		public override object ToColumn (object value)
+		public override object ToParameter (object value)
 		{
 			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
-				if (IsNullable) {
-					return null;
+				return null;
+			}
+			else {
+				if (_enumType == EnumFieldType.EnumToString) {
+					return value.ToString ();
 				}
 				else {
-					return _minValue;
+					return value;
+				}
+			}
+		}
+
+		#region implemented abstract members of DataFieldMapping
+
+		public override object ToColumn (object value)
+		{
+			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
+				if (_defaultValue != null) {
+					return _defaultValue;
+				}
+				else {
+					if (IsNullable) {
+						return null;
+					}
+					else {
+						if (_enumType == EnumFieldType.EnumToString) {
+							return _minValue.ToString ();
+						}
+						else {
+							return _minValue;
+						}
+					}
 				}
 			}
 			else {
@@ -97,5 +119,7 @@ namespace Light.Data
 				}
 			}
 		}
+
+		#endregion
 	}
 }

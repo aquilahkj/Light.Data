@@ -35,7 +35,7 @@ namespace Light.Data
 			}
 		}
 
-		internal override object ToColumn (object value)
+		internal override object ToParameter (object value)
 		{
 			if (value is string) {
 				return value;

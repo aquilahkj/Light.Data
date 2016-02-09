@@ -17,7 +17,7 @@ namespace Light.Data
 		{
 			if (_value != null) {
 				string pn = factory.CreateTempParamName ();
-				dataParameter = new DataParameter (pn, _value, null);
+				dataParameter = new DataParameter (pn, _value);
 				return pn;
 			}
 			else {

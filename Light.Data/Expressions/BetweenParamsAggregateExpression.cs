@@ -55,12 +55,14 @@ namespace Light.Data
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
 
-			DataParameter fromParam = new DataParameter (pn, _fromValue, null);
-			DataParameter toParam = new DataParameter (pn1, _toValue, null);
+			DataParameter fromParam = new DataParameter (pn, _fromValue);
+			DataParameter toParam = new DataParameter (pn1, _toValue);
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps = null;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-			list.AddRange (ps);
+			if (ps != null && ps.Length > 0) {
+				list.AddRange (ps);
+			}
 			list.Add (fromParam);
 			list.Add (toParam);
 			dataParameters = list.ToArray ();
@@ -78,8 +80,8 @@ namespace Light.Data
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
 
-			DataParameter fromParam = new DataParameter (pn, _fromValue, null);
-			DataParameter toParam = new DataParameter (pn1, _toValue, null);
+			DataParameter fromParam = new DataParameter (pn, _fromValue);
+			DataParameter toParam = new DataParameter (pn1, _toValue);
 			dataParameters = new DataParameter[] { fromParam, toParam };
 
 			return factory.CreateBetweenParamsQuerySql (name, _isNot, fromParam, toParam);

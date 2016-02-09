@@ -24,7 +24,7 @@ namespace Light.Data
 			}
 		}
 
-		internal override object ToColumn (object value)
+		internal override object ToParameter (object value)
 		{
 			return Convert.ToInt32 (value);
 //			return base.ToColumn (value);

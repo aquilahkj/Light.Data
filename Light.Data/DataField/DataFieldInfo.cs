@@ -641,7 +641,7 @@ namespace Light.Data
 			if (Object.Equals (value, null)) {
 				throw new ArgumentNullException ("value");
 			}
-			QueryExpression exp = null;
+			QueryExpression exp;
 			DataFieldInfo dataFieldInfo = value as DataFieldInfo;
 			if (!Object.Equals (dataFieldInfo, null)) {
 				exp = new DataFieldQueryExpression (this, predicate, dataFieldInfo, isReverse);
@@ -2502,9 +2502,9 @@ namespace Light.Data
 			return exp;
 		}
 
-		internal virtual object ToColumn(object value)
+		internal virtual object ToParameter(object value)
 		{
-			return base.DataField.ToColumn (value);
+			return base.DataField.ToParameter (value);
 		}
 
 	}

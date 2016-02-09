@@ -56,7 +56,7 @@ namespace Light.Data
 
 			foreach (object value in _values) {
 				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, value, null));
+				list.Add (new DataParameter (pn, value));
 			}
 
 			dataParameters = list.ToArray ();
@@ -74,7 +74,7 @@ namespace Light.Data
 			List<DataParameter> list = new List<DataParameter> ();
 			foreach (object value in _values) {
 				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, value, null));
+				list.Add (new DataParameter (pn, value));
 			}
 			dataParameters = list.ToArray ();
 			return factory.CreateCollectionParamsQuerySql (name, _predicate, list);

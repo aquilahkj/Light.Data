@@ -115,6 +115,8 @@ namespace Light.Data
 
 		protected int _positionOrder;
 
+		protected int _fieldOreder;
+
 		public int? DataOrder {
 			get {
 				return _dataOrder;
@@ -124,6 +126,12 @@ namespace Light.Data
 		public int PositionOrder {
 			get {
 				return _positionOrder;
+			}
+		}
+
+		public int FieldOreder {
+			get {
+				return _fieldOreder;
 			}
 		}
 
@@ -144,5 +152,7 @@ namespace Light.Data
 				return TypeMapping as DataEntityMapping;
 			}
 		}
+
+		public abstract object ToColumn (object value);
 	}
 }

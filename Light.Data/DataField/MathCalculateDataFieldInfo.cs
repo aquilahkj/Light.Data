@@ -59,7 +59,7 @@ namespace Light.Data
 			}
 		}
 
-		internal override object ToColumn (object value)
+		internal override object ToParameter (object value)
 		{
 			return value;
 //			return base.ToColumn (value);

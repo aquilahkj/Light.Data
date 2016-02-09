@@ -26,7 +26,7 @@ namespace Light.Data
 		internal override string CreateDataFieldSql (CommandFactory factory, out DataParameter dataParameter)
 		{
 			string pn = factory.CreateTempParamName ();
-			dataParameter = new DataParameter (pn, _value, null);
+			dataParameter = new DataParameter (pn, _value);
 			return pn;
 		}
 
@@ -45,7 +45,7 @@ namespace Light.Data
 				dataParameter = new DataParameter (pn, _value.ToString (), "string");
 			}
 			else {
-				dataParameter = new DataParameter (pn, _value, null);
+				dataParameter = new DataParameter (pn, _value);
 			}
 			return pn;
 		}

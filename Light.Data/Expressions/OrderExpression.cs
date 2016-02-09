@@ -126,7 +126,9 @@ namespace Light.Data
 			for (int i = 0; i < len; i++) {
 				DataParameter[] dps = null;
 				array [i] = _orderExpressions [i].CreateSqlString (factory, fullFieldName, out dps, handler);
-				list.AddRange (dps);
+				if (dps != null && dps.Length > 0) {
+					list.AddRange (dps);
+				}
 			}
 			dataParameters = list.ToArray ();
 			return factory.CreateCatchExpressionSql (array);

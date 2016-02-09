@@ -116,10 +116,7 @@ namespace Light.Data
 		public override object ToProperty (object value)
 		{
 			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
-				if (_defaultValue != null) {
-					return _defaultValue;
-				}
-				else if (this._typeCode == TypeCode.String && !IsNullable) {
+				if (this._typeCode == TypeCode.String && !IsNullable) {
 					return string.Empty;
 				}
 				else {
@@ -128,8 +125,20 @@ namespace Light.Data
 			}
 			else {
 				if (ObjectType != null && value.GetType () != ObjectType) {
-					value = Convert.ChangeType (value, ObjectType);
+					return Convert.ChangeType (value, ObjectType);
 				}
+				else {
+					return value;
+				}
+			}
+		}
+
+		public override object ToParameter (object value)
+		{
+			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
+				return null;
+			}
+			else {
 				return value;
 			}
 		}
@@ -137,7 +146,10 @@ namespace Light.Data
 		public override object ToColumn (object value)
 		{
 			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
-				if (IsNullable) {
+				if (_defaultValue != null) {
+					return _defaultValue;
+				}
+				else if (IsNullable) {
 					return null;
 				}
 				else {
@@ -151,7 +163,7 @@ namespace Light.Data
 				else {
 					return value;
 				}
-			}
+			}	
 		}
 	}
 }

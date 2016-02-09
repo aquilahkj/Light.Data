@@ -49,7 +49,7 @@ namespace Light.Data
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _value, null);
+			DataParameter dataParameter = new DataParameter (pn, _value);
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps = null;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
@@ -68,7 +68,7 @@ namespace Light.Data
 			string name = factory.CreateDataFieldSql (alise);
 
 			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _value, null);
+			DataParameter dataParameter = new DataParameter (pn, _value);
 			dataParameters = new DataParameter[] { dataParameter };
 			return factory.CreateSingleParamSql (name, _predicate, _isReverse, dataParameter);
 		}

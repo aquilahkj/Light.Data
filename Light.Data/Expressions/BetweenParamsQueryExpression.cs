@@ -55,8 +55,8 @@ namespace Light.Data
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
 
-			DataParameter fromParam = new DataParameter (pn, _fieldInfo.ToColumn (_fromValue), _fieldInfo.DBType);
-			DataParameter toParam = new DataParameter (pn1, _fieldInfo.ToColumn (_toValue), _fieldInfo.DBType);
+			DataParameter fromParam = new DataParameter (pn, _fieldInfo.ToParameter (_fromValue));
+			DataParameter toParam = new DataParameter (pn1, _fieldInfo.ToParameter (_toValue));
 			dataParameters = new DataParameter[] { fromParam, toParam };
 			return factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isNot, fromParam, toParam);
 		}

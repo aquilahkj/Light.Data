@@ -46,17 +46,11 @@ namespace Light.Data
 
 		internal override string DBType {
 			get {
-//				if (_function == MathFunction.Abs) {
-//					return base.DBType;
-//				}
-//				else {
-//					return "double";
-//				}
 				return string.Empty;
 			}
 		}
 
-		internal override object ToColumn (object value)
+		internal override object ToParameter (object value)
 		{
 			return value;
 		}

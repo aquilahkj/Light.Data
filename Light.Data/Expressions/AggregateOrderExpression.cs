@@ -28,7 +28,7 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (alise)) {
 				return CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
-			dataParameters = new DataParameter[0]; 
+			dataParameters = null; 
 			string name = factory.CreateDataFieldSql (alise);
 			return factory.CreateOrderBySql (name, _orderType);
 		}

@@ -25,7 +25,7 @@ namespace Light.Data
 			}
 		}
 
-		public override object ToColumn (object value)
+		public override object ToParameter (object value)
 		{
 			if (Object.Equals (value, DBNull.Value)) {
 				return null;
@@ -33,6 +33,15 @@ namespace Light.Data
 			else {
 				return value;
 			}
+		}
+
+		#endregion
+
+		#region implemented abstract members of DataFieldMapping
+
+		public override object ToColumn (object value)
+		{
+			return value;
 		}
 
 		#endregion
