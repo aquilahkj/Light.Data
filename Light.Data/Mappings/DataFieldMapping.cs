@@ -6,7 +6,7 @@ namespace Light.Data
 {
 	abstract class DataFieldMapping : FieldMapping
 	{
-		public static DataFieldMapping CreateDataFieldMapping (PropertyInfo property, IDataFieldConfig config, int positionOeder, DataMapping mapping)
+		public static DataFieldMapping CreateDataFieldMapping (PropertyInfo property, IDataFieldConfig config, int positionOrder, DataMapping mapping)
 		{
 			Type type = property.PropertyType;
 			string indexName = property.Name;
@@ -52,9 +52,9 @@ namespace Light.Data
 				}
 			}
 			if (config.DataOrder > 0) {
-				fieldMapping._dataOrder = config.DataOrder - 1;
+				fieldMapping._dataOrder = config.DataOrder;
 			}
-			fieldMapping._positionOrder = positionOeder;
+			fieldMapping._positionOrder = positionOrder;
 			fieldMapping._handler = new PropertyHandler (property);
 			return fieldMapping;
 		}
@@ -115,7 +115,7 @@ namespace Light.Data
 
 		protected int _positionOrder;
 
-//		protected int _fieldOrder;
+		//		protected int _fieldOrder;
 
 		public int? DataOrder {
 			get {
@@ -129,14 +129,14 @@ namespace Light.Data
 			}
 		}
 
-//		public int FieldOrder {
-//			get {
-//				return _fieldOrder;
-//			}
-//			internal set {
-//				_fieldOrder = value;
-//			}
-//		}
+		//		public int FieldOrder {
+		//			get {
+		//				return _fieldOrder;
+		//			}
+		//			internal set {
+		//				_fieldOrder = value;
+		//			}
+		//		}
 
 		public PropertyHandler Handler {
 			get {

@@ -42,12 +42,5 @@ namespace Light.Data
 				return _value;
 			}
 		}
-
-		internal DataParameter CreateDataParameter (CommandFactory factory)
-		{
-			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _dataField.DataField.ToColumn (_value), _dataField.DataField.DBType);
-			return dataParameter;
-		}
 	}
 }

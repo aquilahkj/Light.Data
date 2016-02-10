@@ -748,7 +748,12 @@ namespace Light.Data
 				if (!mapping.Equals (updateSetValues [i].DataField.DataField.EntityMapping)) {
 					throw new LightDataException (RE.UpdateFieldTypeIsError);
 				}
-				setparameters [i] = updateSetValues [i].CreateDataParameter (this);
+				string pn = CreateTempParamName ();
+				UpdateSetValue ups = updateSetValues [i];
+				DataFieldInfo fieldInfo = ups.DataField;
+				DataParameter dataParameter = new DataParameter (pn, fieldInfo.DataField.ToColumn (ups.Value), fieldInfo.DBType);
+
+				setparameters [i] = dataParameter;
 				setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateDataFieldSql (this), setparameters [i].ParameterName);
 			}
 			string setString = string.Join (",", setList);

@@ -136,7 +136,7 @@ namespace Light.Data
 
 			for (int i = 0; i < list.Count; i++) {
 				FieldInfo info = list [i];
-				DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (info.Property, info.Config, i+1, this);
+				DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (info.Property, info.Config, i + 1, this);
 				_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 				if (mapping.Name != mapping.IndexName) {
 					_fieldMappingDictionary.Add (mapping.Name, mapping);
@@ -145,62 +145,62 @@ namespace Light.Data
 			}
 		}
 
-//		protected void InitialDataFieldMapping ()
-//		{
-//			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-//			bool useOrder = false;
-//			int index = 0;
-//			List<DataFieldMapping> list = new List<DataFieldMapping> ();
-//			foreach (PropertyInfo pi in propertys) {
-//				//字段属性
-//				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
-//				if (config != null) {
-//					index++;
-//					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, index, this);
-//
-//					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
-//					if (mapping.Name != mapping.IndexName) {
-//						_fieldMappingDictionary.Add (mapping.Name, mapping);
-//					}
-//					list.Add (mapping);
-//					if (mapping.DataOrder != null) {
-//						useOrder = true;
-//					}
-//				}
-//			}
-//			if (list.Count == 0) {
-//				throw new LightDataException (RE.DataFieldsIsNotExists);
-//			}
-//			if (useOrder) {
-//				list.Sort ((x, y) => {
-//					if (x.DataOrder.HasValue && y.DataOrder.HasValue) {
-//						if (x.DataOrder > y.DataOrder) {
-//							return  1;
-//						}
-//						else if (x.DataOrder < y.DataOrder) {
-//							return -1;
-//						}
-//						else {
-//							return x.PositionOrder > y.PositionOrder ? 1 : -1;
-//						}
-//					}
-//					else if (x.DataOrder.HasValue && !y.DataOrder.HasValue) {
-//						return  -1;
-//					}
-//					else if (!x.DataOrder.HasValue && y.DataOrder.HasValue) {
-//						return  1;
-//					}
-//					else {
-//						return x.PositionOrder > y.PositionOrder ? 1 : -1;
-//					}
-//				});
-//			}
-//
-//			for (int i = 0; i < list.Count; i++) {
-//				list [i].FieldOrder = i + 1;
-//			}
-//			_fieldList.AddRange (list);
-//		}
+		//		protected void InitialDataFieldMapping ()
+		//		{
+		//			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
+		//			bool useOrder = false;
+		//			int index = 0;
+		//			List<DataFieldMapping> list = new List<DataFieldMapping> ();
+		//			foreach (PropertyInfo pi in propertys) {
+		//				//字段属性
+		//				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
+		//				if (config != null) {
+		//					index++;
+		//					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, index, this);
+		//
+		//					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
+		//					if (mapping.Name != mapping.IndexName) {
+		//						_fieldMappingDictionary.Add (mapping.Name, mapping);
+		//					}
+		//					list.Add (mapping);
+		//					if (mapping.DataOrder != null) {
+		//						useOrder = true;
+		//					}
+		//				}
+		//			}
+		//			if (list.Count == 0) {
+		//				throw new LightDataException (RE.DataFieldsIsNotExists);
+		//			}
+		//			if (useOrder) {
+		//				list.Sort ((x, y) => {
+		//					if (x.DataOrder.HasValue && y.DataOrder.HasValue) {
+		//						if (x.DataOrder > y.DataOrder) {
+		//							return  1;
+		//						}
+		//						else if (x.DataOrder < y.DataOrder) {
+		//							return -1;
+		//						}
+		//						else {
+		//							return x.PositionOrder > y.PositionOrder ? 1 : -1;
+		//						}
+		//					}
+		//					else if (x.DataOrder.HasValue && !y.DataOrder.HasValue) {
+		//						return  -1;
+		//					}
+		//					else if (!x.DataOrder.HasValue && y.DataOrder.HasValue) {
+		//						return  1;
+		//					}
+		//					else {
+		//						return x.PositionOrder > y.PositionOrder ? 1 : -1;
+		//					}
+		//				});
+		//			}
+		//
+		//			for (int i = 0; i < list.Count; i++) {
+		//				list [i].FieldOrder = i + 1;
+		//			}
+		//			_fieldList.AddRange (list);
+		//		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{
@@ -321,7 +321,9 @@ namespace Light.Data
 				this.property = property;
 				this.config = config;
 				this.fieldOrder = fieldOrder;
-				this.dataOrder = config.DataOrder;
+				if (config.DataOrder > 0) {
+					this.dataOrder = config.DataOrder;
+				}
 			}
 
 			PropertyInfo property;
