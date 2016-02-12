@@ -91,9 +91,9 @@ namespace Light.Data
 				extentParam = config.ExtendParams;
 				isEntityTable = config.IsEntityTable;
 			}
-//			else {
-//				throw new LightDataException (string.Format (RE.TheTypeOfDataEntityIsNoConfig, type.Name));
-//			}
+			else {
+				throw new LightDataException (string.Format (RE.TheTypeOfDataEntityIsNoConfig, type.Name));
+			}
 
 			if (string.IsNullOrEmpty (tableName)) {
 				tableName = type.Name;

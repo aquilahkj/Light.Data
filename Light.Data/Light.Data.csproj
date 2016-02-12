@@ -253,7 +253,6 @@
     <Compile Include="Mappings\FieldMapping.cs" />
     <Compile Include="Mappings\IFieldCollection.cs" />
     <Compile Include="Mappings\PrimitiveFieldMapping.cs" />
-    <Compile Include="Mappings\RelationFieldMapping.cs" />
     <Compile Include="Mssql.cs" />
     <Compile Include="Access.cs" />
     <Compile Include="MssqlCommandFactory.cs" />
@@ -300,6 +299,7 @@
     <Compile Include="Mappings\DefaultTimeFunction.cs" />
     <Compile Include="Mappings\DefaultTime.cs" />
     <Compile Include="Attributes\XmlConfiguratorAttribute.cs" />
+    <Compile Include="Mappings\RelationFieldMapping_Old.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

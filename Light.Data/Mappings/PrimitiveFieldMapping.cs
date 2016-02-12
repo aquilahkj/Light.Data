@@ -34,8 +34,20 @@ namespace Light.Data
 			}
 			if (defaultValue != null) {
 				Type defaultValueType = defaultValue.GetType ();
-				if (_typeCode == TypeCode.DateTime && defaultValueType == typeof(DefaultTime)) {
-					this._defaultTimeFunction = DefaultTimeFunction.GetFunction ((DefaultTime)defaultValue);
+				if (_typeCode == TypeCode.DateTime) {
+					if (defaultValueType == typeof(DefaultTime)) {
+						this._defaultTimeFunction = DefaultTimeFunction.GetFunction ((DefaultTime)defaultValue);
+					}
+					else if (defaultValueType == typeof(DateTime)) {
+						this._defaultValue = defaultValue;
+					}
+					else if (defaultValueType == typeof(string)) {
+						string str = defaultValue as string;
+						DateTime dt;
+						if (DateTime.TryParse (str, out dt)) {
+							this._defaultValue = dt;
+						}
+					}
 				}
 				else if (defaultValueType == type) {
 					this._defaultValue = defaultValue;
@@ -167,8 +179,16 @@ namespace Light.Data
 					}
 				}
 			}
-			else if (_typeCode == TypeCode.DateTime && Object.Equals (value, DateTime.MinValue) && _defaultTimeFunction != null) {
-				return this._defaultTimeFunction.GetValue ();
+			else if (_typeCode == TypeCode.DateTime && Object.Equals (value, DateTime.MinValue)) {
+				if (_defaultTimeFunction != null) {
+					return this._defaultTimeFunction.GetValue ();
+				}
+				else if (_defaultValue != null) {
+					return _defaultValue;
+				}
+				else {
+					return value;
+				}
 			}
 			else {
 				if (ObjectType != null && value.GetType () != ObjectType) {

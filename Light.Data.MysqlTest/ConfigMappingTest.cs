@@ -440,7 +440,38 @@ namespace Light.Data.MysqlTest
 			Assert.IsNull (valueAc);
 		}
 
-	
+		[Test ()]
+		public void TestCase_ConfigDefault2 ()
+		{
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfig3));
+			Assert.NotNull (mapping);
+			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
+
+
+			context.TruncateTable<TeCheckValueConfig3> ();
+			TeCheckValueConfig3 value;
+			TeCheckValueConfig3 valueAc;
+
+			value = new TeCheckValueConfig3 ();
+			context.Insert (value);
+			valueAc = context.SelectSingleFromId<TeCheckValueConfig3> (value.Id);
+			DateTime dt = new DateTime (2016, 1, 19, 22, 10, 10);
+			Assert.AreEqual (1, valueAc.CheckId);
+			Assert.AreEqual (0.02, valueAc.CheckRate);
+			Assert.AreEqual (dt, valueAc.CheckTime);
+			Assert.AreEqual (dt.Date, valueAc.CheckDate);
+			Assert.AreEqual ("TeCheckValueConfigC2", valueAc.CheckData);
+			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
+
+			value.CheckId = 2;
+			context.Update (value);
+			valueAc = context.SelectSingleFromId<TeCheckValueConfig3> (value.Id);
+			Assert.AreEqual (value.CheckId, valueAc.CheckId);
+
+			context.Delete (value);
+			valueAc = context.SelectSingleFromId<TeCheckValueConfig3> (value.Id);
+			Assert.IsNull (valueAc);
+		}
 	}
 }
 

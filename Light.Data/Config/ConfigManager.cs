@@ -212,7 +212,7 @@ namespace Light.Data
 
 		internal static IRelationFieldConfig LoadRelationFieldConfig (PropertyInfo pi)
 		{
-//			IRelationFieldConfig config = null;
+			IRelationFieldConfig config = null;
 //			if (config == null) {
 //				LightDataConfig lightDataConfig = GetConfig ();
 //				if (lightDataConfig != null && lightDataConfig.ContainDataTableConfig (pi.ReflectedType)) {
@@ -226,22 +226,21 @@ namespace Light.Data
 //					}
 //				}
 //			}
-//			if (config == null) {
-//				RelationAttribute[] relationAttributes = AttributeCore.GetPropertyAttributes<RelationAttribute> (pi, true);
-//				if (relationAttributes.Length > 0) {
-//					RelationFieldConfig rfConfig = new RelationFieldConfig (pi.Name);
-//					foreach (RelationAttribute ra in relationAttributes) {
-//						rfConfig.AddRelationKeys (ra.MasterKey, ra.RelateKey);
-//					}
+			if (config == null) {
+				RelationAttribute[] relationAttributes = AttributeCore.GetPropertyAttributes<RelationAttribute> (pi, true);
+				if (relationAttributes.Length > 0) {
+					RelationFieldConfig rfConfig = new RelationFieldConfig (pi.Name);
+					foreach (RelationAttribute ra in relationAttributes) {
+						rfConfig.AddRelationKeys (ra.MasterKey, ra.RelateKey);
+					}
 //					RelationPropertyAttribute[] relationPropertyAttributes = AttributeCore.GetPropertyAttributes<RelationPropertyAttribute> (pi, true);
 //					if (relationPropertyAttributes.Length > 0) {
 //						rfConfig.PropertyName = relationPropertyAttributes [0].PropertyName;
 //					}
-//					config = rfConfig;
-//				}
-//			}
-//			return config;
-			return null;
+					config = rfConfig;
+				}
+			}
+			return config;
 		}
 	}
 }

@@ -20,10 +20,10 @@ namespace Light.Data
         /// <summary>
         ///  关联数据表对应字段名
         /// </summary>
-        string PropertyName
-        {
-            get;
-        }
+//        string PropertyName
+//        {
+//            get;
+//        }
 
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Light.Data.MysqlTest
 {
+	[DataTable]
 	public partial class TeUserAndLevelModel
 	{
 		#region "Data Property"
@@ -409,7 +410,7 @@ namespace Light.Data.MysqlTest
 		#endregion
 	}
 
-
+	[DataTable]
 	public partial class TeUserAndLevelAndAreaModel
 	{
 		#region "Data Property"

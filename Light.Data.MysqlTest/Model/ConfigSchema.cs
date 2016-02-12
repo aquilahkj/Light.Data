@@ -523,6 +523,118 @@ namespace Light.Data.MysqlTest
 		#endregion
 	}
 
+	public partial class TeCheckValueConfig3
+	{
+		#region "Data Property"
+
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		public int Id {
+			get { 
+				return this.id; 
+			}
+			set { 
+				this.id = value; 
+			}
+		}
+
+		private int? checkId;
+
+		/// <summary>
+		/// CheckId
+		/// </summary>
+		/// <value></value>
+		public int? CheckId {
+			get { 
+				return this.checkId; 
+			}
+			set { 
+				this.checkId = value; 
+			}
+		}
+
+		private double? checkRate;
+
+		/// <summary>
+		/// CheckRate
+		/// </summary>
+		/// <value></value>
+		public double? CheckRate {
+			get { 
+				return this.checkRate; 
+			}
+			set { 
+				this.checkRate = value; 
+			}
+		}
+
+		private DateTime? checkTime;
+
+		/// <summary>
+		/// CheckTime
+		/// </summary>
+		/// <value></value>
+		public DateTime? CheckTime {
+			get { 
+				return this.checkTime; 
+			}
+			set { 
+				this.checkTime = value; 
+			}
+		}
+
+		private DateTime? checkDate;
+
+		/// <summary>
+		/// CheckDate
+		/// </summary>
+		/// <value></value>
+		public DateTime? CheckDate {
+			get { 
+				return this.checkDate; 
+			}
+			set { 
+				this.checkDate = value; 
+			}
+		}
+
+		private string checkData;
+
+		/// <summary>
+		/// CheckData
+		/// </summary>
+		/// <value></value>
+		public string CheckData {
+			get { 
+				return this.checkData; 
+			}
+			set { 
+				this.checkData = value; 
+			}
+		}
+
+		private CheckLevelType? checkLevel;
+
+		/// <summary>
+		/// CheckLevel
+		/// </summary>
+		/// <value></value>
+		public CheckLevelType? CheckLevel {
+			get { 
+				return this.checkLevel; 
+			}
+			set { 
+				this.checkLevel = value; 
+			}
+		}
+
+		#endregion
+	}
+
 	public partial class TeCheckValueConfigS1
 	{
 		#region "Data Property"

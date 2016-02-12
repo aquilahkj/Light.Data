@@ -40,10 +40,10 @@ namespace Light.Data
 					foreach (RelationKey key in config.GetRelationKeys()) {
 						mapping.AddRelationKeys (key.MasterKey, key.RelateKey);
 					}
-					if (!string.IsNullOrEmpty (config.PropertyName)) {
-						//设定关联属性名称,使用时才生成对应关系
-						mapping.SetRelationProperty (config.PropertyName);
-					}
+//					if (!string.IsNullOrEmpty (config.PropertyName)) {
+//						//设定关联属性名称,使用时才生成对应关系
+//						mapping.SetRelationProperty (config.PropertyName);
+//					}
 					_relationMappingDictionary.Add (mapping.RelationName, mapping);
 				}
 			}
@@ -58,12 +58,6 @@ namespace Light.Data
 			else {
 				throw new LightDataException (string.Format (RE.RelationMappingIsNotExists, keyName));
 			}
-//			if (_relationMappingDictionary.ContainsKey (keyName)) {
-//				return _relationMappingDictionary [keyName];
-//			}
-//			else {
-//				throw new LightDataException (string.Format (RE.RelationMappingIsNotExists, keyName));
-//			}
 		}
 
 		bool _isDataEntity;

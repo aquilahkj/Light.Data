@@ -194,10 +194,16 @@ namespace Light.Data
 				}
 				else {
 					if (type == typeof(DateTime)) {
-						try {
-							value = Enum.Parse (typeof(DefaultTime), defaultValue, true);
-						} catch {
-							throw new LightDataException (string.Format (RE.ConfigDataLoadError, "defaultValue"));
+						DateTime dt;
+						if (DateTime.TryParse (defaultValue, out dt)) {
+							value = dt;
+						}
+						else {
+							try {
+								value = Enum.Parse (typeof(DefaultTime), defaultValue, true);
+							} catch {
+								throw new LightDataException (string.Format (RE.ConfigDataLoadError, "defaultValue"));
+							}
 						}
 					}
 					else {

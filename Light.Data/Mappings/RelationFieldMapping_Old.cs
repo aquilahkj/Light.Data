@@ -8,7 +8,7 @@ namespace Light.Data
 	/// <summary>
 	/// 关联映射表
 	/// </summary>
-	class RelationFieldMapping
+	class RelationFieldMapping_Old
 	{
 		/// <summary>
 		/// 线程同步1
@@ -69,7 +69,7 @@ namespace Light.Data
 		/// <summary>
 		/// 关联表的关联映射
 		/// </summary>
-		RelationFieldMapping _relateRelationMapping = null;
+		RelationFieldMapping_Old _relateRelationMapping = null;
 
 		/// <summary>
 		/// 构造函数
@@ -77,7 +77,7 @@ namespace Light.Data
 		/// <param name="masterTableMapping">主关联表的映射</param>
 		/// <param name="relateTableType">关联类型</param>
 		/// <param name="relationName">关联名</param>
-		public RelationFieldMapping (DataEntityMapping masterTableMapping, Type relateTableType, string relationName)
+		public RelationFieldMapping_Old (DataEntityMapping masterTableMapping, Type relateTableType, string relationName)
 		{
 			_masterTableMapping = masterTableMapping;
 			_relationName = relationName;
@@ -113,10 +113,10 @@ namespace Light.Data
 		public void AddRelationKeys (string masterKey, string relationKey)
 		{
 			if (string.IsNullOrEmpty (masterKey)) {
-				throw new ArgumentNullException ("MasterKey");
+				throw new ArgumentNullException ("masterKey");
 			}
 			if (string.IsNullOrEmpty (relationKey)) {
-				throw new ArgumentNullException ("RelationKey");
+				throw new ArgumentNullException ("relationKey");
 			}
 			lock (_synobj2) {
 				if (!_relationKeys.ContainsKey (masterKey)) {
@@ -220,7 +220,7 @@ namespace Light.Data
 		/// <summary>
 		/// 关联表的关联映射
 		/// </summary>
-		public RelationFieldMapping RelateRelationMapping {
+		public RelationFieldMapping_Old RelateRelationMapping {
 			get {
 				if (_relateRelationMapping == null) {//如果关联映射表为空,则建立
 					if (!_hasLoadRelateRelationMapping) {

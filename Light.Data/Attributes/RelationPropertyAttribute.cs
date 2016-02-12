@@ -17,7 +17,7 @@ namespace Light.Data
 		public RelationPropertyAttribute (string propertyName)
 		{
 			if (string.IsNullOrEmpty (propertyName)) {
-				throw new ArgumentNullException ("PropertyName");
+				throw new ArgumentNullException ("propertyName");
 			}
 			PropertyName = propertyName;
 		}

@@ -63,7 +63,26 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual ("test", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
 		}
-	
+
+		[Test ()]
+		public void TestCase_DefauleValue3 ()
+		{
+			context.TruncateTable<TeCheckValueDefault3> ();
+			TeCheckValueDefault3 value;
+			TeCheckValueDefault3 valueAc;
+
+			value = context.CreateNew<TeCheckValueDefault3> ();
+			value.Save ();
+			valueAc = context.SelectSingleFromId<TeCheckValueDefault3> (value.Id);
+			DateTime dt = new DateTime (2016, 1, 19, 22, 10, 10);
+			Assert.AreEqual (2, valueAc.CheckId);
+			Assert.AreEqual (0.02, valueAc.CheckRate);
+			Assert.AreEqual (dt, valueAc.CheckTime);
+			Assert.AreEqual (dt.Date, valueAc.CheckDate);
+			Assert.AreEqual ("test", valueAc.CheckData);
+			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
+		}
+
 		[Test ()]
 		public void TestCase_MiniValue_Bulk ()
 		{
