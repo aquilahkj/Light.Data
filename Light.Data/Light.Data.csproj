@@ -147,7 +147,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Config\AggregateFieldConfig.cs" />
-    <Compile Include="Config\Configurator.cs" />
+    <Compile Include="Config\Configurator.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Config\ConfigManager.cs" />
     <Compile Include="Config\AggregateTableConfig.cs" />
     <Compile Include="Config\DataFieldConfig.cs" />
@@ -164,7 +166,6 @@
     <Compile Include="Config\RelationFieldConfig.cs" />
     <Compile Include="Config\RelationKey.cs" />
     <Compile Include="Config\TableConfig.cs" />
-    <Compile Include="Config\XmlConfiguratorAttribute.cs" />
     <Compile Include="DataField\DatePartDataFieldInfo.cs" />
     <Compile Include="DataField\DatePart.cs" />
     <Compile Include="DataField\MathFunctionDataFieldInfo.cs">
@@ -298,6 +299,7 @@
     <Compile Include="SelectInsertor.cs" />
     <Compile Include="Mappings\DefaultTimeFunction.cs" />
     <Compile Include="Mappings\DefaultTime.cs" />
+    <Compile Include="Attributes\XmlConfiguratorAttribute.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

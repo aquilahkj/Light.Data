@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Light.Data
 {
+	/*
 	/// <summary>
 	/// 数据表别名
 	/// </summary>
-	public class DataTableAlias : IDisposable
+	class DataTableAlias_Old : IDisposable
 	{
 		Dictionary<Type, DataEntityMapping> _aliaslist = new Dictionary<Type, DataEntityMapping> ();
 
@@ -86,9 +87,10 @@ namespace Light.Data
 		/// <summary>
 		/// 供GC调用的析构函数
 		/// </summary>
-		~DataTableAlias ()
+		~DataTableAlias_Old ()
 		{
 			Dispose (false);//释放非托管资源
 		}
 	}
+	*/
 }

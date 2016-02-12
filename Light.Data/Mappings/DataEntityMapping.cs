@@ -78,12 +78,13 @@ namespace Light.Data
 
 		public string TableName {
 			get {
-				if (_aliasName != null) {
-					return DataEntityMapping._aliasName;
-				}
-				else {
-					return _tableName;
-				}
+//				if (_aliasName != null) {
+//					return DataEntityMapping._aliasName;
+//				}
+//				else {
+//					return _tableName;
+//				}
+				return _tableName;
 			}
 		}
 
@@ -296,21 +297,21 @@ namespace Light.Data
 
 		#region alise
 
-		[ThreadStatic]
-		static string _aliasName;
-
-		public void SetAliasName (string name)
-		{
-			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
-			}
-			DataEntityMapping._aliasName = name;
-		}
-
-		public void ClearAliasName ()
-		{
-			DataEntityMapping._aliasName = null;
-		}
+//		[ThreadStatic]
+//		static string _aliasName;
+//
+//		public void SetAliasName (string name)
+//		{
+//			if (string.IsNullOrEmpty (name)) {
+//				throw new ArgumentNullException ("name");
+//			}
+//			DataEntityMapping._aliasName = name;
+//		}
+//
+//		public void ClearAliasName ()
+//		{
+//			DataEntityMapping._aliasName = null;
+//		}
 
 		#endregion
 

@@ -35,6 +35,7 @@
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\DBSchema.cs" />
@@ -66,18 +67,45 @@
     <Compile Include="Model\ExSchema.cs" />
     <Compile Include="DefaultValueTest.cs" />
     <Compile Include="DataOrderTest.cs" />
+    <Compile Include="Model\BaseSchema.cs" />
+    <Compile Include="BaseCommandTest2.cs" />
+    <Compile Include="Model\ConfigSchema.cs" />
+    <Compile Include="ConfigMappingTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Model\DBSchema_Mysql.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DBSchema_Mysql.cs</LastGenOutput>
     </None>
+    <None Include="lightdata.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata\lightdata_check1.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata\lightdata_check2.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata_check1.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata2\lightdata_check1.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata2\lightdata_check2.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
+    <Folder Include="lightdata\" />
+    <Folder Include="lightdata2\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Light.Data\Light.Data.csproj">

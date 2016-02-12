@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Collections;
 
 namespace Light.Data
 {
-	abstract class TableConfig : IEnumerable<IConfiguratorFieldConfig>
+	abstract class TableConfig //: IEnumerable<IConfiguratorFieldConfig>
 	{
-		Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig> ();
+		readonly Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig> ();
 
 		public void SetField (IConfiguratorFieldConfig config)
 		{
@@ -17,10 +16,10 @@ namespace Light.Data
 		public void SetField (string fieldName, IConfiguratorFieldConfig config)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("FieldName");
+				throw new ArgumentNullException ("fieldName");
 			}
 			if (config == null) {
-				throw new ArgumentNullException ("Config");
+				throw new ArgumentNullException ("config");
 			}
 			_fieldConfigDictionary.Add (fieldName, config);
 		}
@@ -28,14 +27,11 @@ namespace Light.Data
 		public IConfiguratorFieldConfig GetField (string fieldName)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("FieldName");
+				throw new ArgumentNullException ("fieldName");
 			}
-			if (_fieldConfigDictionary.ContainsKey (fieldName)) {
-				return _fieldConfigDictionary [fieldName];
-			}
-			else {
-				return null;
-			}
+			IConfiguratorFieldConfig config;
+			_fieldConfigDictionary.TryGetValue (fieldName, out config);
+			return config;
 		}
 
 		public IConfiguratorFieldConfig this [string fieldName] {
@@ -54,11 +50,11 @@ namespace Light.Data
 			}
 		}
 
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			foreach (KeyValuePair<string, IConfiguratorFieldConfig> kv in _fieldConfigDictionary) {
-				yield return kv.Value;
-			}
-		}
+//		IEnumerator IEnumerable.GetEnumerator ()
+//		{
+//			foreach (KeyValuePair<string, IConfiguratorFieldConfig> kv in _fieldConfigDictionary) {
+//				yield return kv.Value;
+//			}
+//		}
 	}
 }

@@ -168,14 +168,14 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private int? checkLevel;
+		private CheckLevelType? checkLevel;
 
 		/// <summary>
 		/// CheckLevel
 		/// </summary>
 		/// <value></value>
 		[DataField ("CheckLevel", IsNullable = false)]
-		public int? CheckLevel {
+		public CheckLevelType? CheckLevel {
 			get { 
 				return this.checkLevel; 
 			}
@@ -723,14 +723,14 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private int? checkLevel;
+		private CheckLevelType? checkLevel;
 
 		/// <summary>
 		/// CheckLevel
 		/// </summary>
 		/// <value></value>
 		[DataField ("CheckLevel", IsNullable = false, DataOrder = 7)]
-		public int? CheckLevel {
+		public CheckLevelType? CheckLevel {
 			get { 
 				return this.checkLevel; 
 			}
@@ -908,14 +908,14 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private int? checkLevel;
+		private CheckLevelType? checkLevel;
 
 		/// <summary>
 		/// CheckLevel
 		/// </summary>
 		/// <value></value>
 		[DataField ("CheckLevel", IsNullable = false, DataOrder = 1)]
-		public int? CheckLevel {
+		public CheckLevelType? CheckLevel {
 			get { 
 				return this.checkLevel; 
 			}
@@ -1093,14 +1093,14 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private int? checkLevel;
+		private CheckLevelType? checkLevel;
 
 		/// <summary>
 		/// CheckLevel
 		/// </summary>
 		/// <value></value>
 		[DataField ("CheckLevel", IsNullable = false, DataOrder = 7)]
-		public int? CheckLevel {
+		public CheckLevelType? CheckLevel {
 			get { 
 				return this.checkLevel; 
 			}
@@ -1278,14 +1278,14 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private int? checkLevel;
+		private CheckLevelType? checkLevel;
 
 		/// <summary>
 		/// CheckLevel
 		/// </summary>
 		/// <value></value>
 		[DataField ("CheckLevel", IsNullable = false)]
-		public int? CheckLevel {
+		public CheckLevelType? CheckLevel {
 			get { 
 				return this.checkLevel; 
 			}

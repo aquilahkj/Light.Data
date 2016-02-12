@@ -62,7 +62,7 @@ namespace Light.Data
 
 		Region _region = null;
 
-		DataContext _context = null;
+		readonly DataContext _context = null;
 
 		SafeLevel _level = SafeLevel.None;
 

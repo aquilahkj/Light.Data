@@ -99,7 +99,6 @@ namespace Light.Data.MysqlTest
 
 	}
 
-
 	[AggregateTable]
 	class LevelIdAggMul
 	{

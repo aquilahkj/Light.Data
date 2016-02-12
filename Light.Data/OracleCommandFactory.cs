@@ -41,9 +41,9 @@ namespace Light.Data
 			return tableName;
 		}
 
-		public override CommandData CreateInsertCommand (object entity)
+		public override CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
+//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
 
 			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
@@ -87,7 +87,7 @@ namespace Light.Data
 			return identityIntegrated;
 		}
 
-		public override CommandData[] CreateBulkInsertCommand (Array entitys, int batchCount)
+		public override CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
 				throw new ArgumentNullException ("entitys");
@@ -95,15 +95,20 @@ namespace Light.Data
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-			object tmpEntity = entitys.GetValue (0);
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
+//			object tmpEntity = entitys.GetValue (0);
+//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
+
+//
+//			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
+//			List<string> insertList = new List<string> ();
+//			foreach (DataParameter dataParameter in paramList) {
+//				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
+//			}
 			bool identityIntegrated = CheckIndentityIntegrated (mapping);
 			int totalCount = entitys.Length;
-
-			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
 			List<string> insertList = new List<string> ();
-			foreach (DataParameter dataParameter in paramList) {
-				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
+			foreach (DataFieldMapping field in mapping.NoIdentityFields) {
+				insertList.Add (CreateDataFieldSql (field.Name));
 			}
 			string insert = string.Join (",", insertList);
 			string insertsql;
@@ -127,7 +132,7 @@ namespace Light.Data
 
 			foreach (object entity in entitys) {
 				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string[] valueList = new string[entitys.Length];
+				string[] valueList = new string[entityParams.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
 					string paramName = CreateParamName ("P" + paramIndex);

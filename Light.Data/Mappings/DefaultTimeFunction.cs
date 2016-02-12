@@ -7,8 +7,6 @@ namespace Light.Data
 	{
 		static Dictionary<DefaultTime,DefaultTimeFunction> dict = new Dictionary<DefaultTime, DefaultTimeFunction> ();
 
-		static DefaultTimeFunction now = null;
-
 		static DefaultTimeFunction ()
 		{
 			dict.Add (DefaultTime.Now, new DefaultTimeFunction (GetNow));

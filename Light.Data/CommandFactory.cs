@@ -117,11 +117,12 @@ namespace Light.Data
 		/// <summary>
 		/// 生成数据新增命令
 		/// </summary>
+		/// <param name="mapping">Mapping</param>
 		/// <param name="entity">数据实体</param>
 		/// <returns>新增命令对象</returns>
-		public virtual CommandData CreateInsertCommand (object entity)
+		public virtual CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
+//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
 			string[] insertList = new string[paramList.Count];
 			string[] valuesList = new string[paramList.Count];
@@ -143,12 +144,13 @@ namespace Light.Data
 		/// <summary>
 		/// 生成数据更新命令
 		/// </summary>
+		/// <param name="mapping">数据实体</param>
 		/// <param name="entity">数据实体</param>
 		/// <param name="updatefieldNames">需更新的数据字段</param>
 		/// <returns>更新命令对象</returns>
-		public virtual CommandData CreateUpdateCommand (object entity, string[] updatefieldNames)
+		public virtual CommandData CreateUpdateCommand (DataTableEntityMapping mapping, object entity, string[] updatefieldNames)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
+//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
@@ -212,11 +214,12 @@ namespace Light.Data
 		/// <summary>
 		/// 生成数据删除命令
 		/// </summary>
+		/// <param name="mapping">Mapping</param>
 		/// <param name="entity">数据实体</param>
 		/// <returns>删除命令对象</returns>
-		public virtual CommandData CreateDeleteCommand (object entity)
+		public virtual CommandData CreateDeleteCommand (DataTableEntityMapping mapping, object entity)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
+//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
@@ -235,9 +238,8 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateEntityExistsCommand (object entity)
+		public virtual CommandData CreateEntityExistsCommand (DataTableEntityMapping mapping, object entity)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
@@ -849,7 +851,7 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData[] CreateBulkInsertCommand (Array entitys, int batchCount)
+		public virtual CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
 				throw new ArgumentNullException ("entitys");
@@ -857,20 +859,18 @@ namespace Light.Data
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-			object tmpEntity = entitys.GetValue (0);
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
-			int totalCount = entitys.Length;
-//			List<FieldMapping> fields = new List<FieldMapping> ();
-//			
-//			fields.AddRange (mapping.GetFieldMappings ());
-//			if (mapping.IdentityField != null) {
-//				fields.Remove (mapping.IdentityField);
+//			object tmpEntity = entitys.GetValue (0);
+//			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
+//			List<string> insertList = new List<string> ();
+//			foreach (DataParameter dataParameter in paramList) {
+//				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
 //			}
-			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
+			int totalCount = entitys.Length;
 			List<string> insertList = new List<string> ();
-			foreach (DataParameter dataParameter in paramList) {
-				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
+			foreach (DataFieldMapping field in mapping.NoIdentityFields) {
+				insertList.Add (CreateDataFieldSql (field.Name));
 			}
+
 			string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), string.Join (",", insertList));
 
 			int createCount = 0;
@@ -882,8 +882,8 @@ namespace Light.Data
 			List<CommandData> commands = new List<CommandData> ();
 			int i = 0;
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = i == 0 ? paramList : CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string[] valueList = new string[paramList.Count];
+				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
+				string[] valueList = new string[entityParams.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
 					string paramName = CreateParamName ("P" + paramIndex);

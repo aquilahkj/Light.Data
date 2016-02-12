@@ -50,9 +50,7 @@ namespace Light.Data
 		/// </summary>
 //		object synobj2 = new object ();
 
-		/// <summary>
-		/// 关联数据储存
-		/// </summary>
+
 		Dictionary<string, object> _tempRelationDatas = null;
 
 		/// <summary>

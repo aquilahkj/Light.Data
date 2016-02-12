@@ -70,10 +70,6 @@ namespace Light.Data
 			foreach (PropertyInfo pi in propertys) {
 				IAggregateFieldConfig config = ConfigManager.LoadAggregateFieldConfig (pi);
 				if (config != null) {
-//					Type type = pi.PropertyType;
-//					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
-//					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (type, pi, name, pi.Name, config, this);
-//					mapping.Handler = new PropertyHandler (pi);
 					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (pi, config, this);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					_fieldList.Add (mapping);
@@ -83,23 +79,6 @@ namespace Light.Data
 				throw new LightDataException (RE.AggregationFieldsIsNotExists);
 			}
 		}
-
-		//		public override IEnumerable<FieldMapping> GetFieldMappings ()
-		//		{
-		//			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-		//				yield return kv.Value;
-		//			}
-		//		}
-
-		//		public override FieldMapping FindFieldMapping (string fieldName)
-		//		{
-		//			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
-		//				return _fieldMappingDictionary [fieldName];
-		//			}
-		//			else {
-		//				throw new LightDataException (string.Format (RE.FieldMappingIsNotExists, fieldName));
-		//			}
-		//		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{

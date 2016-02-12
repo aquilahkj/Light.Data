@@ -41,7 +41,7 @@ namespace Light.Data
 					return null;
 				}
 				else {
-					throw new LightDataException (string.Format (RE.TypeIsNotDatabase, type.FullName));
+					throw new LightDataException (string.Format (RE.TypeIsNotDatabaseType, type.FullName));
 				}
 			}
 			dataBase.SetExtentArguments (args);

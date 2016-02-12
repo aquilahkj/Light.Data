@@ -51,7 +51,7 @@ namespace Light.Data
 		/// <summary>
 		/// 配置数据类型{0}的值为空
 		/// </summary>
-		public const string ConfigDataTypeValueIsEmpty = "config data type {0} value is empty";
+		public const string ConfigDataTypeValueIsEmpty = "config data type value is empty";
 		/// <summary>
 		/// 数据库连接配置不存在
 		/// </summary>
@@ -247,7 +247,7 @@ namespace Light.Data
 		/// <summary>
 		/// 类型{0}并非数据库类型
 		/// </summary>
-		public const string TypeIsNotDatabase = "type {0} is not database";
+		public const string TypeIsNotDatabaseType = "type {0} is not database type";
 		/// <summary>
 		/// 数据库连接配置名"{0}"不存在
 		/// </summary>
@@ -286,6 +286,8 @@ namespace Light.Data
 		public const string TransactionNotStarted = "transaction not started";
 
 		public const string TransactionAlreadyStarted = "transaction already started";
+
+		public const string TheTypeOfDataEntityIsNoConfig = "the type {0} of data entity is no config";
 	}
 }
 

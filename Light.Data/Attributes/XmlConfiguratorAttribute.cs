@@ -7,7 +7,7 @@ namespace Light.Data
 	/// <summary>
 	/// XML配置特性
 	/// </summary>
-	[AttributeUsage (AttributeTargets.Assembly)]
+	[AttributeUsage (AttributeTargets.Assembly, AllowMultiple = false)]
 	public class XmlConfiguratorAttribute : Attribute
 	{
 		/// <summary>

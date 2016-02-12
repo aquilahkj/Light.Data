@@ -4,3 +4,7 @@ obj/
 packages/
 
 *.userprefs
+
+Light.Data.MysqlTest/lightdata (copy)/lightdata_check2.config
+
+Light.Data.MysqlTest/lightdata (copy)/lightdata_check1.config

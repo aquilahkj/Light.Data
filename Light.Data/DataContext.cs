@@ -230,6 +230,33 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Insert or update.
+		/// </summary>
+		/// <returns></returns>
+		/// <param name="data">Data.</param>
+		public int InsertOrUpdate (object data)
+		{
+			bool exists = false;
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			CommandData commandData = _dataBase.Factory.CreateEntityExistsCommand (mapping, data);
+			Region region = new Region (0, 1);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
+				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default)) {
+					exists = true;
+				}
+			}
+			int result;
+			if (exists) {
+				result = Update (mapping, data);
+			}
+			else {
+				result = Insert (mapping, data);
+			}
+			return result;
+		}
+
+		/// <summary>
 		/// 新增数据
 		/// </summary>
 		/// <param name="data">数据对象</param>
@@ -237,9 +264,14 @@ namespace Light.Data
 		public int Insert (object data)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			return Insert (mapping, data);
+		}
+
+		int Insert (DataTableEntityMapping mapping, object data)
+		{
 			object obj;
 			int rInt;
-			CommandData commandData = _dataBase.Factory.CreateInsertCommand (data);
+			CommandData commandData = _dataBase.Factory.CreateInsertCommand (mapping, data);
 			CommandData commandDataIdentity = null;
 			if (mapping.IdentityField != null) {
 				commandDataIdentity = _dataBase.Factory.CreateIdentityCommand (mapping);
@@ -271,51 +303,37 @@ namespace Light.Data
 		/// <returns>受影响行数</returns>
 		public int Update (object data)
 		{
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
 			DataTableEntity entity = data as DataTableEntity;
 			if (entity != null) {
-				return Update (data, entity.GetUpdateFields ());
+				return Update (mapping, data, entity.GetUpdateFields ());
 			}
 			else {
-				return Update (data, null);
+				return Update (mapping, data, null);
 			}
 		}
 
-		/// <summary>
-		/// Insert or update.
-		/// </summary>
-		/// <returns></returns>
-		/// <param name="data">Data.</param>
-		public int InsertOrUpdate (object data)
+		internal int Update (object data, string[] updateFields)
 		{
-			bool exists = false;
-			CommandData commandData = _dataBase.Factory.CreateEntityExistsCommand (data);
-			Region region = new Region (0, 1);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
-				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default)) {
-					exists = true;
-				}
-			}
-			int result;
-			if (exists) {
-				result = Update (data);
-			}
-			else {
-				result = Insert (data);
-			}
-			return result;
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			return Update (mapping, data, updateFields);
 		}
 
-		/// <summary>
-		/// 更新数据
-		/// </summary>
-		/// <param name="data">数据对象</param>
-		/// <param name="updateFields">需更新字段</param>
-		/// <returns>受影响行数</returns>
-		public int Update (object data, string[] updateFields)
+		int Update (DataTableEntityMapping mapping, object data)
+		{
+			DataTableEntity entity = data as DataTableEntity;
+			if (entity != null) {
+				return Update (mapping, data, entity.GetUpdateFields ());
+			}
+			else {
+				return Update (mapping, data, null);
+			}
+		}
+
+		int Update (DataTableEntityMapping mapping, object data, string[] updateFields)
 		{
 			int rInt;
-			CommandData commandData = _dataBase.Factory.CreateUpdateCommand (data, updateFields);
+			CommandData commandData = _dataBase.Factory.CreateUpdateCommand (mapping, data, updateFields);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
@@ -329,8 +347,14 @@ namespace Light.Data
 		/// <returns>受影响行数</returns>
 		public int Delete (object data)
 		{
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			return Delete (mapping, data);
+		}
+
+		int Delete (DataTableEntityMapping mapping, object data)
+		{
 			int rInt;
-			CommandData commandData = _dataBase.Factory.CreateDeleteCommand (data);
+			CommandData commandData = _dataBase.Factory.CreateDeleteCommand (mapping, data);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
@@ -480,7 +504,7 @@ namespace Light.Data
 			Type arrayType = datas.GetType ();
 			Type type = arrayType.GetElementType ();
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
-			CommandData[] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (datas, batchCount);
+			CommandData[] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (mapping, datas, batchCount);
 			IDbCommand[] dbcommands = new IDbCommand[commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
 				dbcommands [i] = commandDatas [i].CreateCommand (_dataBase);
@@ -1425,91 +1449,6 @@ namespace Light.Data
 		#endregion
 
 		#region 静态函数
-
-		//		private static DataDefine TransferDataDefine (Type dataType, string name)
-		//		{
-		//			bool isNullable = false;
-		//			if (dataType.IsGenericType) {
-		//				Type frameType = dataType.GetGenericTypeDefinition ();
-		//				if (frameType.FullName == "System.Nullable`1") {
-		//					Type[] arguments = type.GetGenericArguments ();
-		//					type = arguments [0];
-		//					isNullable = true;
-		//				}
-		//			}
-		//			DataDefine define = null;
-		//			if (Type == typeof(string)) {
-		//				define = PrimitiveDataDefine.CreateString (true, name);
-		//			}
-		//			else {
-		//				define = PrimitiveDataDefine.Create (type, name);
-		//
-		//			}
-		//			return define;
-		//		}
-
-
-		//		private static DataDefine TransferDataDefine (Type dataType, string name, bool isNullable)
-		//		{
-		//			if (type.IsGenericType) {
-		//				Type frameType = type.GetGenericTypeDefinition ();
-		//				if (frameType.FullName == "System.Nullable`1") {
-		//					Type[] arguments = type.GetGenericArguments ();
-		//					type = arguments [0];
-		//					isNullable = true;
-		//				}
-		//			}
-		//			DataDefine define = null;
-		//			if (dataType == typeof(string)) {
-		//				define = PrimitiveDataDefine.CreateString (isNullable, name);
-		//			}
-		//			else {
-		//				if (isNullable) {
-		//					Type itemstype = System.Type.GetType ("System.Nullable`1");
-		//					Type type = itemstype.MakeGenericType (dataType);
-		//					define = PrimitiveDataDefine.Create (type, name);
-		//				}
-		//				else {
-		//					define = PrimitiveDataDefine.Create (dataType, name);
-		//				}
-		//			}
-		//			return define;
-		//		}
-
-		//		private static DataDefine TransferDataDefine (DataFieldMapping fieldMapping)
-		//		{
-		//			DataDefine define = null;
-		//			if (fieldMapping is PrimitiveFieldMapping) {
-		//				if (fieldMapping.ObjectType == typeof(string)) {
-		//					define = PrimitiveDataDefine.CreateString (fieldMapping.IsNullable, fieldMapping.Name);
-		//				}
-		//				else {
-		//					if (fieldMapping.IsNullable) {
-		//						Type itemstype = System.Type.GetType ("System.Nullable`1");
-		//						Type type = itemstype.MakeGenericType (fieldMapping.ObjectType);
-		//						define = PrimitiveDataDefine.Create (type, fieldMapping.Name);
-		//					}
-		//					else {
-		//						define = PrimitiveDataDefine.Create (fieldMapping.ObjectType, fieldMapping.Name);
-		//					}
-		//				}
-		//			}
-		//			else if (fieldMapping is EnumFieldMapping) {
-		//				EnumFieldMapping em = fieldMapping as EnumFieldMapping;
-		//				if (fieldMapping.IsNullable) {
-		//					Type itemstype = System.Type.GetType ("System.Nullable`1");
-		//					Type type = itemstype.MakeGenericType (fieldMapping.ObjectType);
-		//					define = EnumDataDefine.Create (type, em.EnumType, fieldMapping.Name);
-		//				}
-		//				else {
-		//					define = EnumDataDefine.Create (fieldMapping.ObjectType, em.EnumType, fieldMapping.Name);
-		//				}
-		//			}
-		//			else {
-		//				throw new LightDataException (RE.OnlyPrimitiveFieldCanSelectSingle);
-		//			}
-		//			return define;
-		//		}
 
 		private static DataDefine TransferDataDefine (Type type, DataFieldMapping fieldMapping)
 		{

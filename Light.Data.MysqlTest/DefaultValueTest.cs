@@ -23,6 +23,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckTime);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckDate);
 			Assert.AreEqual ("", valueAc.CheckData);
+			Assert.AreEqual (CheckLevelType.Low, valueAc.CheckLevel);
 		}
 
 		[Test ()]
@@ -41,6 +42,7 @@ namespace Light.Data.MysqlTest
 			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("test", valueAc.CheckData);
+			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
 		}
 
 		[Test ()]
@@ -59,6 +61,7 @@ namespace Light.Data.MysqlTest
 			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime).TotalSeconds, 1);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("test", valueAc.CheckData);
+			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
 		}
 	
 		[Test ()]
@@ -80,6 +83,7 @@ namespace Light.Data.MysqlTest
 				Assert.AreEqual (DateTime.MinValue, valueAc.CheckTime);
 				Assert.AreEqual (DateTime.MinValue, valueAc.CheckDate);
 				Assert.AreEqual ("", valueAc.CheckData);
+				Assert.AreEqual (CheckLevelType.Low, valueAc.CheckLevel);
 			}
 		}
 
@@ -102,6 +106,7 @@ namespace Light.Data.MysqlTest
 				Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
 				Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 				Assert.AreEqual ("test", valueAc.CheckData);
+				Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
 			}
 		}
 
@@ -124,6 +129,7 @@ namespace Light.Data.MysqlTest
 				Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime).TotalSeconds, 1);
 				Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 				Assert.AreEqual ("test", valueAc.CheckData);
+				Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
 			}
 		}
 	}
