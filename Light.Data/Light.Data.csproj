@@ -300,6 +300,10 @@
     <Compile Include="Mappings\DefaultTime.cs" />
     <Compile Include="Attributes\XmlConfiguratorAttribute.cs" />
     <Compile Include="Mappings\RelationFieldMapping_Old.cs" />
+    <Compile Include="LCollection.cs" />
+    <Compile Include="Mappings\SingleRelationFieldMapping.cs" />
+    <Compile Include="Mappings\CollectionRelationFieldMapping.cs" />
+    <Compile Include="Mappings\RelationPair.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

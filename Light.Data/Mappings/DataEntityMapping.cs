@@ -7,7 +7,7 @@ namespace Light.Data
 {
 	class DataEntityMapping : DataMapping
 	{
-		protected Dictionary<string, RelationFieldMapping> _relationMappingDictionary = new Dictionary<string, RelationFieldMapping> ();
+		protected Dictionary<string, RelationFieldMapping_Old> _relationMappingDictionary = new Dictionary<string, RelationFieldMapping_Old> ();
 
 		internal DataEntityMapping (Type type, string tableName, bool isDataEntity)
 			: base (type)
@@ -23,6 +23,12 @@ namespace Light.Data
 			InitialRelationField ();
 		}
 
+		public bool IsComboEntity {
+			get {
+				return _relationMappingDictionary.Count > 0;
+			}
+		}
+
 		private void InitialRelationField ()
 		{
 			if (!ObjectType.IsSubclassOf (typeof(DataEntity))) {
@@ -36,7 +42,7 @@ namespace Light.Data
 				//IRelationConfig[] configs = ConfigManager.LoadRelationConfigs(pi);
 				IRelationFieldConfig config = ConfigManager.LoadRelationFieldConfig (pi);
 				if (config != null && config.RelationKeyCount > 0) {
-					RelationFieldMapping mapping = new RelationFieldMapping (this, pi.PropertyType, pi.Name);
+					RelationFieldMapping_Old mapping = new RelationFieldMapping_Old (this, pi.PropertyType, pi.Name);
 					foreach (RelationKey key in config.GetRelationKeys()) {
 						mapping.AddRelationKeys (key.MasterKey, key.RelateKey);
 					}
@@ -49,9 +55,9 @@ namespace Light.Data
 			}
 		}
 
-		public RelationFieldMapping FindRelateionMapping (string keyName)
+		public RelationFieldMapping_Old FindRelateionMapping (string keyName)
 		{
-			RelationFieldMapping mapping;
+			RelationFieldMapping_Old mapping;
 			if (_relationMappingDictionary.TryGetValue (keyName, out mapping)) {
 				return _relationMappingDictionary [keyName];
 			}
@@ -213,7 +219,6 @@ namespace Light.Data
 					}
 				}
 				else {
-//					object obj = field.DataOrder.HasValue ? datareader [field.DataOrder.Value] : datareader [field.Name];
 					object obj = datareader [field.Name];
 					object value = field.ToProperty (obj);
 					if (!Object.Equals (value, null)) {
@@ -245,7 +250,6 @@ namespace Light.Data
 					}
 				}
 				else {
-//					object obj = field.DataOrder.HasValue ? datarow [field.DataOrder.Value] : datarow [field.Name];
 					object obj = datarow [field.Name];
 					object value = field.ToProperty (obj);
 					if (!Object.Equals (value, null)) {
@@ -264,7 +268,6 @@ namespace Light.Data
 		public override object InitialData ()
 		{
 			object item = Activator.CreateInstance (ObjectType);
-//			InitalDataField (item, this);
 			return item;
 		}
 
@@ -291,21 +294,21 @@ namespace Light.Data
 
 		#region alise
 
-//		[ThreadStatic]
-//		static string _aliasName;
-//
-//		public void SetAliasName (string name)
-//		{
-//			if (string.IsNullOrEmpty (name)) {
-//				throw new ArgumentNullException ("name");
-//			}
-//			DataEntityMapping._aliasName = name;
-//		}
-//
-//		public void ClearAliasName ()
-//		{
-//			DataEntityMapping._aliasName = null;
-//		}
+		//		[ThreadStatic]
+		//		static string _aliasName;
+		//
+		//		public void SetAliasName (string name)
+		//		{
+		//			if (string.IsNullOrEmpty (name)) {
+		//				throw new ArgumentNullException ("name");
+		//			}
+		//			DataEntityMapping._aliasName = name;
+		//		}
+		//
+		//		public void ClearAliasName ()
+		//		{
+		//			DataEntityMapping._aliasName = null;
+		//		}
 
 		#endregion
 

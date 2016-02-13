@@ -14,18 +14,24 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (relateKey)) {
 				throw new ArgumentNullException ("relateKey");
 			}
-			MasterKey = masterKey;
-			RelateKey = relateKey;
+			this.masterKey = masterKey;
+			this.relateKey = relateKey;
 		}
+
+		readonly string masterKey;
 
 		public string MasterKey {
-			get;
-			private set;
+			get {
+				return masterKey;
+			}
 		}
 
+		readonly string relateKey;
+
 		public string RelateKey {
-			get;
-			set;
+			get {
+				return relateKey;
+			}
 		}
 	}
 }

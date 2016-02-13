@@ -74,15 +74,15 @@ namespace Light.Data
 
 		#region 公共方法
 
-		protected FieldMapping (Type objectType, string name, string indexName, DataMapping typeMapping, bool isNullable, string dbType)
+		protected FieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
 		{
-			this._objectType = objectType;
-			if (objectType != null) {
-				this._typeCode = Type.GetTypeCode (objectType);
+			this._objectType = type;
+			if (type != null) {
+				this._typeCode = Type.GetTypeCode (type);
 			}
-			this._name = name;
+			this._name = fieldName;
 			this._indexName = indexName;
-			this._typeMapping = typeMapping;
+			this._typeMapping = mapping;
 			this._isNullable = isNullable;
 			this._dbType = dbType;
 		}
