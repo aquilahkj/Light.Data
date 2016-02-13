@@ -92,7 +92,6 @@ namespace Light.Data
 			else {
 				return null;
 			}
-           
 		}
 
 		private void Clear ()

@@ -160,7 +160,7 @@ namespace Light.Data
 			if (updatefieldNames != null && updatefieldNames.Length > 0) {
 				List<FieldMapping> updateFields = new List<FieldMapping> ();
 				foreach (string name in updatefieldNames) {
-					FieldMapping fm = mapping.FindFieldMapping (name);
+					DataFieldMapping fm = mapping.FindDataEntityField (name);
 					if (fm == null) {
 						continue;
 					}
@@ -291,6 +291,7 @@ namespace Light.Data
 						foreach (AggregateFunctionInfo info in functions) {
 							if (Object.ReferenceEquals (aggregateFunction, info.Function)) {
 								alias = info.Name;
+								break;
 							}
 						}
 					}
@@ -377,7 +378,7 @@ namespace Light.Data
 //			string select = GetSelectString (mapping);
 			string[] fieldNames = new string[mapping.FieldCount];
 			int i = 0;
-			foreach (FieldMapping field in mapping.FieldMappings) {
+			foreach (DataFieldMapping field in mapping.DataEntityFields) {
 				fieldNames [i] = CreateDataFieldSql (field.Name);
 				i++;
 			}
@@ -619,9 +620,9 @@ namespace Light.Data
 			string selectString;
 			int insertCount;
 			bool noidentity = false;
-			FieldMapping[] insertFieldMappings;
+			DataFieldMapping[] insertFieldMappings;
 			if (insertFields != null && insertFields.Length > 0) {
-				insertFieldMappings = new FieldMapping[insertFields.Length];
+				insertFieldMappings = new DataFieldMapping[insertFields.Length];
 				string[] fieldNames = new string[insertFields.Length];
 				for (int i = 0; i < insertFields.Length; i++) {
 					DataFieldInfo info = insertFields [i];
@@ -635,7 +636,7 @@ namespace Light.Data
 				insertString = string.Join (",", fieldNames);
 			}
 			else if (insertMapping.HasIdentity && selectMapping.HasIdentity && insertMapping.IdentityField.PositionOrder == selectMapping.IdentityField.PositionOrder) {
-				insertFieldMappings = new FieldMapping[insertMapping.FieldCount - 1];
+				insertFieldMappings = new DataFieldMapping[insertMapping.FieldCount - 1];
 				string[] fieldNames = new string[insertMapping.FieldCount - 1];
 				int i = 0;
 				foreach (DataFieldMapping field in insertMapping.NoIdentityFields) {
@@ -648,10 +649,10 @@ namespace Light.Data
 				noidentity = true;
 			}
 			else {
-				insertFieldMappings = new FieldMapping[insertMapping.FieldCount];
+				insertFieldMappings = new DataFieldMapping[insertMapping.FieldCount];
 				string[] fieldNames = new string[insertMapping.FieldCount];
 				int i = 0;
-				foreach (FieldMapping field in insertMapping.FieldMappings) {
+				foreach (DataFieldMapping field in insertMapping.DataEntityFields) {
 					insertFieldMappings [i] = field;
 					fieldNames [i] = CreateDataFieldSql (field.Name);
 					i++;
@@ -706,7 +707,7 @@ namespace Light.Data
 				}
 				string[] fieldNames = new string[insertCount];
 				int i = 0;
-				foreach (FieldMapping field in selectMapping.FieldMappings) {
+				foreach (DataFieldMapping field in selectMapping.DataEntityFields) {
 					fieldNames [i] = CreateDataFieldSql (field.Name);
 					i++;
 				}
@@ -1163,67 +1164,67 @@ namespace Light.Data
 
 		public virtual string CreateMatchSql (string field, bool left, bool right)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateDateSql (string field, string format)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateYearSql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateMonthSql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateDaySql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateHourSql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateMinuteSql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateSecondSql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateWeekSql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateWeekDaySql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateLengthSql (string field)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateSubStringSql (string field, int start, int size)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateDataBaseTimeSql ()
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		public virtual string CreateStringSql (string value)

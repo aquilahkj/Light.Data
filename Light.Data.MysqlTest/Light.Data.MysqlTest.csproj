@@ -72,6 +72,8 @@
     <Compile Include="Model\ConfigSchema.cs" />
     <Compile Include="ConfigMappingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\RelationSchema.cs" />
+    <Compile Include="CollectionRelationTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

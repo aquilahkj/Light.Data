@@ -9,6 +9,8 @@ namespace Light.Data
 	{
 		protected Dictionary<string, RelationFieldMapping_Old> _relationMappingDictionary = new Dictionary<string, RelationFieldMapping_Old> ();
 
+		protected List<CollectionRelationFieldMapping> collectionRelationFields = new List<CollectionRelationFieldMapping> ();
+
 		internal DataEntityMapping (Type type, string tableName, bool isDataEntity)
 			: base (type)
 		{
@@ -29,28 +31,50 @@ namespace Light.Data
 			}
 		}
 
+		//		private void InitialRelationField ()
+		//		{
+		//			if (!ObjectType.IsSubclassOf (typeof(DataEntity))) {
+		//				return;
+		//			}
+		//			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
+		//
+		//			foreach (PropertyInfo pi in propertys) {
+		//				//关联属性
+		//				//RelationAttribute[] relationAttributes = AttributeCore.GetPropertyAttributes<RelationAttribute>(pi, true);
+		//				//IRelationConfig[] configs = ConfigManager.LoadRelationConfigs(pi);
+		//				IRelationFieldConfig config = ConfigManager.LoadRelationFieldConfig (pi);
+		//				if (config != null && config.RelationKeyCount > 0) {
+		//					RelationFieldMapping_Old mapping = new RelationFieldMapping_Old (this, pi.PropertyType, pi.Name);
+		//					foreach (RelationKey key in config.GetRelationKeys()) {
+		//						mapping.AddRelationKeys (key.MasterKey, key.RelateKey);
+		//					}
+		////					if (!string.IsNullOrEmpty (config.PropertyName)) {
+		////						//设定关联属性名称,使用时才生成对应关系
+		////						mapping.SetRelationProperty (config.PropertyName);
+		////					}
+		//					_relationMappingDictionary.Add (mapping.RelationName, mapping);
+		//				}
+		//			}
+		//		}
+
 		private void InitialRelationField ()
 		{
-			if (!ObjectType.IsSubclassOf (typeof(DataEntity))) {
-				return;
-			}
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-
 			foreach (PropertyInfo pi in propertys) {
-				//关联属性
-				//RelationAttribute[] relationAttributes = AttributeCore.GetPropertyAttributes<RelationAttribute>(pi, true);
-				//IRelationConfig[] configs = ConfigManager.LoadRelationConfigs(pi);
 				IRelationFieldConfig config = ConfigManager.LoadRelationFieldConfig (pi);
 				if (config != null && config.RelationKeyCount > 0) {
-					RelationFieldMapping_Old mapping = new RelationFieldMapping_Old (this, pi.PropertyType, pi.Name);
-					foreach (RelationKey key in config.GetRelationKeys()) {
-						mapping.AddRelationKeys (key.MasterKey, key.RelateKey);
+					Type type = pi.PropertyType;
+					if (type.IsGenericType) {
+						Type frameType = type.GetGenericTypeDefinition ();
+						if (frameType.FullName == "Light.Data.LCollection`1" || frameType.FullName == "System.Collections.Generic.ICollection`1") {
+							Type[] arguments = type.GetGenericArguments ();
+							type = arguments [0];
+							PropertyHandler handler = new PropertyHandler (pi);
+							RelationKey[] keypairs = config.GetRelationKeys ();
+							CollectionRelationFieldMapping rmapping = new CollectionRelationFieldMapping (pi.Name, this, type, keypairs, handler);
+							collectionRelationFields.Add (rmapping);
+						}
 					}
-//					if (!string.IsNullOrEmpty (config.PropertyName)) {
-//						//设定关联属性名称,使用时才生成对应关系
-//						mapping.SetRelationProperty (config.PropertyName);
-//					}
-					_relationMappingDictionary.Add (mapping.RelationName, mapping);
 				}
 			}
 		}
@@ -146,6 +170,21 @@ namespace Light.Data
 			}
 		}
 
+		public IEnumerable<DataFieldMapping> DataEntityFields {
+			get {
+				foreach (DataFieldMapping item in _fieldList) {
+					yield return item;
+				}
+			}
+		}
+
+		public DataFieldMapping FindDataEntityField (string fieldName)
+		{
+			FieldMapping mapping;
+			_fieldMappingDictionary.TryGetValue (fieldName, out mapping);
+			return mapping as DataFieldMapping;
+		}
+
 		//		protected void InitialDataFieldMapping ()
 		//		{
 		//			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
@@ -224,6 +263,11 @@ namespace Light.Data
 					if (!Object.Equals (value, null)) {
 						field.Handler.Set (item, value);
 					}
+				}
+			}
+			if (collectionRelationFields.Count > 0) {
+				foreach (CollectionRelationFieldMapping mapping in collectionRelationFields) {
+					mapping.Handler.Set (item, mapping.ToProperty (context, item));
 				}
 			}
 			if (IsDataEntity) {

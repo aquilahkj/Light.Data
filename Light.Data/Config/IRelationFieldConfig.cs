@@ -6,7 +6,7 @@ namespace Light.Data
 {
     interface IRelationFieldConfig
     {
-        IEnumerable<RelationKey> GetRelationKeys();
+		RelationKey[]  GetRelationKeys();
 
 		/// <summary>
 		/// 关联数据表对应字段数

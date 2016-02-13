@@ -4,9 +4,12 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	public class LCollection<T>:ICollection<T> where T:class, new()
+	/// <summary>
+	/// L collection.
+	/// </summary>
+	public sealed class LCollection<T>:ICollection<T> where T:class, new()
 	{
-		List<T> list = null;
+		List<T> list;
 
 		QueryExpression query;
 
@@ -41,7 +44,7 @@ namespace Light.Data
 		/// <param name="item">Item.</param>
 		public void Add (T item)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		/// <summary>
@@ -49,7 +52,7 @@ namespace Light.Data
 		/// </summary>
 		public void Clear ()
 		{
-			list = null;
+			throw new NotSupportedException ();
 		}
 
 		/// <Docs>The object to locate in the current collection.</Docs>
@@ -85,9 +88,13 @@ namespace Light.Data
 		/// <param name="item">Item.</param>
 		public bool Remove (T item)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
+		/// <summary>
+		/// Gets the count.
+		/// </summary>
+		/// <value>The count.</value>
 		public int Count {
 			get {
 				InitialList ();
@@ -95,6 +102,10 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this instance is read only.
+		/// </summary>
+		/// <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
 		public bool IsReadOnly {
 			get {
 				return false;

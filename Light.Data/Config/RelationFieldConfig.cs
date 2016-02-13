@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
     class RelationFieldConfig : IRelationFieldConfig, IConfiguratorFieldConfig
     {
-        List<RelationKey> _relationKeys = new List<RelationKey>();
+        readonly List<RelationKey> _relationKeys = new List<RelationKey>();
 
         public RelationFieldConfig(string fieldName)
         {
@@ -34,12 +33,13 @@ namespace Light.Data
             private set;
         }
 
-        public IEnumerable<RelationKey> GetRelationKeys()
+        public RelationKey[] GetRelationKeys()
         {
-            foreach (RelationKey key in _relationKeys)
-            {
-                yield return key;
-            }
+//            foreach (RelationKey key in _relationKeys)
+//            {
+//                yield return key;
+//            }
+			return _relationKeys.ToArray();
         }
 
         public int RelationKeyCount

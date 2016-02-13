@@ -44,7 +44,7 @@ namespace Light.Data
 		internal DataFieldInfo (DataEntityMapping mapping, string name)
 		{
 			TableMapping = mapping;
-			DataField = TableMapping.FindFieldMapping (name) as DataFieldMapping;
+			DataField = TableMapping.FindDataEntityField (name);
 			if (DataField == null) {
 				DataField = new CustomFieldMapping (name, mapping);
 			}

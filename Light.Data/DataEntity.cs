@@ -35,7 +35,7 @@ namespace Light.Data
 		public void SetContext (DataContext context)
 		{
 			if (context == null) {
-				throw new ArgumentNullException ("DataContext");
+				throw new ArgumentNullException ("context");
 			}
 			_context = context;
 		}

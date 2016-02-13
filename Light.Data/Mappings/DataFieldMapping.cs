@@ -115,8 +115,6 @@ namespace Light.Data
 
 		protected int _positionOrder;
 
-		//		protected int _fieldOrder;
-
 		public int? DataOrder {
 			get {
 				return _dataOrder;
@@ -128,15 +126,6 @@ namespace Light.Data
 				return _positionOrder;
 			}
 		}
-
-		//		public int FieldOrder {
-		//			get {
-		//				return _fieldOrder;
-		//			}
-		//			internal set {
-		//				_fieldOrder = value;
-		//			}
-		//		}
 
 		public PropertyHandler Handler {
 			get {

@@ -93,9 +93,9 @@ namespace Light.Data
 				}
 			}
 			if (keyfield == null) {
-				FieldMapping stringField = null;
-				FieldMapping numberField = null;
-				foreach (FieldMapping field in mapping.FieldMappings) {
+				DataFieldMapping stringField = null;
+				DataFieldMapping numberField = null;
+				foreach (DataFieldMapping field in mapping.DataEntityFields) {
 					if (field.TypeCode == TypeCode.Boolean || field.TypeCode == TypeCode.DBNull || field.TypeCode == TypeCode.Empty || field.TypeCode == TypeCode.Object) {
 						continue;
 					}

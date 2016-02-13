@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Reflection;
 using System.Data;
 
 namespace Light.Data
@@ -17,9 +19,9 @@ namespace Light.Data
 
 		readonly Type relateType;
 
-		readonly DataMapping masterMapping;
+		readonly DataEntityMapping masterMapping;
 
-		public DataMapping Mapping {
+		public DataEntityMapping Mapping {
 			get {
 				return masterMapping;
 			}
@@ -27,13 +29,19 @@ namespace Light.Data
 
 		readonly string fieldName;
 
-		DataMapping relateMapping = null;
+		public string FieldName {
+			get {
+				return fieldName;
+			}
+		}
 
-		DataFieldInfo[] relateInfos = null;
+		readonly DataFieldMapping[] masterMappings = null;
 
-		FieldMapping[] masterMappings = null;
+		DataEntityMapping relateMapping;
 
-		public CollectionRelationFieldMapping (string fieldName, DataMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
+		DataFieldInfo[] relateInfos;
+
+		public CollectionRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
 		{
 			if (fieldName == null)
 				throw new ArgumentNullException ("fieldName");
@@ -50,15 +58,15 @@ namespace Light.Data
 			this.relateType = relateType;
 			this.keyPairs = keyPairs;
 			this.handler = handler;
-			masterMappings = new FieldMapping[keyPairs.Length];
+			masterMappings = new DataFieldMapping[keyPairs.Length];
 			for (int i = 0; i < keyPairs.Length; i++) {
-				masterMappings [i] = mapping.FindFieldMapping (keyPairs [i].MasterKey);
+				masterMappings [i] = mapping.FindDataEntityField (keyPairs [i].MasterKey);
 			}
 		}
 
 		readonly object locker = new object ();
 
-		public object ToProperty (DataContext context, IDataReader datareader)
+		public object ToProperty (DataContext context, object source)
 		{
 			if (this.relateMapping == null) {
 				lock (locker) {
@@ -66,13 +74,42 @@ namespace Light.Data
 						DataEntityMapping mapping = DataMapping.GetEntityMapping (this.relateType);
 						DataFieldInfo[] infos = new DataFieldInfo[keyPairs.Length];
 						for (int i = 0; i < keyPairs.Length; i++) {
-							DataFieldMapping field = mapping.FindFieldMapping (keyPairs [i].RelateKey) as DataFieldMapping;
-//							infos[i]=new DataFieldInfo(
+							DataFieldMapping field = mapping.FindDataEntityField (keyPairs [i].RelateKey);
+							infos [i] = new DataFieldInfo (field);
 						}
+						this.relateInfos = infos;
+						this.relateMapping = mapping;
+
 					}
 				}
 			}
-			return null;
+			QueryExpression expression = null;
+			for (int i = 0; i < masterMappings.Length; i++) {
+				DataFieldInfo info = this.relateInfos [i];
+				DataFieldMapping field = this.masterMappings [i];
+				expression = QueryExpression.And (expression, info == field.Handler.Get (source));
+			}
+			Type itemstype = Type.GetType ("Light.Data.LCollection`1");
+			Type objectType = itemstype.MakeGenericType (this.relateType);
+//			BindingFlags flags = BindingFlags.CreateInstance | BindingFlags.NonPublic;
+//			object[] args = new object[]{ context, expression };
+//			object target = Activator.CreateInstance (objectType, flags, null, args, null);
+//			object target = Activator.CreateInstance(objectType,context, expression);
+			object target = null;
+			ConstructorInfo defaultConstructorInfo = null;
+			ConstructorInfo[] constructorInfoArray = objectType.GetConstructors (BindingFlags.Instance | BindingFlags.NonPublic);
+			foreach (ConstructorInfo constructorInfo in constructorInfoArray) {
+				ParameterInfo[] parameterInfoArray = constructorInfo.GetParameters ();
+				if (parameterInfoArray.Length == 2) {
+					defaultConstructorInfo = constructorInfo;
+					break;
+				}
+			}
+			if (defaultConstructorInfo != null) {
+				object[] args = new object[]{ context, expression };
+				target = defaultConstructorInfo.Invoke (args);
+			}
+			return target;
 		}
 
 	}
