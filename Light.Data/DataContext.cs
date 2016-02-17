@@ -761,28 +761,6 @@ namespace Light.Data
 			return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level);
 		}
 
-		//		/// <summary>
-		//		/// 生成数据查询枚举
-		//		/// </summary>
-		//		/// <param name="mapping">数据映射</param>
-		//		/// <param name="query">查询表达式</param>
-		//		/// <param name="order">排序表达式</param>
-		//		/// <param name="region">查询范围</param>
-		//		/// <param name="level">安全级别</param>
-		//		/// <returns>数据集合</returns>
-		//		internal IList QueryDataList (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//		{
-		//			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
-		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//				IList items = CreateList (mapping.ObjectType);
-		//				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
-		//				foreach (object obj in ie) {
-		//					items.Add (obj);
-		//				}
-		//				return items;
-		//			}
-		//		}
-
 		/// <summary>
 		/// 生成数据查询枚举
 		/// </summary>
@@ -805,19 +783,18 @@ namespace Light.Data
 			return list;
 		}
 
-		//		internal IList QueryJoinDataList (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//		{
-		//			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
-		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//				IList items = CreateList (mapping.ObjectType);
-		//				IEnumerable ie = QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
-		//				foreach (object obj in ie) {
-		//					items.Add (obj);
-		//				}
-		//				return items;
-		//			}
-		//		}
-
+		/// <summary>
+		/// Queries the join data list.
+		/// </summary>
+		/// <returns>The join data list.</returns>
+		/// <param name="mapping">Mapping.</param>
+		/// <param name="selector">Selector.</param>
+		/// <param name="modelList">Model list.</param>
+		/// <param name="query">Query.</param>
+		/// <param name="order">Order.</param>
+		/// <param name="region">Region.</param>
+		/// <param name="level">Level.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		internal List<T> QueryJoinDataList<T> (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 			where T:class, new()
 		{
@@ -944,8 +921,6 @@ namespace Light.Data
 			return target;
 		}
 
-
-
 		/// <summary>
 		/// 统计行数
 		/// </summary>
@@ -1019,7 +994,6 @@ namespace Light.Data
 			}
 			return exists;
 		}
-
 
 		/// <summary>
 		/// DataTable读取
@@ -1285,32 +1259,35 @@ namespace Light.Data
 				start = 0;
 				size = int.MaxValue;
 			}
-			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
-				transaction.Open ();
-				transaction.SetupCommand (dbcommand);
-				OutputCommand ("QueryDataMappingReader", dbcommand, level, start, size);
-				using (IDataReader reader = dbcommand.ExecuteReader ()) {
-					int index = 0;
-					int count = 0;
-					bool over = false;
-					while (reader.Read ()) {
-						if (over) {
-							dbcommand.Cancel ();
-							ClearTempRelate ();
-							break;
-						}
-						if (index >= start) {
-							count++;
-							object item = source.LoadData (this, reader);
-							if (count >= size) {
-								over = true;
+			try {
+				using (TransactionConnection transaction = CreateTransactionConnection (level)) {
+					transaction.Open ();
+					transaction.SetupCommand (dbcommand);
+					OutputCommand ("QueryDataMappingReader", dbcommand, level, start, size);
+					using (IDataReader reader = dbcommand.ExecuteReader ()) {
+						int index = 0;
+						int count = 0;
+						bool over = false;
+						while (reader.Read ()) {
+							if (over) {
+								dbcommand.Cancel ();
+								break;
 							}
-							yield return item as T;
+							if (index >= start) {
+								count++;
+								object item = source.LoadData (this, reader);
+								if (count >= size) {
+									over = true;
+								}
+								yield return item as T;
+							}
+							index++;
 						}
-						index++;
 					}
+					transaction.Commit ();
 				}
-				transaction.Commit ();
+			} finally {
+				ClearTempRelate ();
 			}
 		}
 

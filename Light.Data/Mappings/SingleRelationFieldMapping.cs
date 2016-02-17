@@ -93,7 +93,7 @@ namespace Light.Data
 						this.relateInfos = infos;
 						this.relateMapping = mapping;
 //						this.fieldExpression = expression;
-						this.item = new JoinItem (this.relateInfos, expression);
+						this.item = new JoinItem (this.relateMapping, this.relateInfos, expression);
 					}
 				}
 			}
@@ -102,18 +102,20 @@ namespace Light.Data
 		public object ToProperty (DataContext context, object source)
 		{
 			InitialRelateMapping ();
-			string[] arr = new string[masterMappings.Length];
+			string[] relatePairs = new string[masterMappings.Length];
+//			string[] masterPairs = new string[masterMappings.Length];
 			object[] obj = new object[masterMappings.Length];
 			for (int i = 0; i < masterMappings.Length; i++) {
 				DataFieldMapping field = this.masterMappings [i];
 				object value = field.Handler.Get (source);
 				obj [i] = value;
-				arr [i] = string.Format ("{0}={1}", this.relateInfos [i].FieldName, value);
+				relatePairs [i] = string.Format ("{0}={1}", this.relateInfos [i].FieldName, value);
+//				masterPairs [i] = string.Format ("{0}={1}", this.masterInfos [i].FieldName, value);
 			}
-			string key = string.Join ("&", arr);
-
+			string relateKey = string.Join ("&", relatePairs);
+//			string masterKey = string.Join ("&", masterPairs);
 			object target;
-			if (!context.GetRelationData (this.relateMapping, key, out target)) {
+			if (!context.GetRelationData (this.relateMapping, relateKey, out target)) {
 				QueryExpression expression = null;
 				for (int i = 0; i < masterMappings.Length; i++) {
 					DataFieldInfo info = this.relateInfos [i];
@@ -121,7 +123,7 @@ namespace Light.Data
 					expression = QueryExpression.And (expression, info == value);
 				}
 				target = context.SelectFirst (this.relateMapping, expression);
-				context.SetRelationData (this.relateMapping, key, target);
+				context.SetRelationData (this.relateMapping, relateKey, target);
 				return target;
 			}
 			else {
@@ -129,27 +131,21 @@ namespace Light.Data
 			}
 		}
 
-		public object ToProperty (DataContext context, IDataReader datareader, Dictionary<DataEntityMapping,object> datas)
+		public object ToProperty (DataContext context, IDataReader datareader, Dictionary<string,object> datas)
 		{
-//			foreach (DataFieldInfo info in this.relateInfos) {
-//				string name = string.Format ("{0}_{1}", this.relateMapping.TableName, info.FieldName);
-//				object value = datareader [name];
-//
-//			}
-
 			object value;
-			if (!datas.TryGetValue (this.relateMapping, out value)) {
+			if (!datas.TryGetValue (this.relateMapping.TableName, out value)) {
 				value = this.relateMapping.LoadJoinTableData (context, datareader, this.relateInfos, datas);
-				datas.Add (this.relateMapping, value);
+				datas.Add (this.relateMapping.TableName, value);
 			}
 			return value;
 		}
 
-		public void LoadJoinModels (Dictionary<DataEntityMapping,JoinItem> relates)
+		public void LoadJoinModels (Dictionary<string,JoinItem> relates)
 		{
 			InitialRelateMapping ();
-			if (!relates.ContainsKey (this.relateMapping)) {
-				relates.Add (this.relateMapping, this.item);
+			if (!relates.ContainsKey (this.relateMapping.TableName)) {
+				relates.Add (this.relateMapping.TableName, this.item);
 			}
 			if (this.relateMapping.HasJoinTableModel) {
 				this.relateMapping.LoadJoinModels (relates);

@@ -161,8 +161,8 @@ namespace Light.Data
 
 		void InitialJoinCapsule ()
 		{
-			Dictionary<DataEntityMapping, JoinItem> relates = new Dictionary<DataEntityMapping, JoinItem> ();
-			relates.Add (this, null);
+			Dictionary<string, JoinItem> relates = new Dictionary<string, JoinItem> ();
+			relates.Add (this.TableName, null);
 			LoadJoinModels (relates);
 			JoinSelector selector = new JoinSelector ();
 			List<JoinModel> models = new List<JoinModel> ();
@@ -173,11 +173,11 @@ namespace Light.Data
 				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", this.TableName, info.FieldName));
 				selector.SetAliasDataField (alias);
 			}
-			foreach (KeyValuePair<DataEntityMapping, JoinItem> item in relates) {
+			foreach (KeyValuePair<string, JoinItem> item in relates) {
 				if (item.Value == null) {
 					continue;
 				}
-				DataEntityMapping mapping = item.Key;
+				DataEntityMapping mapping = item.Value.Mapping;
 				DataFieldExpression expression = item.Value.Expression;
 				foreach (DataFieldMapping field in mapping._fieldList) {
 					DataFieldInfo info = new DataFieldInfo (field);
@@ -213,7 +213,7 @@ namespace Light.Data
 			return mapping as DataFieldMapping;
 		}
 
-		public void LoadJoinModels (Dictionary<DataEntityMapping,JoinItem> relates)
+		public void LoadJoinModels (Dictionary<string,JoinItem> relates)
 		{
 			if (singleJoinTableRelationFields.Count > 0) {
 				foreach (SingleRelationFieldMapping mapping in singleJoinTableRelationFields) {
@@ -228,7 +228,7 @@ namespace Light.Data
 			}
 		}
 
-		public object LoadJoinTableData (DataContext context, IDataReader datareader, DataFieldInfo[] relateInfos, Dictionary<DataEntityMapping,object> datas)
+		public object LoadJoinTableData (DataContext context, IDataReader datareader, DataFieldInfo[] relateInfos, Dictionary<string,object> datas)
 		{
 			if (relateInfos != null) {
 //				object[] relateObjs = new object[relateInfos.Length];
@@ -301,8 +301,8 @@ namespace Light.Data
 			
 			object item = Activator.CreateInstance (ObjectType);
 			if (this.singleJoinTableRelationFields.Count > 0) {
-				Dictionary<DataEntityMapping,object> datas = new Dictionary<DataEntityMapping, object> ();
-				datas.Add (this, item);
+				Dictionary<string,object> datas = new Dictionary<string, object> ();
+				datas.Add (this.TableName, item);
 				return LoadJoinTableData (context, datareader, null, datas);
 			}
 			foreach (DataFieldMapping field in this._fieldList) {
@@ -331,8 +331,12 @@ namespace Light.Data
 				}
 			}
 			if (singleRequeryRelationFields.Count > 0) {
+//				context.SetRelationData (this, null, item);
 				foreach (SingleRelationFieldMapping mapping in singleRequeryRelationFields) {
-					mapping.Handler.Set (item, mapping.ToProperty (context, item));
+					object value = mapping.ToProperty (context, item);
+					if (!Object.Equals (value, null)) {
+						mapping.Handler.Set (item, value);
+					}
 				}
 			}
 			if (IsDataEntity) {

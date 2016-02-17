@@ -12,7 +12,7 @@ namespace Light.Data.MysqlTest
 		public void TestCase_Base ()
 		{
 			InitialUserTable (40);
-			InitialUserLevelTable (10);
+			InitialUserLevelTable (6);
 
 			List<TeUser> users;
 			List<TeUserLevel> levels;
@@ -33,8 +33,13 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<TeUser,TeUserLevel> kvs in dict) {
 				TeUserWithLevel lu = list.Find (x => x.Id == kvs.Key.Id);
 				Assert.NotNull (lu);
-				Assert.AreEqual (lu.LevelId, lu.UserLevel.Id);
-				Assert.AreEqual (kvs.Value.Id, lu.UserLevel.Id);
+				if (levels.Exists (x => x.Id == lu.LevelId)) {
+					Assert.AreEqual (lu.LevelId, lu.UserLevel.Id);
+					Assert.AreEqual (kvs.Value.Id, lu.UserLevel.Id);
+				}
+				else {
+					Assert.IsNull (lu.UserLevel);
+				}
 			}
 
 			foreach (TeUserLevel level in levels) {
@@ -55,7 +60,7 @@ namespace Light.Data.MysqlTest
 		public void TestCase_TestCase_Inherit ()
 		{
 			InitialUserTable (40);
-			InitialUserLevelTable (10);
+			InitialUserLevelTable (6);
 
 			List<TeUser> users;
 			List<TeUserLevel> levels;
@@ -76,8 +81,13 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<TeUser,TeUserLevel> kvs in dict) {
 				TeUserWithLevel2 lu = list.Find (x => x.Id == kvs.Key.Id);
 				Assert.NotNull (lu);
-				Assert.AreEqual (lu.LevelId, lu.UserLevel.Id);
-				Assert.AreEqual (kvs.Value.Id, lu.UserLevel.Id);
+				if (levels.Exists (x => x.Id == lu.LevelId)) {
+					Assert.AreEqual (lu.LevelId, lu.UserLevel.Id);
+					Assert.AreEqual (kvs.Value.Id, lu.UserLevel.Id);
+				}
+				else {
+					Assert.IsNull (lu.UserLevel);
+				}
 			}
 
 			foreach (TeUserLevel level in levels) {
@@ -98,7 +108,7 @@ namespace Light.Data.MysqlTest
 		public void TestCase_TestCase_NoEntity ()
 		{
 			InitialUserTable (40);
-			InitialUserLevelTable (10);
+			InitialUserLevelTable (6);
 
 			List<TeUser> users;
 			List<TeUserLevel> levels;
@@ -119,8 +129,13 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<TeUser,TeUserLevel> kvs in dict) {
 				TeUserWithLevel3 lu = list.Find (x => x.Id == kvs.Key.Id);
 				Assert.NotNull (lu);
-				Assert.AreEqual (lu.LevelId, lu.UserLevel.Id);
-				Assert.AreEqual (kvs.Value.Id, lu.UserLevel.Id);
+				if (levels.Exists (x => x.Id == lu.LevelId)) {
+					Assert.AreEqual (lu.LevelId, lu.UserLevel.Id);
+					Assert.AreEqual (kvs.Value.Id, lu.UserLevel.Id);
+				}
+				else {
+					Assert.IsNull (lu.UserLevel);
+				}
 			}
 
 			foreach (TeUserLevel level in levels) {
