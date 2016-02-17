@@ -11,23 +11,11 @@ namespace Light.Data
 	public class RelationPropertyAttribute : Attribute
 	{
 		/// <summary>
-		/// 构造函数
-		/// </summary>
-		/// <param name="propertyName">关联的对象属性名称</param>
-		public RelationPropertyAttribute (string propertyName)
-		{
-			if (string.IsNullOrEmpty (propertyName)) {
-				throw new ArgumentNullException ("propertyName");
-			}
-			PropertyName = propertyName;
-		}
-
-		/// <summary>
 		/// 关联的对象属性名称
 		/// </summary>
-		public string PropertyName {
+		public RelationMode RelationMode {
 			get;
-			private set;
+			set;
 		}
 	}
 }

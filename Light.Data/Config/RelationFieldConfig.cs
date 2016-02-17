@@ -21,7 +21,7 @@ namespace Light.Data
             _relationKeys.Add(new RelationKey(masterKey, relateKey));
         }
 
-        public string PropertyName
+		public RelationMode RelationMode
         {
             get;
             set;

@@ -375,6 +375,12 @@ namespace Light.Data
 			if (region != null && !_canInnerPage) {
 				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
 			}
+
+			if (mapping.HasJoinTableModel) {
+				JoinCapsule capsule = mapping.LoadJoinCapsule (query, order);
+				return CreateSelectJoinTableCommand (capsule.Slector, capsule.Models, null, null);
+			}
+
 //			string select = GetSelectString (mapping);
 			string[] fieldNames = new string[mapping.FieldCount];
 			int i = 0;

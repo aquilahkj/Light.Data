@@ -66,7 +66,7 @@ namespace Light.Data
 
 		readonly object locker = new object ();
 
-		public object ToProperty (DataContext context, object source)
+		void InitialRelateMapping ()
 		{
 			if (this.relateMapping == null) {
 				lock (locker) {
@@ -79,10 +79,14 @@ namespace Light.Data
 						}
 						this.relateInfos = infos;
 						this.relateMapping = mapping;
-
 					}
 				}
 			}
+		}
+
+		public object ToProperty (DataContext context, object source)
+		{
+			InitialRelateMapping ();
 			QueryExpression expression = null;
 			for (int i = 0; i < masterMappings.Length; i++) {
 				DataFieldInfo info = this.relateInfos [i];
@@ -91,10 +95,6 @@ namespace Light.Data
 			}
 			Type itemstype = Type.GetType ("Light.Data.LCollection`1");
 			Type objectType = itemstype.MakeGenericType (this.relateType);
-//			BindingFlags flags = BindingFlags.CreateInstance | BindingFlags.NonPublic;
-//			object[] args = new object[]{ context, expression };
-//			object target = Activator.CreateInstance (objectType, flags, null, args, null);
-//			object target = Activator.CreateInstance(objectType,context, expression);
 			object target = null;
 			ConstructorInfo defaultConstructorInfo = null;
 			ConstructorInfo[] constructorInfoArray = objectType.GetConstructors (BindingFlags.Instance | BindingFlags.NonPublic);
@@ -106,7 +106,7 @@ namespace Light.Data
 				}
 			}
 			if (defaultConstructorInfo != null) {
-				object[] args = new object[]{ context, expression };
+				object[] args = { context, expression };
 				target = defaultConstructorInfo.Invoke (args);
 			}
 			return target;

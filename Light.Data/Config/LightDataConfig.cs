@@ -244,7 +244,10 @@ namespace Light.Data
 			}
 			config = new RelationFieldConfig (fieldName);
 			if (fieldNode.Attributes ["property"] != null) {
-				config.PropertyName = fieldNode.Attributes ["property"].Value;
+				RelationMode mode;
+				if (Enum.TryParse<RelationMode> (fieldNode.Attributes ["property"].Value, out mode)) {
+					config.RelationMode = mode;
+				}
 			}
 			foreach (XmlNode keyNode in fieldNode.ChildNodes) {
 				if (keyNode.Name == "relationKey") {
@@ -320,10 +323,10 @@ namespace Light.Data
 			}
 		}
 
-//		public bool ContainsDataTableConfig (Type type)
-//		{
-//			return _dataTableConfigs.ContainsKey (type);
-//		}
+		//		public bool ContainsDataTableConfig (Type type)
+		//		{
+		//			return _dataTableConfigs.ContainsKey (type);
+		//		}
 
 		public DataTableConfig GetDataTableConfig (Type type)
 		{
@@ -332,10 +335,10 @@ namespace Light.Data
 			return config;
 		}
 
-//		public bool ContainsAggregateTableConfig (Type type)
-//		{
-//			return _aggregateTableConfigs.ContainsKey (type);
-//		}
+		//		public bool ContainsAggregateTableConfig (Type type)
+		//		{
+		//			return _aggregateTableConfigs.ContainsKey (type);
+		//		}
 
 		public AggregateTableConfig GetAggregateTableConfig (Type type)
 		{

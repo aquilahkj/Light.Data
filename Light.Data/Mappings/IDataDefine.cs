@@ -6,6 +6,6 @@ namespace Light.Data
 	{
 		object LoadData (DataContext context, IDataReader datareader);
 
-		object LoadData (DataContext context, DataRow datarow);
+//		object LoadData (DataContext context, DataRow datarow);
 	}
 }

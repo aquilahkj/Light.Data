@@ -7,9 +7,11 @@ namespace Light.Data
 {
 	class DataEntityMapping : DataMapping
 	{
-		protected Dictionary<string, RelationFieldMapping_Old> _relationMappingDictionary = new Dictionary<string, RelationFieldMapping_Old> ();
-
 		protected List<CollectionRelationFieldMapping> collectionRelationFields = new List<CollectionRelationFieldMapping> ();
+
+		protected List<SingleRelationFieldMapping> singleRequeryRelationFields = new List<SingleRelationFieldMapping> ();
+
+		protected List<SingleRelationFieldMapping> singleJoinTableRelationFields = new List<SingleRelationFieldMapping> ();
 
 		internal DataEntityMapping (Type type, string tableName, bool isDataEntity)
 			: base (type)
@@ -24,38 +26,6 @@ namespace Light.Data
 			InitialDataFieldMapping ();
 			InitialRelationField ();
 		}
-
-		public bool IsComboEntity {
-			get {
-				return _relationMappingDictionary.Count > 0;
-			}
-		}
-
-		//		private void InitialRelationField ()
-		//		{
-		//			if (!ObjectType.IsSubclassOf (typeof(DataEntity))) {
-		//				return;
-		//			}
-		//			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-		//
-		//			foreach (PropertyInfo pi in propertys) {
-		//				//关联属性
-		//				//RelationAttribute[] relationAttributes = AttributeCore.GetPropertyAttributes<RelationAttribute>(pi, true);
-		//				//IRelationConfig[] configs = ConfigManager.LoadRelationConfigs(pi);
-		//				IRelationFieldConfig config = ConfigManager.LoadRelationFieldConfig (pi);
-		//				if (config != null && config.RelationKeyCount > 0) {
-		//					RelationFieldMapping_Old mapping = new RelationFieldMapping_Old (this, pi.PropertyType, pi.Name);
-		//					foreach (RelationKey key in config.GetRelationKeys()) {
-		//						mapping.AddRelationKeys (key.MasterKey, key.RelateKey);
-		//					}
-		////					if (!string.IsNullOrEmpty (config.PropertyName)) {
-		////						//设定关联属性名称,使用时才生成对应关系
-		////						mapping.SetRelationProperty (config.PropertyName);
-		////					}
-		//					_relationMappingDictionary.Add (mapping.RelationName, mapping);
-		//				}
-		//			}
-		//		}
 
 		private void InitialRelationField ()
 		{
@@ -75,18 +45,25 @@ namespace Light.Data
 							collectionRelationFields.Add (rmapping);
 						}
 					}
+					else {
+						PropertyHandler handler = new PropertyHandler (pi);
+						RelationKey[] keypairs = config.GetRelationKeys ();
+						SingleRelationFieldMapping rmapping = new SingleRelationFieldMapping (pi.Name, this, type, keypairs, handler);
+						if (config.RelationMode == RelationMode.MultiQuery) {
+							singleRequeryRelationFields.Add (rmapping);
+						}
+						else {
+							singleJoinTableRelationFields.Add (rmapping);
+						}
+
+					}
 				}
 			}
 		}
 
-		public RelationFieldMapping_Old FindRelateionMapping (string keyName)
-		{
-			RelationFieldMapping_Old mapping;
-			if (_relationMappingDictionary.TryGetValue (keyName, out mapping)) {
-				return _relationMappingDictionary [keyName];
-			}
-			else {
-				throw new LightDataException (string.Format (RE.RelationMappingIsNotExists, keyName));
+		public bool IsSupportInnerPage {
+			get {
+				return this.singleJoinTableRelationFields.Count == 0;
 			}
 		}
 
@@ -178,6 +155,57 @@ namespace Light.Data
 			}
 		}
 
+		object joinLock = new object ();
+
+		JoinCapsule baseJoinCapsule = null;
+
+		void InitialJoinCapsule ()
+		{
+			Dictionary<DataEntityMapping, JoinItem> relates = new Dictionary<DataEntityMapping, JoinItem> ();
+			relates.Add (this, null);
+			LoadJoinModels (relates);
+			JoinSelector selector = new JoinSelector ();
+			List<JoinModel> models = new List<JoinModel> ();
+			JoinModel mainModel = new JoinModel (this, null, null, null);
+			models.Add (mainModel);
+			foreach (DataFieldMapping field in this._fieldList) {
+				DataFieldInfo info = new DataFieldInfo (field);
+				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", this.TableName, info.FieldName));
+				selector.SetAliasDataField (alias);
+			}
+			foreach (KeyValuePair<DataEntityMapping, JoinItem> item in relates) {
+				if (item.Value == null) {
+					continue;
+				}
+				DataEntityMapping mapping = item.Key;
+				DataFieldExpression expression = item.Value.Expression;
+				foreach (DataFieldMapping field in mapping._fieldList) {
+					DataFieldInfo info = new DataFieldInfo (field);
+					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", mapping.TableName, info.FieldName));
+					selector.SetAliasDataField (alias);
+				}
+				JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
+				JoinModel model = new JoinModel (mapping, connect, null, null);
+				models.Add (model);
+			}
+			this.baseJoinCapsule = new JoinCapsule (selector, models);
+		}
+
+		public JoinCapsule LoadJoinCapsule (QueryExpression query, OrderExpression order)
+		{
+			if (singleJoinTableRelationFields.Count == 0) {
+				return null;
+			}
+			if (baseJoinCapsule == null) {
+				lock (joinLock) {
+					if (baseJoinCapsule == null) {
+						InitialJoinCapsule ();
+					}
+				}
+			}
+			return baseJoinCapsule.CloneCapsule (query, order);
+		}
+
 		public DataFieldMapping FindDataEntityField (string fieldName)
 		{
 			FieldMapping mapping;
@@ -185,66 +213,98 @@ namespace Light.Data
 			return mapping as DataFieldMapping;
 		}
 
-		//		protected void InitialDataFieldMapping ()
-		//		{
-		//			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
-		//			bool useOrder = false;
-		//			int index = 0;
-		//			List<DataFieldMapping> list = new List<DataFieldMapping> ();
-		//			foreach (PropertyInfo pi in propertys) {
-		//				//字段属性
-		//				IDataFieldConfig config = ConfigManager.LoadDataFieldConfig (pi);
-		//				if (config != null) {
-		//					index++;
-		//					DataFieldMapping mapping = DataFieldMapping.CreateDataFieldMapping (pi, config, index, this);
-		//
-		//					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
-		//					if (mapping.Name != mapping.IndexName) {
-		//						_fieldMappingDictionary.Add (mapping.Name, mapping);
-		//					}
-		//					list.Add (mapping);
-		//					if (mapping.DataOrder != null) {
-		//						useOrder = true;
-		//					}
-		//				}
-		//			}
-		//			if (list.Count == 0) {
-		//				throw new LightDataException (RE.DataFieldsIsNotExists);
-		//			}
-		//			if (useOrder) {
-		//				list.Sort ((x, y) => {
-		//					if (x.DataOrder.HasValue && y.DataOrder.HasValue) {
-		//						if (x.DataOrder > y.DataOrder) {
-		//							return  1;
-		//						}
-		//						else if (x.DataOrder < y.DataOrder) {
-		//							return -1;
-		//						}
-		//						else {
-		//							return x.PositionOrder > y.PositionOrder ? 1 : -1;
-		//						}
-		//					}
-		//					else if (x.DataOrder.HasValue && !y.DataOrder.HasValue) {
-		//						return  -1;
-		//					}
-		//					else if (!x.DataOrder.HasValue && y.DataOrder.HasValue) {
-		//						return  1;
-		//					}
-		//					else {
-		//						return x.PositionOrder > y.PositionOrder ? 1 : -1;
-		//					}
-		//				});
-		//			}
-		//
-		//			for (int i = 0; i < list.Count; i++) {
-		//				list [i].FieldOrder = i + 1;
-		//			}
-		//			_fieldList.AddRange (list);
-		//		}
+		public void LoadJoinModels (Dictionary<DataEntityMapping,JoinItem> relates)
+		{
+			if (singleJoinTableRelationFields.Count > 0) {
+				foreach (SingleRelationFieldMapping mapping in singleJoinTableRelationFields) {
+					mapping.LoadJoinModels (relates);
+				}
+			}
+		}
+
+		public bool HasJoinTableModel {
+			get {
+				return singleJoinTableRelationFields.Count > 0;
+			}
+		}
+
+		public object LoadJoinTableData (DataContext context, IDataReader datareader, DataFieldInfo[] relateInfos, Dictionary<DataEntityMapping,object> datas)
+		{
+			if (relateInfos != null) {
+//				object[] relateObjs = new object[relateInfos.Length];
+				for (int i = 0; i < relateInfos.Length; i++) {
+					string name = string.Format ("{0}_{1}", this.TableName, relateInfos [i].FieldName);
+					object obj = datareader [name];
+					if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
+						return null;
+					}
+//					else {
+//						relateObjs [i] = obj;
+//					}
+				}
+//				item = Activator.CreateInstance (ObjectType);
+//				for (int i = 0; i < relateInfos.Length; i++) {
+//				}
+			}
+			object item = Activator.CreateInstance (ObjectType);
+
+			foreach (DataFieldMapping field in this._fieldList) {
+				if (field == null)
+					continue;
+
+				IFieldCollection fieldCollection = field as IFieldCollection;
+				if (fieldCollection != null) {
+					IFieldCollection ifc = fieldCollection;
+					object obj = ifc.LoadData (context, datareader);
+					if (!Object.Equals (obj, null)) {
+						field.Handler.Set (item, obj);
+					}
+				}
+				else {
+					string name = string.Format ("{0}_{1}", this.TableName, field.Name);
+					object obj = datareader [name];
+					object value = field.ToProperty (obj);
+					if (!Object.Equals (value, null)) {
+						field.Handler.Set (item, value);
+					}
+				}
+			}
+			if (collectionRelationFields.Count > 0) {
+				foreach (CollectionRelationFieldMapping mapping in collectionRelationFields) {
+					mapping.Handler.Set (item, mapping.ToProperty (context, item));
+				}
+			}
+			if (singleRequeryRelationFields.Count > 0) {
+				foreach (SingleRelationFieldMapping mapping in singleRequeryRelationFields) {
+					object value = mapping.ToProperty (context, item);
+					if (!Object.Equals (value, null)) {
+						mapping.Handler.Set (item, value);
+					}
+				}
+			}
+			foreach (SingleRelationFieldMapping mapping in singleJoinTableRelationFields) {
+				object value = mapping.ToProperty (context, datareader, datas);
+				if (!Object.Equals (value, null)) {
+					mapping.Handler.Set (item, value);
+				}
+			}
+			if (IsDataEntity) {
+				DataEntity de = item as DataEntity;
+				de.SetContext (context);
+				de.LoadDataComplete ();
+			}
+			return item;
+		}
 
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{
+			
 			object item = Activator.CreateInstance (ObjectType);
+			if (this.singleJoinTableRelationFields.Count > 0) {
+				Dictionary<DataEntityMapping,object> datas = new Dictionary<DataEntityMapping, object> ();
+				datas.Add (this, item);
+				return LoadJoinTableData (context, datareader, null, datas);
+			}
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
@@ -270,35 +330,9 @@ namespace Light.Data
 					mapping.Handler.Set (item, mapping.ToProperty (context, item));
 				}
 			}
-			if (IsDataEntity) {
-				DataEntity de = item as DataEntity;
-				de.SetContext (context);
-				de.LoadDataComplete ();
-			}
-			return item;
-		}
-
-		public override object LoadData (DataContext context, DataRow datarow)
-		{
-			object item = Activator.CreateInstance (ObjectType);
-			foreach (DataFieldMapping field in this._fieldList) {
-				if (field == null)
-					continue;
-
-				IFieldCollection fieldCollection = field as IFieldCollection;
-				if (fieldCollection != null) {
-					IFieldCollection ifc = fieldCollection;
-					object obj = ifc.LoadData (context, datarow);
-					if (!Object.Equals (obj, null)) {
-						field.Handler.Set (item, obj);
-					}
-				}
-				else {
-					object obj = datarow [field.Name];
-					object value = field.ToProperty (obj);
-					if (!Object.Equals (value, null)) {
-						field.Handler.Set (item, value);
-					}
+			if (singleRequeryRelationFields.Count > 0) {
+				foreach (SingleRelationFieldMapping mapping in singleRequeryRelationFields) {
+					mapping.Handler.Set (item, mapping.ToProperty (context, item));
 				}
 			}
 			if (IsDataEntity) {
@@ -309,6 +343,47 @@ namespace Light.Data
 			return item;
 		}
 
+		//		public override object LoadData (DataContext context, DataRow datarow)
+		//		{
+		//			object item = Activator.CreateInstance (ObjectType);
+		//			foreach (DataFieldMapping field in this._fieldList) {
+		//				if (field == null)
+		//					continue;
+		//
+		//				IFieldCollection fieldCollection = field as IFieldCollection;
+		//				if (fieldCollection != null) {
+		//					IFieldCollection ifc = fieldCollection;
+		//					object obj = ifc.LoadData (context, datarow);
+		//					if (!Object.Equals (obj, null)) {
+		//						field.Handler.Set (item, obj);
+		//					}
+		//				}
+		//				else {
+		//					object obj = datarow [field.Name];
+		//					object value = field.ToProperty (obj);
+		//					if (!Object.Equals (value, null)) {
+		//						field.Handler.Set (item, value);
+		//					}
+		//				}
+		//			}
+		//			if (collectionRelationFields.Count > 0) {
+		//				foreach (CollectionRelationFieldMapping mapping in collectionRelationFields) {
+		//					mapping.Handler.Set (item, mapping.ToProperty (context, item));
+		//				}
+		//			}
+		//			if (singleRequeryRelationFields.Count > 0) {
+		//				foreach (SingleRelationFieldMapping mapping in singleRequeryRelationFields) {
+		//					mapping.Handler.Set (item, mapping.ToProperty (context, item));
+		//				}
+		//			}
+		//			if (IsDataEntity) {
+		//				DataEntity de = item as DataEntity;
+		//				de.SetContext (context);
+		//				de.LoadDataComplete ();
+		//			}
+		//			return item;
+		//		}
+		//
 		public override object InitialData ()
 		{
 			object item = Activator.CreateInstance (ObjectType);
@@ -368,7 +443,7 @@ namespace Light.Data
 				}
 			}
 
-			PropertyInfo property;
+			readonly PropertyInfo property;
 
 			public PropertyInfo Property {
 				get {
@@ -376,7 +451,7 @@ namespace Light.Data
 				}
 			}
 
-			IDataFieldConfig config;
+			readonly IDataFieldConfig config;
 
 			public IDataFieldConfig Config {
 				get {
@@ -384,7 +459,7 @@ namespace Light.Data
 				}
 			}
 
-			int? dataOrder;
+			readonly int? dataOrder;
 
 			public int? DataOrder {
 				get {
@@ -392,7 +467,7 @@ namespace Light.Data
 				}
 			}
 
-			int fieldOrder;
+			readonly int fieldOrder;
 
 			public int FieldOrder {
 				get {

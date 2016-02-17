@@ -181,7 +181,7 @@ namespace Light.Data
 
 		public abstract object LoadData (DataContext context, IDataReader datareader);
 
-		public abstract object LoadData (DataContext context, DataRow datarow);
+//		public abstract object LoadData (DataContext context, DataRow datarow);
 
 		public abstract object InitialData ();
 

@@ -17,13 +17,12 @@ namespace Light.Data
             get;
         }
 
-        /// <summary>
-        ///  关联数据表对应字段名
-        /// </summary>
-//        string PropertyName
-//        {
-//            get;
-//        }
-
+		/// <summary>
+		/// Gets the relation mode.
+		/// </summary>
+		/// <value>The relation mode.</value>
+		RelationMode RelationMode {
+			get;
+		}
     }
 }

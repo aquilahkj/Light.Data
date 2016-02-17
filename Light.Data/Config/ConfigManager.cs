@@ -233,10 +233,10 @@ namespace Light.Data
 					foreach (RelationAttribute ra in relationAttributes) {
 						rfConfig.AddRelationKeys (ra.MasterKey, ra.RelateKey);
 					}
-//					RelationPropertyAttribute[] relationPropertyAttributes = AttributeCore.GetPropertyAttributes<RelationPropertyAttribute> (pi, true);
-//					if (relationPropertyAttributes.Length > 0) {
-//						rfConfig.PropertyName = relationPropertyAttributes [0].PropertyName;
-//					}
+					RelationPropertyAttribute[] relationPropertyAttributes = AttributeCore.GetPropertyAttributes<RelationPropertyAttribute> (pi, true);
+					if (relationPropertyAttributes.Length > 0) {
+						rfConfig.RelationMode = relationPropertyAttributes [0].RelationMode;
+					}
 					config = rfConfig;
 				}
 			}

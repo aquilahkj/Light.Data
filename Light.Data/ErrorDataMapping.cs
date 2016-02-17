@@ -14,17 +14,17 @@ namespace Light.Data
 
 		public override object LoadData (DataContext context, IDataReader datareader)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
-		public override object LoadData (DataContext context, DataRow datarow)
-		{
-			throw new NotImplementedException ();
-		}
+//		public override object LoadData (DataContext context, DataRow datarow)
+//		{
+//			throw new NotSupportedException ();
+//		}
 
 		public override object InitialData ()
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
 		#endregion

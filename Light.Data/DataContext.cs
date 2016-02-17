@@ -15,7 +15,7 @@ namespace Light.Data
 
 		static DataContextSetting DefaultContextSetting;
 
-		static DataContext DefaultContext;
+		//		static DataContext DefaultContext;
 
 		/// <summary>
 		/// Gets the default.
@@ -23,12 +23,13 @@ namespace Light.Data
 		/// <value>The default.</value>
 		public static DataContext Default {
 			get {
-				if (DefaultContext == null) {
-					throw new LightDataException (RE.DefaultConnectionNotExists);
-				}
-				else {
-					return DefaultContext;
-				}
+//				if (DefaultContext == null) {
+//					throw new LightDataException (RE.DefaultConnectionNotExists);
+//				}
+//				else {
+//					return DefaultContext;
+//				}
+				return CreateDefault ();
 			}
 		}
 
@@ -39,7 +40,7 @@ namespace Light.Data
 					DataContextSetting contextSetting = DataContextSetting.CreateSetting (connectionSetting, false);
 					if (contextSetting != null && DefaultContextSetting == null) {
 						DefaultContextSetting = contextSetting;
-						DefaultContext = new DataContext (contextSetting.Connection, contextSetting.Name, contextSetting.DataBase);
+//						DefaultContext = new DataContext (contextSetting.Connection, contextSetting.Name, contextSetting.DataBase);
 					}
 					Settings [connectionSetting.Name] = contextSetting;
 				}
@@ -754,9 +755,10 @@ namespace Light.Data
 		internal IEnumerable<T> QueryDataMappingEnumerable<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 			where T:class, new()
 		{
-			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
-			return QueryDataMappingReader<T> (mapping, command, !IsInnerPager ? region : null, level);
+			return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level);
 		}
 
 		//		/// <summary>
@@ -793,10 +795,11 @@ namespace Light.Data
 			where T:class, new()
 		{
 			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof(T));
-			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, !IsInnerPager ? region : null, level);
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level);
 				list.AddRange (ie);
 			}
 			return list;
@@ -821,7 +824,7 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, !IsInnerPager ? region : null, level);
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, region, level);
 				list.AddRange (ie);
 			}
 			return list;
@@ -930,37 +933,18 @@ namespace Light.Data
 		{
 			T target = default(T);
 			Region region = new Region (index, 1);
-			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
+			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				foreach (T obj in QueryDataMappingReader<T>(mapping, command, region, level)) {
+				foreach (T obj in QueryDataMappingReader<T>(mapping, command, innerRegion ? null : region, level)) {
 					target = obj;
+					break;
 				}
 			}
 			return target;
 		}
 
-		//		/// <summary>
-		//		/// 获取查询单个数据
-		//		/// </summary>
-		//		/// <param name="mapping">数据对象映射表</param>
-		//		/// <param name="query">查询表达式</param>
-		//		/// <param name="order">排序表达式</param>
-		//		/// <param name="index">数据索引</param>
-		//		/// <param name="level">安全级别</param>
-		//		/// <returns>数据对象</returns>
-		//		internal object SelectSingle (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
-		//		{
-		//			object target = null;
-		//			Region region = new Region (index, 1);
-		//			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
-		//			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//				//target = LExecuteReaderSingle(mapping, command, index, level);
-		//				foreach (object obj in QueryDataReader(mapping, command, region, level)) {
-		//					target = obj;
-		//				}
-		//			}
-		//			return target;
-		//		}
+
 
 		/// <summary>
 		/// 统计行数
@@ -1312,6 +1296,7 @@ namespace Light.Data
 					while (reader.Read ()) {
 						if (over) {
 							dbcommand.Cancel ();
+							ClearTempRelate ();
 							break;
 						}
 						if (index >= start) {
@@ -1347,6 +1332,12 @@ namespace Light.Data
 		public TransDataContext CreateTransDataContext ()
 		{
 			TransDataContext context = new TransDataContext (_connectionString, _configName, _dataBase);
+			return context;
+		}
+
+		internal DataContext CloneContext ()
+		{
+			DataContext context = new DataContext (_connectionString, _configName, _dataBase);
 			return context;
 		}
 
@@ -1472,6 +1463,90 @@ namespace Light.Data
 			itemstype = itemstype.MakeGenericType (type);
 			items = (IList)Activator.CreateInstance (itemstype);
 			return items;
+		}
+
+		#endregion
+
+
+
+		#region single relate
+
+		//		DataContext innerContext = null;
+		//
+		//		internal DataContext InnerContext {
+		//			get {
+		//				if (innerContext == null) {
+		//					innerContext = this.CloneContext ();
+		//				}
+		//				return innerContext;
+		//			}
+		//		}
+
+		Dictionary<DataEntityMapping,Hashtable> tempRelate = new Dictionary<DataEntityMapping, Hashtable> ();
+
+		internal void SetRelationData (DataEntityMapping mapping, object key, object value)
+		{
+			Hashtable table;
+			if (!tempRelate.TryGetValue (mapping, out table)) {
+				table = new Hashtable ();
+				tempRelate.Add (mapping, table);
+			}
+			table.Add (key, value);
+		}
+
+		internal bool GetRelationData (DataEntityMapping mapping, object key, out object value)
+		{
+			value = null;
+			Hashtable table;
+			if (!tempRelate.TryGetValue (mapping, out table)) {
+				return false;
+			}
+			if (table.Contains (key)) {
+				value = table [key];
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		internal void ClearTempRelate ()
+		{
+			if (tempRelate.Count > 0) {
+				tempRelate.Clear ();
+			}
+		}
+
+		internal object SelectFirst (DataEntityMapping mapping, QueryExpression query)
+		{
+			object target;
+			Region region = new Region (0, 1);
+			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, null, innerRegion ? region : null);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+				target = QueryRelateDataMappingReader (mapping, command);
+			}
+			return target;
+		}
+
+		internal virtual object QueryRelateDataMappingReader (DataMapping source, IDbCommand dbcommand)
+		{
+			object target = null;
+			using (TransactionConnection transaction = CreateTransactionConnection (SafeLevel.None)) {
+				transaction.Open ();
+				transaction.SetupCommand (dbcommand);
+				OutputCommand ("QueryRelateDataMappingReader", dbcommand, SafeLevel.None);
+				using (IDataReader reader = dbcommand.ExecuteReader ()) {
+					while (reader.Read ()) {
+						object item = source.LoadData (this, reader);
+						target = item;
+						dbcommand.Cancel ();
+						break;
+					}
+				}
+				transaction.Commit ();
+			}
+			return target;
 		}
 
 		#endregion

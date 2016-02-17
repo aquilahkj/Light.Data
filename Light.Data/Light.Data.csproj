@@ -290,7 +290,6 @@
     <Compile Include="Function\AggregateFunctionInfo.cs" />
     <Compile Include="Function\ConditionMaxFunction.cs" />
     <Compile Include="Function\ConditionMinFunction.cs" />
-    <Compile Include="Mappings\AggregateFieldMapping_Old.cs" />
     <Compile Include="DataField\SelectFieldInfo.cs" />
     <Compile Include="DataField\DataSelectFieldInfo.cs" />
     <Compile Include="DataField\ConstantSelectFieldInfo.cs" />
@@ -299,11 +298,13 @@
     <Compile Include="Mappings\DefaultTimeFunction.cs" />
     <Compile Include="Mappings\DefaultTime.cs" />
     <Compile Include="Attributes\XmlConfiguratorAttribute.cs" />
-    <Compile Include="Mappings\RelationFieldMapping_Old.cs" />
     <Compile Include="LCollection.cs" />
     <Compile Include="Mappings\SingleRelationFieldMapping.cs" />
     <Compile Include="Mappings\CollectionRelationFieldMapping.cs" />
     <Compile Include="Mappings\RelationPair.cs" />
+    <Compile Include="Config\RelationMode.cs" />
+    <Compile Include="JoinCapsule.cs" />
+    <Compile Include="JoinItem.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
