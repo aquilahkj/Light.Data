@@ -375,10 +375,12 @@ namespace Light.Data
 			if (region != null && !_canInnerPage) {
 				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
 			}
-
-			if (mapping.HasJoinTableModel) {
+			CommandData data;
+			if (mapping.HasJoinRelateModel) {
 				JoinCapsule capsule = mapping.LoadJoinCapsule (query, order);
-				return CreateSelectJoinTableCommand (capsule.Slector, capsule.Models, null, null);
+				data = CreateSelectJoinTableCommand (capsule.Slector, capsule.Models, null, null);
+				data.State = new RelationContent ();
+				return data;
 			}
 
 //			string select = GetSelectString (mapping);
@@ -389,7 +391,11 @@ namespace Light.Data
 				i++;
 			}
 			string selectString = string.Join (",", fieldNames);
-			return this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
+			data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
+			if (mapping.HasMultiRelateModel) {
+				data.State = new RelationContent ();
+			}
+			return data;
 		}
 
 		public virtual CommandData CreateSelectSingleFieldCommand (DataFieldInfo fieldinfo, QueryExpression query, OrderExpression order, bool distinct, Region region)

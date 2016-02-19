@@ -12,15 +12,15 @@ namespace Light.Data
 
 		#region implemented abstract members of DataMapping
 
-		public override object LoadData (DataContext context, IDataReader datareader)
+		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			throw new NotSupportedException ();
 		}
 
-//		public override object LoadData (DataContext context, DataRow datarow)
-//		{
-//			throw new NotSupportedException ();
-//		}
+		//		public override object LoadData (DataContext context, DataRow datarow)
+		//		{
+		//			throw new NotSupportedException ();
+		//		}
 
 		public override object InitialData ()
 		{

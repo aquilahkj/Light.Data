@@ -157,7 +157,7 @@ namespace Light.Data
 			return ds;
 		}
 
-		internal override IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level)
+		internal override IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			ChecKStatus (true);
 			int start;
@@ -183,7 +183,7 @@ namespace Light.Data
 					}
 					if (index >= start) {
 						count++;
-						object item = source.LoadData (this, reader);
+						object item = source.LoadData (this, reader, state);
 						if (count >= size) {
 							over = true;
 						}
@@ -194,7 +194,7 @@ namespace Light.Data
 			}
 		}
 
-		internal override IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level)
+		internal override IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			ChecKStatus (true);
 			int start;
@@ -220,7 +220,7 @@ namespace Light.Data
 					}
 					if (index >= start) {
 						count++;
-						object item = source.LoadData (this, reader);
+						object item = source.LoadData (this, reader, state);
 						if (count >= size) {
 							over = true;
 						}

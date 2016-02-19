@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 
 namespace Light.Data
 {
@@ -26,8 +27,8 @@ namespace Light.Data
 			}
 		}
 
-		public abstract object LoadData (DataContext context, System.Data.IDataReader datareader);
+		public abstract object LoadData (DataContext context, IDataReader datareader, object state);
 
-		public abstract object LoadData (DataContext context, System.Data.DataRow datarow);
+		//		public abstract object LoadData (DataContext context, System.Data.DataRow datarow);
 	}
 }

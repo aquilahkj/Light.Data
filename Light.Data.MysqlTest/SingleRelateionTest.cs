@@ -11,7 +11,7 @@ namespace Light.Data.MysqlTest
 		[Test ()]
 		public void TestCase_Base ()
 		{
-			InitialUserTable (40);
+			InitialUserTable (50);
 			InitialUserLevelTable (6);
 
 			List<TeUser> users;
@@ -59,7 +59,7 @@ namespace Light.Data.MysqlTest
 		[Test ()]
 		public void TestCase_TestCase_Inherit ()
 		{
-			InitialUserTable (40);
+			InitialUserTable (50);
 			InitialUserLevelTable (6);
 
 			List<TeUser> users;
@@ -107,7 +107,7 @@ namespace Light.Data.MysqlTest
 		[Test ()]
 		public void TestCase_TestCase_NoEntity ()
 		{
-			InitialUserTable (40);
+			InitialUserTable (50);
 			InitialUserLevelTable (6);
 
 			List<TeUser> users;

@@ -99,31 +99,28 @@ namespace Light.Data
 			}
 		}
 
-		public object ToProperty (DataContext context, object source)
+		public object ToProperty (DataContext context, object source, RelationContent datas)
 		{
 			InitialRelateMapping ();
 			string[] relatePairs = new string[masterMappings.Length];
-//			string[] masterPairs = new string[masterMappings.Length];
 			object[] obj = new object[masterMappings.Length];
 			for (int i = 0; i < masterMappings.Length; i++) {
 				DataFieldMapping field = this.masterMappings [i];
 				object value = field.Handler.Get (source);
 				obj [i] = value;
 				relatePairs [i] = string.Format ("{0}={1}", this.relateInfos [i].FieldName, value);
-//				masterPairs [i] = string.Format ("{0}={1}", this.masterInfos [i].FieldName, value);
 			}
 			string relateKey = string.Join ("&", relatePairs);
-//			string masterKey = string.Join ("&", masterPairs);
 			object target;
-			if (!context.GetRelationData (this.relateMapping, relateKey, out target)) {
+			if (!datas.GetQueryData (this.relateMapping, relateKey, out target)) {
 				QueryExpression expression = null;
 				for (int i = 0; i < masterMappings.Length; i++) {
 					DataFieldInfo info = this.relateInfos [i];
 					object value = obj [i];
 					expression = QueryExpression.And (expression, info == value);
 				}
-				target = context.SelectFirst (this.relateMapping, expression);
-				context.SetRelationData (this.relateMapping, relateKey, target);
+				target = context.SelectFirst (this.relateMapping, expression, datas);
+				datas.SetQueryData (this.relateMapping, relateKey, target);
 				return target;
 			}
 			else {
@@ -131,23 +128,23 @@ namespace Light.Data
 			}
 		}
 
-		public object ToProperty (DataContext context, IDataReader datareader, Dictionary<string,object> datas)
+		public object ToProperty (DataContext context, IDataReader datareader, RelationContent datas)
 		{
 			object value;
-			if (!datas.TryGetValue (this.relateMapping.TableName, out value)) {
+			if (!datas.GetJoinData (this.relateMapping, out value)) {
 				value = this.relateMapping.LoadJoinTableData (context, datareader, this.relateInfos, datas);
-				datas.Add (this.relateMapping.TableName, value);
+				datas.SetJoinData (this.relateMapping, value);
 			}
 			return value;
 		}
 
-		public void LoadJoinModels (Dictionary<string,JoinItem> relates)
+		public void LoadJoinModels (Dictionary<DataEntityMapping,JoinItem> relates)
 		{
 			InitialRelateMapping ();
-			if (!relates.ContainsKey (this.relateMapping.TableName)) {
-				relates.Add (this.relateMapping.TableName, this.item);
+			if (!relates.ContainsKey (this.relateMapping)) {
+				relates.Add (this.relateMapping, this.item);
 			}
-			if (this.relateMapping.HasJoinTableModel) {
+			if (this.relateMapping.HasJoinRelateModel) {
 				this.relateMapping.LoadJoinModels (relates);
 			}
 		}

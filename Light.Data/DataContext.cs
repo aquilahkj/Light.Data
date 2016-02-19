@@ -243,7 +243,7 @@ namespace Light.Data
 			Region region = new Region (0, 1);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
-				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default)) {
+				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default,null)) {
 					exists = true;
 				}
 			}
@@ -758,7 +758,7 @@ namespace Light.Data
 			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
-			return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level);
+			return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
 		}
 
 		/// <summary>
@@ -777,7 +777,7 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level);
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
 				list.AddRange (ie);
 			}
 			return list;
@@ -801,7 +801,7 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, region, level);
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, region, level, commandData.State);
 				list.AddRange (ie);
 			}
 			return list;
@@ -823,7 +823,7 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
-			return QueryDataReader (define, command, region, level);
+			return QueryDataReader (define, command, region, level, null);
 		}
 
 		/// <summary>
@@ -843,7 +843,7 @@ namespace Light.Data
 			List<K> list = new List<K> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
-				IEnumerable ie = QueryDataReader (define, command, region, level);
+				IEnumerable ie = QueryDataReader (define, command, region, level, null);
 				foreach (K obj in ie) {
 					list.Add (obj);
 				}
@@ -890,7 +890,7 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable<T> ie = QueryDataMappingReader<T> (amapping, command, null, level);
+				IEnumerable<T> ie = QueryDataMappingReader<T> (amapping, command, null, level, commandData.State);
 				list.AddRange (ie);
 			}
 			return list;
@@ -913,7 +913,7 @@ namespace Light.Data
 			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				foreach (T obj in QueryDataMappingReader<T>(mapping, command, innerRegion ? null : region, level)) {
+				foreach (T obj in QueryDataMappingReader<T>(mapping, command, innerRegion ? null : region, level, commandData.State)) {
 					target = obj;
 					break;
 				}
@@ -988,7 +988,7 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
-				foreach (object obj in QueryDataReader(pm, command, region, level)) {
+				foreach (object obj in QueryDataReader(pm, command, region, level,null)) {
 					exists = true;
 				}
 			}
@@ -1206,7 +1206,7 @@ namespace Light.Data
 			return ds;
 		}
 
-		internal virtual IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level)
+		internal virtual IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			int start;
 			int size;
@@ -1233,7 +1233,7 @@ namespace Light.Data
 						}
 						if (index >= start) {
 							count++;
-							object item = source.LoadData (this, reader);
+							object item = source.LoadData (this, reader, state);
 							if (count >= size) {
 								over = true;
 							}
@@ -1246,7 +1246,7 @@ namespace Light.Data
 			}
 		}
 
-		internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level)
+		internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 			where T :class, new()
 		{
 			int start;
@@ -1259,36 +1259,36 @@ namespace Light.Data
 				start = 0;
 				size = int.MaxValue;
 			}
-			try {
-				using (TransactionConnection transaction = CreateTransactionConnection (level)) {
-					transaction.Open ();
-					transaction.SetupCommand (dbcommand);
-					OutputCommand ("QueryDataMappingReader", dbcommand, level, start, size);
-					using (IDataReader reader = dbcommand.ExecuteReader ()) {
-						int index = 0;
-						int count = 0;
-						bool over = false;
-						while (reader.Read ()) {
-							if (over) {
-								dbcommand.Cancel ();
-								break;
-							}
-							if (index >= start) {
-								count++;
-								object item = source.LoadData (this, reader);
-								if (count >= size) {
-									over = true;
-								}
-								yield return item as T;
-							}
-							index++;
+//			try {
+			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
+				transaction.Open ();
+				transaction.SetupCommand (dbcommand);
+				OutputCommand ("QueryDataMappingReader", dbcommand, level, start, size);
+				using (IDataReader reader = dbcommand.ExecuteReader ()) {
+					int index = 0;
+					int count = 0;
+					bool over = false;
+					while (reader.Read ()) {
+						if (over) {
+							dbcommand.Cancel ();
+							break;
 						}
+						if (index >= start) {
+							count++;
+							object item = source.LoadData (this, reader, state);
+							if (count >= size) {
+								over = true;
+							}
+							yield return item as T;
+						}
+						index++;
 					}
-					transaction.Commit ();
 				}
-			} finally {
-				ClearTempRelate ();
+				transaction.Commit ();
 			}
+//			} finally {
+//				ClearTempRelate ();
+//			}
 		}
 
 
@@ -1461,52 +1461,52 @@ namespace Light.Data
 
 		Dictionary<DataEntityMapping,Hashtable> tempRelate = new Dictionary<DataEntityMapping, Hashtable> ();
 
-		internal void SetRelationData (DataEntityMapping mapping, object key, object value)
-		{
-			Hashtable table;
-			if (!tempRelate.TryGetValue (mapping, out table)) {
-				table = new Hashtable ();
-				tempRelate.Add (mapping, table);
-			}
-			table.Add (key, value);
-		}
-
-		internal bool GetRelationData (DataEntityMapping mapping, object key, out object value)
-		{
-			value = null;
-			Hashtable table;
-			if (!tempRelate.TryGetValue (mapping, out table)) {
-				return false;
-			}
-			if (table.Contains (key)) {
-				value = table [key];
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-
-		internal void ClearTempRelate ()
-		{
-			if (tempRelate.Count > 0) {
-				tempRelate.Clear ();
-			}
-		}
-
-		internal object SelectFirst (DataEntityMapping mapping, QueryExpression query)
+		//		internal void SetRelationData (DataEntityMapping mapping, object key, object value)
+		//		{
+		//			Hashtable table;
+		//			if (!tempRelate.TryGetValue (mapping, out table)) {
+		//				table = new Hashtable ();
+		//				tempRelate.Add (mapping, table);
+		//			}
+		//			table.Add (key, value);
+		//		}
+		//
+		//		internal bool GetRelationData (DataEntityMapping mapping, object key, out object value)
+		//		{
+		//			value = null;
+		//			Hashtable table;
+		//			if (!tempRelate.TryGetValue (mapping, out table)) {
+		//				return false;
+		//			}
+		//			if (table.Contains (key)) {
+		//				value = table [key];
+		//				return true;
+		//			}
+		//			else {
+		//				return false;
+		//			}
+		//		}
+		//
+		//		internal void ClearTempRelate ()
+		//		{
+		//			if (tempRelate.Count > 0) {
+		//				tempRelate.Clear ();
+		//			}
+		//		}
+		//
+		internal object SelectFirst (DataEntityMapping mapping, QueryExpression query, object state)
 		{
 			object target;
 			Region region = new Region (0, 1);
 			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, null, innerRegion ? region : null);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				target = QueryRelateDataMappingReader (mapping, command);
+				target = QueryRelateDataMappingReader (mapping, command, state);
 			}
 			return target;
 		}
 
-		internal virtual object QueryRelateDataMappingReader (DataMapping source, IDbCommand dbcommand)
+		internal virtual object QueryRelateDataMappingReader (DataMapping source, IDbCommand dbcommand, object state)
 		{
 			object target = null;
 			using (TransactionConnection transaction = CreateTransactionConnection (SafeLevel.None)) {
@@ -1515,7 +1515,7 @@ namespace Light.Data
 				OutputCommand ("QueryRelateDataMappingReader", dbcommand, SafeLevel.None);
 				using (IDataReader reader = dbcommand.ExecuteReader ()) {
 					while (reader.Read ()) {
-						object item = source.LoadData (this, reader);
+						object item = source.LoadData (this, reader, state);
 						target = item;
 						dbcommand.Cancel ();
 						break;

@@ -76,6 +76,7 @@
     <Compile Include="CollectionRelationTest.cs" />
     <Compile Include="SingleRelateionTest.cs" />
     <Compile Include="SingleRelateion2Test.cs" />
+    <Compile Include="Model\RelationSchema2.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

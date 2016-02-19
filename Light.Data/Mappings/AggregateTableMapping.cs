@@ -80,7 +80,7 @@ namespace Light.Data
 			}
 		}
 
-		public override object LoadData (DataContext context, IDataReader datareader)
+		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			object item = Activator.CreateInstance (ObjectType);
 			foreach (DataFieldMapping field in this._fieldList) {
@@ -95,20 +95,20 @@ namespace Light.Data
 			return item;
 		}
 
-//		public override object LoadData (DataContext context, DataRow datarow)
-//		{
-//			object item = Activator.CreateInstance (ObjectType);
-//			foreach (DataFieldMapping field in this._fieldList) {
-//				if (field == null)
-//					continue;
-//				object obj = datarow [field.Name];
-//				object value = field.ToProperty (obj);
-//				if (!Object.Equals (value, null)) {
-//					field.Handler.Set (item, value);
-//				}
-//			}
-//			return item;
-//		}
+		//		public override object LoadData (DataContext context, DataRow datarow)
+		//		{
+		//			object item = Activator.CreateInstance (ObjectType);
+		//			foreach (DataFieldMapping field in this._fieldList) {
+		//				if (field == null)
+		//					continue;
+		//				object obj = datarow [field.Name];
+		//				object value = field.ToProperty (obj);
+		//				if (!Object.Equals (value, null)) {
+		//					field.Handler.Set (item, value);
+		//				}
+		//			}
+		//			return item;
+		//		}
 
 		public override object InitialData ()
 		{

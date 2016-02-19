@@ -78,23 +78,23 @@ namespace Light.Data
 		/// <param name="context"></param>
 		/// <param name="datareader"></param>
 		/// <returns></returns>
-		public override object LoadData (DataContext context, IDataReader datareader)
+		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			object obj = datareader [0];
 			return GetValue (obj);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="datarow"></param>
-		/// <returns></returns>
-		public override object LoadData (DataContext context, DataRow datarow)
-		{
-			object obj = datarow [0];
-			return GetValue (obj);
-		}
+		//		/// <summary>
+		//		///
+		//		/// </summary>
+		//		/// <param name="context"></param>
+		//		/// <param name="datarow"></param>
+		//		/// <returns></returns>
+		//		public override object LoadData (DataContext context, DataRow datarow)
+		//		{
+		//			object obj = datarow [0];
+		//			return GetValue (obj);
+		//		}
 
 		object GetValue (object obj)
 		{

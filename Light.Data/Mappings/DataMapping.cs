@@ -179,9 +179,9 @@ namespace Light.Data
 			return mapping;
 		}
 
-		public abstract object LoadData (DataContext context, IDataReader datareader);
+		public abstract object LoadData (DataContext context, IDataReader datareader, object state);
 
-//		public abstract object LoadData (DataContext context, DataRow datarow);
+		//		public abstract object LoadData (DataContext context, DataRow datarow);
 
 		public abstract object InitialData ();
 

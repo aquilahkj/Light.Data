@@ -53,17 +53,17 @@ namespace Light.Data
 			_defaultValue = values.GetValue (0);
 		}
 
-		public override object LoadData (DataContext context, IDataReader datareader)
+		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			object obj = datareader [0];
 			return GetValue (obj);
 		}
 
-		public override object LoadData (DataContext context, DataRow datarow)
-		{
-			object obj = datarow [0];
-			return GetValue (obj);
-		}
+		//		public override object LoadData (DataContext context, DataRow datarow)
+		//		{
+		//			object obj = datarow [0];
+		//			return GetValue (obj);
+		//		}
 
 		object GetValue (object value)
 		{

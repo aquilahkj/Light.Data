@@ -305,6 +305,7 @@
     <Compile Include="Config\RelationMode.cs" />
     <Compile Include="JoinCapsule.cs" />
     <Compile Include="JoinItem.cs" />
+    <Compile Include="RelationContent.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
