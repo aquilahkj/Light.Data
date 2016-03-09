@@ -16,6 +16,15 @@ namespace Light.Data.Demo
 			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
 
+
+			MqDeviceInfo info = context.CreateNew<MqDeviceInfo> ();
+			info.Imei = "00";
+			info.Flag = "ww";
+			info.RegisterTime = DateTime.Now;
+			info.Status = 0;
+			info.Valid = 1;
+			info.Save ();
+
 			Console.ReadLine ();
 		}
 	}

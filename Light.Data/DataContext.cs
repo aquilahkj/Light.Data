@@ -278,15 +278,13 @@ namespace Light.Data
 				commandDataIdentity = _dataBase.Factory.CreateIdentityCommand (mapping);
 			}
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+				IDbCommand identityCommand = null;
 				if (commandDataIdentity != null) {
-					IDbCommand identityCommand = commandDataIdentity.CreateCommand (_dataBase);
-					obj = ExecuteInsertCommand (command, identityCommand, SafeLevel.Default);
-					if (identityCommand != null) {
-						identityCommand.Dispose ();
-					}
+					identityCommand = commandDataIdentity.CreateCommand (_dataBase);
 				}
-				else {
-					obj = null;
+				obj = ExecuteInsertCommand (command, identityCommand, SafeLevel.Default);
+				if (identityCommand != null) {
+					identityCommand.Dispose ();
 				}
 			}
 			rInt = 1;
