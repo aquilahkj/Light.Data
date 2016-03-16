@@ -6,6 +6,170 @@ using Light.Data;
 namespace Light.Data.MysqlTest
 {
     [Serializable]
+    [DataTable("MqDeviceInfo")]
+    public partial class MqDeviceInfo : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo imeiField = DataFieldInfo<MqDeviceInfo>.Create("Imei");
+
+		static readonly DataFieldInfo flagField = DataFieldInfo<MqDeviceInfo>.Create("Flag");
+
+		static readonly DataFieldInfo statusField = DataFieldInfo<MqDeviceInfo>.Create("Status");
+
+		static readonly DataFieldInfo validField = DataFieldInfo<MqDeviceInfo>.Create("Valid");
+
+		static readonly DataFieldInfo registerTimeField = DataFieldInfo<MqDeviceInfo>.Create("RegisterTime");
+
+		static readonly DataFieldInfo remarkField = DataFieldInfo<MqDeviceInfo>.Create("Remark");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo ImeiField
+        {
+            get {
+                return imeiField;
+            }
+        }
+
+		public static DataFieldInfo FlagField
+        {
+            get {
+                return flagField;
+            }
+        }
+
+		public static DataFieldInfo StatusField
+        {
+            get {
+                return statusField;
+            }
+        }
+
+		public static DataFieldInfo ValidField
+        {
+            get {
+                return validField;
+            }
+        }
+
+		public static DataFieldInfo RegisterTimeField
+        {
+            get {
+                return registerTimeField;
+            }
+        }
+
+		public static DataFieldInfo RemarkField
+        {
+            get {
+                return remarkField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private string imei;
+
+		/// <summary>
+		/// Imei
+		/// </summary>
+		/// <value></value>
+		[DataField("Imei", IsPrimaryKey = true)]
+        public string Imei
+        {
+            get { 
+            	return this.imei; 
+            }
+            set { 
+            	this.imei = value; 
+            }
+        }
+		private string flag;
+
+		/// <summary>
+		/// Flag
+		/// </summary>
+		/// <value></value>
+		[DataField("Flag")]
+        public string Flag
+        {
+            get { 
+            	return this.flag; 
+            }
+            set { 
+            	this.flag = value; 
+            }
+        }
+		private int status;
+
+		/// <summary>
+		/// Status
+		/// </summary>
+		/// <value></value>
+		[DataField("Status")]
+        public int Status
+        {
+            get { 
+            	return this.status; 
+            }
+            set { 
+            	this.status = value; 
+            }
+        }
+		private int valid;
+
+		/// <summary>
+		/// Valid
+		/// </summary>
+		/// <value></value>
+		[DataField("Valid")]
+        public int Valid
+        {
+            get { 
+            	return this.valid; 
+            }
+            set { 
+            	this.valid = value; 
+            }
+        }
+		private DateTime registerTime;
+
+		/// <summary>
+		/// RegisterTime
+		/// </summary>
+		/// <value></value>
+		[DataField("RegisterTime")]
+        public DateTime RegisterTime
+        {
+            get { 
+            	return this.registerTime; 
+            }
+            set { 
+            	this.registerTime = value; 
+            }
+        }
+		private string remark;
+
+		/// <summary>
+		/// Remark
+		/// </summary>
+		/// <value></value>
+		[DataField("Remark", IsNullable = true)]
+        public string Remark
+        {
+            get { 
+            	return this.remark; 
+            }
+            set { 
+            	this.remark = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
     [DataTable("Te_AreaInfo")]
     public partial class TeAreaInfo : DataTableEntity
     {
@@ -851,14 +1015,14 @@ namespace Light.Data.MysqlTest
             	this.id = value; 
             }
         }
-		private int? checkId;
+		private int checkId;
 
 		/// <summary>
 		/// CheckId
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckId", IsNullable = true)]
-        public int? CheckId
+		[DataField("CheckId")]
+        public int CheckId
         {
             get { 
             	return this.checkId; 
@@ -867,14 +1031,14 @@ namespace Light.Data.MysqlTest
             	this.checkId = value; 
             }
         }
-		private double? checkRate;
+		private double checkRate;
 
 		/// <summary>
 		/// CheckRate
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckRate", IsNullable = true)]
-        public double? CheckRate
+		[DataField("CheckRate")]
+        public double CheckRate
         {
             get { 
             	return this.checkRate; 
@@ -883,14 +1047,14 @@ namespace Light.Data.MysqlTest
             	this.checkRate = value; 
             }
         }
-		private DateTime? checkTime;
+		private DateTime checkTime;
 
 		/// <summary>
 		/// CheckTime
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckTime", IsNullable = true)]
-        public DateTime? CheckTime
+		[DataField("CheckTime")]
+        public DateTime CheckTime
         {
             get { 
             	return this.checkTime; 
@@ -899,14 +1063,14 @@ namespace Light.Data.MysqlTest
             	this.checkTime = value; 
             }
         }
-		private DateTime? checkDate;
+		private DateTime checkDate;
 
 		/// <summary>
 		/// CheckDate
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckDate", IsNullable = true)]
-        public DateTime? CheckDate
+		[DataField("CheckDate")]
+        public DateTime CheckDate
         {
             get { 
             	return this.checkDate; 
@@ -921,7 +1085,7 @@ namespace Light.Data.MysqlTest
 		/// CheckData
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckData", IsNullable = true)]
+		[DataField("CheckData")]
         public string CheckData
         {
             get { 
@@ -931,14 +1095,14 @@ namespace Light.Data.MysqlTest
             	this.checkData = value; 
             }
         }
-		private int? checkLevel;
+		private int checkLevel;
 
 		/// <summary>
 		/// CheckLevel
 		/// </summary>
 		/// <value></value>
-		[DataField("CheckLevel", IsNullable = true)]
-        public int? CheckLevel
+		[DataField("CheckLevel")]
+        public int CheckLevel
         {
             get { 
             	return this.checkLevel; 
@@ -2665,6 +2829,145 @@ namespace Light.Data.MysqlTest
             }
             set { 
             	this.mark = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_UserExtend")]
+    public partial class TeUserExtend : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeUserExtend>.Create("Id");
+
+		static readonly DataFieldInfo userIdField = DataFieldInfo<TeUserExtend>.Create("UserId");
+
+		static readonly DataFieldInfo extend1Field = DataFieldInfo<TeUserExtend>.Create("Extend1");
+
+		static readonly DataFieldInfo extend2Field = DataFieldInfo<TeUserExtend>.Create("Extend2");
+
+		static readonly DataFieldInfo extend3Field = DataFieldInfo<TeUserExtend>.Create("Extend3");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo UserIdField
+        {
+            get {
+                return userIdField;
+            }
+        }
+
+		public static DataFieldInfo Extend1Field
+        {
+            get {
+                return extend1Field;
+            }
+        }
+
+		public static DataFieldInfo Extend2Field
+        {
+            get {
+                return extend2Field;
+            }
+        }
+
+		public static DataFieldInfo Extend3Field
+        {
+            get {
+                return extend3Field;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int userId;
+
+		/// <summary>
+		/// UserId
+		/// </summary>
+		/// <value></value>
+		[DataField("UserId")]
+        public int UserId
+        {
+            get { 
+            	return this.userId; 
+            }
+            set { 
+            	this.userId = value; 
+            }
+        }
+		private string extend1;
+
+		/// <summary>
+		/// Extend1
+		/// </summary>
+		/// <value></value>
+		[DataField("Extend1", IsNullable = true)]
+        public string Extend1
+        {
+            get { 
+            	return this.extend1; 
+            }
+            set { 
+            	this.extend1 = value; 
+            }
+        }
+		private string extend2;
+
+		/// <summary>
+		/// Extend2
+		/// </summary>
+		/// <value></value>
+		[DataField("Extend2", IsNullable = true)]
+        public string Extend2
+        {
+            get { 
+            	return this.extend2; 
+            }
+            set { 
+            	this.extend2 = value; 
+            }
+        }
+		private string extend3;
+
+		/// <summary>
+		/// Extend3
+		/// </summary>
+		/// <value></value>
+		[DataField("Extend3", IsNullable = true)]
+        public string Extend3
+        {
+            get { 
+            	return this.extend3; 
+            }
+            set { 
+            	this.extend3 = value; 
             }
         }
 		#endregion

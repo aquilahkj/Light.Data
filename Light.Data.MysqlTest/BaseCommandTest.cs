@@ -54,6 +54,32 @@ namespace Light.Data.MysqlTest
 		}
 
 		[Test ()]
+		public void TestCase_CUD_Single_NoIdentity ()
+		{
+			context.TruncateTable<TeUserLevel> ();
+
+			TeUserLevel levelInsert = context.CreateNew<TeUserLevel> ();
+			levelInsert.Id = 1;
+			levelInsert.LevelName = "level1";
+			levelInsert.Status = 1;
+			context.Insert (levelInsert);
+			Assert.AreEqual (1, levelInsert.Id);
+			TeUserLevel level1 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
+			Assert.NotNull (level1);
+			Assert.IsTrue (EqualLevel (levelInsert, level1));
+			level1.Status = 2;
+			context.Update (level1);
+			Assert.AreEqual (1, levelInsert.Id);
+			TeUserLevel level2 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
+			Assert.NotNull (level2);
+			Assert.IsTrue (EqualLevel (level1, level2));
+			context.Delete (level2);
+			TeUserLevel level3 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
+			Assert.Null (level3);
+		}
+
+
+		[Test ()]
 		public void TestCase_InsertOrUpdate_Single ()
 		{
 			context.TruncateTable<TeUser> ();

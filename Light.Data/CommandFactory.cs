@@ -122,7 +122,6 @@ namespace Light.Data
 		/// <returns>新增命令对象</returns>
 		public virtual CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
 		{
-//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
 			string[] insertList = new string[paramList.Count];
 			string[] valuesList = new string[paramList.Count];
@@ -150,7 +149,6 @@ namespace Light.Data
 		/// <returns>更新命令对象</returns>
 		public virtual CommandData CreateUpdateCommand (DataTableEntityMapping mapping, object entity, string[] updatefieldNames)
 		{
-//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
@@ -219,7 +217,6 @@ namespace Light.Data
 		/// <returns>删除命令对象</returns>
 		public virtual CommandData CreateDeleteCommand (DataTableEntityMapping mapping, object entity)
 		{
-//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
@@ -379,11 +376,12 @@ namespace Light.Data
 			if (mapping.HasJoinRelateModel) {
 				JoinCapsule capsule = mapping.LoadJoinCapsule (query, order);
 				data = CreateSelectJoinTableCommand (capsule.Slector, capsule.Models, null, null);
-				data.State = new RelationContent ();
+				RelationContent rc = new RelationContent ();
+				rc.SetRelationMap (capsule.RelationMap);
+				data.State = rc;
 				return data;
 			}
 
-//			string select = GetSelectString (mapping);
 			string[] fieldNames = new string[mapping.FieldCount];
 			int i = 0;
 			foreach (DataFieldMapping field in mapping.DataEntityFields) {
@@ -394,6 +392,52 @@ namespace Light.Data
 			data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
 			if (mapping.HasMultiRelateModel) {
 				data.State = new RelationContent ();
+			}
+			return data;
+		}
+
+		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, object extendState)
+		{
+			if (region != null && !_canInnerPage) {
+				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
+			}
+			CommandData data;
+			if (mapping.HasJoinRelateModel) {
+				JoinCapsule capsule = mapping.LoadJoinCapsule (query, order);
+				JoinSelector selector = capsule.Slector;
+				RelationContent rc = extendState as RelationContent;
+				if (rc != null) {
+					if (rc.CollectionRelateReferFieldMapping != null) {
+						DataEntityMapping exceptMapping = rc.CollectionRelateReferFieldMapping.RelateMapping;
+						selector = selector.CloneWithExcept (new []{ exceptMapping });
+					}
+				}
+				else {
+					rc = new RelationContent ();
+				}
+				rc.SetRelationMap (capsule.RelationMap);
+				data = CreateSelectJoinTableCommand (selector, capsule.Models, null, null);
+				data.State = rc;
+				return data;
+			}
+
+			string[] fieldNames = new string[mapping.FieldCount];
+			int i = 0;
+			foreach (DataFieldMapping field in mapping.DataEntityFields) {
+				fieldNames [i] = CreateDataFieldSql (field.Name);
+				i++;
+			}
+			string selectString = string.Join (",", fieldNames);
+			data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
+			if (mapping.HasMultiRelateModel) {
+				RelationContent rc = extendState as RelationContent;
+				if (rc != null) {
+					data.State = rc;
+				}
+				else {
+					data.State = new RelationContent ();
+				}
+
 			}
 			return data;
 		}
@@ -595,7 +639,7 @@ namespace Light.Data
 				function = CreateMinSql (CreateDataFieldSql (fieldMapping.Name));
 				break;
 			}
-			return CreateSelectBaseCommand (mapping, function, query, null, null);//, false);
+			return CreateSelectBaseCommand (mapping, function, query, null, null);
 		}
 
 		public virtual CommandData CreateAggregateCountCommand (DataEntityMapping mapping, QueryExpression query)
@@ -872,12 +916,6 @@ namespace Light.Data
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-//			object tmpEntity = entitys.GetValue (0);
-//			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
-//			List<string> insertList = new List<string> ();
-//			foreach (DataParameter dataParameter in paramList) {
-//				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
-//			}
 			int totalCount = entitys.Length;
 			List<string> insertList = new List<string> ();
 			foreach (DataFieldMapping field in mapping.NoIdentityFields) {

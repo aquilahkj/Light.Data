@@ -33,5 +33,15 @@ namespace Light.Data
 				return relateKey;
 			}
 		}
+
+		public bool IsReverseMatch (RelationKey rk)
+		{
+			return this.masterKey == rk.relateKey && this.relateKey == rk.masterKey;
+		}
+
+		public bool IsMatch (RelationKey rk)
+		{
+			return this.masterKey == rk.masterKey && this.relateKey == rk.relateKey;
+		}
 	}
 }

@@ -306,6 +306,8 @@
     <Compile Include="JoinCapsule.cs" />
     <Compile Include="JoinItem.cs" />
     <Compile Include="RelationContent.cs" />
+    <Compile Include="Mappings\BaseRelationFieldMapping.cs" />
+    <Compile Include="RelationMap.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

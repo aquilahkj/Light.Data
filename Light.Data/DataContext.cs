@@ -1446,52 +1446,31 @@ namespace Light.Data
 
 		#region single relate
 
-		//		DataContext innerContext = null;
-		//
-		//		internal DataContext InnerContext {
-		//			get {
-		//				if (innerContext == null) {
-		//					innerContext = this.CloneContext ();
-		//				}
-		//				return innerContext;
-		//			}
-		//		}
 
-		Dictionary<DataEntityMapping,Hashtable> tempRelate = new Dictionary<DataEntityMapping, Hashtable> ();
+		/// <summary>
+		/// Queries the data relate list.
+		/// </summary>
+		/// <returns>The data relate list.</returns>
+		/// <param name="query">Query.</param>
+		/// <param name="order">Order.</param>
+		/// <param name="region">Region.</param>
+		/// <param name="level">Level.</param>
+		/// <param name="extendState">Extend state.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		internal List<T> QueryDataRelateList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level, object extendState)
+			where T:class, new()
+		{
+			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof(T));
+			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null, extendState);
+			List<T> list = new List<T> ();
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
+				list.AddRange (ie);
+			}
+			return list;
+		}
 
-		//		internal void SetRelationData (DataEntityMapping mapping, object key, object value)
-		//		{
-		//			Hashtable table;
-		//			if (!tempRelate.TryGetValue (mapping, out table)) {
-		//				table = new Hashtable ();
-		//				tempRelate.Add (mapping, table);
-		//			}
-		//			table.Add (key, value);
-		//		}
-		//
-		//		internal bool GetRelationData (DataEntityMapping mapping, object key, out object value)
-		//		{
-		//			value = null;
-		//			Hashtable table;
-		//			if (!tempRelate.TryGetValue (mapping, out table)) {
-		//				return false;
-		//			}
-		//			if (table.Contains (key)) {
-		//				value = table [key];
-		//				return true;
-		//			}
-		//			else {
-		//				return false;
-		//			}
-		//		}
-		//
-		//		internal void ClearTempRelate ()
-		//		{
-		//			if (tempRelate.Count > 0) {
-		//				tempRelate.Clear ();
-		//			}
-		//		}
-		//
 		internal object SelectFirst (DataEntityMapping mapping, QueryExpression query, object state)
 		{
 			object target;

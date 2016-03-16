@@ -39,6 +39,7 @@ namespace Light.Data
 			}
 			_context = context;
 		}
+		/*
 
 		/// <summary>
 		///  线程同步锁
@@ -82,7 +83,7 @@ namespace Light.Data
 			}
 		}
 
-		/*
+
 		/// <summary>
 		/// 读取关联数据
 		/// </summary>
@@ -221,5 +222,6 @@ namespace Light.Data
 		{
 
 		}
+
 	}
 }

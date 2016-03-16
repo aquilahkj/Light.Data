@@ -38,10 +38,31 @@ namespace Light.Data
 			this.infoList [field.Alias] = field;
 		}
 
-		public List<DataFieldInfo> GetFieldInfos()
+		public List<DataFieldInfo> GetFieldInfos ()
 		{
 			List<DataFieldInfo> infos = new List<DataFieldInfo> (this.infoList.Values);
 			return infos;
+		}
+
+		internal JoinSelector CloneWithExcept (DataEntityMapping[] exceptMappings)
+		{
+			JoinSelector target = new JoinSelector ();
+			foreach (KeyValuePair<string,DataFieldInfo> kv in this.infoList) {
+				DataEntityMapping mapping = kv.Value.TableMapping;
+				bool isexcept = false;
+				if (exceptMappings != null && exceptMappings.Length > 0) {
+					foreach (DataEntityMapping exceptMapping in exceptMappings) {
+						if (exceptMapping == mapping) {
+							isexcept = true;
+							break;
+						}
+					}
+				}
+				if (!isexcept) {
+					target.infoList [kv.Key] = kv.Value;
+				}
+			}
+			return target;
 		}
 	}
 }

@@ -37,7 +37,7 @@ namespace Light.Data.MysqlTest
 			return user;
 		}
 
-		protected TeUser2 CreateTestUser2()
+		protected TeUser2 CreateTestUser2 ()
 		{
 	
 			TeUser2 user = new TeUser2 ();
@@ -89,6 +89,33 @@ namespace Light.Data.MysqlTest
 				}
 				if (i % 5 == 0) {
 					userInsert.CheckLevelType = CheckLevelType.High;
+				}
+				lists.Add (userInsert);
+			}
+			if (insert) {
+				context.BulkInsert (lists.ToArray ());
+			}
+			return lists;
+		}
+
+
+		protected List<TeUserExtend> InitialUserExtendTable (int count, bool insert = true)
+		{
+			context.TruncateTable<TeUserExtend> ();
+			List<TeUserExtend> lists = new List<TeUserExtend> ();
+			for (int i = 1; i <= count; i++) {
+				TeUserExtend userInsert = new TeUserExtend ();
+
+				userInsert.UserId = i;
+
+				if (i % 2 == 0) {
+					userInsert.Extend1 = (i % 2 == 0 ? 2 : i % 2).ToString ();
+				}
+				if (i % 3 == 0) {
+					userInsert.Extend1 = (i % 3 == 0 ? 3 : i % 3).ToString ();
+				}
+				if (i % 5 == 0) {
+					userInsert.Extend1 = (i % 5 == 0 ? 5 : i % 5).ToString ();
 				}
 				lists.Add (userInsert);
 			}
@@ -175,6 +202,19 @@ namespace Light.Data.MysqlTest
 				user1.LoginTimes == user2.LoginTimes &&
 				user1.Mark == user2.Mark &&
 				user1.HotRate == user2.HotRate;
+			if (checkId) {
+				ret = ret && (user1.Id == user2.Id);
+			}
+			return ret;
+		}
+
+		protected bool EqualUserExtend (TeUserExtend user1, TeUserExtend user2, bool checkId = true)
+		{
+			bool ret =
+				user1.UserId == user2.UserId &&
+				user1.Extend1 == user2.Extend1 &&
+				user1.Extend2 == user2.Extend2 &&
+				user1.Extend3 == user2.Extend3;
 			if (checkId) {
 				ret = ret && (user1.Id == user2.Id);
 			}
@@ -315,6 +355,17 @@ namespace Light.Data.MysqlTest
 			}
 			return lists;
 		}
+
+		protected bool EqualLevel (TeUserLevel info1, TeUserLevel info2)
+		{
+			bool ret =
+				info1.Id == info2.Id &&
+				info1.LevelName == info2.LevelName &&
+				info1.Remark == info2.Remark &&
+				info1.Status == info2.Status;
+			return ret;
+		}
+
 
 		protected bool EqualLog (TeAreaInfo info1, TeAreaInfo info2, bool checkId = true)
 		{

@@ -6,7 +6,7 @@ using Light.Data;
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class SingleRelateion2Test:BaseTest
+	public class RelationSingle2Test:BaseTest
 	{
 		[Test ()]
 		public void TestCase_Base ()

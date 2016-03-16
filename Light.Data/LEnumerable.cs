@@ -31,7 +31,6 @@ namespace Light.Data
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return _context.QueryDataMappingEnumerable<T> (_mapping, _query, _order, _region, _level).GetEnumerator ();
-//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -72,14 +71,13 @@ namespace Light.Data
 			_mapping = DataMapping.GetEntityMapping (typeof(T));
 		}
 
-		#region IEnumerable 成员
-
-		//		IEnumerator IEnumerable.GetEnumerator ()
+		//		object _extendState;
+		//
+		//		internal LEnumerable<T> SetExtendState (object extendState)
 		//		{
-		//			return _context.QueryDataEnumerable (_mapping, _query, _order, _region, _level).GetEnumerator ();
+		//			this._extendState = extendState;
+		//			return this;
 		//		}
-
-		#endregion
 
 		#region LEnumerable<T> 成员
 
@@ -278,7 +276,6 @@ namespace Light.Data
 			return this;
 		}
 
-
 		/// <summary>
 		/// 数据集数量
 		/// </summary>
@@ -468,42 +465,6 @@ namespace Light.Data
 			}
 		}
 
-		//		/// <summary>
-		//		/// 查询单列字段的数据
-		//		/// </summary>
-		//		/// <param name="fieldInfo">字段</param>
-		//		/// <returns>数据枚举</returns>
-		//		public IEnumerable QuerySingleField (DataFieldInfo fieldInfo)
-		//		{
-		//			return QuerySingleField (fieldInfo, false);
-		//		}
-		//
-		//		/// <summary>
-		//		/// 查询单列字段的数据
-		//		/// </summary>
-		//		/// <param name="fieldInfo">字段</param>
-		//		/// <param name="isDistinct">是否去重</param>
-		//		/// <returns>数据枚举</returns>
-		//		public IEnumerable QuerySingleField (DataFieldInfo fieldInfo, bool isDistinct)
-		//		{
-		//			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
-		//				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-		//			}
-		//			return _context.QueryColumeEnumerable (fieldInfo, _query, _order, _region, isDistinct, _level);
-		//		}
-		//
-
-
-		//		/// <summary>
-		//		/// 查询单列字段的数据
-		//		/// </summary>
-		//		/// <param name="fieldInfo">字段</param>
-		//		/// <returns>数据枚举</returns>
-		//		public IEnumerable QuerySingleFieldList (DataFieldInfo fieldInfo)
-		//		{
-		//			return QuerySingleFieldList (fieldInfo, false);
-		//		}
-
 		/// <summary>
 		/// Queries the single field.
 		/// </summary>
@@ -580,44 +541,45 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 转换为集合
+		/// To the list.
 		/// </summary>
-		/// <returns>泛型集合</returns>
+		/// <returns>The list.</returns>
 		public List<T> ToList ()
 		{
-//			return _context.QueryDataList (_mapping, _query, _order, _region, _level) as List<T>;
 			return _context.QueryDataList<T> (_query, _order, _region, _level);
 		}
 
 		/// <summary>
-		/// 转换为数组
+		/// To the array.
 		/// </summary>
-		/// <returns>泛型数组</returns>
+		/// <returns>The array.</returns>
 		public T[] ToArray ()
 		{
 			return ToList ().ToArray ();
 		}
 
+
+		internal List<T> ToRelateList (object extentState)
+		{
+			return _context.QueryDataRelateList<T> (_query, _order, _region, _level, extentState);
+		}
+
 		#endregion
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString ()
-		{
-			return GetDbCommand ().CommandText;
-		}
+		//		public override string ToString ()
+		//		{
+		//			return GetDbCommand ().CommandText;
+		//		}
 
-		/// <summary>
-		/// 生成命令
-		/// </summary>
-		/// <returns>命令接口</returns>
-		public IDbCommand GetDbCommand ()
-		{
-			CommandData commandData = _context.DataBase.Factory.CreateSelectCommand (_mapping, _query, _order, _context.IsInnerPager ? _region : null);
-			return commandData.CreateCommand (_context.DataBase);
-		}
+		//		/// <summary>
+		//		/// Gets the db command.
+		//		/// </summary>
+		//		/// <returns>The db command.</returns>
+		//		public IDbCommand GetDbCommand ()
+		//		{
+		//			CommandData commandData = _context.DataBase.Factory.CreateSelectCommand (_mapping, _query, _order, _context.IsInnerPager ? _region : null);
+		//			return commandData.CreateCommand (_context.DataBase);
+		//		}
 
 		/// <summary>
 		/// Join the specified le and on.
@@ -893,17 +855,6 @@ namespace Light.Data
 			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
 			return insertor.Execute ();
 		}
-
-		//		/// <summary>
-		//		/// Insert this instance.
-		//		/// </summary>
-		//		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		//		public int InsertWithOutIdentity<K> ()
-		//		{
-		//			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
-		//			insertor.WithOutIdentity ();
-		//			return insertor.Execute ();
-		//		}
 
 		/// <summary>
 		/// Update the specified updates.

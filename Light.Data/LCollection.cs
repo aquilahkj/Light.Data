@@ -15,14 +15,22 @@ namespace Light.Data
 
 		DataContext context;
 
-		internal LCollection (DataContext context, QueryExpression query)
+		object owner;
+
+		SingleRelationFieldMapping relateReferFieldMapping;
+
+		internal LCollection (DataContext context, object owner, QueryExpression query, SingleRelationFieldMapping rollRelateFieldMapping)
 		{
 			if (context == null)
 				throw new ArgumentNullException ("context");
+			if (owner == null)
+				throw new ArgumentNullException ("owner");
 			if (query == null)
 				throw new ArgumentNullException ("query");
 			this.context = context;
+			this.owner = owner;
 			this.query = query;
+			this.relateReferFieldMapping = rollRelateFieldMapping;
 		}
 
 		#region ICollection implementation
@@ -30,7 +38,12 @@ namespace Light.Data
 		void InitialList ()
 		{
 			if (list == null) {
-				list = context.LQuery<T> ().Where (query).ToList ();
+				RelationContent rc = null;
+				if (this.relateReferFieldMapping != null) {
+					rc = new RelationContent ();
+					rc.SetCollectionValue (this.relateReferFieldMapping, this.owner);
+				}
+				list = context.LQuery<T> ().Where (query).ToRelateList (rc);
 			}
 		}
 
@@ -115,6 +128,7 @@ namespace Light.Data
 		#endregion
 
 		#region IEnumerable implementation
+
 		/// <summary>
 		/// Gets the enumerator.
 		/// </summary>
