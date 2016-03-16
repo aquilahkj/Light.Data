@@ -5,11 +5,11 @@ namespace Light.Data
 {
 	class SingleRelationFieldMapping:BaseRelationFieldMapping
 	{
-		JoinItem item;
+		JoinItem joinItem;
 
-		public JoinItem Item {
+		public JoinItem JoinItemInfo {
 			get {
-				return item;
+				return joinItem;
 			}
 		}
 
@@ -33,7 +33,7 @@ namespace Light.Data
 				DataFieldInfo rinfo = this.relateInfos [i];
 				expression = DataFieldExpression.And (expression, minfo == rinfo);
 			}
-			this.item = new JoinItem (this.relateEntityMapping, this.relateInfos, expression);
+			this.joinItem = new JoinItem (this.relateEntityMapping, this.relateInfos, expression);
 		}
 
 		public object ToProperty (DataContext context, object source, RelationContent datas)
@@ -80,8 +80,19 @@ namespace Light.Data
 			else {
 				object value;
 				if (!datas.GetJoinData (this, out value)) {
-					value = this.relateEntityMapping.LoadJoinTableData (context, datareader, this.relateInfos, datas);
-					datas.SetJoinData (this, value);
+					foreach (DataFieldInfo info in this.relateInfos) {
+						string name = string.Format ("{0}_{1}", this.RelateMapping.TableName, info.FieldName);
+						object obj = datareader [name];
+						if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
+							datas.SetJoinData (this, null);
+							return null;
+						}
+					}
+					object item = Activator.CreateInstance (this.RelateMapping.ObjectType);
+					datas.SetJoinData (this, item);
+					this.relateEntityMapping.LoadJoinTableData (context, datareader, item, datas);
+					value = item;
+
 				}
 				return value;
 			}

@@ -316,19 +316,19 @@ namespace Light.Data
 			}
 		}
 
-		public object LoadJoinTableData (DataContext context, IDataReader datareader, DataFieldInfo[] relateInfos, RelationContent datas)
+		public void LoadJoinTableData (DataContext context, IDataReader datareader, object item, RelationContent datas)
 		{
-			if (relateInfos != null) {
-				for (int i = 0; i < relateInfos.Length; i++) {
-					string name = string.Format ("{0}_{1}", this.TableName, relateInfos [i].FieldName);
-					object obj = datareader [name];
-					if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
-						return null;
-					}
-				}
-			}
-			object item = Activator.CreateInstance (ObjectType);
-
+//			if (relateInfos != null) {
+//				for (int i = 0; i < relateInfos.Length; i++) {
+//					string name = string.Format ("{0}_{1}", this.TableName, relateInfos [i].FieldName);
+//					object obj = datareader [name];
+//					if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
+//						return null;
+//					}
+//				}
+//			}
+//			object item = Activator.CreateInstance (ObjectType);
+//			datas.SetJoinData (this, item);
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
@@ -363,7 +363,7 @@ namespace Light.Data
 					}
 				}
 			}
-			datas.SetJoinMasterData (this, item);
+
 			foreach (SingleRelationFieldMapping mapping in singleJoinTableRelationFields) {
 				object value = mapping.ToProperty (context, datareader, datas);
 				if (!Object.Equals (value, null)) {
@@ -375,19 +375,20 @@ namespace Light.Data
 				de.SetContext (context);
 				de.LoadDataComplete ();
 			}
-			return item;
+//			return item;
 		}
 
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
-			
+			object item = Activator.CreateInstance (ObjectType);
 			if (this.singleJoinTableRelationFields.Count > 0) {
 				RelationContent datas = state as RelationContent;
 				datas.InitialJoinData ();
-//				datas.SetJoinMasterData (this, item);
-				return LoadJoinTableData (context, datareader, null, datas);
+				datas.SetJoinData (this, item);
+				LoadJoinTableData (context, datareader, item, datas);
+				return item;
 			}
-			object item = Activator.CreateInstance (ObjectType);
+
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;

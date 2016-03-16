@@ -117,6 +117,7 @@ namespace Light.Data.MysqlTest
 				if (i % 5 == 0) {
 					userInsert.Extend1 = (i % 5 == 0 ? 5 : i % 5).ToString ();
 				}
+				userInsert.ExtendAreaId = i;
 				lists.Add (userInsert);
 			}
 			if (insert) {
@@ -214,9 +215,23 @@ namespace Light.Data.MysqlTest
 				user1.UserId == user2.UserId &&
 				user1.Extend1 == user2.Extend1 &&
 				user1.Extend2 == user2.Extend2 &&
-				user1.Extend3 == user2.Extend3;
+				user1.Extend3 == user2.Extend3 &&
+				user1.ExtendAreaId == user2.ExtendAreaId;
 			if (checkId) {
 				ret = ret && (user1.Id == user2.Id);
+			}
+			return ret;
+		}
+
+		protected bool EqualAreaInfo (TeAreaInfo info1, TeAreaInfo info2, bool checkId = true)
+		{
+			bool ret =
+				info1.Name == info2.Name &&
+				info1.V1 == info2.V1 &&
+				info1.V2 == info2.V2 &&
+				info1.V3 == info2.V3;
+			if (checkId) {
+				ret = ret && (info1.Id == info2.Id);
 			}
 			return ret;
 		}

@@ -87,7 +87,7 @@ namespace Light.Data
 			this.relationMap = relationMap;
 		}
 
-		public void SetJoinMasterData (DataEntityMapping mapping, object value)
+		public void SetJoinData (DataEntityMapping mapping, object value)
 		{
 			if (mapping == relationMap.MasterMapping) {
 				joinDatas [mapping] = value;

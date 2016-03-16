@@ -2849,6 +2849,8 @@ namespace Light.Data.MysqlTest
 
 		static readonly DataFieldInfo extend3Field = DataFieldInfo<TeUserExtend>.Create("Extend3");
 
+		static readonly DataFieldInfo extendAreaIdField = DataFieldInfo<TeUserExtend>.Create("ExtendAreaId");
+
     	#endregion
 
     	#region "Static DataFieldInfo"
@@ -2884,6 +2886,13 @@ namespace Light.Data.MysqlTest
         {
             get {
                 return extend3Field;
+            }
+        }
+
+		public static DataFieldInfo ExtendAreaIdField
+        {
+            get {
+                return extendAreaIdField;
             }
         }
 
@@ -2968,6 +2977,186 @@ namespace Light.Data.MysqlTest
             }
             set { 
             	this.extend3 = value; 
+            }
+        }
+		private int? extendAreaId;
+
+		/// <summary>
+		/// ExtendAreaId
+		/// </summary>
+		/// <value></value>
+		[DataField("ExtendAreaId", IsNullable = true)]
+        public int? ExtendAreaId
+        {
+            get { 
+            	return this.extendAreaId; 
+            }
+            set { 
+            	this.extendAreaId = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_UserExtendProfile")]
+    public partial class TeUserExtendProfile : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeUserExtendProfile>.Create("Id");
+
+		static readonly DataFieldInfo userIdField = DataFieldInfo<TeUserExtendProfile>.Create("UserId");
+
+		static readonly DataFieldInfo extend1Field = DataFieldInfo<TeUserExtendProfile>.Create("Extend1");
+
+		static readonly DataFieldInfo extend2Field = DataFieldInfo<TeUserExtendProfile>.Create("Extend2");
+
+		static readonly DataFieldInfo extend3Field = DataFieldInfo<TeUserExtendProfile>.Create("Extend3");
+
+		static readonly DataFieldInfo extendProfileIdField = DataFieldInfo<TeUserExtendProfile>.Create("ExtendProfileId");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo UserIdField
+        {
+            get {
+                return userIdField;
+            }
+        }
+
+		public static DataFieldInfo Extend1Field
+        {
+            get {
+                return extend1Field;
+            }
+        }
+
+		public static DataFieldInfo Extend2Field
+        {
+            get {
+                return extend2Field;
+            }
+        }
+
+		public static DataFieldInfo Extend3Field
+        {
+            get {
+                return extend3Field;
+            }
+        }
+
+		public static DataFieldInfo ExtendProfileIdField
+        {
+            get {
+                return extendProfileIdField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int userId;
+
+		/// <summary>
+		/// UserId
+		/// </summary>
+		/// <value></value>
+		[DataField("UserId")]
+        public int UserId
+        {
+            get { 
+            	return this.userId; 
+            }
+            set { 
+            	this.userId = value; 
+            }
+        }
+		private string extend1;
+
+		/// <summary>
+		/// Extend1
+		/// </summary>
+		/// <value></value>
+		[DataField("Extend1", IsNullable = true)]
+        public string Extend1
+        {
+            get { 
+            	return this.extend1; 
+            }
+            set { 
+            	this.extend1 = value; 
+            }
+        }
+		private string extend2;
+
+		/// <summary>
+		/// Extend2
+		/// </summary>
+		/// <value></value>
+		[DataField("Extend2", IsNullable = true)]
+        public string Extend2
+        {
+            get { 
+            	return this.extend2; 
+            }
+            set { 
+            	this.extend2 = value; 
+            }
+        }
+		private string extend3;
+
+		/// <summary>
+		/// Extend3
+		/// </summary>
+		/// <value></value>
+		[DataField("Extend3", IsNullable = true)]
+        public string Extend3
+        {
+            get { 
+            	return this.extend3; 
+            }
+            set { 
+            	this.extend3 = value; 
+            }
+        }
+		private int extendProfileId;
+
+		/// <summary>
+		/// ExtendProfileId
+		/// </summary>
+		/// <value></value>
+		[DataField("ExtendProfileId")]
+        public int ExtendProfileId
+        {
+            get { 
+            	return this.extendProfileId; 
+            }
+            set { 
+            	this.extendProfileId = value; 
             }
         }
 		#endregion

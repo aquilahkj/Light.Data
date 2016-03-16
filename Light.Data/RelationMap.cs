@@ -5,8 +5,6 @@ namespace Light.Data
 {
 	class RelationMap
 	{
-		//		Dictionary<DataEntityMapping, JoinItem> relates = new Dictionary<DataEntityMapping, JoinItem> ();
-
 		readonly DataEntityMapping masterMapping;
 
 		public DataEntityMapping MasterMapping {
@@ -15,29 +13,16 @@ namespace Light.Data
 			}
 		}
 
-		//		Dictionary<DataEntityMapping, SingleRelationFieldMapping> relateMappingDict = new Dictionary<DataEntityMapping, SingleRelationFieldMapping> ();
-
 		readonly List<JoinItem> itemList = new List<JoinItem> ();
-
-
-
-		//		List<DataEntityMapping> mappingList = new List<DataEntityMapping> ();
-		//
-		//		List<SingleRelationFieldMapping> relateList = new List<SingleRelationFieldMapping> ();
-
-		//		List<SingleRelationFieldMapping> referList = new List<SingleRelationFieldMapping> ();
 
 		readonly HashSet<SingleRelationFieldMapping> referHash = new HashSet<SingleRelationFieldMapping> ();
 
 		readonly HashSet<string> entityHash = new HashSet<string> ();
-		//		readonly HashSet<DataEntityMapping> entityHash = new HashSet<DataEntityMapping> ();
-
 
 		public RelationMap (DataEntityMapping masterMapping)
 		{
 			this.masterMapping = masterMapping;
 			this.entityHash.Add (masterMapping.TableName);
-//			this.relates.Add (masterMapping, null);
 			LoadEntityMapping (this.masterMapping);
 		}
 
@@ -58,11 +43,14 @@ namespace Light.Data
 						if (flag) {
 							this.referHash.Add (relateMapping);
 						}
+//						else {
+//							string d = relateMapping.FieldName;
+//						}
 					}
 				}
 				else {
 					this.entityHash.Add (relateMapping.RelateMapping.TableName);
-					this.itemList.Add (relateMapping.Item);
+					this.itemList.Add (relateMapping.JoinItemInfo);
 					this.referHash.Add (relateMapping);
 					if (relateMapping.RelateMapping.HasJoinRelateModel) {
 						LoadEntityMapping (relateMapping.RelateMapping);

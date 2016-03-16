@@ -43,8 +43,7 @@ namespace Light.Data.MysqlTest
 
 			}
 		}
-
-
+			
 		[Test ()]
 		public void TestCase_SingleAndSingle ()
 		{
@@ -70,8 +69,86 @@ namespace Light.Data.MysqlTest
 					Assert.IsNull (refer.UserExtend);
 				}
 				else {
-					Assert.IsTrue (EqualUserExtend(extend, refer.UserExtend));
+					Assert.IsTrue (EqualUserExtend (extend, refer.UserExtend));
 					Assert.AreEqual (refer.UserExtend.User, refer);
+				}
+			}
+		}
+
+		[Test ()]
+		public void TestCase_SingleAndSingle1 ()
+		{
+			InitialUserTable (40);
+			InitialUserExtendTable (30);
+
+
+			List<TeUser> users;
+			List<TeUserExtend> extends;
+			List<TeUserWithExtendRefer1> list; 
+
+
+			users = context.LQuery<TeUser> ().ToList ();
+			extends = context.LQuery<TeUserExtend> ().ToList ();
+
+			list = context.LQuery<TeUserWithExtendRefer1> ().ToList ();
+			Assert.AreEqual (users.Count, list.Count);
+			foreach (TeUser user in users) {
+				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
+				TeUserWithExtendRefer1 refer = list.Find (x => x.Id == user.Id);
+				Assert.IsTrue (EqualUser (user, refer));
+				if (extend == null) {
+					Assert.IsNull (refer.UserExtend);
+					Assert.IsNull (refer.UserExtend1);
+				}
+				else {
+					Assert.IsTrue (EqualUserExtend (extend, refer.UserExtend));
+					Assert.AreEqual (refer.UserExtend, refer.UserExtend1);
+					Assert.AreEqual (refer.UserExtend.User, refer);
+					Assert.IsNotNull (refer.UserExtend.User1);
+					Assert.IsTrue (EqualUser (user, refer.UserExtend.User1));
+				}
+				Assert.IsNull (refer.UserExtend2);
+			}
+		}
+
+		[Test ()]
+		public void TestCase_SingleAndSingle2 ()
+		{
+			InitialUserTable (40);
+			InitialUserExtendTable (30);
+			InitialAreaInfoTable (40);
+
+			List<TeUser> users;
+			List<TeUserExtend> extends;
+			List<TeAreaInfo> areaInfos;
+			List<TeUserWithExtendRefer2> list; 
+
+
+			users = context.LQuery<TeUser> ().ToList ();
+			extends = context.LQuery<TeUserExtend> ().ToList ();
+			areaInfos = context.LQuery<TeAreaInfo> ().ToList ();
+			list = context.LQuery<TeUserWithExtendRefer2> ().ToList ();
+
+			Assert.AreEqual (users.Count, list.Count);
+			foreach (TeUser user in users) {
+				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
+
+				TeUserWithExtendRefer2 refer = list.Find (x => x.Id == user.Id);
+				Assert.IsTrue (EqualUser (user, refer));
+				if (extend == null) {
+					Assert.IsNull (refer.UserExtend);
+				}
+				else {
+					Assert.IsTrue (EqualUserExtend (extend, refer.UserExtend));
+					Assert.AreEqual (refer.UserExtend.User, refer);
+					TeAreaInfo areaInfo = areaInfos.Find (x => x.Id == extend.ExtendAreaId);
+					if (areaInfo == null) {
+						Assert.IsNull (refer.UserExtend.AreaInfo);
+					}
+					else {
+						Assert.IsTrue (EqualAreaInfo (areaInfo, refer.UserExtend.AreaInfo));
+						Assert.AreEqual (refer.UserExtend, refer.UserExtend.AreaInfo.UserExtend);
+					}
 				}
 			}
 		}
