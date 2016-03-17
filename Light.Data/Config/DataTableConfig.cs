@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data table config.
+	/// </summary>
 	class DataTableConfig : TableConfig,IDataTableConfig
 	{
-		//Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig>();
-
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.DataTableConfig"/> class.
 		/// </summary>
+		/// <param name="dataType">Data type.</param>
 		public DataTableConfig (Type dataType)
 		{
 			if (dataType == null) {
@@ -22,99 +21,40 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 数据表名
+		/// Gets the type of the data.
 		/// </summary>
+		/// <value>The type of the data.</value>
 		public Type DataType {
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 数据表名
+		/// Gets or sets the name of the table.
 		/// </summary>
+		/// <value>The name of the table.</value>
 		public string TableName {
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// 扩展参数
+		/// Gets or sets the extend parameters.
 		/// </summary>
+		/// <value>The extend parameters.</value>
 		public string ExtendParams {
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// 是否有实体表对应关系
+		/// Gets or sets a value indicating whether this instance is entity table.
 		/// </summary>
+		/// <value>true</value>
+		/// <c>false</c>
 		public bool IsEntityTable {
 			get;
 			set;
 		}
-		/*
-        public void SetField(IConfiguratorFieldConfig config)
-        {
-            this.SetField(config.FieldName, config);
-        }
-
-        public void SetField(string fieldName, IConfiguratorFieldConfig config)
-        {
-            if (string.IsNullOrEmpty(fieldName))
-            {
-                throw new ArgumentNullException("FieldName");
-            }
-            if (config == null)
-            {
-                throw new ArgumentNullException("Config");
-            }
-            _fieldConfigDictionary.Add(fieldName, config);
-        }
-
-        public IConfiguratorFieldConfig GetField(string fieldName)
-        {
-            if (string.IsNullOrEmpty(fieldName))
-            {
-                throw new ArgumentNullException("FieldName");
-            }
-            if (_fieldConfigDictionary.ContainsKey(fieldName))
-            {
-                return _fieldConfigDictionary[fieldName];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public IConfiguratorFieldConfig this[string fieldName]
-        {
-            get
-            {
-                return GetField(fieldName);
-            }
-            set
-            {
-                SetField(fieldName, value);
-            }
-        }
-
-
-        public IEnumerator<IConfiguratorFieldConfig> GetEnumerator()
-        {
-            foreach (KeyValuePair<string, IConfiguratorFieldConfig> kv in _fieldConfigDictionary)
-            {
-                yield return kv.Value;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            foreach (KeyValuePair<string, IConfiguratorFieldConfig> kv in _fieldConfigDictionary)
-            {
-                yield return kv.Value;
-            }
-        }
-         */
 	}
 }

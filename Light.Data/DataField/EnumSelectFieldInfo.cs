@@ -2,7 +2,6 @@
 
 namespace Light.Data
 {
-
 	class EnumSelectFieldInfo:SelectFieldInfo
 	{
 		readonly Enum _value;

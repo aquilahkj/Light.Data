@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
-	/// <summary>
-	/// 日期格式数据字段
-	/// </summary>
 	class DateDataFieldInfo : ExtendDataFieldInfo
 	{
-		string _format = null;
+		string _format;
 
 		internal DateDataFieldInfo (DataFieldInfo info, string format)
 			: base (info)
 		{
-//			DataFieldMapping fieldMapping = info.DataField;
 			_format = format;
 		}
 

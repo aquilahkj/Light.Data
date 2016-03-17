@@ -3,7 +3,7 @@
 namespace Light.Data
 {
 	/// <summary>
-	/// 批量更新设置值
+	/// Update set value in bitch.
 	/// </summary>
 	public class UpdateSetValue
 	{
@@ -12,22 +12,23 @@ namespace Light.Data
 		readonly object _value = null;
 
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.UpdateSetValue"/> class.
 		/// </summary>
-		/// <param name="dataField">要更新的数据字段</param>
-		/// <param name="value">更新值</param>
+		/// <param name="dataField">Data field.</param>
+		/// <param name="value">Value.</param>
 		public UpdateSetValue (DataFieldInfo dataField, object value)
 		{
 			if (Object.Equals (dataField, null)) {
-				throw new ArgumentNullException ("DataField");
+				throw new ArgumentNullException ("dataField");
 			}
 			_dataField = dataField;
 			_value = value;
 		}
 
 		/// <summary>
-		/// 数据字段
+		/// Gets the data field.
 		/// </summary>
+		/// <value>The data field.</value>
 		public DataFieldInfo DataField {
 			get {
 				return _dataField;
@@ -35,8 +36,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 数据值
+		/// Gets the value.
 		/// </summary>
+		/// <value>The value.</value>
 		public object Value {
 			get {
 				return _value;

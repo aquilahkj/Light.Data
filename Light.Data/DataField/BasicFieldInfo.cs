@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	/// <summary>
-	/// 基本字段信息
+	/// Basic field info.
 	/// </summary>
 	public abstract class BasicFieldInfo
 	{
@@ -22,6 +19,10 @@ namespace Light.Data
 
 		DataEntityMapping _tableMapping = null;
 
+		/// <summary>
+		/// Gets or sets the table mapping.
+		/// </summary>
+		/// <value>The table mapping.</value>
 		internal DataEntityMapping TableMapping {
 			get {
 				return _tableMapping;
@@ -32,8 +33,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取字段名称
+		/// Gets the name of the field.
 		/// </summary>
+		/// <value>The name of the field.</value>
 		public string FieldName {
 			get {
 				return DataField.Name;

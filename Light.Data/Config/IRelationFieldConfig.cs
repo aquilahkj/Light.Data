@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
+	/// <summary>
+	/// Interface of relation field config.
+	/// </summary>
     interface IRelationFieldConfig
     {
 		RelationKey[]  GetRelationKeys();
 
 		/// <summary>
-		/// 关联数据表对应字段数
+		/// Gets the relation key count.
 		/// </summary>
 		/// <value>The relation key count.</value>
         int RelationKeyCount

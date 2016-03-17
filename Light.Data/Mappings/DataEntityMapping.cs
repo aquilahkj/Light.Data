@@ -5,11 +5,14 @@ using System.Reflection;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data entity mapping.
+	/// </summary>
 	class DataEntityMapping : DataMapping
 	{
 		protected List<CollectionRelationFieldMapping> collectionRelationFields = new List<CollectionRelationFieldMapping> ();
 
-		protected List<SingleRelationFieldMapping> singleRequeryRelationFields = new List<SingleRelationFieldMapping> ();
+		protected List<SingleRelationFieldMapping> singleMultiQueryRelationFields = new List<SingleRelationFieldMapping> ();
 
 		protected List<SingleRelationFieldMapping> singleJoinTableRelationFields = new List<SingleRelationFieldMapping> ();
 
@@ -29,10 +32,10 @@ namespace Light.Data
 
 		internal SingleRelationFieldMapping[] GetSingleRelationFieldMappings ()
 		{
-			int len = this.singleRequeryRelationFields.Count + this.singleJoinTableRelationFields.Count;
+			int len = this.singleMultiQueryRelationFields.Count + this.singleJoinTableRelationFields.Count;
 			SingleRelationFieldMapping[] array = new SingleRelationFieldMapping[len];
 			int index = 0;
-			foreach (SingleRelationFieldMapping item in  this.singleRequeryRelationFields) {
+			foreach (SingleRelationFieldMapping item in  this.singleMultiQueryRelationFields) {
 				array [index] = item;
 				index++;
 			}
@@ -45,10 +48,10 @@ namespace Light.Data
 
 		internal SingleRelationFieldMapping[] GetSingleRequeryRelationFieldMappings ()
 		{
-			int len = this.singleRequeryRelationFields.Count;
+			int len = this.singleMultiQueryRelationFields.Count;
 			SingleRelationFieldMapping[] array = new SingleRelationFieldMapping[len];
 			int index = 0;
-			foreach (SingleRelationFieldMapping item in  this.singleRequeryRelationFields) {
+			foreach (SingleRelationFieldMapping item in  this.singleMultiQueryRelationFields) {
 				array [index] = item;
 				index++;
 			}
@@ -90,7 +93,7 @@ namespace Light.Data
 						RelationKey[] keypairs = config.GetRelationKeys ();
 						SingleRelationFieldMapping rmapping = new SingleRelationFieldMapping (pi.Name, this, type, keypairs, handler);
 						if (config.RelationMode == RelationMode.MultiQuery) {
-							singleRequeryRelationFields.Add (rmapping);
+							singleMultiQueryRelationFields.Add (rmapping);
 						}
 						else {
 							singleJoinTableRelationFields.Add (rmapping);
@@ -199,46 +202,6 @@ namespace Light.Data
 
 		JoinCapsule baseJoinCapsule;
 
-		//		void InitialJoinCapsule ()
-		//		{
-		//			Dictionary<DataEntityMapping, JoinItem> relates = new Dictionary<DataEntityMapping, JoinItem> ();
-		//			relates.Add (this, null);
-		//			LoadJoinModels (relates);
-		//			JoinSelector selector = new JoinSelector ();
-		//			List<JoinModel> models = new List<JoinModel> ();
-		//			HashSet<string> tables = new HashSet<string> ();
-		//			JoinModel mainModel = new JoinModel (this, null, null, null);
-		//			models.Add (mainModel);
-		//			foreach (DataFieldMapping field in this._fieldList) {
-		//				DataFieldInfo info = new DataFieldInfo (field);
-		//				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", this.TableName, info.FieldName));
-		//				selector.SetAliasDataField (alias);
-		//			}
-		//			foreach (KeyValuePair<DataEntityMapping, JoinItem> item in relates) {
-		//				if (item.Value == null) {
-		//					continue;
-		//				}
-		//				DataEntityMapping mapping = item.Value.Mapping;
-		//				DataFieldExpression expression = item.Value.Expression;
-		//				foreach (DataFieldMapping field in mapping._fieldList) {
-		//					DataFieldInfo info = new DataFieldInfo (field);
-		//					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", mapping.TableName, info.FieldName));
-		//					selector.SetAliasDataField (alias);
-		//				}
-		//				if (tables.Contains (mapping.TableName)) {
-		//					continue;
-		//				}
-		//				else {
-		//					tables.Add (mapping.TableName);
-		//				}
-		//				JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
-		//				JoinModel model = new JoinModel (mapping, connect, null, null);
-		//				models.Add (model);
-		//			}
-		//			this.baseJoinCapsule = new JoinCapsule (selector, models);
-		//		}
-
-
 		void InitialJoinCapsule ()
 		{
 			RelationMap rmap = new RelationMap (this);
@@ -295,15 +258,6 @@ namespace Light.Data
 			return mapping as DataFieldMapping;
 		}
 
-		//		public void LoadJoinModels (Dictionary<DataEntityMapping,JoinItem> relates)
-		//		{
-		//			if (singleJoinTableRelationFields.Count > 0) {
-		//				foreach (SingleRelationFieldMapping mapping in singleJoinTableRelationFields) {
-		//					mapping.LoadJoinModels (relates);
-		//				}
-		//			}
-		//		}
-
 		public bool HasJoinRelateModel {
 			get {
 				return singleJoinTableRelationFields.Count > 0;
@@ -312,23 +266,12 @@ namespace Light.Data
 
 		public bool HasMultiRelateModel {
 			get {
-				return  singleRequeryRelationFields.Count > 0;
+				return  singleMultiQueryRelationFields.Count > 0;
 			}
 		}
 
 		public void LoadJoinTableData (DataContext context, IDataReader datareader, object item, RelationContent datas)
 		{
-//			if (relateInfos != null) {
-//				for (int i = 0; i < relateInfos.Length; i++) {
-//					string name = string.Format ("{0}_{1}", this.TableName, relateInfos [i].FieldName);
-//					object obj = datareader [name];
-//					if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
-//						return null;
-//					}
-//				}
-//			}
-//			object item = Activator.CreateInstance (ObjectType);
-//			datas.SetJoinData (this, item);
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
@@ -355,8 +298,8 @@ namespace Light.Data
 					mapping.Handler.Set (item, mapping.ToProperty (context, item));
 				}
 			}
-			if (singleRequeryRelationFields.Count > 0) {
-				foreach (SingleRelationFieldMapping mapping in singleRequeryRelationFields) {
+			if (singleMultiQueryRelationFields.Count > 0) {
+				foreach (SingleRelationFieldMapping mapping in singleMultiQueryRelationFields) {
 					object value = mapping.ToProperty (context, item, datas);
 					if (!Object.Equals (value, null)) {
 						mapping.Handler.Set (item, value);
@@ -375,7 +318,6 @@ namespace Light.Data
 				de.SetContext (context);
 				de.LoadDataComplete ();
 			}
-//			return item;
 		}
 
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
@@ -414,9 +356,9 @@ namespace Light.Data
 					mapping.Handler.Set (item, mapping.ToProperty (context, item));
 				}
 			}
-			if (singleRequeryRelationFields.Count > 0) {
+			if (singleMultiQueryRelationFields.Count > 0) {
 				RelationContent datas = state as RelationContent;
-				foreach (SingleRelationFieldMapping mapping in singleRequeryRelationFields) {
+				foreach (SingleRelationFieldMapping mapping in singleMultiQueryRelationFields) {
 					object value = mapping.ToProperty (context, item, datas);
 					if (!Object.Equals (value, null)) {
 						mapping.Handler.Set (item, value);
@@ -516,6 +458,21 @@ namespace Light.Data
 		//		{
 		//			DataEntityMapping._aliasName = null;
 		//		}
+
+		//		string _tableName;
+		//
+		//		public string TableName {
+		//			get {
+		//								if (_aliasName != null) {
+		//									return DataEntityMapping._aliasName;
+		//								}
+		//								else {
+		//									return _tableName;
+		//								}
+		//				return _tableName;
+		//			}
+		//		}
+
 
 		#endregion
 

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class FieldOrderExpression : OrderExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
 		OrderType _orderType = OrderType.ASC;
 

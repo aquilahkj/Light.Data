@@ -1,8 +1,7 @@
-﻿using System;
-
+﻿
 namespace Light.Data
 {
-	internal static class RE
+	static class RE
 	{
 		/// <summary>
 		/// 聚合函数字段{0}已存在

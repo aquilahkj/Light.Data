@@ -4,9 +4,9 @@ namespace Light.Data
 {
 	class ConditionMaxFunction: AggregateFunction
 	{
-		QueryExpression _expression = null;
+		QueryExpression _expression;
 
-		DataFieldInfo _fieldinfo = null;
+		DataFieldInfo _fieldinfo;
 
 		internal ConditionMaxFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo)
 			: base (mapping)

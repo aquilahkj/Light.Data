@@ -3,6 +3,9 @@ using System.Data;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Single relation field mapping.
+	/// </summary>
 	class SingleRelationFieldMapping:BaseRelationFieldMapping
 	{
 		JoinItem joinItem;

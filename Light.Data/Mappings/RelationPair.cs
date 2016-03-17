@@ -2,10 +2,17 @@
 
 namespace Light.Data
 {
-	public class RelationPair
+	/// <summary>
+	/// Relation pair.
+	/// </summary>
+	class RelationPair
 	{
 		readonly string relateKey;
 
+		/// <summary>
+		/// Gets the relate key.
+		/// </summary>
+		/// <value>The relate key.</value>
 		public string RelateKey {
 			get {
 				return relateKey;
@@ -14,6 +21,10 @@ namespace Light.Data
 
 		readonly string masterKey;
 
+		/// <summary>
+		/// Gets the master key.
+		/// </summary>
+		/// <value>The master key.</value>
 		public string MasterKey {
 			get {
 				return masterKey;

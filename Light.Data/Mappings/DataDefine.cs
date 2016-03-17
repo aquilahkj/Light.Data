@@ -3,6 +3,9 @@ using System.Data;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data define.
+	/// </summary>
 	abstract class DataDefine : IDataDefine
 	{
 		Type _type;

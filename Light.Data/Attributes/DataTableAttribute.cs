@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 数据表属性
+	/// Data table attribute.
 	/// </summary>
 	[AttributeUsage (AttributeTargets.Class, Inherited = true)]
 	public class DataTableAttribute : Attribute, IDataTableConfig
 	{
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.DataTableAttribute"/> class.
 		/// </summary>
-		/// <param name="tableName">表名称</param>
+		/// <param name="tableName">Table name.</param>
 		public DataTableAttribute (string tableName)
 			: this ()
 		{
@@ -21,7 +19,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.DataTableAttribute"/> class.
 		/// </summary>
 		public DataTableAttribute ()
 		{
@@ -29,24 +27,28 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 数据表名
+		/// Gets or sets the name of the table.
 		/// </summary>
+		/// <value>The name of the table.</value>
 		public string TableName {
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// 扩展参数
+		/// Gets or sets the extend parameters.
 		/// </summary>
+		/// <value>The extend parameters.</value>
 		public string ExtendParams {
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// 是否有实体表对应关系
+		/// Gets or sets a value indicating whether this instance is entity table.
 		/// </summary>
+		/// <value>true</value>
+		/// <c>false</c>
 		public bool IsEntityTable {
 			get;
 			set;

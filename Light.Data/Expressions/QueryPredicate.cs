@@ -1,6 +1,9 @@
 ﻿
 namespace Light.Data
 {
+	/// <summary>
+	/// Query predicate.
+	/// </summary>
 	enum QueryPredicate
 	{
 		Eq,
@@ -11,6 +14,9 @@ namespace Light.Data
 		NotEq
 	}
 
+	/// <summary>
+	/// Query collection predicate.
+	/// </summary>
 	enum QueryCollectionPredicate
 	{
 		In,

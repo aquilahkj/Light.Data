@@ -7,11 +7,6 @@ namespace Light.Data
 	{
 		Dictionary<string,DataFieldInfo> infoList = new Dictionary<string, DataFieldInfo> ();
 
-		public JoinSelector ()
-		{
-			
-		}
-
 		public void SetDataEntity (DataEntityMapping entityMapping)
 		{
 			if (entityMapping == null)

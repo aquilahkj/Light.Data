@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// 取值范围对象
 	/// </summary>
-	public class Region
+	 class Region
 	{
 		/// <summary>
 		/// 构造函数

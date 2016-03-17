@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Aggregate table config.
+	/// </summary>
 	class AggregateTableConfig : TableConfig, IAggregateTableConfig
 	{
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.AggregateTableConfig"/> class.
 		/// </summary>
-		/// <param name="dataType">数据类型</param>
+		/// <param name="dataType">Data type.</param>
 		public AggregateTableConfig (Type dataType)
 		{
 			if (dataType == null) {
@@ -19,16 +20,18 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 数据表名
+		/// Gets the type of the data.
 		/// </summary>
+		/// <value>The type of the data.</value>
 		public Type DataType {
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 扩展参数
+		/// Gets or sets the extend parameters.
 		/// </summary>
+		/// <value>The extend parameters.</value>
 		public string ExtendParams {
 			get;
 			set;

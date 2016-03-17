@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -28,11 +27,11 @@ namespace Light.Data
 		}
 
 
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
 		QueryCollectionPredicate _predicate;
 
-		IEnumerable _values = null;
+		IEnumerable _values;
 
 		public CollectionParamsQueryExpression (DataFieldInfo fieldInfo, QueryCollectionPredicate predicate, IEnumerable values)
 			: base (fieldInfo.TableMapping)

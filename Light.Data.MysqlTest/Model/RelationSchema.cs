@@ -117,7 +117,7 @@ namespace Light.Data.MysqlTest
 
 		private LCollection<TeUser> users;
 
-		[Relation ("Id", "LevelId")]
+		[RelationField ("Id", "LevelId")]
 		public LCollection<TeUser> Users {
 			get {
 				return users;
@@ -129,7 +129,7 @@ namespace Light.Data.MysqlTest
 
 		private ICollection<TeUser> users2;
 
-		[Relation ("Id", "LevelId")]
+		[RelationField ("Id", "LevelId")]
 		public ICollection<TeUser> Users2 {
 			get {
 				return users2;
@@ -146,7 +146,7 @@ namespace Light.Data.MysqlTest
 	{
 		private LCollection<TeUser> users;
 
-		[Relation ("Id", "LevelId")]
+		[RelationField ("Id", "LevelId")]
 		public LCollection<TeUser> Users {
 			get {
 				return users;
@@ -158,7 +158,7 @@ namespace Light.Data.MysqlTest
 
 		private ICollection<TeUser> users2;
 
-		[Relation ("Id", "LevelId")]
+		[RelationField ("Id", "LevelId")]
 		public ICollection<TeUser> Users2 {
 			get {
 				return users2;
@@ -283,7 +283,7 @@ namespace Light.Data.MysqlTest
 
 		private LCollection<TeUser> users;
 
-		[Relation ("Id", "LevelId")]
+		[RelationField ("Id", "LevelId")]
 		public LCollection<TeUser> Users {
 			get {
 				return users;
@@ -295,7 +295,7 @@ namespace Light.Data.MysqlTest
 
 		private ICollection<TeUser> users2;
 
-		[Relation ("Id", "LevelId")]
+		[RelationField ("Id", "LevelId")]
 		public ICollection<TeUser> Users2 {
 			get {
 				return users2;
@@ -852,7 +852,7 @@ namespace Light.Data.MysqlTest
 
 		private TeUserLevel userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		[RelationProperty (RelationMode = RelationMode.MultiQuery)]
 		public TeUserLevel UserLevel {
 			get {
@@ -870,7 +870,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserLevel userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		[RelationProperty (RelationMode = RelationMode.MultiQuery)]
 		public TeUserLevel UserLevel {
 			get {
@@ -1428,7 +1428,7 @@ namespace Light.Data.MysqlTest
 
 		private TeUserLevel userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		[RelationProperty (RelationMode = RelationMode.MultiQuery)]
 		public TeUserLevel UserLevel {
 			get {
@@ -1986,7 +1986,7 @@ namespace Light.Data.MysqlTest
 
 		private TeUserLevel userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		[RelationProperty (RelationMode = RelationMode.JoinTable)]
 		public TeUserLevel UserLevel {
 			get {
@@ -2004,7 +2004,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserLevel userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		[RelationProperty (RelationMode = RelationMode.JoinTable)]
 		public TeUserLevel UserLevel {
 			get {
@@ -2562,7 +2562,7 @@ namespace Light.Data.MysqlTest
 
 		private TeUserLevel userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		[RelationProperty (RelationMode = RelationMode.JoinTable)]
 		public TeUserLevel UserLevel {
 			get {

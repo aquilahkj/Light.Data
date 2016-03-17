@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class MinFunction : AggregateFunction
 	{
-		DataFieldInfo _fieldinfo = null;
+		DataFieldInfo _fieldinfo;
 
 		internal MinFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo)
 			: base (mapping)

@@ -70,9 +70,6 @@ namespace Light.Data
 
 		protected bool _canInnerPage;
 
-		/// <summary>
-		/// 是否支持内分页
-		/// </summary>
 		public bool CanInnerPager {
 			get {
 				return _canInnerPage;
@@ -86,12 +83,6 @@ namespace Light.Data
 
 		#region 增删改操作命令
 
-		/// <summary>
-		/// 从字段映射中获取DataParameter集合
-		/// </summary>
-		/// <param name="mappings">字段映射列表</param>
-		/// <param name="source">数据对象</param>
-		/// <returns>DataParameter集合</returns>
 		protected virtual List<DataParameter> CreateColumnParameter (IEnumerable<FieldMapping> mappings, object source)
 		{
 			List<DataParameter> paramList = new List<DataParameter> ();
@@ -114,12 +105,6 @@ namespace Light.Data
 			return paramList;
 		}
 
-		/// <summary>
-		/// 生成数据新增命令
-		/// </summary>
-		/// <param name="mapping">Mapping</param>
-		/// <param name="entity">数据实体</param>
-		/// <returns>新增命令对象</returns>
 		public virtual CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
 		{
 			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
@@ -140,13 +125,6 @@ namespace Light.Data
 			return command;
 		}
 
-		/// <summary>
-		/// 生成数据更新命令
-		/// </summary>
-		/// <param name="mapping">数据实体</param>
-		/// <param name="entity">数据实体</param>
-		/// <param name="updatefieldNames">需更新的数据字段</param>
-		/// <returns>更新命令对象</returns>
 		public virtual CommandData CreateUpdateCommand (DataTableEntityMapping mapping, object entity, string[] updatefieldNames)
 		{
 			if (!mapping.HasPrimaryKey) {

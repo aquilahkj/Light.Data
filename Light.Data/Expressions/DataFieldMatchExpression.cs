@@ -13,6 +13,12 @@ namespace Light.Data
 
 		QueryPredicate predicate;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Light.Data.DataFieldMatchExpression"/> class.
+		/// </summary>
+		/// <param name="leftField">Left field.</param>
+		/// <param name="rightField">Right field.</param>
+		/// <param name="predicate">Predicate.</param>
 		internal DataFieldMatchExpression (DataFieldInfo leftField, DataFieldInfo rightField, QueryPredicate predicate)
 		{
 			this.leftField = leftField;
@@ -20,6 +26,13 @@ namespace Light.Data
 			this.predicate = predicate;
 		}
 
+		/// <summary>
+		/// Creates the sql string.
+		/// </summary>
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			dataParameters = null;
@@ -43,8 +56,6 @@ namespace Light.Data
 			}
 			return expression;
 		}
-
-
 	}
 }
 

@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Aggregate table mapping.
+	/// </summary>
 	class AggregateTableMapping : DataMapping
 	{
 		#region static
@@ -43,26 +46,11 @@ namespace Light.Data
 
 		#endregion
 
-		//		AggregateTableMapping (Type type, Type relateType)
-		//			: base (type)
-		//		{
-		//			if (relateType != null && relateType != type) {
-		//				RelateType = relateType;
-		//			}
-		//			InitialDataFieldMapping ();
-		//		}
-
-
 		AggregateTableMapping (Type type)
 			: base (type)
 		{
 			InitialDataFieldMapping ();
 		}
-
-		//		public Type RelateType {
-		//			get;
-		//			private set;
-		//		}
 
 		private void InitialDataFieldMapping ()
 		{
@@ -94,21 +82,6 @@ namespace Light.Data
 			}
 			return item;
 		}
-
-		//		public override object LoadData (DataContext context, DataRow datarow)
-		//		{
-		//			object item = Activator.CreateInstance (ObjectType);
-		//			foreach (DataFieldMapping field in this._fieldList) {
-		//				if (field == null)
-		//					continue;
-		//				object obj = datarow [field.Name];
-		//				object value = field.ToProperty (obj);
-		//				if (!Object.Equals (value, null)) {
-		//					field.Handler.Set (item, value);
-		//				}
-		//			}
-		//			return item;
-		//		}
 
 		public override object InitialData ()
 		{

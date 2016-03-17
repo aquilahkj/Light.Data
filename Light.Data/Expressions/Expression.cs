@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	/// <summary>
-	/// 基类表达式
+	/// Base expression.
 	/// </summary>
 	public abstract class Expression
 	{
+		/// <summary>
+		/// Gets or sets the table mapping.
+		/// </summary>
+		/// <value>The table mapping.</value>
 		internal DataEntityMapping TableMapping {
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// 是否检查表达式与查询表的一致性
+		/// Creates the sql string.
 		/// </summary>
-		//        public bool IgnoreConsistency
-		//        {
-		//            get;
-		//            protected set;
-		//        }
-
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
 		internal abstract string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters);
 	}
 }

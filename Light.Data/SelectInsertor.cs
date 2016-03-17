@@ -21,8 +21,14 @@ namespace Light.Data
 
 		DataContext _context;
 
-//		bool _withoutIdentity = false;
-
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Light.Data.SelectInsertor"/> class.
+		/// </summary>
+		/// <param name="context">Context.</param>
+		/// <param name="insertType">Insert type.</param>
+		/// <param name="selectType">Select type.</param>
+		/// <param name="query">Query.</param>
+		/// <param name="order">Order.</param>
 		internal SelectInsertor (DataContext context, Type insertType, Type selectType, QueryExpression query, OrderExpression order)
 		{
 			if (context == null)
@@ -39,7 +45,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// reset where expression.
+		/// Reset the specified where expression with or.
 		/// </summary>
 		/// <returns>The reset.</returns>
 		public SelectInsertor WhereReset ()
@@ -49,72 +55,62 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// replace where expression
+		/// Set the specified where expression with or.
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
 		public SelectInsertor Where (QueryExpression expression)
 		{
-			//			if (expression == null)
-			//				throw new ArgumentNullException ("expression");
 			_query = expression;
 			return this;
 		}
 
 		/// <summary>
-		/// and catch where expression.
+		/// Catch the specified where expression with and.
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
 		public SelectInsertor WhereWithAnd (QueryExpression expression)
 		{
-			//			if (expression == null)
-			//				throw new ArgumentNullException ("expression");
 			_query = QueryExpression.And (_query, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// or catch where expression.
+		/// Catch the specified where expression with or.
 		/// </summary>
 		/// <returns>LEnumerables.</returns>
 		/// <param name="expression">Expression.</param>
 		public SelectInsertor WhereWithOr (QueryExpression expression)
 		{
-			//			if (expression == null)
-			//				throw new ArgumentNullException ("expression");
 			_query = QueryExpression.Or (_query, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// catch order by expression.
+		/// Catch the specified order by expression.
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
 		public SelectInsertor OrderByCatch (OrderExpression expression)
 		{
-			//			if (expression == null)
-			//				throw new ArgumentNullException ("expression");
 			_order = OrderExpression.Catch (_order, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// replace order by expression.
+		/// Set the specified order by expression.
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		/// <param name="expression">Expression.</param>
 		public SelectInsertor OrderBy (OrderExpression expression)
 		{
-			//			if (expression == null)
-			//				throw new ArgumentNullException ("expression");
 			_order = expression;
 			return this;
 		}
 
 		/// <summary>
-		/// reset order by expression
+		/// Reset the specified order by expression.
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		public SelectInsertor OrderByReset ()
@@ -124,7 +120,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// order by random.
+		/// Set order by random.
 		/// </summary>
 		/// <returns>SelectInsterExecutor.</returns>
 		public SelectInsertor OrderByRandom ()
@@ -134,7 +130,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Sets the insert field.
+		/// Set the insert fields.
 		/// </summary>
 		/// <returns>The insert field.</returns>
 		/// <param name="infos">Infos.</param>
@@ -145,7 +141,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Sets the select field.
+		/// Set the select fields.
 		/// </summary>
 		/// <returns>The select field.</returns>
 		/// <param name="infos">Infos.</param>

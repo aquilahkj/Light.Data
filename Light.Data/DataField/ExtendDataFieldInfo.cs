@@ -1,43 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 扩展字段信息基类,使用数据库自带函数扩展
+	/// Extend data field info. use database function library.
 	/// </summary>
 	public abstract class ExtendDataFieldInfo : DataFieldInfo
 	{
 		DataFieldInfo _baseFieldInfo = null;
 
 		/// <summary>
-		/// 原始字段信息
+		/// Gets the base field info.
 		/// </summary>
+		/// <value>The base field info.</value>
 		public DataFieldInfo BaseFieldInfo {
 			get {
 				return _baseFieldInfo;
 			}
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Light.Data.ExtendDataFieldInfo"/> class.
+		/// </summary>
+		/// <param name="info">Info.</param>
 		internal ExtendDataFieldInfo (DataFieldInfo info)
 			: base (info.DataField)
 		{
 			_baseFieldInfo = info;
 		}
 
-//		internal override string DBType {
-//			get {
-////				return _baseFieldInfo.DBType;
-//				return string.Empty;
-//			}
-//		}
-
 		/// <summary>
-		/// 匹配细节内容是否相等
+		/// Equalses the detail.
 		/// </summary>
-		/// <param name="info">匹配对象</param>
-		/// <returns></returns>
+		/// <returns>true</returns>
+		/// <c>false</c>
+		/// <param name="info">Info.</param>
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{
 			ExtendDataFieldInfo target = info as ExtendDataFieldInfo;

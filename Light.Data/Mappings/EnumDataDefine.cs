@@ -59,12 +59,6 @@ namespace Light.Data
 			return GetValue (obj);
 		}
 
-		//		public override object LoadData (DataContext context, DataRow datarow)
-		//		{
-		//			object obj = datarow [0];
-		//			return GetValue (obj);
-		//		}
-
 		object GetValue (object value)
 		{
 			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
@@ -80,13 +74,6 @@ namespace Light.Data
 					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {
-//					int result = Convert.ToInt32 (obj);
-//					if (_dict.ContainsKey (result)) {
-//						return _dict [result];
-//					}
-//					else {
-//						throw new LightDataException (string.Format (RE.ValueNotInEnumType, result, _rawType));
-//					}
 					return value;
 				}
 			}

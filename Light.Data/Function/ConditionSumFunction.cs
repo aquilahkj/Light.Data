@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class ConditionSumFunction : AggregateFunction
 	{
-		QueryExpression _expression = null;
+		QueryExpression _expression;
 
-		DataFieldInfo _fieldinfo = null;
+		DataFieldInfo _fieldinfo;
 
-		bool _isDistinct = false;
+		bool _isDistinct;
 
 		internal ConditionSumFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo, bool isDistinct)
 			: base (mapping)

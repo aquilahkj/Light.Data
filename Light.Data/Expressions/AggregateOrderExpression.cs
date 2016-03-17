@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Aggregate order expression.
+	/// </summary>
 	class AggregateOrderExpression : OrderExpression
 	{
-		AggregateFunction _function = null;
+		AggregateFunction _function;
 		OrderType _orderType = OrderType.ASC;
 
 		public AggregateOrderExpression (AggregateFunction function, OrderType orderType)

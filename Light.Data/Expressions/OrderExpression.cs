@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 排序表达式
+	/// Order expression.
 	/// </summary>
 	public class OrderExpression : Expression
 	{
-		List<OrderExpression> _orderExpressions = null;
+		List<OrderExpression> _orderExpressions;
 
 		internal OrderExpression (DataEntityMapping tableMapping)
 		{
-//            if (tableMapping == null)
-//            {
-//                IgnoreConsistency = true;
-//            }
-//            else
-//            {
 			TableMapping = tableMapping;
-//            }
 		}
 
+		/// <summary>
+		/// Catch the specified expression1 and expression2.
+		/// </summary>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		internal static OrderExpression Catch (OrderExpression expression1, OrderExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
@@ -36,7 +33,6 @@ namespace Light.Data
 			}
 			else if (expression1 is RandomOrderExpression || expression2 is RandomOrderExpression) {
 				return expression2;
-				//throw new LightDataException (RE.RandomOrderForbitCatch);
 			}
 			DataEntityMapping demapping = null;
 			if (expression1.TableMapping != null) {
@@ -45,25 +41,6 @@ namespace Light.Data
 			else if (expression2.TableMapping != null) {
 				demapping = expression2.TableMapping;
 			}
-//            if (expression1.IgnoreConsistency && !expression2.IgnoreConsistency)
-//            {
-//                demapping = expression2.TableMapping;
-//            }
-//            else if (!expression1.IgnoreConsistency && expression2.IgnoreConsistency)
-//            {
-//                demapping = expression1.TableMapping;
-//            }
-//            else if (!expression1.IgnoreConsistency && !expression2.IgnoreConsistency)
-//            {
-//                if (expression1.TableMapping.Equals(expression2.TableMapping))
-//                {
-//                    demapping = expression1.TableMapping;
-//                }
-//                else
-//                {
-//                    throw new LightDataException(RE.DataMappingOfExpressionIsNotMatch);
-//                }
-//            }
 			OrderExpression newExpression = new OrderExpression (demapping);
 			List<OrderExpression> list = new List<OrderExpression> ();
 			if (expression1._orderExpressions == null) {
@@ -81,34 +58,27 @@ namespace Light.Data
 			newExpression._orderExpressions = list;
 			return newExpression;
 		}
-
-		/// <summary>
-		/// 排序连接
-		/// </summary>
-		/// <param name="expression1"></param>
-		/// <param name="expression2"></param>
-		/// <returns></returns>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		public static OrderExpression operator & (OrderExpression expression1, OrderExpression expression2)
 		{
 			return Catch (expression1, expression2);
 		}
 
-//		/// <summary>
-//		/// 随机排序
-//		/// </summary>
-//		/// <returns></returns>
-//		public static OrderExpression Random ()
-//		{
-//			return new RandomOrderExpression ();
-//		}
-
+		/// <summary>
+		/// Creates the sql string.
+		/// </summary>
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string[] array = new string[_orderExpressions.Count];
 			List<DataParameter> list = new List<DataParameter> ();
 			int len = array.Length;
 			for (int i = 0; i < len; i++) {
-				DataParameter[] dps = null;
+				DataParameter[] dps;
 				array [i] = _orderExpressions [i].CreateSqlString (factory, fullFieldName, out dps);
 				list.AddRange (dps);
 			}
@@ -117,6 +87,14 @@ namespace Light.Data
 			return factory.CreateCatchExpressionSql (array);
 		}
 
+		/// <summary>
+		/// Creates the sql string.
+		/// </summary>
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
+		/// <param name="handler">Handler.</param>
 		internal virtual string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			string[] array = new string[_orderExpressions.Count];
@@ -124,7 +102,7 @@ namespace Light.Data
 			dataParameters = null;
 			int len = array.Length;
 			for (int i = 0; i < len; i++) {
-				DataParameter[] dps = null;
+				DataParameter[] dps;
 				array [i] = _orderExpressions [i].CreateSqlString (factory, fullFieldName, out dps, handler);
 				if (dps != null && dps.Length > 0) {
 					list.AddRange (dps);
@@ -133,7 +111,6 @@ namespace Light.Data
 			dataParameters = list.ToArray ();
 			return factory.CreateCatchExpressionSql (array);
 		}
-
 		/// <summary>
 		/// Determines whether the specified <see cref="Light.Data.OrderExpression"/> is equal to the current <see cref="Light.Data.OrderExpression"/>.
 		/// </summary>

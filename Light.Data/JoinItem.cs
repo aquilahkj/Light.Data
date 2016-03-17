@@ -4,7 +4,7 @@ namespace Light.Data
 {
 	class JoinItem
 	{
-		DataEntityMapping mapping;
+		readonly DataEntityMapping mapping;
 
 		public DataEntityMapping Mapping {
 			get {

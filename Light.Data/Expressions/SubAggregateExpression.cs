@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Light.Data
 {
 	class SubAggregateExpression : AggregateHavingExpression
 	{
-		AggregateFunction _function = null;
+		AggregateFunction _function;
 
 		QueryCollectionPredicate _predicate;
 
-		QueryExpression _queryExpression = null;
+		QueryExpression _queryExpression;
 
-		DataFieldInfo _queryFieldInfo = null;
+		DataFieldInfo _queryFieldInfo;
 
 		public SubAggregateExpression (AggregateFunction function, QueryCollectionPredicate predicate, DataFieldInfo queryFieldInfo, QueryExpression queryExpression)
 			: base (function.TableMapping)
@@ -25,13 +23,13 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			string queryString = null;
+			string queryString;
 			List<DataParameter> list = new List<DataParameter> ();
-			DataParameter[] ps = null;
+			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
 			list.AddRange (ps);
 
-			DataParameter[] ps2 = null;
+			DataParameter[] ps2;
 			queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out ps2);
 			list.AddRange (ps2);
 
@@ -46,7 +44,7 @@ namespace Light.Data
 				return CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
 			string name = factory.CreateDataFieldSql (alise);
-			string queryString = null;
+			string queryString;
 			queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
 			return factory.CreateSubQuerySql (name, _predicate, _queryFieldInfo.CreateDataFieldSql (factory), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
 		}

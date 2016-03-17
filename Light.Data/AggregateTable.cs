@@ -5,9 +5,8 @@ using System.Data;
 namespace Light.Data
 {
 	/// <summary>
-	/// 统计表生成器
+	/// Aggregate table.
 	/// </summary>
-	/// <typeparam name="T">要统计的表类型</typeparam>
 	public class AggregateTable<T> where T : class, new()
 	{
 		DataEntityMapping _enetityMapping;
@@ -33,9 +32,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 生成统计表的DataTable
+		/// Gets the data table.
 		/// </summary>
-		/// <returns>统计表生成器</returns>
+		/// <returns>The data table.</returns>
 		public DataTable GetDataTable ()
 		{
 			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
@@ -44,10 +43,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 生成统计表的类型集合
+		/// Gets the object list.
 		/// </summary>
-		/// <typeparam name="K">生成类型</typeparam>
-		/// <returns>类型集合</returns>
+		/// <returns>The object list.</returns>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public List<K> GetObjectList<K> () where K : class, new()
 		{
 			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
@@ -57,10 +56,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 加入分组字段
+		/// Groups by field.
 		/// </summary>
-		/// <param name="fieldInfo">分组字段</param>
-		/// <returns>统计表生成器</returns>
+		/// <returns>The aggregateTable.</returns>
+		/// <param name="fieldInfo">Field info.</param>
 		public AggregateTable<T> GroupBy (DataFieldInfo fieldInfo)
 		{
 			GroupBy (fieldInfo, null);
@@ -68,11 +67,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 添加分组字段
+		/// Add groups by field with alias name.
 		/// </summary>
-		/// <param name="fieldInfo">分组字段</param>
-		/// <param name="alias">查询别名,与字段配置字段对应</param>
-		/// <returns>统计表生成器</returns>
+		/// <returns>The aggregateTable.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="alias">Alias.</param>
 		public AggregateTable<T> GroupBy (DataFieldInfo fieldInfo, string alias)
 		{
 			if (Object.Equals (fieldInfo, null)) {
@@ -99,11 +98,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 添加聚合方法
+		/// Add the specified function with alias name.
 		/// </summary>
-		/// <param name="function">聚合函数</param>
-		/// <param name="alias">查询别名,与字段配置字段对应</param>
-		/// <returns>统计表生成器</returns>
+		/// <returns>The aggregateTable.</returns>
+		/// <param name="function">Function.</param>
+		/// <param name="alias">Alias.</param>
 		public AggregateTable<T> Aggregate (AggregateFunction function, string alias)
 		{
 			if (Object.Equals (function, null)) {
@@ -125,46 +124,42 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Having the specified expression.
+		/// Set the specified having expression.
 		/// </summary>
+		/// <returns>The aggregateTable.</returns>
 		/// <param name="expression">Expression.</param>
 		public AggregateTable<T> Having (AggregateHavingExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_having = expression;
 			return this;
 		}
 
 		/// <summary>
-		/// 添加统计够查询条件
+		/// Catch the specified having expression with and.
 		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns>统计表生成器</returns>
+		/// <returns>The aggregateTable.</returns>
+		/// <param name="expression">Expression.</param>
 		public AggregateTable<T> HavingWithAnd (AggregateHavingExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_having = AggregateHavingExpression.And (_having, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// 添加统计够查询条件
+		/// Catch the specified having expression with or.
 		/// </summary>
-		/// <param name="expression">查询表达式</param>
-		/// <returns>统计表生成器</returns>
+		/// <returns>The aggregateTable.</returns>
+		/// <param name="expression">Expression.</param>
 		public AggregateTable<T> HavingWithOr (AggregateHavingExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_having = AggregateHavingExpression.Or (_having, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// Havings the reset.
+		/// Reset the specified having expression.
 		/// </summary>
+		/// <returns>The aggregateTable.</returns>
 		/// <returns>The reset.</returns>
 		public AggregateTable<T> HavingReset ()
 		{
@@ -173,34 +168,31 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// catch order by expression.
+		/// Catch the specified order by expression.
 		/// </summary>
-		/// <returns>LEnumerable.</returns>
+		/// <returns>The aggregateTable.</returns>
 		/// <param name="expression">AggregateTable.</param>
 		public AggregateTable<T> OrderByCatch (OrderExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_order = OrderExpression.Catch (_order, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// replace order by expression.
+		/// Set the specified order by expression.
 		/// </summary>
-		/// <returns>LEnumerable.</returns>
+		/// <returns>The aggregateTable.</returns>
 		/// <param name="expression">AggregateTable.</param>
 		public AggregateTable<T> OrderBy (OrderExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_order = expression;
 			return this;
 		}
 
 		/// <summary>
-		/// reset order by expression
+		/// Reset the specified order by expression
 		/// </summary>
+		/// <returns>The aggregateTable.</returns>
 		/// <returns>AggregateTable.</returns>
 		public AggregateTable<T> OrderByReset ()
 		{
@@ -209,9 +201,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Orders the by random.
+		/// Set order by random.
 		/// </summary>
-		/// <returns>The by random.</returns>
+		/// <returns>The aggregateTable.</returns>
 		public AggregateTable<T> OrderByRandom ()
 		{
 			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof(T)));
@@ -219,9 +211,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// reset where expression.
+		/// Reset the specified where expression.
 		/// </summary>
-		/// <returns>The reset.</returns>
+		/// <returns>The aggregateTable.</returns>
 		public AggregateTable<T> WhereReset ()
 		{
 			_query = null;
@@ -229,64 +221,36 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// replace where expression
+		/// Set the specified where expression
 		/// </summary>
-		/// <returns>LEnumerable.</returns>
+		/// <returns>The aggregateTable.</returns>
 		/// <param name="expression">Expression.</param>
 		public AggregateTable<T> Where (QueryExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_query = expression;
 			return this;
 		}
 
 		/// <summary>
-		/// and catch where expression.
+		/// Catch the specified where expression with and.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
 		public AggregateTable<T> WhereWithAnd (QueryExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_query = QueryExpression.And (_query, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// or catch where expression.
+		/// Catch the specified where expression with or.
 		/// </summary>
 		/// <returns>LEnumerables.</returns>
 		/// <param name="expression">Expression.</param>
 		public AggregateTable<T> WhereWithOr (QueryExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_query = QueryExpression.Or (_query, expression);
 			return this;
 		}
-
-		/// <summary>
-		/// 生成命令
-		/// </summary>
-		/// <returns>命令接口</returns>
-		public IDbCommand GetDbCommand ()
-		{
-			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
-			List<AggregateFunctionInfo> functions = new List<AggregateFunctionInfo> (_aggregateFunctionDictionary.Values);
-			CommandData commandData = _context.DataBase.Factory.CreateDynamicAggregateCommand (_enetityMapping, fields, functions, _query, _having, _order);
-			return commandData.CreateCommand (_context.DataBase);
-		}
-
-		/// <summary>
-		/// 输出查询命令语句
-		/// </summary>
-		/// <returns>查询命令语句</returns>
-		public override string ToString ()
-		{
-			return GetDbCommand ().CommandText;
-		}
-
 	}
 }

@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class DataFieldQueryExpression : QueryExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
 		QueryPredicate _predicate;
 
-		DataFieldInfo _relateFieldInfo = null;
+		DataFieldInfo _relateFieldInfo;
 
-		bool _isReverse = false;
+		bool _isReverse;
 
-		bool _isSameTable = false;
+		bool _isSameTable;
 
 		public DataFieldQueryExpression (DataFieldInfo fieldInfo, QueryPredicate predicate, DataFieldInfo relateFieldInfo, bool isReverse)
 			: base (fieldInfo.TableMapping)

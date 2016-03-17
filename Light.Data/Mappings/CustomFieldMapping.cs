@@ -3,7 +3,7 @@
 namespace Light.Data
 {
 	/// <summary>
-	/// 自定义字段类型，用于建立没有在数据表字段映射的字段信息(DataFieldInfo)
+	/// Custom field mapping.
 	/// </summary>
 	class CustomFieldMapping : DataFieldMapping
 	{

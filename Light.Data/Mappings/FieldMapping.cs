@@ -2,6 +2,9 @@
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Field mapping.
+	/// </summary>
 	abstract class FieldMapping
 	{
 		protected static readonly string _fieldRegex = @"^([a-zA-Z][a-z0-9A-Z_]*)$";

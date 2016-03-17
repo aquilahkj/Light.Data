@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Default time function.
+	/// </summary>
 	sealed class DefaultTimeFunction
 	{
 		static Dictionary<DefaultTime,DefaultTimeFunction> dict = new Dictionary<DefaultTime, DefaultTimeFunction> ();

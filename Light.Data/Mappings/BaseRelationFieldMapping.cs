@@ -2,6 +2,9 @@
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Base relation field mapping.
+	/// </summary>
 	abstract class BaseRelationFieldMapping
 	{
 		readonly protected PropertyHandler handler;
@@ -161,9 +164,6 @@ namespace Light.Data
 			}
 			return true;
 		}
-
-
-
 	}
 }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -25,13 +24,13 @@ namespace Light.Data
 			SupportTypeCodes.Add (TypeCode.UInt64);
 		}
 
-		AggregateFunction _function = null;
+		AggregateFunction _function;
 
-		bool _isNot = false;
+		bool _isNot;
 
-		object _fromValue = null;
+		object _fromValue;
 
-		object _toValue = null;
+		object _toValue;
 
 		public BetweenParamsAggregateExpression (AggregateFunction function, bool isNot, object fromValue, object toValue)
 			: base (function.TableMapping)
@@ -58,7 +57,7 @@ namespace Light.Data
 			DataParameter fromParam = new DataParameter (pn, _fromValue);
 			DataParameter toParam = new DataParameter (pn1, _toValue);
 			List<DataParameter> list = new List<DataParameter> ();
-			DataParameter[] ps = null;
+			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
 			if (ps != null && ps.Length > 0) {
 				list.AddRange (ps);
@@ -82,7 +81,7 @@ namespace Light.Data
 
 			DataParameter fromParam = new DataParameter (pn, _fromValue);
 			DataParameter toParam = new DataParameter (pn1, _toValue);
-			dataParameters = new DataParameter[] { fromParam, toParam };
+			dataParameters = new [] { fromParam, toParam };
 
 			return factory.CreateBetweenParamsQuerySql (name, _isNot, fromParam, toParam);
 

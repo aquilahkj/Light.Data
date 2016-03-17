@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Configuration;
+using System.IO;
 using System.Reflection;
 using System.Xml;
-using System.IO;
-using System.Configuration;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Configurator.
+	/// </summary>
 	class Configurator
 	{
 		static readonly string SECTION_NAME = "lightDataConfig";
 
+		/// <summary>
+		/// Loads the configurator from system config.
+		/// </summary>
+		/// <returns>The configurator from system config.</returns>
 		public static Configurator LoadConfiguratorFromSystemConfig ()
 		{
 			object obj = ConfigurationManager.GetSection (SECTION_NAME);
@@ -24,10 +30,14 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Loads the configurator from app setting.
+		/// </summary>
+		/// <returns>The configurator from app setting.</returns>
 		public static Configurator[] LoadConfiguratorFromAppSetting ()
 		{
 			Configurator[] configFiles = null;
-			string configPath = null;
+			string configPath;
 			if (ConfigurationManager.AppSettings ["liaghDataConfig"] != null) {
 				configPath = ConfigurationManager.AppSettings ["liaghDataConfig"];
 				configFiles = LoadConfiguratorFromPath (configPath);
@@ -35,6 +45,11 @@ namespace Light.Data
 			return configFiles;
 		}
 
+		/// <summary>
+		/// Loads the configurator from path.
+		/// </summary>
+		/// <returns>The configurator from path.</returns>
+		/// <param name="configPath">Config path.</param>
 		public static Configurator[] LoadConfiguratorFromPath (string configPath)
 		{
 			Configurator[] configFiles = null;
@@ -50,9 +65,13 @@ namespace Light.Data
 			return configFiles;
 		}
 
+		/// <summary>
+		/// Loads the configurator from assembly.
+		/// </summary>
+		/// <returns>The configurator from assembly.</returns>
 		public static Configurator[] LoadConfiguratorFromAssembly ()
 		{
-			Assembly assembly = null;
+			Assembly assembly;
 			assembly = Assembly.GetEntryAssembly ();
 			if (assembly == null) {
 				assembly = Assembly.GetExecutingAssembly ();
@@ -60,6 +79,11 @@ namespace Light.Data
 			return LoadConfiguratorFromAssembly (assembly);
 		}
 
+		/// <summary>
+		/// Loads the configurator from assembly.
+		/// </summary>
+		/// <returns>The configurator from assembly.</returns>
+		/// <param name="assembly">Assembly.</param>
 		public static Configurator[] LoadConfiguratorFromAssembly (Assembly assembly)
 		{
 			if (assembly == null) {
@@ -74,7 +98,11 @@ namespace Light.Data
 			return configFiles;
 		}
 
-
+		/// <summary>
+		/// Loads the configurator from config file dir.
+		/// </summary>
+		/// <returns>The configurator from config file dir.</returns>
+		/// <param name="directory">Directory.</param>
 		public static Configurator[] LoadConfiguratorFromConfigFileDir (string directory)
 		{
 			if (string.IsNullOrEmpty (directory)) {
@@ -113,6 +141,11 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
+		/// <summary>
+		/// Loads the configurator from file.
+		/// </summary>
+		/// <returns>The configurator from file.</returns>
+		/// <param name="fileName">File name.</param>
 		public static Configurator LoadConfiguratorFromFile (string fileName)
 		{
 			if (string.IsNullOrEmpty (fileName)) {
@@ -136,6 +169,11 @@ namespace Light.Data
 			return configFile;
 		}
 
+		/// <summary>
+		/// Loads the configurator from file.
+		/// </summary>
+		/// <returns>The configurator from file.</returns>
+		/// <param name="fileInfo">File info.</param>
 		public static Configurator LoadConfiguratorFromFile (FileInfo fileInfo)
 		{
 			if (fileInfo == null) {
@@ -160,6 +198,11 @@ namespace Light.Data
 			return configFile;
 		}
 
+		/// <summary>
+		/// Loads the configurator from stream.
+		/// </summary>
+		/// <returns>The configurator from stream.</returns>
+		/// <param name="configStream">Config stream.</param>
 		public static Configurator LoadConfiguratorFromStream (Stream configStream)
 		{
 			if (configStream == null) {
@@ -181,6 +224,11 @@ namespace Light.Data
 			return configFile;
 		}
 
+		/// <summary>
+		/// Loads the configurator from xml.
+		/// </summary>
+		/// <returns>The configurator from xml.</returns>
+		/// <param name="configNode">Config node.</param>
 		public static Configurator LoadConfiguratorFromXml (XmlNode configNode)
 		{
 			if (configNode == null) {

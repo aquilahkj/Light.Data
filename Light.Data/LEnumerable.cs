@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using System.Threading;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 枚举查询器
+	/// Lenumerable.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	public class LEnumerable<T> : IEnumerable<T> where T : class, new()
 	{
 		#region IEnumerable implementation
@@ -35,7 +31,7 @@ namespace Light.Data
 
 		#endregion
 
-		DataEntityMapping _mapping = null;
+		DataEntityMapping _mapping;
 
 		internal DataEntityMapping Mapping {
 			get {
@@ -43,7 +39,7 @@ namespace Light.Data
 			}
 		}
 
-		QueryExpression _query = null;
+		QueryExpression _query;
 
 		internal QueryExpression Query {
 			get {
@@ -51,7 +47,7 @@ namespace Light.Data
 			}
 		}
 
-		OrderExpression _order = null;
+		OrderExpression _order;
 
 		internal OrderExpression Order {
 			get {
@@ -59,7 +55,7 @@ namespace Light.Data
 			}
 		}
 
-		Region _region = null;
+		Region _region;
 
 		readonly DataContext _context = null;
 
@@ -71,20 +67,12 @@ namespace Light.Data
 			_mapping = DataMapping.GetEntityMapping (typeof(T));
 		}
 
-		//		object _extendState;
-		//
-		//		internal LEnumerable<T> SetExtendState (object extendState)
-		//		{
-		//			this._extendState = extendState;
-		//			return this;
-		//		}
-
 		#region LEnumerable<T> 成员
 
 		/// <summary>
-		/// reset where expression.
+		/// Reset the specified where expression
 		/// </summary>
-		/// <returns>The reset.</returns>
+		/// <returns>LEnumerable.</returns>
 		public LEnumerable<T> WhereReset ()
 		{
 			_query = null;
@@ -92,72 +80,62 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// replace where expression
+		/// Set the specified where expression
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
 		public LEnumerable<T> Where (QueryExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_query = expression;
 			return this;
 		}
 
 		/// <summary>
-		/// and catch where expression.
+		/// Catch the specified where expression with and.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
 		public LEnumerable<T> WhereWithAnd (QueryExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_query = QueryExpression.And (_query, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// or catch where expression.
+		/// Catch the specified where expression with or.
 		/// </summary>
 		/// <returns>LEnumerables.</returns>
 		/// <param name="expression">Expression.</param>
 		public LEnumerable<T> WhereWithOr (QueryExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_query = QueryExpression.Or (_query, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// catch order by expression.
+		/// Catch the specified order by expression.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
 		public LEnumerable<T> OrderByCatch (OrderExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_order = OrderExpression.Catch (_order, expression);
 			return this;
 		}
 
 		/// <summary>
-		/// replace order by expression.
+		/// Set the specified order by expression.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
 		public LEnumerable<T> OrderBy (OrderExpression expression)
 		{
-//			if (expression == null)
-//				throw new ArgumentNullException ("expression");
 			_order = expression;
 			return this;
 		}
 
 		/// <summary>
-		/// reset order by expression
+		/// Reset the specified order by expression.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		public LEnumerable<T> OrderByReset ()
@@ -167,7 +145,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// order by random.
+		/// Set order by random.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		public LEnumerable<T> OrderByRandom ()
@@ -177,10 +155,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取的数据行数
+		/// Take the datas count.
 		/// </summary>
-		/// <param name="count"></param>
-		/// <returns> 枚举查询器</returns>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="count">Count.</param>
 		public LEnumerable<T> Take (int count)
 		{
 			if (_region == null) {
@@ -193,10 +171,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		///  需要跳过的数据行数
+		/// Skip the specified index.
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns> 枚举查询器</returns>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="index">Index.</param>
 		public LEnumerable<T> Skip (int index)
 		{
 			if (_region == null) {
@@ -210,11 +188,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 取数据的范围
+		/// Range the specified from and to.
 		/// </summary>
-		/// <param name="from">开始序号</param>
-		/// <param name="to">结束序号</param>
-		/// <returns> 枚举查询器</returns>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="from">From.</param>
+		/// <param name="to">To.</param>
 		public LEnumerable<T> Range (int from, int to)
 		{
 			int start = from;
@@ -232,7 +210,7 @@ namespace Light.Data
 		/// <summary>
 		/// reset the range
 		/// </summary>
-		/// <returns>The reset.</returns>
+		/// <returns>LEnumerable.</returns>
 		public LEnumerable<T> RangeReset ()
 		{
 			_region = null;
@@ -240,11 +218,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 分页取数据范围
+		/// Sets page size.
 		/// </summary>
-		/// <param name="page">页数</param>
-		/// <param name="size">每页数量</param>
-		/// <returns> 枚举查询器</returns>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="page">Page.</param>
+		/// <param name="size">Size.</param>
 		public LEnumerable<T> PageSize (int page, int size)
 		{
 			if (page < 1) {
@@ -266,10 +244,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 安全模式
+		/// Safes the mode.
 		/// </summary>
-		/// <param name="level">数据锁类型</param>
-		/// <returns> 枚举查询器</returns>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="level">Level.</param>
 		public LEnumerable<T> SafeMode (SafeLevel level)
 		{
 			_level = level;
@@ -277,23 +255,15 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 数据集数量
+		/// Gets the datas count.
 		/// </summary>
+		/// <value>The count.</value>
 		public int Count {
 			get {
 				return Convert.ToInt32 (_context.AggregateCount (_mapping, _query, _level));
 			}
 		}
 
-		//		/// <summary>
-		//		/// 长整形数据集数量
-		//		/// </summary>
-		//		public long LongCount {
-		//			get {
-		//				return Convert.ToInt64 (_context.AggregateCount (_mapping, _query, _level));
-		//			}
-		//		}
-		//
 		private object Aggregate (BasicFieldInfo field, AggregateType aggregateType, bool isDistinct)
 		{
 			if (!_mapping.Equals (field.TableMapping)) {
@@ -303,162 +273,111 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 聚合统计改字段的数量
+		/// Get datas count of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <returns>结果</returns>
+		/// <returns>count value.</returns>
+		/// <param name="field">Field.</param>
 		public int CountField (BasicFieldInfo field)
 		{
 			return CountField (field, false);
 		}
 
 		/// <summary>
-		/// 聚合统计改字段的数量
+		/// Get datas count of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns></returns>
+		/// <returns>count value.</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public int CountField (BasicFieldInfo field, bool isDistinct)
 		{
 			return Convert.ToInt32 (Aggregate (field, AggregateType.COUNT, isDistinct));
 		}
 
 		/// <summary>
-		/// 聚合统计该字段的最大值
+		/// Get max value of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <returns>结果</returns>
+		/// <returns>max value.</returns>
+		/// <param name="field">Field.</param>
 		public object Max (BasicFieldInfo field)
 		{
-//			return Max (field, false);
 			return Aggregate (field, AggregateType.MAX, false);
 		}
 
-		//		/// <summary>
-		//		/// 聚合统计该字段的最大值
-		//		/// </summary>
-		//		/// <param name="field">统计字段</param>
-		//		/// <param name="isDistinct">是否去重</param>
-		//		/// <returns>结果</returns>
-		//		public object Max (BasicFieldInfo field, bool isDistinct)
-		//		{
-		//			return Aggregate (field, AggregateType.MAX, isDistinct);
-		//		}
-
 		/// <summary>
-		/// 聚合统计该字段的最小值
+		/// Get min value of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <returns>结果</returns>
+		/// <returns>min value.</returns>
+		/// <param name="field">Field.</param>
 		public object Min (BasicFieldInfo field)
 		{
-//			return Min (field, false);
 			return Aggregate (field, AggregateType.MIN, false);
 		}
 
-		//		/// <summary>
-		//		/// 聚合统计该字段的最小值
-		//		/// </summary>
-		//		/// <param name="field">统计字段</param>
-		//		/// <param name="isDistinct">是否去重</param>
-		//		/// <returns>结果</returns>
-		//		public object Min (BasicFieldInfo field, bool isDistinct)
-		//		{
-		//			return Aggregate (field, AggregateType.MIN, isDistinct);
-		//		}
-
 		/// <summary>
-		/// 聚合统计该字段的平均值
+		/// Get avg value of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <returns>结果</returns>
+		/// <returns>max value.</returns>
+		/// <param name="field">Field.</param>
 		public object Avg (BasicFieldInfo field)
 		{
 			return Avg (field, false);
 		}
 
 		/// <summary>
-		/// 聚合统计该字段的平均值
+		/// Get avg value of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns>结果</returns>
+		/// <returns>avg value.</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public object Avg (BasicFieldInfo field, bool isDistinct)
 		{
 			return Aggregate (field, AggregateType.AVG, isDistinct);
 		}
 
 		/// <summary>
-		/// 聚合统计该字段的总和
+		/// Get sum value of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <returns>结果</returns>
+		/// <returns>sum value.</returns>
+		/// <param name="field">Field.</param>
 		public object Sum (BasicFieldInfo field)
 		{
 			return Sum (field, false);
 		}
 
 		/// <summary>
-		/// 聚合统计该字段的总和
+		/// Get sum value of the field.
 		/// </summary>
-		/// <param name="field">统计字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns>结果</returns>
+		/// <returns>sum value.</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public object Sum (BasicFieldInfo field, bool isDistinct)
 		{
 			return Aggregate (field, AggregateType.SUM, isDistinct);
 		}
 
 		/// <summary>
-		/// 获取首条记录
+		/// Get single instance.
 		/// </summary>
-		/// <returns>数据对象</returns>
+		/// <returns>instance.</returns>
 		public T Single ()
 		{
 			return _context.SelectSingle<T> (_mapping, _query, _order, 0, _level);
 		}
 
 		/// <summary>
-		/// 获取索引的某条记录
+		/// Elements at index.
 		/// </summary>
-		/// <param name="index">索引值</param>
-		/// <returns></returns>
+		/// <returns>instance.</returns>
+		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
 			return _context.SelectSingle<T> (_mapping, _query, _order, index, _level);
 		}
 
-		//		/// <summary>
-		//		/// 批量删除
-		//		/// </summary>
-		//		/// <returns>受影响数据</returns>
-		//		public int DeleteMass ()
-		//		{
-		//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
-		//			if (dtMapping == null) {
-		//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
-		//			}
-		//			return _context.DeleteMass (dtMapping, _query);
-		//		}
-		//
-		//		/// <summary>
-		//		/// 批量更新
-		//		/// </summary>
-		//		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
-		//		/// <returns>受影响数据</returns>
-		//		public int UpdateMass (UpdateSetValue[] updates)
-		//		{
-		//			DataTableEntityMapping dtMapping = _mapping as DataTableEntityMapping;
-		//			if (dtMapping == null) {
-		//				throw new LightDataException (RE.TheDataMappingNotAllowDeleteMass);
-		//			}
-		//			return _context.UpdateMass (dtMapping, updates, _query);
-		//		}
-		//
-
 		/// <summary>
-		/// 是否存在
+		/// Gets the data is exists with query expression.
 		/// </summary>
+		/// <value><c>true</c> if exists; otherwise, <c>false</c>.</value>
 		public bool Exists {
 			get {
 				return _context.Exists (_mapping, _query, _level);
@@ -468,7 +387,7 @@ namespace Light.Data
 		/// <summary>
 		/// Queries the single field.
 		/// </summary>
-		/// <returns>The single field.</returns>
+		/// <returns>The single field enumerable.</returns>
 		/// <param name="fieldInfo">Field info.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo)
@@ -477,12 +396,12 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 查询单列字段的数据
+		/// Queries the single field.
 		/// </summary>
-		/// <typeparam name="K">输出字段类型,必须为原始数据类型</typeparam>
-		/// <param name="fieldInfo">字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns></returns>
+		/// <returns>The single field enumerable.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
@@ -492,23 +411,23 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 查询单列字段的数据
+		/// Queries the single field list.
 		/// </summary>
-		/// <typeparam name="K">输出字段类型,必须为原始数据类型</typeparam>
-		/// <param name="fieldInfo">字段</param>
-		/// <returns>数据集合</returns>
+		/// <returns>The single field list.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo)
 		{
 			return QuerySingleFieldList<K> (fieldInfo, false);
 		}
 
 		/// <summary>
-		/// 查询单列字段的数据
+		/// Queries the single field list.
 		/// </summary>
-		/// <typeparam name="K">输出字段类型,必须为原始数据类型</typeparam>
-		/// <param name="fieldInfo">字段</param>
-		/// <param name="isDistinct">是否去重</param>
-		/// <returns>数据集合</returns>
+		/// <returns>The single field list.</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
@@ -558,7 +477,6 @@ namespace Light.Data
 			return ToList ().ToArray ();
 		}
 
-
 		internal List<T> ToRelateList (object extentState)
 		{
 			return _context.QueryDataRelateList<T> (_query, _order, _region, _level, extentState);
@@ -566,24 +484,10 @@ namespace Light.Data
 
 		#endregion
 
-		//		public override string ToString ()
-		//		{
-		//			return GetDbCommand ().CommandText;
-		//		}
-
-		//		/// <summary>
-		//		/// Gets the db command.
-		//		/// </summary>
-		//		/// <returns>The db command.</returns>
-		//		public IDbCommand GetDbCommand ()
-		//		{
-		//			CommandData commandData = _context.DataBase.Factory.CreateSelectCommand (_mapping, _query, _order, _context.IsInnerPager ? _region : null);
-		//			return commandData.CreateCommand (_context.DataBase);
-		//		}
-
 		/// <summary>
-		/// Join the specified le and on.
+		/// Inner join table.
 		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
@@ -597,8 +501,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Join the specified query and on.
+		/// Inner join table.
 		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
@@ -613,8 +518,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Join the specified query.
+		/// Inner join table.
 		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable Join<K> (QueryExpression query) where K : class, new()
@@ -626,8 +532,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Join the specified le.
+		/// Inner join table.
 		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable Join<K> (LEnumerable<K> le) where K : class, new()
@@ -638,8 +545,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Join the specified on.
+		/// Inner join table.
 		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable Join<K> (DataFieldExpression on) where K : class, new()
@@ -650,8 +558,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Join this instance.
+		/// Inner join table.
 		/// </summary>
+		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable Join<K> () where K : class, new()
 		{
@@ -659,7 +568,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Lefts the join.
+		/// Left join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
@@ -675,7 +584,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Lefts the join.
+		/// Left join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
@@ -692,7 +601,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Lefts the join.
+		/// Left join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
@@ -706,7 +615,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Lefts the join.
+		/// Left join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
@@ -719,7 +628,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Lefts the join.
+		/// Left join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
@@ -731,7 +640,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Lefts the join.
+		/// Left join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
@@ -741,7 +650,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Rights the join.
+		/// Right join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
@@ -757,7 +666,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Rights the join.
+		/// Right join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
@@ -774,7 +683,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Rights the join.
+		/// Right join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
@@ -787,7 +696,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Rights the join.
+		/// Right join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
@@ -801,7 +710,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Rights the join.
+		/// Right join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
@@ -813,7 +722,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Rights the join.
+		/// Right join table.
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
@@ -857,7 +766,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Update the specified updates.
+		/// Update the values on specified query expression..
 		/// </summary>
 		/// <param name="updates">Updates.</param>
 		public int Update (UpdateSetValue[] updates)
@@ -866,7 +775,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Delete this instance.
+		/// Delete datas on specified query expression.
 		/// </summary>
 		public int Delete ()
 		{

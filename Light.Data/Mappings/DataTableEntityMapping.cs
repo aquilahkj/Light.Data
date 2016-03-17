@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data table entity mapping.
+	/// </summary>
 	class DataTableEntityMapping : DataEntityMapping
 	{
 		internal DataTableEntityMapping (Type type, string tableName, bool isDataEntity)
@@ -49,18 +52,30 @@ namespace Light.Data
 
 		readonly List<DataFieldMapping> _noPrimaryKeyFieldList = new List<DataFieldMapping> ();
 
+		/// <summary>
+		/// Gets a value indicating whether this instance has identity.
+		/// </summary>
+		/// <value><c>true</c> if this instance has identity; otherwise, <c>false</c>.</value>
 		public bool HasIdentity {
 			get {
 				return _identityField != null;
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether this instance has primary key.
+		/// </summary>
+		/// <value><c>true</c> if this instance has primary key; otherwise, <c>false</c>.</value>
 		public bool HasPrimaryKey {
 			get {
 				return _primaryKeyFieldList.Count > 0;
 			}
 		}
 
+		/// <summary>
+		/// Gets the primary key count.
+		/// </summary>
+		/// <value>The primary key count.</value>
 		public int PrimaryKeyCount {
 			get {
 				return _primaryKeyFieldList.Count;

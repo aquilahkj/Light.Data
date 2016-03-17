@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -26,11 +25,11 @@ namespace Light.Data
 			SupportTypeCodes.Add (TypeCode.UInt64);
 		}
 
-		AggregateFunction _function = null;
+		AggregateFunction _function;
 
 		QueryCollectionPredicate _predicate;
 
-		IEnumerable _values = null;
+		IEnumerable _values;
 
 		public CollectionParamsAggregateExpression (AggregateFunction function, QueryCollectionPredicate predicate, IEnumerable values)
 			: base (function.TableMapping)
@@ -50,7 +49,7 @@ namespace Light.Data
 		{
 			List<DataParameter> list = new List<DataParameter> ();
 
-			DataParameter[] ps = null;
+			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
 			list.AddRange (ps);
 

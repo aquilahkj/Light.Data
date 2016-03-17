@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class NullAggregateExpression : AggregateHavingExpression
 	{
-		AggregateFunction _function = null;
+		AggregateFunction _function;
 
-		bool _isNull = false;
+		bool _isNull;
 
 		public NullAggregateExpression (AggregateFunction function, bool isNull)
 			: base (function.TableMapping)

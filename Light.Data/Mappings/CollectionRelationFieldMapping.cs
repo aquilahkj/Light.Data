@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Collection relation field mapping.
+	/// </summary>
 	class CollectionRelationFieldMapping:BaseRelationFieldMapping
 	{
 		SingleRelationFieldMapping relateReferFieldMapping;

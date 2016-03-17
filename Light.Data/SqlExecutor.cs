@@ -1,33 +1,25 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Collections;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// SQL语句执行器,直接执行SQL语句
+	/// SqlString executor.
 	/// </summary>
 	public class SqlExecutor
 	{
-		/// <summary>
-		/// 数据库命令
-		/// </summary>
 		IDbCommand _command;
 
-		/// <summary>
-		/// 数据库上下文
-		/// </summary>
 		DataContext _context;
 
-		/// <summary>
-		/// 安全级别
-		/// </summary>
 		SafeLevel _level = SafeLevel.Default;
 
 		/// <summary>
-		/// 设置命令超时
+		/// Gets or sets the command time out.
 		/// </summary>
+		/// <value>The command time out.</value>
 		public int CommandTimeOut {
 			get {
 				return _command.CommandTimeout;
@@ -38,13 +30,13 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.SqlExecutor"/> class.
 		/// </summary>
-		/// <param name="sql">SQL语句</param>
-		/// <param name="parameters">参数</param>
-		/// <param name="commandType">命令类型</param>
-		/// <param name="level">安全级别</param>
-		/// <param name="context">数据库上下文</param>
+		/// <param name="sql">Sql.</param>
+		/// <param name="parameters">Parameters.</param>
+		/// <param name="commandType">Command type.</param>
+		/// <param name="level">Level.</param>
+		/// <param name="context">Context.</param>
 		internal SqlExecutor (string sql, DataParameter[] parameters, CommandType commandType, SafeLevel level, DataContext context)
 		{
 			_level = level;
@@ -71,10 +63,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.SqlExecutor"/> class.
 		/// </summary>
-		/// <param name="command">数据库命令</param>
-		/// <param name="context">数据库上下文</param>
+		/// <param name="command">Command.</param>
+		/// <param name="context">Context.</param>
 		internal SqlExecutor (IDbCommand command, DataContext context)
 		{
 			_context = context;
@@ -82,49 +74,53 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 执行语句
+		/// Executes the non query.
 		/// </summary>
-		/// <returns>受影响的行数</returns>
+		/// <returns>The non query.</returns>
 		public int ExecuteNonQuery ()
 		{
 			return _context.ExecuteNonQuery (_command, _level);
 		}
 
 		/// <summary>
-		/// 执行语句并返回结果
+		/// Executes the scalar.
 		/// </summary>
-		/// <returns>返回结果</returns>
+		/// <returns>The scalar.</returns>
 		public object ExecuteScalar ()
 		{
 			return _context.ExecuteScalar (_command, _level);
 		}
 
 		/// <summary>
-		/// 查询DataSet数据集
+		/// Queries the data set.
 		/// </summary>
-		/// <returns>DataSet数据集</returns>
+		/// <returns>The data set.</returns>
 		public DataSet QueryDataSet ()
 		{
 			return _context.QueryDataSet (_command, _level);
 		}
 
 		/// <summary>
-		/// 查询DataTable数据集
+		/// Queries the data table.
 		/// </summary>
-		/// <param name="region">查询范围</param>
-		/// <returns>DataSet数据集</returns>
-		public DataTable QueryDataTable (Region region)
+		/// <returns>The data table.</returns>
+		/// <param name="from">From.</param>
+		/// <param name="to">To.</param>
+		public DataTable QueryDataTable (int from, int to)
 		{
+			int start = from;
+			int size = to - from;
+			Region region = new Region (start, size);
 			return _context.QueryDataTable (_command, region, _level);
 		}
 
 		/// <summary>
-		/// 查询DataTable数据集
+		/// Queries the data table.
 		/// </summary>
-		/// <returns>DataSet数据集</returns>
+		/// <returns>The data table.</returns>
 		public DataTable QueryDataTable ()
 		{
-			return QueryDataTable (null);
+			return _context.QueryDataTable (_command, null, _level);
 		}
 
 		/// <summary>
@@ -142,10 +138,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 查询并返回所有指定类型的数据集合
+		/// Queries the list.
 		/// </summary>
-		/// <typeparam name="T">数据类型</typeparam>
-		/// <returns>数据集合</returns>
+		/// <returns>The list.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public List<T> QueryList<T> () where T : class, new()
 		{
 			return QueryList<T> (null);

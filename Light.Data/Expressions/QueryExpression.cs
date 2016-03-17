@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 查询表达式
+	/// Query expression.
 	/// </summary>
 	public class QueryExpression : Expression
 	{
-		QueryExpression _expression1 = null;
+		QueryExpression _expression1;
 
-		QueryExpression _expression2 = null;
+		QueryExpression _expression2;
 
 		CatchOperatorsType _operatorType = CatchOperatorsType.AND;
 
@@ -20,12 +19,19 @@ namespace Light.Data
 			TableMapping = tableMapping;
 		}
 
+		/// <summary>
+		/// Creates the sql string.
+		/// </summary>
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			DataParameter[] dp1 = null;
+			DataParameter[] dp1;
 			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1);
 
-			DataParameter[] dp2 = null;
+			DataParameter[] dp2;
 			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
 
 			if (dp1 == null && dp2 == null) {
@@ -46,6 +52,12 @@ namespace Light.Data
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
+		/// <summary>
+		/// Catch the specified expression1, operatorType and expression2.
+		/// </summary>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="operatorType">Operator type.</param>
+		/// <param name="expression2">Expression2.</param>
 		internal static QueryExpression Catch (QueryExpression expression1, CatchOperatorsType operatorType, QueryExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
@@ -71,63 +83,62 @@ namespace Light.Data
 			return newExpression;
 		}
 
+		/// <summary>
+		/// And the specified expression1 and expression2.
+		/// </summary>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		internal static QueryExpression And (QueryExpression expression1, QueryExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.AND, expression2);
 		}
 
+		/// <summary>
+		/// Or the specified expression1 and expression2.
+		/// </summary>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		internal static QueryExpression Or (QueryExpression expression1, QueryExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.OR, expression2);
 		}
-
-		/// <summary>
-		/// 与连接
-		/// </summary>
-		/// <param name="expression1"></param>
-		/// <param name="expression2"></param>
-		/// <returns></returns>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		public static QueryExpression operator & (QueryExpression expression1, QueryExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.AND, expression2);
 		}
-
-		/// <summary>
-		/// 或连接
-		/// </summary>
-		/// <param name="expression1"></param>
-		/// <param name="expression2"></param>
-		/// <returns></returns>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		public static QueryExpression operator | (QueryExpression expression1, QueryExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.OR, expression2);
 		}
 
 		/// <summary>
-		/// Exists语法
+		/// Exists specified expression.
 		/// </summary>
-		/// <param name="expression">内查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <param name="expression">Expression.</param>
 		public static QueryExpression Exists (QueryExpression expression)
 		{
 			return new ExistsQueryExpression (expression, false);
 		}
 
 		/// <summary>
-		/// Not Exists语法
+		/// Not exists specified expression.
 		/// </summary>
-		/// <param name="expression">内查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The exists.</returns>
+		/// <param name="expression">Expression.</param>
 		public static QueryExpression NotExists (QueryExpression expression)
 		{
 			return new ExistsQueryExpression (expression, true);
 		}
-
 		/// <summary>
-		/// 匹配内容是否相等
+		/// Determines whether the specified <see cref="Light.Data.QueryExpression"/> is equal to the current <see cref="Light.Data.QueryExpression"/>.
 		/// </summary>
-		/// <param name="target">匹配对象</param>
-		/// <returns></returns>
+		/// <param name="target">The <see cref="Light.Data.QueryExpression"/> to compare with the current <see cref="Light.Data.QueryExpression"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="Light.Data.QueryExpression"/> is equal to the current
+		/// <see cref="Light.Data.QueryExpression"/>; otherwise, <c>false</c>.</returns>
 		public virtual bool Equals (QueryExpression target)
 		{
 			if (Object.Equals (target, null)) {
@@ -145,12 +156,11 @@ namespace Light.Data
 				}
 			}
 		}
-
 		/// <summary>
-		/// 匹配对象细节是否相等
+		/// Equalses the detail.
 		/// </summary>
-		/// <param name="expression">匹配对象</param>
-		/// <returns></returns>
+		/// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
+		/// <param name="expression">Expression.</param>
 		protected virtual bool EqualsDetail (QueryExpression expression)
 		{
 			if (this._expression1 != null) {

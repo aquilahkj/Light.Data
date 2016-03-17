@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 聚合函数
+	/// Aggregate function.
 	/// </summary>
 	public abstract class AggregateFunction
 	{
@@ -16,14 +14,14 @@ namespace Light.Data
 
 		internal DataEntityMapping TableMapping {
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
-		/// 等于
+		/// Equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public AggregateHavingExpression Eq (object value)
 		{
 			if (Object.Equals (value, null)) {
@@ -38,50 +36,50 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 少于等于
+		/// Less than or equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public AggregateHavingExpression LtEq (object value)
 		{
 			return SingleParam (QueryPredicate.LtEq, value);
 		}
 
 		/// <summary>
-		/// 少于
+		/// Less than the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public AggregateHavingExpression Lt (object value)
 		{
 			return SingleParam (QueryPredicate.Lt, value);
 		}
 
 		/// <summary>
-		/// 大于
+		/// Greate than the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public AggregateHavingExpression Gt (object value)
 		{
 			return SingleParam (QueryPredicate.Gt, value);
 		}
 
 		/// <summary>
-		/// 大于等于
+		/// Greate than or equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public AggregateHavingExpression GtEq (object value)
 		{
 			return SingleParam (QueryPredicate.GtEq, value);
 		}
 
 		/// <summary>
-		/// 不等于
+		/// Not equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public AggregateHavingExpression NotEq (object value)
 		{
 			if (Object.Equals (value, null)) {
@@ -96,229 +94,226 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// In查询
+		/// In the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public AggregateHavingExpression In (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.In, values);
 		}
 
 		/// <summary>
-		/// In查询
+		/// Not in the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public AggregateHavingExpression NotIn (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.NotIn, values);
 		}
 
 		/// <summary>
-		/// In子查询
+		/// In the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public AggregateHavingExpression In (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.In, field, expression);
 		}
 
 		/// <summary>
-		/// In子查询
+		/// In the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public AggregateHavingExpression In (DataFieldInfo field)
 		{
 			return In (field, null);
 		}
 
-
 		/// <summary>
-		/// Not In子查询
+		/// Not in the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public AggregateHavingExpression NotIn (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.NotIn, field, expression);
 		}
 
-
 		/// <summary>
-		/// Not In子查询
+		/// Not in the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public AggregateHavingExpression NotIn (DataFieldInfo field)
 		{
 			return NotIn (field, null);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than all the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public AggregateHavingExpression GtAll (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAll, values);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than all the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public AggregateHavingExpression GtAll (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAll, field, expression);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than all the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public AggregateHavingExpression GtAll (DataFieldInfo field)
 		{
 			return GtAll (field, null);
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// Greater than all the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public AggregateHavingExpression LtAll (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAll, values);
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// Less than all the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public AggregateHavingExpression LtAll (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAll, field, expression);
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// Less than all the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public AggregateHavingExpression LtAll (DataFieldInfo field)
 		{
 			return LtAll (field, null);
 		}
 
 		/// <summary>
-		/// 大于Any子查询
+		/// Greater than any the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public AggregateHavingExpression GtAny (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAny, values);
 		}
 
 		/// <summary>
-		/// 大于Any子查询
+		/// Greater than any the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public AggregateHavingExpression GtAny (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAny, field, expression);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than any the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public AggregateHavingExpression GtAny (DataFieldInfo field)
 		{
 			return GtAny (field, null);
 		}
 
 		/// <summary>
-		/// 小于Any子查询
+		/// Less than any the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public AggregateHavingExpression LtAny (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAny, values);
 		}
 
 		/// <summary>
-		/// 小于Any子查询
+		/// Less than any the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public AggregateHavingExpression LtAny (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAny, field, expression);
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// Less than any the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public AggregateHavingExpression LtAny (DataFieldInfo field)
 		{
 			return LtAny (field, null);
 		}
 
 		/// <summary>
-		/// Between查询
+		/// Between the specified fromValue and toValue.
 		/// </summary>
-		/// <param name="fromvalue">开始值</param>
-		/// <param name="tovalue">结束值</param>
-		/// <returns>查询表达式</returns>
-		public AggregateHavingExpression Between (object fromvalue, object tovalue)
+		/// <returns>The expression</returns>
+		/// <param name="fromValue">From value.</param>
+		/// <param name="toValue">To value.</param>
+		public AggregateHavingExpression Between (object fromValue, object toValue)
 		{
-			return BetweenParams (true, fromvalue, tovalue);
+			return BetweenParams (true, fromValue, toValue);
 		}
 
 		/// <summary>
-		/// Not Between查询
+		/// Nots the between fromValue and toValue.
 		/// </summary>
-		/// <param name="fromvalue">开始值</param>
-		/// <param name="tovalue">结束值</param>
-		/// <returns>查询表达式</returns>
-		public AggregateHavingExpression NotBetween (object fromvalue, object tovalue)
+		/// <returns>The expression</returns>
+		/// <param name="fromValue">From value.</param>
+		/// <param name="toValue">To value.</param>
+		public AggregateHavingExpression NotBetween (object fromValue, object toValue)
 		{
-			return BetweenParams (false, fromvalue, tovalue);
-			;
+			return BetweenParams (false, fromValue, toValue);
 		}
 
 		/// <summary>
-		/// 查询字段是否空值
+		/// Determines whether this field is null.
 		/// </summary>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
 		public AggregateHavingExpression IsNull ()
 		{
 			return Null (true);
 		}
 
 		/// <summary>
-		/// 查询字段是否非空值
+		/// Determines whether this field is not null.
 		/// </summary>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
 		public AggregateHavingExpression IsNotNull ()
 		{
 			return Null (false);
@@ -355,9 +350,6 @@ namespace Light.Data
 			if (expression == null) {
 				throw new ArgumentNullException ("expression");
 			}
-//			if (!expression.IgnoreConsistency && !field.TableMapping.Equals (expression.TableMapping)) {
-//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-//			}
 			AggregateHavingExpression exp = new SubAggregateExpression (this, predicate, field, expression);
 			return exp;
 		}
@@ -380,12 +372,8 @@ namespace Light.Data
 			return exp;
 		}
 
-		/// <summary>
-		/// 等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static AggregateHavingExpression operator == (AggregateFunction field, object value)
 		{
 			if (value == null)
@@ -395,12 +383,8 @@ namespace Light.Data
 			return field.Eq (value);
 		}
 
-		/// <summary>
-		/// 不等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static AggregateHavingExpression operator != (AggregateFunction field, object value)
 		{
 			if (value == null)
@@ -410,63 +394,47 @@ namespace Light.Data
 			return field.NotEq (value);
 		}
 
-		/// <summary>
-		/// 大于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static AggregateHavingExpression operator > (AggregateFunction field, object value)
 		{
 			return field.Gt (value);
 		}
 
-		/// <summary>
-		/// 大于等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static AggregateHavingExpression operator >= (AggregateFunction field, object value)
 		{
 			return field.GtEq (value);
 		}
 
-		/// <summary>
-		/// 小于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static AggregateHavingExpression operator < (AggregateFunction field, object value)
 		{
 			return field.Lt (value);
 		}
 
-		/// <summary>
-		/// 小于等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static AggregateHavingExpression operator <= (AggregateFunction field, object value)
 		{
 			return field.LtEq (value);
 		}
 
 		/// <summary>
-		/// 字段顺序排序
+		/// Order by asc.
 		/// </summary>
-		/// <returns>排序表达式</returns>
+		/// <returns>The expression</returns>
 		public OrderExpression OrderByAsc ()
 		{
 			return OrderBy (OrderType.ASC);
 		}
 
 		/// <summary>
-		/// 字段倒序排序
+		/// Order by desc.
 		/// </summary>
-		/// <returns>排序表达式</returns>
+		/// <returns>The expression</returns>
 		public OrderExpression OrderByDesc ()
 		{
 			return OrderBy (OrderType.DESC);
@@ -478,38 +446,43 @@ namespace Light.Data
 			return exp;
 		}
 
+		/// <summary>
+		/// Creates the sql string.
+		/// </summary>
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
 		internal abstract string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters);
 
 		/// <summary>
-		/// 生成计数函数,Count所有数据
+		/// Count Function.
 		/// </summary>
-		/// <returns>函数对象</returns>
 		public static AggregateFunction Count ()
 		{
 			return new CountAllFunction ();
 		}
 
 		/// <summary>
-		/// 条件计数语句
+		/// Count Function in the specified expression.
 		/// </summary>
-		/// <param name="expression">条件表达式</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="expression">Expression.</param>
 		public static AggregateFunction Count (QueryExpression expression)
 		{
 			if (expression == null) {
 				throw new ArgumentNullException ("expression");
 			}
-//			return new ConditionCountFunction (!expression.IgnoreConsistency ? expression.TableMapping : null, expression, null, false);
 			return new ConditionCountFunction (expression.TableMapping, expression, null, false);
 		}
 
 		/// <summary>
-		/// 条件计数语句
+		/// Count Function in the specified expression, fieldInfo and isDistinct.
 		/// </summary>
-		/// <param name="expression">条件表达式</param>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <param name="isDistinct">是否去重复</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public static AggregateFunction Count (QueryExpression expression, DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (expression == null) {
@@ -518,39 +491,36 @@ namespace Light.Data
 			if (Object.Equals (fieldInfo, null)) {
 				throw new ArgumentNullException ("fieldInfo");
 			}
-//			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
-//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-//			}
 			return new ConditionCountFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
 
 		/// <summary>
-		/// 条件计数语句
+		/// Count Function in the specified expression and fieldInfo.
 		/// </summary>
-		/// <param name="expression">条件表达式</param>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Count (QueryExpression expression, DataFieldInfo fieldInfo)
 		{
 			return Count (expression, fieldInfo, false);
 		}
 
 		/// <summary>
-		/// 对字段计算统计
+		/// Count Function in the fieldInfo.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Count (DataFieldInfo fieldInfo)
 		{
 			return Count (fieldInfo, false);
 		}
 
 		/// <summary>
-		///  对字段计算统计
+		/// Count Function in the specified fieldInfo and isDistinct.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <param name="isDistinct">是否去重复</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public static AggregateFunction Count (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (Object.Equals (fieldInfo, null)) {
@@ -560,21 +530,21 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 对字段总和统计
+		/// Sum Function in the fieldInfo.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Sum (DataFieldInfo fieldInfo)
 		{
 			return Sum (fieldInfo, false);
 		}
 
 		/// <summary>
-		/// 对字段总和统计
+		/// Sum Function in the specified fieldInfo and isDistinct.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <param name="isDistinct">是否去重复</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public static AggregateFunction Sum (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (Object.Equals (fieldInfo, null)) {
@@ -584,23 +554,23 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 对字段总和进行条件统计
+		/// Sum Function in the specified expression and fieldInfo.
 		/// </summary>
-		/// <param name="expression">条件表达式</param>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Sum (QueryExpression expression, DataFieldInfo fieldInfo)
 		{
 			return Sum (expression, fieldInfo, false);
 		}
 
 		/// <summary>
-		/// 对字段总和进行条件统计
+		/// Sum Function in the specified expression, fieldInfo and isDistinct.
 		/// </summary>
-		/// <param name="expression">条件表达式</param>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <param name="isDistinct">是否去重复</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public static AggregateFunction Sum (QueryExpression expression, DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (expression == null) {
@@ -609,28 +579,25 @@ namespace Light.Data
 			if (Object.Equals (fieldInfo, null)) {
 				throw new ArgumentNullException ("fieldInfo");
 			}
-//			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
-//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-//			}
 			return new ConditionSumFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
 
 		/// <summary>
-		/// 对字段进行平均值统计
+		/// Avg Function in the fieldInfo.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Avg (DataFieldInfo fieldInfo)
 		{
 			return Avg (fieldInfo, false);
 		}
 
 		/// <summary>
-		/// 对字段进行平均值统计
+		/// Avg Function in the specified fieldInfo and isDistinct.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <param name="isDistinct">是否去重复</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public static AggregateFunction Avg (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (Object.Equals (fieldInfo, null)) {
@@ -640,23 +607,23 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 对字段进行平均值条件统计
+		/// Sum Function in the specified expression and fieldInfo.
 		/// </summary>
-		/// <param name="expression">条件表达式</param>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Avg (QueryExpression expression, DataFieldInfo fieldInfo)
 		{
 			return Avg (expression, fieldInfo, false);
 		}
 
 		/// <summary>
-		/// 对字段进行平均值条件统计
+		/// Avg Function in the specified expression, fieldInfo and isDistinct.
 		/// </summary>
-		/// <param name="expression">条件表达式</param>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <param name="isDistinct">是否去重复</param>
-		/// <returns>函数对象</returns>
+		/// <returns>The function</returns>
+		/// <param name="expression">Expression.</param>
+		/// <param name="fieldInfo">Field info.</param>
+		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		public static AggregateFunction Avg (QueryExpression expression, DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (expression == null) {
@@ -665,17 +632,13 @@ namespace Light.Data
 			if (Object.Equals (fieldInfo, null)) {
 				throw new ArgumentNullException ("fieldInfo");
 			}
-//			if (!expression.IgnoreConsistency && !fieldInfo.TableMapping.Equals (expression.TableMapping)) {
-//				throw new LightDataException (RE.DataMappingIsNotMatchQueryExpression);
-//			}
 			return new ConditionAvgFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
 
 		/// <summary>
-		/// 统计最大值
+		/// Max Function in the specified fieldInfo.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Max (DataFieldInfo fieldInfo)
 		{
 			if (Object.Equals (fieldInfo, null)) {
@@ -685,7 +648,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Max the specified expression and fieldInfo.
+		/// Max Function in the specified expression and fieldInfo.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <param name="fieldInfo">Field info.</param>
@@ -698,10 +661,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 统计最小值
+		/// Minimum Function in the specified fieldInfo.
 		/// </summary>
-		/// <param name="fieldInfo">统计字段</param>
-		/// <returns>函数对象</returns>
+		/// <param name="fieldInfo">Field info.</param>
 		public static AggregateFunction Min (DataFieldInfo fieldInfo)
 		{
 			if (Object.Equals (fieldInfo, null)) {
@@ -711,7 +673,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Minimum the specified expression and fieldInfo.
+		/// Minimum Function in the specified expression and fieldInfo.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <param name="fieldInfo">Field info.</param>
@@ -724,10 +686,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 匹配对象是否相等
+		/// Determines whether the specified <see cref="Light.Data.AggregateFunction"/> is equal to the current <see cref="Light.Data.AggregateFunction"/>.
 		/// </summary>
-		/// <param name="target">匹配对象</param>
-		/// <returns></returns>
+		/// <param name="target">The <see cref="Light.Data.AggregateFunction"/> to compare with the current <see cref="Light.Data.AggregateFunction"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="Light.Data.AggregateFunction"/> is equal to the current
+		/// <see cref="Light.Data.AggregateFunction"/>; otherwise, <c>false</c>.</returns>
 		public virtual bool Equals (AggregateFunction target)
 		{
 			if (Object.Equals (target, null)) {
@@ -747,29 +710,30 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 匹配对象细节是否相等
+		/// Equalses the detail.
 		/// </summary>
-		/// <param name="function">匹配对象</param>
-		/// <returns></returns>
+		/// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
+		/// <param name="function">Function.</param>
 		protected virtual bool EqualsDetail (AggregateFunction function)
 		{
 			return Object.Equals (this.TableMapping, function.TableMapping);
 		}
 
 		/// <summary>
-		/// 匹配对象是否相等
+		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Light.Data.AggregateFunction"/>.
 		/// </summary>
-		/// <param name="obj">匹配对象</param>
-		/// <returns></returns>
+		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Light.Data.AggregateFunction"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+		/// <see cref="Light.Data.AggregateFunction"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals (object obj)
 		{
 			return object.ReferenceEquals (this, obj);
 		}
 
 		/// <summary>
-		/// 获取哈希码
+		/// Serves as a hash function for a <see cref="Light.Data.AggregateFunction"/> object.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode ()
 		{
 			return base.GetHashCode ();

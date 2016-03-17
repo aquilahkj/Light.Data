@@ -1,27 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// XML配置特性
+	/// Xml configurator attribute.
 	/// </summary>
 	[AttributeUsage (AttributeTargets.Assembly, AllowMultiple = false)]
 	public class XmlConfiguratorAttribute : Attribute
 	{
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.XmlConfiguratorAttribute"/> class.
 		/// </summary>
-		/// <param name="configPath">配置文件路径</param>
+		/// <param name="configPath">Config path.</param>
 		public XmlConfiguratorAttribute (string configPath)
 		{
 			ConfigPath = configPath;
 		}
 
 		/// <summary>
-		/// 配置文件路径
+		/// Gets the config path.
 		/// </summary>
+		/// <value>The config path.</value>
 		public string ConfigPath {
 			get;
 			private set;

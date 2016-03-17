@@ -8,7 +8,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserLevelWithUserRefer userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		public TeUserLevelWithUserRefer UserLevel {
 			get {
 				return userLevel;
@@ -25,7 +25,7 @@ namespace Light.Data.MysqlTest
 	{
 		private LCollection<TeUserWithLevelRefer> users;
 
-		[Relation ("Id", "LevelId")]
+		[RelationField ("Id", "LevelId")]
 		public LCollection<TeUserWithLevelRefer> Users {
 			get {
 				return users;
@@ -45,7 +45,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserExtendWithUserRefer userExtend;
 
-		[Relation ("Id", "UserId")]
+		[RelationField ("Id", "UserId")]
 		public TeUserExtendWithUserRefer UserExtend {
 			get {
 				return userExtend;
@@ -63,7 +63,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserWithExtendRefer user;
 
-		[Relation ("UserId", "Id")]
+		[RelationField ("UserId", "Id")]
 		public TeUserWithExtendRefer User {
 			get {
 				return user;
@@ -84,7 +84,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserWithExtendRefer1 user;
 
-		[Relation ("UserId", "Id")]
+		[RelationField ("UserId", "Id")]
 		public TeUserWithExtendRefer1 User {
 			get {
 				return user;
@@ -96,7 +96,7 @@ namespace Light.Data.MysqlTest
 
 		private TeUser user1;
 
-		[Relation ("UserId", "Id")]
+		[RelationField ("UserId", "Id")]
 		public TeUser User1 {
 			get {
 				return user1;
@@ -114,7 +114,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserExtendWithUserRefer1 userExtend;
 
-		[Relation ("Id", "UserId")]
+		[RelationField ("Id", "UserId")]
 		public TeUserExtendWithUserRefer1 UserExtend {
 			get {
 				return userExtend;
@@ -126,7 +126,7 @@ namespace Light.Data.MysqlTest
 
 		private TeUserExtendWithUserRefer1 userExtend1;
 
-		[Relation ("Id", "UserId")]
+		[RelationField ("Id", "UserId")]
 		public TeUserExtendWithUserRefer1 UserExtend1 {
 			get {
 				return userExtend1;
@@ -138,7 +138,7 @@ namespace Light.Data.MysqlTest
 
 		private TeUserExtendWithUserRefer1 userExtend2;
 
-		[Relation ("LevelId", "UserId")]
+		[RelationField ("LevelId", "UserId")]
 		public TeUserExtendWithUserRefer1 UserExtend2 {
 			get {
 				return userExtend2;
@@ -158,7 +158,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserWithExtendRefer2 user;
 
-		[Relation ("UserId", "Id")]
+		[RelationField ("UserId", "Id")]
 		public TeUserWithExtendRefer2 User {
 			get {
 				return user;
@@ -170,7 +170,7 @@ namespace Light.Data.MysqlTest
 
 		private TeAreaInfoWithUserExtendrRefer2 areaInfo;
 
-		[Relation ("ExtendAreaId", "Id")]
+		[RelationField ("ExtendAreaId", "Id")]
 		public TeAreaInfoWithUserExtendrRefer2 AreaInfo {
 			get {
 				return areaInfo;
@@ -187,7 +187,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserExtendWithUserRefer2 userExtend;
 
-		[Relation ("Id", "ExtendAreaId")]
+		[RelationField ("Id", "ExtendAreaId")]
 		public TeUserExtendWithUserRefer2 UserExtend {
 			get {
 				return userExtend;
@@ -204,7 +204,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserExtendWithUserRefer2 userExtend;
 
-		[Relation ("Id", "UserId")]
+		[RelationField ("Id", "UserId")]
 		public TeUserExtendWithUserRefer2 UserExtend {
 			get {
 				return userExtend;

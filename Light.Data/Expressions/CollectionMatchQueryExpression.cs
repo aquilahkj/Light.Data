@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class CollectionMatchQueryExpression : QueryExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
-		string _value = null;
+		string _value;
 
-		bool _isReverse = false;
+		bool _isReverse;
 
-		bool _starts = false;
+		bool _starts;
 
-		bool _ends = false;
+		bool _ends;
 
-		bool _isNot = false;
+		bool _isNot;
 
-		IEnumerable<string> _values = null;
+		IEnumerable<string> _values;
 
 		public CollectionMatchQueryExpression (DataFieldInfo fieldInfo, string value, bool isReverse, bool starts, bool ends, bool isNot)
 			: base (fieldInfo.TableMapping)

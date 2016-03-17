@@ -6,7 +6,7 @@ using System.Data;
 namespace Light.Data
 {
 	/// <summary>
-	/// 进行事务的数据上下文
+	/// Transaction DataContext.
 	/// </summary>
 	public class TransDataContext : DataContext, IDisposable
 	{
@@ -21,17 +21,17 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Begins the trans.
+		/// Begins the transaction.
 		/// </summary>
 		public void BeginTrans ()
 		{
 			BeginTrans (SafeLevel.Default);
 		}
 
-
 		/// <summary>
-		/// 开始事务
+		/// Begins the transaction.
 		/// </summary>
+		/// <param name="level">Level.</param>
 		public void BeginTrans (SafeLevel level)
 		{
 			ChecKStatus (false);
@@ -50,7 +50,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 提交事务
+		/// Commits the transaction.
 		/// </summary>
 		public void CommitTrans ()
 		{
@@ -62,7 +62,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 回滚事务
+		/// Rollbacks the transaction.
 		/// </summary>
 		public void RollbackTrans ()
 		{
@@ -151,7 +151,7 @@ namespace Light.Data
 			ChecKStatus (true);
 			DataSet ds = new DataSet ();
 			_transaction.SetupCommand (dbcommand);
-			IDbDataAdapter adapter = _dataBase.CreateDataAdapter (dbcommand);
+			IDbDataAdapter adapter = DataBase.CreateDataAdapter (dbcommand);
 			OutputCommand ("QueryDataSet[Trans]", dbcommand, _transaction.Level);
 			adapter.Fill (ds);
 			return ds;
@@ -242,7 +242,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 对象注销
+		/// Releases all resource used by the <see cref="Light.Data.TransDataContext"/> object.
 		/// </summary>
 		public void Dispose ()
 		{
@@ -251,9 +251,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// protected的Dispose方法，保证不会被外部调用。
+		/// Dispose the specified disposing.
 		/// </summary>
-		/// <param name="disposing">传入bool值disposing以确定是否释放托管资源</param>
+		/// <param name="disposing">If set to <c>true</c> disposing.</param>
 		protected void Dispose (bool disposing)
 		{
 			if (_isDisposed) {
@@ -261,11 +261,9 @@ namespace Light.Data
 			}
 
 			if (disposing) {
-				//在这里加入清理"托管资源"的代码
-				//DisposeCache();
+				
 			}
 
-			// 在这里加入清理"非托管资源"的代码
 			if (_transaction != null) {
 				_transaction.Dispose ();
 				_transaction = null;
@@ -274,7 +272,8 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 供GC调用的析构函数
+		/// Releases unmanaged resources and performs other cleanup operations before the
+		/// <see cref="Light.Data.TransDataContext"/> is reclaimed by garbage collection.
 		/// </summary>
 		~TransDataContext ()
 		{

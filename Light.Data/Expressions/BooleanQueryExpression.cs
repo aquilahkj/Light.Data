@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class BooleanQueryExpression : QueryExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
-		bool _isTrue = false;
+		bool _isTrue;
 
 		public BooleanQueryExpression (DataFieldInfo fieldInfo, bool isTrue)
 			: base (fieldInfo.TableMapping)

@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Random order expression.
+	/// </summary>
 	class RandomOrderExpression : OrderExpression
 	{
 		public RandomOrderExpression (DataEntityMapping tableMapping)
 			: base (tableMapping)
 		{
-//			IgnoreConsistency = true;
+			
 		}
 
 		public void SetTableMapping (DataEntityMapping mapping)

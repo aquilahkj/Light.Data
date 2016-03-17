@@ -7,7 +7,7 @@ using System.Data;
 namespace Light.Data
 {
 	/// <summary>
-	/// 数据库上下文
+	/// DataContext.
 	/// </summary>
 	public class DataContext
 	{
@@ -15,20 +15,12 @@ namespace Light.Data
 
 		static DataContextSetting DefaultContextSetting;
 
-		//		static DataContext DefaultContext;
-
 		/// <summary>
-		/// Gets the default.
+		/// Create the default context.
 		/// </summary>
 		/// <value>The default.</value>
 		public static DataContext Default {
 			get {
-//				if (DefaultContext == null) {
-//					throw new LightDataException (RE.DefaultConnectionNotExists);
-//				}
-//				else {
-//					return DefaultContext;
-//				}
 				return CreateDefault ();
 			}
 		}
@@ -40,7 +32,6 @@ namespace Light.Data
 					DataContextSetting contextSetting = DataContextSetting.CreateSetting (connectionSetting, false);
 					if (contextSetting != null && DefaultContextSetting == null) {
 						DefaultContextSetting = contextSetting;
-//						DefaultContext = new DataContext (contextSetting.Connection, contextSetting.Name, contextSetting.DataBase);
 					}
 					Settings [connectionSetting.Name] = contextSetting;
 				}
@@ -48,9 +39,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Creates the default.
+		/// Creates the default dataContext.
 		/// </summary>
-		/// <returns>The default.</returns>
+		/// <returns>The context.</returns>
 		public static DataContext CreateDefault ()
 		{
 			if (DefaultContextSetting == null) {
@@ -63,8 +54,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Create the specified configName.
+		/// Create the dataContext.
 		/// </summary>
+		/// <returns>The context.</returns>
 		/// <param name="configName">Config name.</param>
 		public static DataContext Create (string configName)
 		{
@@ -86,11 +78,12 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Create the dataContext.
 		/// </summary>
-		/// <param name="name">连接名称</param>
-		/// <param name="connectionString">连接字符串</param>
-		/// <param name="providerName">提供类型名称</param>
+		/// <returns>The context.</returns>
+		/// <param name="name">Name.</param>
+		/// <param name="connectionString">Connection string.</param>
+		/// <param name="providerName">Provider name.</param>
 		public static DataContext Create (string name, string connectionString, string providerName)
 		{
 			ConnectionStringSettings connectionSetting = new ConnectionStringSettings (name, connectionString, providerName);
@@ -98,10 +91,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 创建数据上下文
+		/// Create the dataContext.
 		/// </summary>
-		/// <param name="setting">数据连接设置</param>
-		/// <returns>数据上下文</returns>
+		/// <returns>The context.</returns>
+		/// <param name="setting">Setting.</param>
 		public static DataContext CreateFromSetting (ConnectionStringSettings setting)
 		{
 			if (setting == null)
@@ -112,23 +105,17 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 连接字符串
+		/// The connection string.
 		/// </summary>
 		protected string _connectionString;
 
 		/// <summary>
-		/// 数据库对象
-		/// </summary>
-		internal Database _dataBase;
-
-		/// <summary>
-		/// 数据库配置名称
+		/// The name of the config.
 		/// </summary>
 		protected string _configName;
 
-		/// <summary>
-		/// 获取数据库对象
-		/// </summary>
+		Database _dataBase;
+
 		internal Database DataBase {
 			get {
 				return _dataBase;
@@ -136,7 +123,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 命令输出接口
+		/// The command output interface.
 		/// </summary>
 		protected ICommandOutput output;
 
@@ -150,8 +137,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 数据库连接配置名称
+		/// Gets the name of the config.
 		/// </summary>
+		/// <value>The name of the config.</value>
 		public string ConfigName {
 			get {
 				return _configName;
@@ -159,8 +147,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 设置和获取命令超时时间
+		/// Gets or sets the time out.
 		/// </summary>
+		/// <value>The time out.</value>
 		public int TimeOut {
 			get {
 				return _dataBase.CommandTimeOut;
@@ -171,8 +160,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取是否已打开内分页功能
+		/// Gets a value indicating whether this instance is inner pager.
 		/// </summary>
+		/// <value><c>true</c> if this instance is inner pager; otherwise, <c>false</c>.</value>
 		public bool IsInnerPager {
 			get {
 				return _dataBase.InnerPager;
@@ -180,10 +170,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 设置是否打开内分页功能
+		/// Sets the inner pager enable.
 		/// </summary>
-		/// <param name="enable">打开/关闭</param>
-		/// <returns>设置是否成功,如数据库不支持内分页,则打开操作返回false</returns>
+		/// <returns><c>true</c>, if inner pager was set, <c>false</c> otherwise.</returns>
+		/// <param name="enable">If set to <c>true</c> enable.</param>
 		public bool SetInnerPager (bool enable)
 		{
 			_dataBase.InnerPager = enable;
@@ -191,11 +181,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.DataContext"/> class.
 		/// </summary>
-		/// <param name="connectionString">连接字符串</param>
-		/// <param name="configName">配置名称</param>
-		/// <param name="dataBase">数据库实例</param>
+		/// <param name="connectionString">Connection string.</param>
+		/// <param name="configName">Config name.</param>
+		/// <param name="dataBase">Data base.</param>
 		internal DataContext (string connectionString, string configName, Database dataBase)
 		{
 			_connectionString = connectionString;
@@ -204,10 +194,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取该类的对应关联表名 
+		/// Gets the name of the mapping table.
 		/// </summary>
-		/// <param name="type">类名</param>
-		/// <returns></returns>
+		/// <returns>The table name.</returns>
+		/// <param name="type">Type.</param>
 		public string GetTableName (Type type)
 		{
 			DataEntityMapping mapping = DataMapping.GetEntityMapping (type);
@@ -220,10 +210,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取该类的对应关联表名
+		/// Gets the name of the mapping table.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns>表名</returns>
+		/// <returns>The table name.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public string GetTableName<T> ()
              where T : class, new()
 		{
@@ -231,9 +221,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Insert or update.
+		/// Insert or update the specified data.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>result.</returns>
 		/// <param name="data">Data.</param>
 		public int InsertOrUpdate (object data)
 		{
@@ -258,17 +248,17 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 新增数据
+		/// Insert the specified data.
 		/// </summary>
-		/// <param name="data">数据对象</param>
-		/// <returns>受影响行数</returns>
+		/// <returns>result.</returns>
+		/// <param name="data">Data.</param>
 		public int Insert (object data)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
 			return Insert (mapping, data);
 		}
 
-		int Insert (DataTableEntityMapping mapping, object data)
+		private int Insert (DataTableEntityMapping mapping, object data)
 		{
 			object obj;
 			int rInt;
@@ -296,10 +286,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 更新数据
+		/// Update the specified data.
 		/// </summary>
-		/// <param name="data">数据对象</param>
-		/// <returns>受影响行数</returns>
+		/// <returns>result.</returns>
+		/// <param name="data">Data.</param>
 		public int Update (object data)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
@@ -312,13 +302,19 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Update the specified data and updateFields.
+		/// </summary>
+		/// <returns>result.</returns>
+		/// <param name="data">Data.</param>
+		/// <param name="updateFields">Update fields.</param>
 		internal int Update (object data, string[] updateFields)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
 			return Update (mapping, data, updateFields);
 		}
 
-		int Update (DataTableEntityMapping mapping, object data)
+		private int Update (DataTableEntityMapping mapping, object data)
 		{
 			DataTableEntity entity = data as DataTableEntity;
 			if (entity != null) {
@@ -329,7 +325,7 @@ namespace Light.Data
 			}
 		}
 
-		int Update (DataTableEntityMapping mapping, object data, string[] updateFields)
+		private int Update (DataTableEntityMapping mapping, object data, string[] updateFields)
 		{
 			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateUpdateCommand (mapping, data, updateFields);
@@ -340,17 +336,17 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 删除数据
+		/// Delete the specified data.
 		/// </summary>
-		/// <param name="data">数据对象</param>
-		/// <returns>受影响行数</returns>
+		/// <returns>result.</returns>
+		/// <param name="data">Data.</param>
 		public int Delete (object data)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
 			return Delete (mapping, data);
 		}
 
-		int Delete (DataTableEntityMapping mapping, object data)
+		private int Delete (DataTableEntityMapping mapping, object data)
 		{
 			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateDeleteCommand (mapping, data);
@@ -361,10 +357,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 创建新对象
+		/// Creates the new object.
 		/// </summary>
-		/// <typeparam name="T">对象类型</typeparam>
-		/// <returns>数据对象</returns>
+		/// <returns>The new.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T CreateNew<T> ()
             where T : class, new()
 		{
@@ -380,11 +376,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 批量删除数据
+		/// Mass delete datas which match queryexpression.
 		/// </summary>
-		/// <typeparam name="T">删除对象类型</typeparam>
-		/// <param name="query">查询表达式</param>
-		/// <returns>受影响行数</returns>
+		/// <returns>result.</returns>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public int DeleteMass<T> (QueryExpression query)
             where T : class, new()
 		{
@@ -392,22 +388,16 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 批量删除数据
+		/// Mass delete all data.
 		/// </summary>
-		/// <typeparam name="T">删除对象类型</typeparam>
-		/// <returns>受影响行数</returns>
+		/// <returns>result.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public int DeleteMass<T> ()
             where T : class, new()
 		{
 			return DeleteMass<T> (null);
 		}
 
-		/// <summary>
-		/// 批量删除数据
-		/// </summary>
-		/// <param name="type">删除对象类型</param>
-		/// <param name="query">查询表达式</param>
-		/// <returns></returns>
 		internal int DeleteMass (Type type, QueryExpression query)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
@@ -415,11 +405,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 批量删除数据
+		/// Mass delete the datas.
 		/// </summary>
-		/// <param name="mapping">表映射</param>
-		/// <param name="query">表达式</param>
-		/// <returns>受影响行数</returns>
+		/// <returns>result.</returns>
+		/// <param name="mapping">Mapping.</param>
+		/// <param name="query">Query.</param>
 		internal int DeleteMass (DataTableEntityMapping mapping, QueryExpression query)
 		{
 			int rInt;
@@ -430,14 +420,13 @@ namespace Light.Data
 			return rInt;
 		}
 
-
 		/// <summary>
-		/// 批量更新数据
+		/// Mass updates the daats which match queryexpression..
 		/// </summary>
-		/// <typeparam name="T">更新对象类型</typeparam>
-		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
-		/// <param name="query">查询表达式</param>
-		/// <returns>受影响行数</returns>
+		/// <returns>The mass.</returns>
+		/// <param name="updates">Updates.</param>
+		/// <param name="query">Query.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public int UpdateMass<T> (UpdateSetValue[] updates, QueryExpression query)
             where T : class, new()
 		{
@@ -456,26 +445,12 @@ namespace Light.Data
 			return UpdateMass<T> (updates, null);
 		}
 
-		/// <summary>
-		/// 批量更新数据
-		/// </summary>
-		/// <param name="type">更新对象类型</param>
-		/// <param name="updates">更新对象类型</param>
-		/// <param name="query">查询表达式</param>
-		/// <returns>受影响行数</returns>
 		internal int UpdateMass (Type type, UpdateSetValue[] updates, QueryExpression query)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
 			return UpdateMass (mapping, updates, query);
 		}
 
-		/// <summary>
-		/// 批量更新数据
-		/// </summary>
-		/// <param name="mapping">表映射</param>
-		/// <param name="updates">更新对象类型</param>
-		/// <param name="query">查询表达式</param>
-		/// <returns>受影响行数</returns>
 		internal int UpdateMass (DataTableEntityMapping mapping, UpdateSetValue[] updates, QueryExpression query)
 		{
 			int rInt;
@@ -487,11 +462,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 批量插入数据
+		/// Bulk insert the datas.
 		/// </summary>
-		/// <param name="datas">数据数组</param>
-		/// <returns>返回处理行数</returns>
-		/// <param name = "batchCount"></param>
+		/// <returns>result.</returns>
+		/// <param name="datas">Datas.</param>
+		/// <param name="batchCount">Batch count.</param>
 		public int BulkInsert (Array datas, int batchCount = 10)
 		{
 			if (datas == null) {
@@ -596,11 +571,11 @@ namespace Light.Data
 
 
 		/// <summary>
-		/// 从主键获取数据对象
+		/// Selects the single object from key.
 		/// </summary>
-		/// <typeparam name="T">对象类型</typeparam>
-		/// <param name="primaryKeys">主键数组</param>
-		/// <returns>数据对象</returns>
+		/// <returns>object.</returns>
+		/// <param name="primaryKeys">Primary keys.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromKey<T> (params object[] primaryKeys)
             where T : class, new()
 		{
@@ -624,11 +599,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 从自增ID获取数据对象
+		/// Selects the single object from identifier.
 		/// </summary>
-		/// <typeparam name="T">对象类型</typeparam>
-		/// <param name="id">自增ID</param>
-		/// <returns>数据对象</returns>
+		/// <returns>object.</returns>
+		/// <param name="id">Identifier.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (int id)
             where T : class, new()
 		{
@@ -636,11 +611,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 从自增ID获取数据对象
+		/// Selects the single object from identifier.
 		/// </summary>
-		/// <typeparam name="T">对象类型</typeparam>
-		/// <param name="id">自增ID</param>
-		/// <returns>数据对象</returns>
+		/// <returns>object.</returns>
+		/// <param name="id">Identifier.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (uint id)
             where T : class, new()
 		{
@@ -648,11 +623,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 从自增ID获取数据对象
+		/// Selects the single object from identifier.
 		/// </summary>
-		/// <typeparam name="T">对象类型</typeparam>
-		/// <param name="id">自增ID</param>
-		/// <returns>数据对象</returns>
+		/// <returns>object.</returns>
+		/// <param name="id">Identifier.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (long id)
             where T : class, new()
 		{
@@ -660,23 +635,17 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 从自增ID获取数据对象
+		/// Selects the single object from identifier.
 		/// </summary>
-		/// <typeparam name="T">对象类型</typeparam>
-		/// <param name="id">自增ID</param>
-		/// <returns>数据对象</returns>
+		/// <returns>object.</returns>
+		/// <param name="id">Identifier.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (ulong id)
             where T : class, new()
 		{
 			return SelectSingleFromIdObj<T> (id);
 		}
 
-		/// <summary>
-		/// 从自增ID获取数据对象
-		/// </summary>
-		/// <typeparam name="T">对象类型</typeparam>
-		/// <param name="id">自增</param>
-		/// <returns>数据对象</returns>
 		private T SelectSingleFromIdObj<T> (object id)
             where T : class, new()
 		{
@@ -690,10 +659,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 生成数据查询对象
+		/// Create LEnumerable
 		/// </summary>
-		/// <typeparam name="T">数据类型</typeparam>
-		/// <returns>数据查询对象</returns>
+		/// <returns>The LEnumerable.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public LEnumerable<T> LQuery<T> ()
             where T : class, new()
 		{
@@ -701,10 +670,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 生成数据统计对象
+		/// Create Aggregate.
 		/// </summary>
-		/// <typeparam name="T">数据类型</typeparam>
-		/// <returns>数据查询对象</returns>
+		/// <returns>The aggregate.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public AggregateTable<T> LAggregate<T> ()
             where T : class, new()
 		{
@@ -725,31 +694,6 @@ namespace Light.Data
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
 
-		//		/// <summary>
-		//		/// 生成数据查询枚举
-		//		/// </summary>
-		//		/// <param name="mapping">数据映射</param>
-		//		/// <param name="query">查询表达式</param>
-		//		/// <param name="order">排序表达式</param>
-		//		/// <param name="region">查询范围</param>
-		//		/// <param name="level">安全级别</param>
-		//		/// <returns>数据枚举</returns>
-		//		internal IEnumerable QueryDataEnumerable (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//		{
-		//			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, IsInnerPager ? region : null);
-		//			IDbCommand command = commandData.CreateCommand (_dataBase);
-		//			return QueryDataReader (mapping, command, !IsInnerPager ? region : null, level);
-		//		}
-
-		/// <summary>
-		/// 生成数据查询枚举
-		/// </summary>
-		/// <param name="mapping">数据映射</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>数据枚举</returns>
 		internal IEnumerable<T> QueryDataMappingEnumerable<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 			where T:class, new()
 		{
@@ -759,14 +703,6 @@ namespace Light.Data
 			return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
 		}
 
-		/// <summary>
-		/// 生成数据查询枚举
-		/// </summary>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>数据集合</returns>
 		internal List<T> QueryDataList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 			where T:class, new()
 		{
@@ -781,18 +717,6 @@ namespace Light.Data
 			return list;
 		}
 
-		/// <summary>
-		/// Queries the join data list.
-		/// </summary>
-		/// <returns>The join data list.</returns>
-		/// <param name="mapping">Mapping.</param>
-		/// <param name="selector">Selector.</param>
-		/// <param name="modelList">Model list.</param>
-		/// <param name="query">Query.</param>
-		/// <param name="order">Order.</param>
-		/// <param name="region">Region.</param>
-		/// <param name="level">Level.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		internal List<T> QueryJoinDataList<T> (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 			where T:class, new()
 		{
@@ -805,17 +729,6 @@ namespace Light.Data
 			return list;
 		}
 
-		/// <summary>
-		/// Queries the colume enumerable.
-		/// </summary>
-		/// <returns>The colume enumerable.</returns>
-		/// <param name="fieldInfo">Field info.</param>
-		/// <param name="outputType">Output type.</param>
-		/// <param name="query">Query.</param>
-		/// <param name="order">Order.</param>
-		/// <param name="region">Region.</param>
-		/// <param name="distinct">If set to <c>true</c> distinct.</param>
-		/// <param name="level">Level.</param>
 		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
@@ -824,16 +737,6 @@ namespace Light.Data
 			return QueryDataReader (define, command, region, level, null);
 		}
 
-		/// <summary>
-		/// 查询单列数据
-		/// </summary>
-		/// <param name="fieldInfo">字段信息</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围</param>
-		/// <param name="distinct">是否排除重复</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>数据集合</returns>
 		internal List<K> QueryColumeList<K> (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
 			Type outputType = typeof(K);
@@ -849,18 +752,6 @@ namespace Light.Data
 			return list;
 		}
 
-
-		/// <summary>
-		/// 动态统计数据到数据表中
-		/// </summary>
-		/// <param name="mapping">数据映射</param>
-		/// <param name="fields">统计字段信息</param>
-		/// <param name="functions">统计方法信息</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="having">统计查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>数据表</returns>
 		internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
@@ -869,18 +760,6 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// Queries the dynamic aggregate list.
-		/// </summary>
-		/// <returns>The dynamic aggregate list.</returns>
-		/// <param name="mapping">Mapping.</param>
-		/// <param name="fields">Fields.</param>
-		/// <param name="functions">Functions.</param>
-		/// <param name="query">Query.</param>
-		/// <param name="having">Having.</param>
-		/// <param name="order">Order.</param>
-		/// <param name="level">Level.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 			where T:class, new()
 		{
@@ -894,15 +773,6 @@ namespace Light.Data
 			return list;
 		}
 
-		/// <summary>
-		/// 获取查询单个数据
-		/// </summary>
-		/// <param name="mapping">数据对象映射表</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="index">数据索引</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>数据对象</returns>
 		internal T SelectSingle<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
 			where T:class, new()
 		{
@@ -919,13 +789,6 @@ namespace Light.Data
 			return target;
 		}
 
-		/// <summary>
-		/// 统计行数
-		/// </summary>
-		/// <param name="mapping">数据映射表</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="level"></param>
-		/// <returns>查询行数</returns>
 		internal object AggregateCount (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateAggregateCountCommand (mapping, query);
@@ -934,13 +797,6 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// Aggregates the join table count.
-		/// </summary>
-		/// <returns>The join table count.</returns>
-		/// <param name="models">Models.</param>
-		/// <param name="query">Query.</param>
-		/// <param name="level">Level.</param>
 		internal object AggregateJoinTableCount (List<JoinModel> models, QueryExpression query, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateAggregateJoinCountCommand (models, query);
@@ -949,15 +805,6 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// 统计字段函数
-		/// </summary>
-		/// <param name="fieldMapping">统计字段</param>
-		/// <param name="aggregateType">统计方式</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="distinct">是否排除重复</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>统计结果</returns>
 		internal object Aggregate (DataFieldMapping fieldMapping, AggregateType aggregateType, QueryExpression query, bool distinct, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateAggregateCommand (fieldMapping, aggregateType, query, distinct);
@@ -972,13 +819,6 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// 查询数据是否存在
-		/// </summary>
-		/// <param name="mapping">数据映射表</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>结果</returns>
 		internal bool Exists (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
 			bool exists = false;
@@ -993,13 +833,6 @@ namespace Light.Data
 			return exists;
 		}
 
-		/// <summary>
-		/// DataTable读取
-		/// </summary>
-		/// <param name="dbcommand">数据类型</param>
-		/// <param name="region">查询范围</param>
-		/// <param name="level">安全级别</param>
-		/// <returns>DataTable对象</returns>
 		internal DataTable QueryDataTable (IDbCommand dbcommand, Region region, SafeLevel level)
 		{
 			DataTable dt = QueryDataSet (dbcommand, level).Tables [0];
@@ -1257,7 +1090,6 @@ namespace Light.Data
 				start = 0;
 				size = int.MaxValue;
 			}
-//			try {
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				transaction.SetupCommand (dbcommand);
@@ -1284,9 +1116,6 @@ namespace Light.Data
 				}
 				transaction.Commit ();
 			}
-//			} finally {
-//				ClearTempRelate ();
-//			}
 		}
 
 
@@ -1301,9 +1130,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 创建事务型数据上下文
+		/// Creates the trans data context.
 		/// </summary>
-		/// <returns>事务型数据上下文</returns>
+		/// <returns>The trans data context.</returns>
 		public TransDataContext CreateTransDataContext ()
 		{
 			TransDataContext context = new TransDataContext (_connectionString, _configName, _dataBase);
@@ -1321,12 +1150,12 @@ namespace Light.Data
 		#region SQL执行器
 
 		/// <summary>
-		/// 创建SQL字符串执行器
+		/// Creates the sql string executor.
 		/// </summary>
-		/// <param name="sqlString">SQL字符串</param>
-		/// <param name="param">参数数组</param>
-		/// <param name="level">安全等级</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The sql string executor.</returns>
+		/// <param name="sqlString">Sql string.</param>
+		/// <param name="param">Parameter.</param>
+		/// <param name="level">Level.</param>
 		public SqlExecutor CreateSqlStringExecutor (string sqlString, DataParameter[] param, SafeLevel level)
 		{
 			SqlExecutor executor = new SqlExecutor (sqlString, param, CommandType.Text, level, this);
@@ -1334,79 +1163,77 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 创建SQL字符串执行器
+		/// Creates the sql string executor.
 		/// </summary>
-		/// <param name="sqlString">SQL字符串</param>
-		/// <param name="param">参数数组</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The sql string executor.</returns>
+		/// <param name="sqlString">Sql string.</param>
+		/// <param name="param">Parameter.</param>
 		public SqlExecutor CreateSqlStringExecutor (string sqlString, DataParameter[] param)
 		{
 			return CreateSqlStringExecutor (sqlString, param, SafeLevel.Default);
 		}
 
 		/// <summary>
-		/// 创建SQL字符串执行器
+		/// Creates the sql string executor.
 		/// </summary>
-		/// <param name="sqlString">SQL字符串</param>
-		/// <param name="level">安全等级</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The sql string executor.</returns>
+		/// <param name="sqlString">Sql string.</param>
+		/// <param name="level">Level.</param>
 		public SqlExecutor CreateSqlStringExecutor (string sqlString, SafeLevel level)
 		{
 			return CreateSqlStringExecutor (sqlString, null, level);
 		}
 
 		/// <summary>
-		/// 创建SQL字符串执行器
+		/// Creates the sql string executor.
 		/// </summary>
-		/// <param name="sqlString">SQL字符串</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The sql string executor.</returns>
+		/// <param name="sqlString">Sql string.</param>
 		public SqlExecutor CreateSqlStringExecutor (string sqlString)
 		{
 			return CreateSqlStringExecutor (sqlString, null, SafeLevel.Default);
 		}
 
-
 		/// <summary>
-		/// 创建SQL存储过程执行器
+		/// Creates the store procedure executor.
 		/// </summary>
-		/// <param name="storeProcedure">SQL存储过程</param>
-		/// <param name="param">参数数组</param>
-		/// <param name="level">安全等级</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The store procedure executor.</returns>
+		/// <param name="storeProcedure">Store procedure.</param>
+		/// <param name="param">Parameter.</param>
+		/// <param name="level">Level.</param>
 		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure, DataParameter[] param, SafeLevel level)
 		{
 			SqlExecutor executor = new SqlExecutor (storeProcedure, param, CommandType.StoredProcedure, level, this);
 			return executor;
 		}
 
-
 		/// <summary>
-		/// 创建存储过程执行器
+		/// Creates the store procedure executor.
 		/// </summary>
-		/// <param name="storeProcedure">SQL存储过程</param>
-		/// <param name="param">参数数组</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The store procedure executor.</returns>
+		/// <param name="storeProcedure">Store procedure.</param>
+		/// <param name="param">Parameter.</param>
 		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure, DataParameter[] param)
 		{
 			return CreateStoreProcedureExecutor (storeProcedure, param, SafeLevel.Default);
 		}
 
 		/// <summary>
-		/// 创建存储过程执行器
+		/// Creates the store procedure executor.
 		/// </summary>
-		/// <param name="storeProcedure">SQL存储过程</param>
-		/// <param name="level">安全等级</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The store procedure executor.</returns>
+		/// <param name="storeProcedure">Store procedure.</param>
+		/// <param name="level">Level.</param>
 		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure, SafeLevel level)
 		{
 			return CreateStoreProcedureExecutor (storeProcedure, null, level);
 		}
 
 		/// <summary>
-		/// 创建存储过程执行器
+		/// Creates the store procedure executor.
 		/// </summary>
-		/// <param name="storeProcedure">SQL存储过程</param>
-		/// <returns>SQL执行器</returns>
+		/// <returns>The store procedure executor.</returns>
+		/// <param name="storeProcedure">Store procedure.</param>
 		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure)
 		{
 			return CreateStoreProcedureExecutor (storeProcedure, null, SafeLevel.Default);
@@ -1445,7 +1272,6 @@ namespace Light.Data
 
 
 		#region single relate
-
 
 		/// <summary>
 		/// Queries the data relate list.

@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 统计字段属性
+	/// Aggregate field attribute.
 	/// </summary>
 	[AttributeUsage (AttributeTargets.Property, Inherited = true)]
 	public class AggregateFieldAttribute : Attribute, IAggregateFieldConfig
 	{
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.AggregateFieldAttribute"/> class.
 		/// </summary>
 		public AggregateFieldAttribute ()
 		{
@@ -19,33 +17,37 @@ namespace Light.Data
 
 
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.AggregateFieldAttribute"/> class.
 		/// </summary>
-		/// <param name="name">字段名称</param>
+		/// <param name="name">Name.</param>
 		public AggregateFieldAttribute (string name)
 		{
 			Name = name;
 		}
 
 		/// <summary>
-		/// 查询别名
+		/// Gets or sets the name.
 		/// </summary>
+		/// <value>The name.</value>
 		public string Name {
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// 是否可空
+		/// Gets or sets a value indicating whether this instance is nullable.
 		/// </summary>
+		/// <value>true</value>
+		/// <c>false</c>
 		public bool IsNullable {
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// 默认值
+		/// Gets or sets the default value.
 		/// </summary>
+		/// <value>The default value.</value>
 		public object DefaultValue {
 			get;
 			set;

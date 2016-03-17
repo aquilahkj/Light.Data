@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class SubStringDataFieldInfo : ExtendDataFieldInfo
 	{
-		int _start = 0;
+		int _start;
 
-		int _size = 0;
+		int _size;
 
 		internal SubStringDataFieldInfo (DataFieldInfo info, int start, int size)
 			: base (info)

@@ -4,6 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data field mapping.
+	/// </summary>
 	abstract class DataFieldMapping : FieldMapping
 	{
 		public static DataFieldMapping CreateDataFieldMapping (PropertyInfo property, IDataFieldConfig config, int positionOrder, DataMapping mapping)

@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 数据表关联属性,只能在DataEntity基类中有效
+	/// Relation field attribute.
 	/// </summary>
 	[AttributeUsage (AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
-	public class RelationAttribute : Attribute
+	public class RelationFieldAttribute : Attribute
 	{
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.RelationFieldAttribute"/> class.
 		/// </summary>
-		/// <param name="masterKey">主表关联键</param>
-		/// <param name="relateKey">关联表关联键</param>
-		public RelationAttribute (string masterKey, string relateKey)
+		/// <param name="masterKey">Master key.</param>
+		/// <param name="relateKey">Relate key.</param>
+		public RelationFieldAttribute (string masterKey, string relateKey)
 		{
 			if (string.IsNullOrEmpty (masterKey)) {
 				throw new ArgumentNullException ("masterKey");
@@ -28,16 +26,18 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 主表关联键
+		/// Gets the master key.
 		/// </summary>
+		/// <value>The master key.</value>
 		public string MasterKey {
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 关联表关联键
+		/// Gets the relate key.
 		/// </summary>
+		/// <value>The relate key.</value>
 		public string RelateKey {
 			get;
 			private set;

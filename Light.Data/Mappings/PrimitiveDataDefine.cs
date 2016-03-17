@@ -73,11 +73,12 @@ namespace Light.Data
 		TypeCode _typeCode;
 
 		/// <summary>
-		/// 
+		/// Loads the data.
 		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="datareader"></param>
-		/// <returns></returns>
+		/// <returns>The data.</returns>
+		/// <param name="context">Context.</param>
+		/// <param name="datareader">Datareader.</param>
+		/// <param name="state">State.</param>
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			object obj = datareader [0];

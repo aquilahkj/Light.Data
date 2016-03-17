@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -26,13 +25,13 @@ namespace Light.Data
 			SupportTypeCodes.Add (TypeCode.String);
 		}
 
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
 		QueryPredicate _predicate;
 
-		object _value = null;
+		object _value;
 
-		bool _isReverse = false;
+		bool _isReverse;
 
 		public SingleParamQueryExpression (DataFieldInfo fieldInfo, QueryPredicate predicate, object value, bool isReverse)
 			: base (fieldInfo.TableMapping)
@@ -51,7 +50,7 @@ namespace Light.Data
 		{
 			string pn = factory.CreateTempParamName ();
 			DataParameter dataParameter = new DataParameter (pn, _fieldInfo.ToParameter (_value));
-			dataParameters = new DataParameter[] { dataParameter };
+			dataParameters = new [] { dataParameter };
 			return factory.CreateSingleParamSql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, _isReverse, dataParameter);
 		}
 

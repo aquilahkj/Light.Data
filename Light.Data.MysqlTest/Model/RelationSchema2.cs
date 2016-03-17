@@ -9,7 +9,7 @@ namespace Light.Data.MysqlTest
 	{
 		private TeUserLevel userLevel;
 
-		[Relation ("LevelId", "Id")]
+		[RelationField ("LevelId", "Id")]
 		public TeUserLevel UserLevel {
 			get {
 				return userLevel;
@@ -21,7 +21,7 @@ namespace Light.Data.MysqlTest
 
 		private TeAreaInfo areaInfo;
 
-		[Relation ("Area", "Id")]
+		[RelationField ("Area", "Id")]
 		public TeAreaInfo AreaInfo {
 			get {
 				return areaInfo;

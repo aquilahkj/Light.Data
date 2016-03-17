@@ -2,28 +2,28 @@
 namespace Light.Data
 {
 	/// <summary>
-	/// 安全级别
+	/// Safe level.
 	/// </summary>
 	public enum SafeLevel
 	{
 		/// <summary>
-		/// 默认值
+		/// The default level.
 		/// </summary>
 		Default,
 		/// <summary>
-		/// 无安全事务
+		/// The none level.
 		/// </summary>
 		None,
 		/// <summary>
-		/// 低级别
+		/// The low level.
 		/// </summary>
 		Low,
 		/// <summary>
-		/// 标准级别
+		/// The normal level.
 		/// </summary>
 		Normal,
 		/// <summary>
-		/// 高级别
+		/// The high level.
 		/// </summary>
 		High
 	}

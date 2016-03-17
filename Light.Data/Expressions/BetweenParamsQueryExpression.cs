@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -25,13 +24,13 @@ namespace Light.Data
 			SupportTypeCodes.Add (TypeCode.UInt64);
 		}
 
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
-		bool _isNot = false;
+		bool _isNot;
 
-		object _fromValue = null;
+		object _fromValue;
 
-		object _toValue = null;
+		object _toValue;
 
 		public BetweenParamsQueryExpression (DataFieldInfo fieldInfo, bool isNot, object fromValue, object toValue)
 			: base (fieldInfo.TableMapping)
@@ -57,7 +56,7 @@ namespace Light.Data
 
 			DataParameter fromParam = new DataParameter (pn, _fieldInfo.ToParameter (_fromValue));
 			DataParameter toParam = new DataParameter (pn1, _fieldInfo.ToParameter (_toValue));
-			dataParameters = new DataParameter[] { fromParam, toParam };
+			dataParameters = new [] { fromParam, toParam };
 			return factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isNot, fromParam, toParam);
 		}
 

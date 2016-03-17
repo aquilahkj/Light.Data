@@ -3,14 +3,14 @@
 namespace Light.Data
 {
 	/// <summary>
-	/// LightData异常
+	/// Light data exception.
 	/// </summary>
 	public class LightDataException : Exception
 	{
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.LightDataException"/> class.
 		/// </summary>
-		/// <param name="message">异常信息</param>
+		/// <param name="message">Message.</param>
 		public LightDataException (string message)
 			: base (message)
 		{
@@ -18,10 +18,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 构造函数
+		/// Initializes a new instance of the <see cref="Light.Data.LightDataException"/> class.
 		/// </summary>
-		/// <param name="message">异常信息</param>
-		/// <param name="innerException">子异常</param>
+		/// <param name="message">Message.</param>
+		/// <param name="innerException">Inner exception.</param>
 		public LightDataException (string message, Exception innerException)
 			: base (message, innerException)
 		{

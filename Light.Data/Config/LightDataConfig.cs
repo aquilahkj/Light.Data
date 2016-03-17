@@ -5,12 +5,19 @@ using System.Xml;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Light data config.
+	/// </summary>
 	class LightDataConfig : IConfig
 	{
 		readonly Dictionary<Type, DataTableConfig> _dataTableConfigs = new Dictionary<Type, DataTableConfig> ();
 
 		readonly Dictionary<Type, AggregateTableConfig> _aggregateTableConfigs = new Dictionary<Type, AggregateTableConfig> ();
 
+		/// <summary>
+		/// Loads the config.
+		/// </summary>
+		/// <param name="configNode">Config node.</param>
 		public void LoadConfig (XmlNode configNode)
 		{
 			if (configNode == null) {
@@ -181,7 +188,7 @@ namespace Light.Data
 						type = arguments [0];
 					}
 				}
-				object value = null;
+				object value;
 				if (type == typeof(string)) {
 					value = defaultValue;
 				}
@@ -313,6 +320,10 @@ namespace Light.Data
 			return value;
 		}
 
+		/// <summary>
+		/// Combines the config.
+		/// </summary>
+		/// <param name="config">Config.</param>
 		public void CombineConfig (LightDataConfig config)
 		{
 			foreach (KeyValuePair<Type, DataTableConfig> kvs in config._dataTableConfigs) {
@@ -323,11 +334,11 @@ namespace Light.Data
 			}
 		}
 
-		//		public bool ContainsDataTableConfig (Type type)
-		//		{
-		//			return _dataTableConfigs.ContainsKey (type);
-		//		}
-
+		/// <summary>
+		/// Gets the data table config.
+		/// </summary>
+		/// <returns>The data table config.</returns>
+		/// <param name="type">Type.</param>
 		public DataTableConfig GetDataTableConfig (Type type)
 		{
 			DataTableConfig config;
@@ -335,19 +346,23 @@ namespace Light.Data
 			return config;
 		}
 
-		//		public bool ContainsAggregateTableConfig (Type type)
-		//		{
-		//			return _aggregateTableConfigs.ContainsKey (type);
-		//		}
-
+		/// <summary>
+		/// Gets the aggregate table config.
+		/// </summary>
+		/// <returns>The aggregate table config.</returns>
+		/// <param name="type">Type.</param>
 		public AggregateTableConfig GetAggregateTableConfig (Type type)
 		{
-//			return _aggregateTableConfigs [type];
 			AggregateTableConfig config;
 			_aggregateTableConfigs.TryGetValue (type, out config);
 			return config;
 		}
 
+		/// <summary>
+		/// Searchs for assembly.
+		/// </summary>
+		/// <returns>The for assembly.</returns>
+		/// <param name="assembly">Assembly.</param>
 		public LightDataConfig SearchForAssembly (Assembly assembly)
 		{
 			LightDataConfig config = new LightDataConfig ();

@@ -6,6 +6,9 @@ using Light.Data;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data mapping.
+	/// </summary>
 	abstract class DataMapping : IFieldCollection
 	{
 		#region static
@@ -14,6 +17,11 @@ namespace Light.Data
 
 		static Dictionary<Type, DataMapping> _defaultMapping = new Dictionary<Type, DataMapping> ();
 
+		/// <summary>
+		/// Gets the mapping.
+		/// </summary>
+		/// <returns>The mapping.</returns>
+		/// <param name="type">Type.</param>
 		public static DataMapping GetMapping (Type type)
 		{
 			Dictionary<Type, DataMapping> mappings = _defaultMapping;
@@ -42,10 +50,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取数据表映射图
+		/// Gets the table mapping.
 		/// </summary>
-		/// <param name="type">映射类型</param>
-		/// <returns>数据表映射图</returns>
+		/// <returns>The table mapping.</returns>
+		/// <param name="type">Type.</param>
 		public static DataTableEntityMapping GetTableMapping (Type type)
 		{
 			DataTableEntityMapping dataMapping = GetMapping (type) as DataTableEntityMapping;
@@ -58,10 +66,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取关系映射图
+		/// Gets the entity mapping.
 		/// </summary>
-		/// <param name="type">映射类型</param>
-		/// <returns>关系映射图</returns>
+		/// <returns>The entity mapping.</returns>
+		/// <param name="type">Type.</param>
 		public static DataEntityMapping GetEntityMapping (Type type)
 		{
 			DataEntityMapping dataMapping = GetMapping (type) as DataEntityMapping;
@@ -74,15 +82,15 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 创建关系映射图
+		/// Creates the mapping.
 		/// </summary>
-		/// <param name="type">映射类型</param>
-		/// <returns>关系映射图</returns>
+		/// <returns>The mapping.</returns>
+		/// <param name="type">Type.</param>
 		private static DataMapping CreateMapping (Type type)
 		{
-			string tableName = null;
-			string extentParam = null;
-			bool isEntityTable = true;
+			string tableName;
+			string extentParam;
+			bool isEntityTable;
 			DataMapping dataMapping;
 
 			IDataTableConfig config = ConfigManager.LoadDataTableConfig (type);
@@ -123,6 +131,10 @@ namespace Light.Data
 
 		protected List<FieldMapping> _fieldList = new List<FieldMapping> ();
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Light.Data.DataMapping"/> class.
+		/// </summary>
+		/// <param name="type">Type.</param>
 		protected DataMapping (Type type)
 		{
 			this.objectType = type;
@@ -131,8 +143,9 @@ namespace Light.Data
 		Type objectType;
 
 		/// <summary>
-		/// 映射数据类型
+		/// Gets or sets the type of the object.
 		/// </summary>
+		/// <value>The type of the object.</value>
 		public Type ObjectType {
 			get {
 				return objectType;
@@ -145,8 +158,9 @@ namespace Light.Data
 		ExtendParamsCollection extentParams;
 
 		/// <summary>
-		/// 扩展参数集合
+		/// Gets or sets the extent parameters.
 		/// </summary>
+		/// <value>The extent parameters.</value>
 		public ExtendParamsCollection ExtentParams {
 			get {
 				return extentParams;
@@ -180,8 +194,6 @@ namespace Light.Data
 		}
 
 		public abstract object LoadData (DataContext context, IDataReader datareader, object state);
-
-		//		public abstract object LoadData (DataContext context, DataRow datarow);
 
 		public abstract object InitialData ();
 

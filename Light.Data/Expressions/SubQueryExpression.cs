@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class SubQueryExpression : QueryExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
 		QueryCollectionPredicate _predicate;
 
-		QueryExpression _queryExpression = null;
+		QueryExpression _queryExpression;
 
-		DataFieldInfo _queryFieldInfo = null;
+		DataFieldInfo _queryFieldInfo;
 
 		public SubQueryExpression (DataFieldInfo fieldInfo, QueryCollectionPredicate predicate, DataFieldInfo queryFieldInfo, QueryExpression queryExpression)
 			: base (fieldInfo.TableMapping)

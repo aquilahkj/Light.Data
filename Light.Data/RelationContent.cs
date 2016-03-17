@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections;
 
 namespace Light.Data
 {
 	class RelationContent
 	{
-		public RelationContent ()
-		{
-			
-		}
-
-		SingleRelationFieldMapping collectionRelateReferFieldMapping = null;
+		SingleRelationFieldMapping collectionRelateReferFieldMapping;
 
 		public SingleRelationFieldMapping CollectionRelateReferFieldMapping {
 			get {
@@ -19,7 +13,7 @@ namespace Light.Data
 			}
 		}
 
-		object collectionRelateReferFieldValue = null;
+		object collectionRelateReferFieldValue;
 
 		public object CollectionRelateReferFieldValue {
 			get {
@@ -32,18 +26,6 @@ namespace Light.Data
 		readonly Dictionary<DataEntityMapping,object> joinDatas = new Dictionary<DataEntityMapping, object> ();
 
 		readonly Dictionary<DataEntityMapping,Hashtable> queryDatas = new Dictionary<DataEntityMapping, Hashtable> ();
-
-		//		public bool GetCollectionValue (SingleRelationFieldMapping collectionFieldName, out object value)
-		//		{
-		//			if (this.collectionRelateReferFieldMapping != null && this.collectionRelateReferFieldMapping == collectionFieldName) {
-		//				value = this.collectionRelateReferFieldValue;
-		//				return true;
-		//			}
-		//			else {
-		//				value = null;
-		//				return false;
-		//			}
-		//		}
 
 		public void SetCollectionValue (SingleRelationFieldMapping collectionFieldName, object value)
 		{
@@ -89,7 +71,7 @@ namespace Light.Data
 
 		public void SetJoinData (DataEntityMapping mapping, object value)
 		{
-			if (mapping == relationMap.MasterMapping) {
+			if (mapping == relationMap.RootMapping) {
 				joinDatas [mapping] = value;
 			}
 		}
@@ -115,7 +97,6 @@ namespace Light.Data
 				return false;
 			}
 		}
-
 	}
 }
 

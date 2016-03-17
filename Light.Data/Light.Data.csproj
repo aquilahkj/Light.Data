@@ -142,7 +142,6 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessCommandFactory.cs" />
     <Compile Include="Attributes\DataTableAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -159,7 +158,6 @@
     <Compile Include="Config\IDataFieldConfig.cs" />
     <Compile Include="Config\IDataTableConfig.cs" />
     <Compile Include="Config\IConfiguratorFieldConfig.cs" />
-    <Compile Include="Config\IgnoraFieldConfig.cs" />
     <Compile Include="Config\IRelationFieldConfig.cs" />
     <Compile Include="Config\LightDataConfig.cs" />
     <Compile Include="Config\LightDataConfigurationSectionHandler.cs" />
@@ -174,7 +172,6 @@
     <Compile Include="DataField\MathCalculateDataFieldInfo.cs" />
     <Compile Include="DataField\MathFunction.cs" />
     <Compile Include="DataField\MathOperator.cs" />
-    <Compile Include="MssqlCommandFactory_2000.cs" />
     <Compile Include="DataField\ExtendDataFieldInfo.cs" />
     <Compile Include="DataTableAlias.cs" />
     <Compile Include="DataField\DateDataFieldInfo.cs" />
@@ -201,7 +198,6 @@
     <Compile Include="Attributes\AggregateFieldAttribute.cs" />
     <Compile Include="Attributes\AggregateTableAttribute.cs" />
     <Compile Include="Attributes\DataFieldAttribute.cs" />
-    <Compile Include="Attributes\RelationAttribute.cs" />
     <Compile Include="Attributes\RelationPropertyAttribute.cs" />
     <Compile Include="Expressions\BetweenParamsQueryExpression.cs" />
     <Compile Include="Expressions\BooleanQueryExpression.cs" />
@@ -236,14 +232,12 @@
     <Compile Include="Mappings\EnumDataDefine.cs" />
     <Compile Include="Mappings\EnumFieldType.cs" />
     <Compile Include="Mappings\IDataDefine.cs" />
-    <Compile Include="MssqlCommandFactory_2008.cs" />
     <Compile Include="Mappings\PrimitiveDataDefine.cs" />
     <Compile Include="SafeLevel.cs" />
     <Compile Include="LEnumerable.cs" />
     <Compile Include="Mappings\AggregateTableMapping.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mappings\ComplexFieldMapping.cs" />
     <Compile Include="Mappings\CustomFieldMapping.cs" />
     <Compile Include="Mappings\DataEntityMapping.cs" />
     <Compile Include="Mappings\DataFieldMapping.cs" />
@@ -253,16 +247,10 @@
     <Compile Include="Mappings\FieldMapping.cs" />
     <Compile Include="Mappings\IFieldCollection.cs" />
     <Compile Include="Mappings\PrimitiveFieldMapping.cs" />
-    <Compile Include="Mssql.cs" />
-    <Compile Include="Access.cs" />
-    <Compile Include="MssqlCommandFactory.cs" />
-    <Compile Include="Oracle.cs" />
-    <Compile Include="OracleCommandFactory.cs" />
     <Compile Include="Expressions\OrderExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
-    <Compile Include="QueryPredicate.cs" />
     <Compile Include="Region.cs" />
     <Compile Include="LightDataException.cs" />
     <Compile Include="SqlExecutor.cs" />
@@ -281,7 +269,6 @@
     <Compile Include="Expressions\DataFieldExpression.cs" />
     <Compile Include="Expressions\DataFieldMatchExpression.cs" />
     <Compile Include="JoinModel.cs" />
-    <Compile Include="ErrorDataMapping.cs" />
     <Compile Include="DataContextSetting.cs" />
     <Compile Include="CommandData.cs" />
     <Compile Include="JoinConnect.cs" />
@@ -308,6 +295,17 @@
     <Compile Include="RelationContent.cs" />
     <Compile Include="Mappings\BaseRelationFieldMapping.cs" />
     <Compile Include="RelationMap.cs" />
+    <Compile Include="Attributes\RelationFieldAttribute.cs" />
+    <Compile Include="DataBase\Access.cs" />
+    <Compile Include="DataBase\AccessCommandFactory.cs" />
+    <Compile Include="DataBase\Mssql.cs" />
+    <Compile Include="DataBase\MssqlCommandFactory.cs" />
+    <Compile Include="DataBase\MssqlCommandFactory_2000.cs" />
+    <Compile Include="DataBase\MssqlCommandFactory_2008.cs" />
+    <Compile Include="DataBase\Oracle.cs" />
+    <Compile Include="DataBase\OracleCommandFactory.cs" />
+    <Compile Include="Mappings\ErrorDataMapping.cs" />
+    <Compile Include="Expressions\QueryPredicate.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -335,4 +333,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="DataBase\" />
+  </ItemGroup>
 </Project>

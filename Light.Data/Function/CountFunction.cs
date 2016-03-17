@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class CountFunction : AggregateFunction
 	{
-		DataFieldInfo _fieldinfo = null;
-		bool _isDistinct = false;
+		DataFieldInfo _fieldinfo;
+
+		bool _isDistinct;
 
 		internal CountFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
 			: base (mapping)

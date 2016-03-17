@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 相关联对象属性,设定后该对象会被赋到关联结果指定的属性中,指定的属性类型必须与本数据类型一致
+	/// Relation property attribute.
 	/// </summary>
 	[AttributeUsage (AttributeTargets.Property, Inherited = true)]
 	public class RelationPropertyAttribute : Attribute
 	{
 		/// <summary>
-		/// 关联的对象属性名称
+		/// Gets or sets the relation mode.
 		/// </summary>
+		/// <value>The relation mode.</value>
 		public RelationMode RelationMode {
 			get;
 			set;

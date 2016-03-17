@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Light.Data
@@ -21,7 +19,7 @@ namespace Light.Data
 		{
 			type = DbType.Object;
 			int index = dbType.IndexOf ('(');
-			string typeString = string.Empty;
+			string typeString;
 			if (index < 0) {
 				typeString = dbType;
 			}
@@ -101,8 +99,8 @@ namespace Light.Data
 			}
 			var enumerable = value1 as IEnumerable;
 			if (enumerable != null) {
-				System.Collections.IEnumerator e1 = enumerable.GetEnumerator ();
-				System.Collections.IEnumerator e2 = (value2 as IEnumerable).GetEnumerator ();
+				IEnumerator e1 = enumerable.GetEnumerator ();
+				IEnumerator e2 = (value2 as IEnumerable).GetEnumerator ();
 
 				while (true) {
 					bool b1 = e1.MoveNext ();

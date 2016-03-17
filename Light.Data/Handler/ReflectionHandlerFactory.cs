@@ -7,12 +7,12 @@ namespace Light.Data
 {
 	static class ReflectionHandlerFactory
 	{
-		private static Dictionary<FieldInfo, GetValueHandler> mFieldGetHandlers = new Dictionary<FieldInfo, GetValueHandler> ();
-		private static Dictionary<FieldInfo, SetValueHandler> mFieldSetHandlers = new Dictionary<FieldInfo, SetValueHandler> ();
-		private static Dictionary<Type, ObjectInstanceHandler> mInstanceHandlers = new Dictionary<Type, ObjectInstanceHandler> ();
-		private static Dictionary<MethodInfo, FastMethodHandler> mMethodHandlers = new Dictionary<MethodInfo, FastMethodHandler> ();
-		private static Dictionary<PropertyInfo, GetValueHandler> mPropertyGetHandlers = new Dictionary<PropertyInfo, GetValueHandler> ();
-		private static Dictionary<PropertyInfo, SetValueHandler> mPropertySetHandlers = new Dictionary<PropertyInfo, SetValueHandler> ();
+		private static readonly Dictionary<FieldInfo, GetValueHandler> mFieldGetHandlers = new Dictionary<FieldInfo, GetValueHandler> ();
+		private static readonly Dictionary<FieldInfo, SetValueHandler> mFieldSetHandlers = new Dictionary<FieldInfo, SetValueHandler> ();
+		private static readonly Dictionary<Type, ObjectInstanceHandler> mInstanceHandlers = new Dictionary<Type, ObjectInstanceHandler> ();
+		private static readonly Dictionary<MethodInfo, FastMethodHandler> mMethodHandlers = new Dictionary<MethodInfo, FastMethodHandler> ();
+		private static readonly Dictionary<PropertyInfo, GetValueHandler> mPropertyGetHandlers = new Dictionary<PropertyInfo, GetValueHandler> ();
+		private static readonly Dictionary<PropertyInfo, SetValueHandler> mPropertySetHandlers = new Dictionary<PropertyInfo, SetValueHandler> ();
 
 		private static GetValueHandler CreateFieldGetHandler (FieldInfo field)
 		{
@@ -260,7 +260,7 @@ namespace Light.Data
 
 		public static FastMethodHandler MethodHandler (MethodInfo method)
 		{
-			FastMethodHandler handler = null;
+			FastMethodHandler handler;
 			if (mMethodHandlers.ContainsKey (method)) {
 				return mMethodHandlers [method];
 			}

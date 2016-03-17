@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Light.Data
 {
 	class RelationMap
 	{
-		readonly DataEntityMapping masterMapping;
+		readonly DataEntityMapping rootMapping;
 
-		public DataEntityMapping MasterMapping {
+		public DataEntityMapping RootMapping {
 			get {
-				return masterMapping;
+				return rootMapping;
 			}
 		}
 
 		readonly List<JoinItem> itemList = new List<JoinItem> ();
 
-		readonly HashSet<SingleRelationFieldMapping> referHash = new HashSet<SingleRelationFieldMapping> ();
+		readonly HashSet<SingleRelationFieldMapping> relateHash = new HashSet<SingleRelationFieldMapping> ();
 
 		readonly HashSet<string> entityHash = new HashSet<string> ();
 
-		public RelationMap (DataEntityMapping masterMapping)
+		public RelationMap (DataEntityMapping rootMapping)
 		{
-			this.masterMapping = masterMapping;
-			this.entityHash.Add (masterMapping.TableName);
-			LoadEntityMapping (this.masterMapping);
+			this.rootMapping = rootMapping;
+			this.entityHash.Add (rootMapping.TableName);
+			LoadEntityMapping (this.rootMapping);
 		}
 
 		void LoadEntityMapping (DataEntityMapping mapping)
@@ -32,26 +31,23 @@ namespace Light.Data
 			foreach (SingleRelationFieldMapping relateMapping in relateMappings) {
 				relateMapping.InitialRelation ();
 				if (this.entityHash.Contains (relateMapping.RelateMapping.TableName)) {
-					if (!this.referHash.Contains (relateMapping)) {
+					if (!this.relateHash.Contains (relateMapping)) {
 						bool flag = false;
-						foreach (SingleRelationFieldMapping item in this.referHash) {
+						foreach (SingleRelationFieldMapping item in this.relateHash) {
 							if (item.IsMatch (relateMapping) || item.IsReverseMatch (relateMapping)) {
 								flag = true;
 								break;
 							}
 						}
 						if (flag) {
-							this.referHash.Add (relateMapping);
+							this.relateHash.Add (relateMapping);
 						}
-//						else {
-//							string d = relateMapping.FieldName;
-//						}
 					}
 				}
 				else {
 					this.entityHash.Add (relateMapping.RelateMapping.TableName);
 					this.itemList.Add (relateMapping.JoinItemInfo);
-					this.referHash.Add (relateMapping);
+					this.relateHash.Add (relateMapping);
 					if (relateMapping.RelateMapping.HasJoinRelateModel) {
 						LoadEntityMapping (relateMapping.RelateMapping);
 					}
@@ -66,9 +62,8 @@ namespace Light.Data
 
 		public bool CheckValid (SingleRelationFieldMapping relationMapping)
 		{
-			return this.referHash.Contains (relationMapping);
+			return this.relateHash.Contains (relationMapping);
 		}
-
 	}
 }
 

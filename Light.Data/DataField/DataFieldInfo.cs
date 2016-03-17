@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 字段信息,用户生成查询或排序表达式
+	/// Data field info.
 	/// </summary>
-	/// <typeparam name="T">字段类型</typeparam>
 	public class DataFieldInfo<T> : DataFieldInfo where T : class, new()
 	{
 		/// <summary>
-		/// 创建字段信息
+		/// Create the specified name.
 		/// </summary>
-		/// <param name="name">字段名称</param>
-		/// <returns>字段信息</returns>
+		/// <param name="name">Name.</param>
 		public static DataFieldInfo<T> Create (string name)
 		{
 			if (string.IsNullOrEmpty (name)) {
@@ -31,9 +28,9 @@ namespace Light.Data
 	}
 
 	/// <summary>
-	/// 字段信息,用户生成查询或排序表达式
+	/// Data field info.
 	/// </summary>
-	public class DataFieldInfo : BasicFieldInfo//, ICloneable
+	public class DataFieldInfo : BasicFieldInfo
 	{
 		internal DataFieldInfo (Type type, string name) :
 			this (DataMapping.GetEntityMapping (type), name)
@@ -72,10 +69,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 等于
+		/// Equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression Eq (object value)
 		{
 			if (Object.Equals (value, null)) {
@@ -94,50 +91,50 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 少于等于
+		/// Less than or equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression LtEq (object value)
 		{
 			return SingleParam (QueryPredicate.LtEq, value);
 		}
 
 		/// <summary>
-		/// 少于
+		/// Less than the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression Lt (object value)
 		{
 			return SingleParam (QueryPredicate.Lt, value);
 		}
 
 		/// <summary>
-		/// 大于
+		/// Greater than the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression Gt (object value)
 		{
 			return SingleParam (QueryPredicate.Gt, value);
 		}
 
 		/// <summary>
-		/// 大于等于
+		/// Greater than or equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression GtEq (object value)
 		{
 			return SingleParam (QueryPredicate.GtEq, value);
 		}
 
 		/// <summary>
-		/// 不等于
+		/// Not equal the specified value.
 		/// </summary>
-		/// <param name="value">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression NotEq (object value)
 		{
 			if (Object.Equals (value, null)) {
@@ -156,53 +153,52 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// In查询
+		/// In the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression In (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.In, values);
 		}
 
 		/// <summary>
-		/// In查询
+		/// Not in the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotIn (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.NotIn, values);
 		}
 
 		/// <summary>
-		/// In子查询
+		/// In the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public QueryExpression In (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.In, field, expression);
 		}
 
 		/// <summary>
-		/// In子查询
+		/// In the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public QueryExpression In (DataFieldInfo field)
 		{
 			return In (field, null);
 		}
 
-
 		/// <summary>
-		/// Not In子查询
+		/// Not in the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public QueryExpression NotIn (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.NotIn, field, expression);
@@ -210,436 +206,432 @@ namespace Light.Data
 
 
 		/// <summary>
-		/// Not In子查询
+		/// Not in the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public QueryExpression NotIn (DataFieldInfo field)
 		{
 			return NotIn (field, null);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than all the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public QueryExpression GtAll (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAll, field, expression);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than all the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public QueryExpression GtAll (DataFieldInfo field)
 		{
 			return GtAll (field, null);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than all the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression GtAll (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAll, values);
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// Less than all the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public QueryExpression LtAll (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAll, field, expression);
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// Less than all the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public QueryExpression LtAll (DataFieldInfo field)
 		{
 			return LtAll (field, null);
 		}
 
 		/// <summary>
-		/// 小于All子查询
+		/// Less than all the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression LtAll (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAll, values);
 		}
 
 		/// <summary>
-		/// 大于Any子查询
+		/// Greater than any the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public QueryExpression GtAny (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAny, field, expression);
 		}
 
 		/// <summary>
-		/// 大于All子查询
+		/// Greater than any the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public QueryExpression GtAny (DataFieldInfo field)
 		{
 			return GtAny (field, null);
 		}
 
 		/// <summary>
-		/// 大于Any子查询
+		/// Greater than any the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression GtAny (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.GtAny, values);
 		}
 
 		/// <summary>
-		/// 小于Any子查询
+		/// Less than any the specified field and expression.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <param name="expression">子查询表达式</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
+		/// <param name="expression">Expression.</param>
 		public QueryExpression LtAny (DataFieldInfo field, QueryExpression expression)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAny, field, expression);
 		}
 
 		/// <summary>
-		/// 小于Any子查询
+		/// Less than any the specified field.
 		/// </summary>
-		/// <param name="field">子查询字段</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="field">Field.</param>
 		public QueryExpression LtAny (DataFieldInfo field)
 		{
 			return LtAny (field, null);
 		}
 
 		/// <summary>
-		/// 小于Any子查询
+		/// Less than any the specified values.
 		/// </summary>
-		/// <param name="values">数据枚举集</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression LtAny (System.Collections.IEnumerable values)
 		{
 			return CollectionParams (QueryCollectionPredicate.LtAny, values);
 		}
 
-
 		/// <summary>
-		/// Between查询
+		/// Between the specified fromValue and toValue.
 		/// </summary>
-		/// <param name="fromvalue">开始值</param>
-		/// <param name="tovalue">结束值</param>
-		/// <returns>查询表达式</returns>
-		public QueryExpression Between (object fromvalue, object tovalue)
+		/// <returns>The expression</returns>
+		/// <param name="fromValue">From value.</param>
+		/// <param name="toValue">To value.</param>
+		public QueryExpression Between (object fromValue, object toValue)
 		{
-			return BetweenParams (true, fromvalue, tovalue);
+			return BetweenParams (true, fromValue, toValue);
 		}
 
 		/// <summary>
-		/// Not Between查询
+		/// Nots the between fromValue and toValue.
 		/// </summary>
-		/// <param name="fromvalue">开始值</param>
-		/// <param name="tovalue">结束值</param>
-		/// <returns>查询表达式</returns>
-		public QueryExpression NotBetween (object fromvalue, object tovalue)
+		/// <returns>The expression</returns>
+		/// <param name="fromValue">From value.</param>
+		/// <param name="toValue">To value.</param>
+		public QueryExpression NotBetween (object fromValue, object toValue)
 		{
-			return BetweenParams (false, fromvalue, tovalue);
+			return BetweenParams (false, fromValue, toValue);
 		}
 
 		/// <summary>
-		/// like匹配
+		/// Like the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression Like (string value)
 		{
 			return MatchValue (value, false, false, false);
 		}
 
 		/// <summary>
-		/// like匹配
+		/// Like the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression Like (params string[] values)
 		{
 			return MatchValue (values, false, false, false);
 		}
 
 		/// <summary>
-		/// like匹配
+		/// Like the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression Like (IEnumerable<string> values)
 		{
 			return MatchValue (values, false, false, false);
 		}
 
 		/// <summary>
-		/// not like匹配
+		/// Not like the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression NotLike (string value)
 		{
 			return MatchValue (value, false, false, true);
 		}
 
 		/// <summary>
-		/// not like匹配
+		/// Not like the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotLike (params string[] values)
 		{
 			return MatchValue (values, false, false, true);
 		}
 
 		/// <summary>
-		/// not like匹配
+		/// Not like the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotLike (IEnumerable<string> values)
 		{
 			return MatchValue (values, false, false, true);
 		}
 
 		/// <summary>
-		/// 模糊匹配
+		/// Contains the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression Contains (string value)
 		{
 			return MatchValue (value, true, true, false);
 		}
 
 		/// <summary>
-		/// 模糊匹配
+		/// Contains the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression Contains (params string[] values)
 		{
 			return MatchValue (values, true, true, false);
 		}
 
 		/// <summary>
-		/// 模糊匹配
+		/// Contains the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression Contains (IEnumerable<string> values)
 		{
 			return MatchValue (values, true, true, false);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not contains the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression NotContains (string value)
 		{
 			return MatchValue (value, true, true, true);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not contains the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotContains (params string[] values)
 		{
 			return MatchValue (values, true, true, true);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not contains the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotContains (IEnumerable<string> values)
 		{
 			return MatchValue (values, true, true, true);
 		}
 
-
 		/// <summary>
-		/// 模糊匹配
+		/// End with the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression EndsWith (string value)
 		{
 			return MatchValue (value, true, false, false);
 		}
 
 		/// <summary>
-		/// 模糊匹配
+		/// End with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression EndsWith (params string[] values)
 		{
 			return MatchValue (values, true, false, false);
 		}
 
 		/// <summary>
-		/// 模糊匹配
+		/// End with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression EndsWith (IEnumerable<string> values)
 		{
 			return MatchValue (values, true, false, false);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not end with the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Values.</param>
 		public QueryExpression NotEndsWith (string value)
 		{
 			return MatchValue (value, true, false, true);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not end with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotEndsWith (params string[] values)
 		{
 			return MatchValue (values, true, false, true);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not end with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotEndsWith (IEnumerable<string> values)
 		{
 			return MatchValue (values, true, false, true);
 		}
 
-
 		/// <summary>
-		/// 模糊匹配
+		/// Start with the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression StartsWith (string value)
 		{
 			return MatchValue (value, false, true, false);
 		}
 
 		/// <summary>
-		/// 模糊匹配
+		/// Start with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression StartsWith (params string[] values)
 		{
 			return MatchValue (values, false, true, false);
 		}
 
 		/// <summary>
-		/// 模糊匹配
+		/// Start with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression StartsWith (IEnumerable<string> values)
 		{
 			return MatchValue (values, false, true, false);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not start with the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="value">Values.</param>
 		public QueryExpression NotStartsWith (string value)
 		{
 			return MatchValue (value, false, true, true);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not start with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotStartsWith (params string[] values)
 		{
 			return MatchValue (values, false, true, true);
 		}
 
 		/// <summary>
-		/// not like 模糊匹配
+		/// Not start with the specified values.
 		/// </summary>
-		/// <param name="values">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
+		/// <param name="values">Values.</param>
 		public QueryExpression NotStartsWith (IEnumerable<string> values)
 		{
 			return MatchValue (values, false, true, true);
 		}
 
 		/// <summary>
-		/// 查询字段是否空值
+		/// Determines whether this field is null.
 		/// </summary>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
 		public QueryExpression IsNull ()
 		{
 			return Null (true);
 		}
 
 		/// <summary>
-		/// 查询字段是否非空值
+		/// Determines whether this field is not null.
 		/// </summary>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
 		public QueryExpression IsNotNull ()
 		{
 			return Null (false);
 		}
 
 		/// <summary>
-		/// 查询字段是否True
+		/// Determines whether this field is true.
 		/// </summary>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
 		public QueryExpression IsTrue ()
 		{
 			return Boolean (true);
 		}
 
-
 		/// <summary>
-		/// 查询字段是否False
+		/// Determines whether this field is false.
 		/// </summary>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression</returns>
 		public QueryExpression IsFalse ()
 		{
 			return Boolean (false);
@@ -680,9 +672,6 @@ namespace Light.Data
 			if (Object.Equals (field, null)) {
 				throw new ArgumentNullException ("field");
 			}
-//			if (expression == null) {
-//				throw new ArgumentNullException ("expression");
-//			}
 			QueryExpression exp = new SubQueryExpression (this, predicate, field, expression);
 			return exp;
 		}
@@ -730,18 +719,18 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 字段顺序排序
+		/// Order by asc.
 		/// </summary>
-		/// <returns>排序表达式</returns>
+		/// <returns>The expression</returns>
 		public OrderExpression OrderByAsc ()
 		{
 			return OrderBy (OrderType.ASC);
 		}
 
 		/// <summary>
-		/// 字段倒序排序
+		/// Order by desc.
 		/// </summary>
-		/// <returns>排序表达式</returns>
+		/// <returns>The expression</returns>
 		public OrderExpression OrderByDesc ()
 		{
 			return OrderBy (OrderType.DESC);
@@ -753,83 +742,74 @@ namespace Light.Data
 			return exp;
 		}
 
-		/// <summary>
-		/// 等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static QueryExpression operator == (DataFieldInfo field, object value)
 		{
 			return field.Eq (value);
 		}
 
-		/// <summary>
-		/// 不等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static QueryExpression operator != (DataFieldInfo field, object value)
 		{
 			return field.NotEq (value);
 		}
 
-		/// <summary>
-		/// 大于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static QueryExpression operator > (DataFieldInfo field, object value)
 		{
 			return field.Gt (value);
 		}
 
-		/// <summary>
-		/// 大于等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static QueryExpression operator >= (DataFieldInfo field, object value)
 		{
 			return field.GtEq (value);
 		}
 
-		/// <summary>
-		/// 小于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static QueryExpression operator < (DataFieldInfo field, object value)
 		{
 			return field.Lt (value);
 		}
 
-		/// <summary>
-		/// 小于等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static QueryExpression operator <= (DataFieldInfo field, object value)
 		{
 			return field.LtEq (value);
 		}
 
+		/// <summary>
+		/// Gets the DBtype of the field.
+		/// </summary>
+		/// <value>The type of the DB.</value>
 		internal virtual string DBType {
 			get {
 				return DataField.DBType;
 			}
 		}
 
+		/// <summary>
+		/// Creates the data field sql.
+		/// </summary>
+		/// <returns>The data field sql.</returns>
+		/// <param name="factory">Factory.</param>
 		internal virtual string CreateDataFieldSql (CommandFactory factory)
 		{
 			return CreateDataFieldSql (factory, false);
 		}
 
+		/// <summary>
+		/// Creates the data field sql.
+		/// </summary>
+		/// <returns>The data field sql.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
 		internal virtual string CreateDataFieldSql (CommandFactory factory, bool isFullName)
 		{
 			if (isFullName) {
@@ -840,21 +820,10 @@ namespace Light.Data
 			}
 		}
 
-		//		/// <summary>
-		//		/// 可在字段的左右两边添加匹配字符
-		//		/// </summary>
-		//		/// <param name="left">左匹配</param>
-		//		/// <param name="right">右匹配</param>
-		//		/// <returns></returns>
-		//		public MatchDataFieldInfo TransformMatch (bool left, bool right)
-		//		{
-		//			return new MatchDataFieldInfo (this, left, right);
-		//		}
-
 		/// <summary>
 		/// Transforms the starts with match.
 		/// </summary>
-		/// <returns>The starts with match.</returns>
+		/// <returns>The match field info.</returns>
 		public MatchDataFieldInfo TransformEndsWithMatch ()
 		{
 			return new MatchDataFieldInfo (this, true, false);
@@ -863,7 +832,7 @@ namespace Light.Data
 		/// <summary>
 		/// Transforms the endss with match.
 		/// </summary>
-		/// <returns>The endss with match.</returns>
+		/// <returns>The match field info.</returns>
 		public MatchDataFieldInfo TransformStartsWithMatch ()
 		{
 			return new MatchDataFieldInfo (this, false, true);
@@ -872,50 +841,47 @@ namespace Light.Data
 		/// <summary>
 		/// Transforms the contains match.
 		/// </summary>
-		/// <returns>The contains match.</returns>
+		/// <returns>The match field info.</returns>
 		public MatchDataFieldInfo TransformContainsMatch ()
 		{
 			return new MatchDataFieldInfo (this, true, true);
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的日期,返回时间类型数据
+		/// Transforms the date.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformDate ()
 		{
 			return new DateDataFieldInfo (this, null);
-			//return new DateDataFieldInfo(DataField, null);
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的日期,按Y-M-D格式返回字符串类型的日期
+		/// Transforms the date string, default format "Y-M-D"
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformDateString ()
 		{
 			return new DateDataFieldInfo (this, "Y-M-D");
-			//return new DateDataFieldInfo(DataField, "Y-M-D");
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的日期,按format格式返回字符串类型的日期
+		/// Transforms the date string, support format YMD|YM|Y-M-D|Y-M|D-M-Y|M-D-Y|Y/M/D|Y/M|D/M/Y|M/D/Y
 		/// </summary>
-		/// <param name="format">日期格式 Y年M月D日 目前支持格式 YMD|YM|Y-M-D|Y-M|D-M-Y|M-D-Y|Y/M/D|Y/M|D/M/Y|M/D/Y</param>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
+		/// <param name="format">Format.</param>
 		public DataFieldInfo TransformDateString (string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
 				throw new ArgumentNullException (format);
 			}
 			return new DateDataFieldInfo (this, format);
-			//return new DateDataFieldInfo(DataField, format);
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的年份
+		/// Transforms the year.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformYear ()
 		{
 			//return new YearDataFieldInfo(this);
@@ -923,9 +889,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的月份
+		/// Transforms the month.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformMonth ()
 		{
 			//return new MonthDataFieldInfo(this);
@@ -933,9 +899,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的当月日数
+		/// Transforms the day.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformDay ()
 		{
 			//return new DayDataFieldInfo(this);
@@ -943,9 +909,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的小时数
+		/// Transforms the hour.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformHour ()
 		{
 			//return new HourDataFieldInfo(this);
@@ -953,9 +919,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的分钟数
+		/// Transforms the minute.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformMinute ()
 		{
 			//return new MinuteDataFieldInfo(this);
@@ -963,9 +929,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的秒数
+		/// Transforms the second.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformSecond ()
 		{
 			//return new SecondDataFieldInfo(this);
@@ -973,9 +939,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的当年周数
+		/// Transforms the week.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformWeek ()
 		{
 			//return new WeekDataFieldInfo(this);
@@ -983,30 +949,29 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取时间类型字段的星期索引,不同数据库有不同的定义
+		/// Transforms the weekday.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The week day.</returns>
 		public DataFieldInfo TransformWeekDay ()
 		{
-			//return new WeekDayDataFieldInfo(this);
 			return new DatePartDataFieldInfo (this, DatePart.WeekDay);
 		}
 
 		/// <summary>
-		/// 获取字符串类型字段的长度
+		/// Transforms the string length.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformLength ()
 		{
 			return new LengthDataFieldInfo (this);
 		}
 
 		/// <summary>
-		/// 获取字符串类型字段的指定位置数据
+		/// Transforms the substring.
 		/// </summary>
-		/// <param name="start">开始索引</param>
-		/// <param name="size">长度</param>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
+		/// <param name="start">Start.</param>
+		/// <param name="size">Size.</param>
 		public DataFieldInfo TransformSubString (int start, int size)
 		{
 			if (size <= 0) {
@@ -1016,144 +981,84 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取字符串类型字段的指定位置数据
+		/// Transforms the substring.
 		/// </summary>
-		/// <param name="start">开始索引</param>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
+		/// <param name="start">Start.</param>
 		public DataFieldInfo TransformSubString (int start)
 		{
 			return new SubStringDataFieldInfo (this, start, 0);
 		}
 
 		#region math operate int
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, int value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (int value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, int value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (int value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, int value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (int value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, int value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (int value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, int value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (int value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, int value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (int value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
@@ -1162,272 +1067,150 @@ namespace Light.Data
 		#endregion
 
 		#region math operate long
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, long value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (long value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, long value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (long value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, long value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (long value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, long value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (long value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, long value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (long value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, long value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (long value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
 
-
-
 		#endregion
 
 		#region math operate short
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, short value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (short value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, short value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (short value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, short value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (short value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, short value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (short value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, short value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (short value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, short value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (short value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
@@ -1436,134 +1219,74 @@ namespace Light.Data
 		#endregion
 
 		#region math operate uint
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, uint value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (uint value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, uint value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (uint value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, uint value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (uint value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, uint value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (uint value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, uint value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (uint value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, uint value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (uint value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
@@ -1572,272 +1295,150 @@ namespace Light.Data
 		#endregion
 
 		#region math operate ulong
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, ulong value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (ulong value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, ulong value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (ulong value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, ulong value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (ulong value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, ulong value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (ulong value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, ulong value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (ulong value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, ulong value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (ulong value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
 		}
 
-
-
 		#endregion
 
 		#region math operate ushort
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, ushort value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (ushort value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, ushort value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (ushort value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, ushort value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (ushort value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, ushort value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (ushort value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, ushort value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (ushort value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, ushort value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (ushort value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
@@ -1846,134 +1447,74 @@ namespace Light.Data
 		#endregion
 
 		#region math operate float
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, float value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (float value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, float value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (float value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, float value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (float value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, float value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (float value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, float value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (float value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, float value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (float value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
@@ -1982,134 +1523,74 @@ namespace Light.Data
 		#endregion
 
 		#region math operate double
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, double value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (double value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, double value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (double value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, double value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (double value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, double value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (double value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, double value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (double value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, double value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (double value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
@@ -2118,134 +1599,74 @@ namespace Light.Data
 		#endregion
 
 		#region math operate decimal
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator + (DataFieldInfo field, decimal value)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, true);
 		}
-
-		/// <summary>
-		/// 加
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator + (decimal value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Puls, value, false);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator - (DataFieldInfo field, decimal value)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, true);
 		}
-
-		/// <summary>
-		/// 减
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator - (decimal value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Minus, value, false);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator * (DataFieldInfo field, decimal value)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, true);
 		}
-
-		/// <summary>
-		/// 乘
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator * (decimal value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Multiply, value, false);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator / (DataFieldInfo field, decimal value)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, true);
 		}
-
-		/// <summary>
-		/// 除
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator / (decimal value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Divided, value, false);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator % (DataFieldInfo field, decimal value)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, true);
 		}
-
-		/// <summary>
-		/// 余
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator % (decimal value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Mod, value, false);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="value">Value.</param>
 		public static DataFieldInfo operator ^ (DataFieldInfo field, decimal value)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, true);
 		}
-
-		/// <summary>
-		/// 幂
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
 		public static DataFieldInfo operator ^ (decimal value, DataFieldInfo field)
 		{
 			return field.TransformMathCalculate (MathOperator.Power, value, false);
@@ -2259,68 +1680,67 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取字段的绝对值
+		/// Transforms the abs.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The field info.</returns>
 		public DataFieldInfo TransformAbs ()
 		{
 			return TransformMathFunction (MathFunction.Abs);
 		}
 
 		/// <summary>
-		/// 获取字段的e为底的对数值
+		/// Transforms the log.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The log.</returns>
 		public DataFieldInfo TransformLog ()
 		{
 			return TransformMathFunction (MathFunction.Log);
 		}
 
 		/// <summary>
-		/// 获取字段的e 的给定次幂
+		/// Transforms the exp.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The exp.</returns>
 		public DataFieldInfo TransformExp ()
 		{
 			return TransformMathFunction (MathFunction.Exp);
 		}
 
 		/// <summary>
-		/// 获取字段的正弦值
+		/// Transforms the sin.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The sin.</returns>
 		public DataFieldInfo TransformSin ()
 		{
 			return TransformMathFunction (MathFunction.Sin);
 		}
 
 		/// <summary>
-		/// 获取字段的余弦值
+		/// Transforms the cos.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The cos.</returns>
 		public DataFieldInfo TransformCos ()
 		{
 			return TransformMathFunction (MathFunction.Cos);
 		}
 
 		/// <summary>
-		/// 获取字段的正切值
+		/// Transforms the tan.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The tan.</returns>
 		public DataFieldInfo TransformTan ()
 		{
 			return TransformMathFunction (MathFunction.Tan);
 		}
 
 		/// <summary>
-		/// 获取字段的反正切值
+		/// Transforms the atan.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The atan.</returns>
 		public DataFieldInfo TransformAtan ()
 		{
 			return TransformMathFunction (MathFunction.Atan);
 		}
-
 
 		private DataFieldInfo TransformMathFunction (MathFunction function)
 		{
@@ -2328,10 +1748,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 匹配对象是否相等
+		/// Determines whether the specified <see cref="Light.Data.DataFieldInfo"/> is equal to the current <see cref="Light.Data.DataFieldInfo"/>.
 		/// </summary>
-		/// <param name="target">匹配对象</param>
-		/// <returns></returns>
+		/// <param name="target">The <see cref="Light.Data.DataFieldInfo"/> to compare with the current <see cref="Light.Data.DataFieldInfo"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="Light.Data.DataFieldInfo"/> is equal to the current
+		/// <see cref="Light.Data.DataFieldInfo"/>; otherwise, <c>false</c>.</returns>
 		public virtual bool Equals (DataFieldInfo target)
 		{
 			if (Object.Equals (target, null)) {
@@ -2351,10 +1772,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 匹配细节内容是否相等
+		/// Equalses the detail.
 		/// </summary>
-		/// <param name="info">匹配对象</param>
-		/// <returns></returns>
+		/// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
+		/// <param name="info">Info.</param>
 		protected virtual bool EqualsDetail (DataFieldInfo info)
 		{
 			bool result = Object.Equals (this.DataField, info.DataField);
@@ -2367,153 +1788,126 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 匹配对象是否相等
+		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Light.Data.DataFieldInfo"/>.
 		/// </summary>
-		/// <param name="obj">匹配对象</param>
-		/// <returns></returns>
+		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Light.Data.DataFieldInfo"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+		/// <see cref="Light.Data.DataFieldInfo"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals (object obj)
 		{
 			return object.ReferenceEquals (this, obj);
 		}
 
 		/// <summary>
-		/// 获取哈希码
+		/// Serves as a hash function for a <see cref="Light.Data.DataFieldInfo"/> object.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
 		public override int GetHashCode ()
 		{
 			return base.GetHashCode ();
 		}
 
-
 		/// <summary>
-		/// 等于
+		/// Equal the specified field.
 		/// </summary>
-		/// <param name="field">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="field">Field.</param>
 		public DataFieldExpression Eq (DataFieldInfo field)
 		{
 			return OnDataFieldMatch (QueryPredicate.Eq, field);
 		}
 
 		/// <summary>
-		/// 少于等于
+		/// Less than or equal the specified field.
 		/// </summary>
-		/// <param name="field">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="field">Field.</param>
 		public DataFieldExpression LtEq (DataFieldInfo field)
 		{
 			return OnDataFieldMatch (QueryPredicate.LtEq, field);
 		}
 
 		/// <summary>
-		/// 少于
+		/// Less than the specified field.
 		/// </summary>
-		/// <param name="field">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="field">Field.</param>
 		public DataFieldExpression Lt (DataFieldInfo field)
 		{
 			return OnDataFieldMatch (QueryPredicate.Lt, field);
 		}
 
 		/// <summary>
-		/// 大于
+		/// Greater than the specified field.
 		/// </summary>
-		/// <param name="field">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="field">Field.</param>
 		public DataFieldExpression Gt (DataFieldInfo field)
 		{
 			return OnDataFieldMatch (QueryPredicate.Gt, field);
 		}
 
 		/// <summary>
-		/// 大于等于
+		/// Greater than or equal the specified field.
 		/// </summary>
-		/// <param name="field">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="field">Field.</param>
 		public DataFieldExpression GtEq (DataFieldInfo field)
 		{
 			return OnDataFieldMatch (QueryPredicate.GtEq, field);
 		}
 
 		/// <summary>
-		/// 不等于
+		/// Not equal the specified field.
 		/// </summary>
-		/// <param name="field">数值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="field">Field.</param>
 		public DataFieldExpression NotEq (DataFieldInfo field)
 		{
 			return OnDataFieldMatch (QueryPredicate.NotEq, field);
 		}
 
-
-		/// <summary>
-		/// 等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="mfield"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="mfield">Mfield.</param>
 		public static DataFieldExpression operator == (DataFieldInfo field, DataFieldInfo mfield)
 		{
 			return field.Eq (mfield);
 		}
-
-		/// <summary>
-		/// 不等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="mfield"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="mfield">Mfield.</param>
 		public static DataFieldExpression operator != (DataFieldInfo field, DataFieldInfo mfield)
 		{
 			return field.NotEq (mfield);
 		}
-
-		/// <summary>
-		/// 大于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="mfield"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="mfield">Mfield.</param>
 		public static DataFieldExpression operator > (DataFieldInfo field, DataFieldInfo mfield)
 		{
 			return field.Gt (mfield);
 		}
-
-		/// <summary>
-		/// 大于等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="mfield"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="mfield">Mfield.</param>
 		public static DataFieldExpression operator >= (DataFieldInfo field, DataFieldInfo mfield)
 		{
 			return field.GtEq (mfield);
 		}
-
-		/// <summary>
-		/// 小于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="mfield"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="mfield">Mfield.</param>
 		public static DataFieldExpression operator < (DataFieldInfo field, DataFieldInfo mfield)
 		{
 			return field.Lt (mfield);
 		}
-
-		/// <summary>
-		/// 小于等于
-		/// </summary>
-		/// <param name="field"></param>
-		/// <param name="mfield"></param>
-		/// <returns></returns>
+		/// <param name="field">Field.</param>
+		/// <param name="mfield">Mfield.</param>
 		public static DataFieldExpression operator <= (DataFieldInfo field, DataFieldInfo mfield)
 		{
 			return field.LtEq (mfield);
 		}
-
-
+		/// <summary>
+		/// Raises the data field match event.
+		/// </summary>
+		/// <param name="predicate">Predicate.</param>
+		/// <param name="field">Field.</param>
 		private DataFieldExpression OnDataFieldMatch (QueryPredicate predicate, DataFieldInfo field)
 		{
 			if (Object.Equals (field, null) && predicate != QueryPredicate.Eq && predicate != QueryPredicate.NotEq) {
@@ -2523,10 +1917,14 @@ namespace Light.Data
 			return exp;
 		}
 
+		/// <summary>
+		/// Tos the parameter.
+		/// </summary>
+		/// <returns>The parameter.</returns>
+		/// <param name="value">Value.</param>
 		internal virtual object ToParameter (object value)
 		{
 			return base.DataField.ToParameter (value);
 		}
-
 	}
 }
