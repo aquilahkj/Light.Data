@@ -208,9 +208,14 @@ namespace Light.Data
 		/// </summary>
 		public const string TheTypeOfDataEntityIsNoConfig = "the type {0} of data entity is no config";
 		/// <summary>
-		/// The relation field is exists.
+		/// the relation field {0} is exists.
 		/// </summary>
 		public const string TheRelationFieldIsExists = "the relation field {0} is exists";
+	
+		/// <summary>
+		/// the data field {0} is not exists.
+		/// </summary>
+		public const string DataFieldIsNotExists = "the data field {0} is not exists";
 	}
 }
 

@@ -159,6 +159,7 @@ namespace Light.Data.MysqlTest
 			InitialRelateTable (35);
 			List<TeRelateA_BE> relateList = context.LQuery<TeRelateA_BE> ().ToList ();
 			foreach (TeRelateA_BE relate in relateList) {
+				Assert.IsNull (relate.RelateB1);
 				Assert.AreEqual (relate, relate.RelateB.RelateC.RelateA);
 				Assert.AreEqual (relate, relate.RelateE.RelateA);
 				Assert.AreEqual (relate.RelateE, relate.RelateB.RelateE);

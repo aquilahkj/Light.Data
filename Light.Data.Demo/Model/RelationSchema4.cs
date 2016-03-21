@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Light.Data.MysqlTest
+namespace Light.Data.Demo
 {
 	[Serializable]
 	[DataTable("Te_RelateA")]
@@ -23,10 +23,10 @@ namespace Light.Data.MysqlTest
 		[RelationField ("Id", "RelateCId")]
 		public TeRelateB_CD RelateB1 {
 			get {
-				return relateB1;
+				return relateB;
 			}
 			set {
-				relateB1 = value;
+				relateB = value;
 			}
 		}
 

@@ -89,6 +89,9 @@ namespace Light.Data
 			this.masterInfos = new DataFieldInfo[keyPairs.Length];
 			for (int i = 0; i < keyPairs.Length; i++) {
 				DataFieldMapping field = mapping.FindDataEntityField (keyPairs [i].MasterKey);
+				if (field == null) {
+					throw new LightDataException (string.Format (RE.DataFieldIsNotExists, keyPairs [i].MasterKey));
+				}
 				this.masterFieldMappings [i] = field;
 				this.masterInfos [i] = new DataFieldInfo (field);
 			}
@@ -112,6 +115,9 @@ namespace Light.Data
 			DataFieldMapping[] fields = new DataFieldMapping[keyPairs.Length];
 			for (int i = 0; i < this.keyPairs.Length; i++) {
 				DataFieldMapping field = mapping.FindDataEntityField (keyPairs [i].RelateKey);
+				if (field == null) {
+					throw new LightDataException (string.Format (RE.DataFieldIsNotExists, keyPairs [i].RelateKey));
+				}
 				fields [i] = field;
 				infos [i] = new DataFieldInfo (field);
 			}

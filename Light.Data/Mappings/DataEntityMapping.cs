@@ -122,12 +122,6 @@ namespace Light.Data
 
 		public string TableName {
 			get {
-//				if (_aliasName != null) {
-//					return DataEntityMapping._aliasName;
-//				}
-//				else {
-//					return _tableName;
-//				}
 				return _tableName;
 			}
 		}
