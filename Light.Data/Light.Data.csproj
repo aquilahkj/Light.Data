@@ -291,7 +291,6 @@
     <Compile Include="Mappings\RelationPair.cs" />
     <Compile Include="Config\RelationMode.cs" />
     <Compile Include="JoinCapsule.cs" />
-    <Compile Include="JoinItem.cs" />
     <Compile Include="RelationContent.cs" />
     <Compile Include="Mappings\BaseRelationFieldMapping.cs" />
     <Compile Include="RelationMap.cs" />
@@ -306,6 +305,8 @@
     <Compile Include="DataBase\OracleCommandFactory.cs" />
     <Compile Include="Mappings\ErrorDataMapping.cs" />
     <Compile Include="Expressions\QueryPredicate.cs" />
+    <Compile Include="RelationCycle.cs" />
+    <Compile Include="Mappings\DataFieldInfoRelation.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

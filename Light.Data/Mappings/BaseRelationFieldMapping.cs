@@ -53,6 +53,21 @@ namespace Light.Data
 
 		protected DataFieldInfo[] relateInfos;
 
+		public DataFieldInfoRelation[] GetDataFieldInfoRelations ()
+		{
+			InitialRelateMapping ();
+			DataFieldInfoRelation[] array = new DataFieldInfoRelation[keyPairs.Length];
+			for (int i = 0; i < keyPairs.Length; i++) {
+				array [i] = new DataFieldInfoRelation (new DataFieldInfo (this.masterFieldMappings [i]), new DataFieldInfo (this.relateFieldMappings [i]));
+			}
+			return array;
+		}
+
+		public RelationKey[] GetKeyPairs ()
+		{
+			return keyPairs.Clone () as RelationKey[];
+		}
+
 		protected BaseRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
 		{
 			if (fieldName == null)

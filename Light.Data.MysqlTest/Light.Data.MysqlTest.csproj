@@ -79,6 +79,7 @@
     <Compile Include="RelationSingle2Test.cs" />
     <Compile Include="RelationMultiTest.cs" />
     <Compile Include="Model\RelationSchema3.cs" />
+    <Compile Include="Model\RelationSchema4.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -729,6 +729,8 @@ namespace Light.Data
 			return list;
 		}
 
+
+
 		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);

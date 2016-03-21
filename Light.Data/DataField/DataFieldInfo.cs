@@ -804,6 +804,17 @@ namespace Light.Data
 			return CreateDataFieldSql (factory, false);
 		}
 
+		string _aliasTableName;
+
+		internal virtual string AliasTableName {
+			get {
+				return _aliasTableName;
+			}
+			set {
+				_aliasTableName = value;
+			}
+		}
+
 		/// <summary>
 		/// Creates the data field sql.
 		/// </summary>
@@ -813,7 +824,8 @@ namespace Light.Data
 		internal virtual string CreateDataFieldSql (CommandFactory factory, bool isFullName)
 		{
 			if (isFullName) {
-				return factory.CreateFullDataFieldSql (TableMapping.TableName, FieldName);
+				string tableName = this._aliasTableName ?? TableMapping.TableName;
+				return factory.CreateFullDataFieldSql (tableName, FieldName);
 			}
 			else {
 				return factory.CreateDataFieldSql (FieldName);

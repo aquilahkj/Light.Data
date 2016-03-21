@@ -187,12 +187,6 @@ namespace Light.Data
 			return command;
 		}
 
-		/// <summary>
-		/// 生成数据删除命令
-		/// </summary>
-		/// <param name="mapping">Mapping</param>
-		/// <param name="entity">数据实体</param>
-		/// <returns>删除命令对象</returns>
 		public virtual CommandData CreateDeleteCommand (DataTableEntityMapping mapping, object entity)
 		{
 			if (!mapping.HasPrimaryKey) {
@@ -337,14 +331,6 @@ namespace Light.Data
 			return onString;
 		}
 
-		/// <summary>
-		/// 创建查询命令
-		/// </summary>
-		/// <param name="mapping">数据表映射</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围,如非空则生成内分页语句</param>
-		/// <returns>查询命令对象</returns>
 		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region)
 		{
 			if (region != null && !_canInnerPage) {
@@ -353,7 +339,7 @@ namespace Light.Data
 			CommandData data;
 			if (mapping.HasJoinRelateModel) {
 				JoinCapsule capsule = mapping.LoadJoinCapsule (query, order);
-				data = CreateSelectJoinTableCommand (capsule.Slector, capsule.Models, null, null);
+				data = CreateSelectRelateTableCommand (capsule.Slector, capsule.Models);
 				RelationContent rc = new RelationContent ();
 				rc.SetRelationMap (capsule.RelationMap);
 				data.State = rc;
@@ -394,7 +380,7 @@ namespace Light.Data
 					rc = new RelationContent ();
 				}
 				rc.SetRelationMap (capsule.RelationMap);
-				data = CreateSelectJoinTableCommand (selector, capsule.Models, null, null);
+				data = CreateSelectRelateTableCommand (selector, capsule.Models);
 				data.State = rc;
 				return data;
 			}
@@ -439,15 +425,6 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// 创建自定查询内容的命令
-		/// </summary>
-		/// <param name="mapping">数据表映射</param>
-		/// <param name="customSelect">查询输出的内容</param>
-		/// <param name="query">查询表达式</param>
-		/// <param name="order">排序表达式</param>
-		/// <param name="region">查询范围</param>
-		/// <returns></returns>
 		protected virtual CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
 			StringBuilder sql = new StringBuilder ();
@@ -492,15 +469,7 @@ namespace Light.Data
 			string customSelect = string.Join (",", selectList);
 			return CreateSelectJoinTableCommand (customSelect, modelList, query, order);
 		}
-
-		/// <summary>
-		/// Creates the select join table command.
-		/// </summary>
-		/// <returns>The select join table command.</returns>
-		/// <param name="customSelect">Custom select.</param>
-		/// <param name="modelList">Model list.</param>
-		/// <param name="query">Query.</param>
-		/// <param name="order">Order.</param>
+			
 		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
 		{
 			List<DataParameter> parameters = new List<DataParameter> ();
@@ -566,13 +535,76 @@ namespace Light.Data
 			command.TransParamName = true;
 			return command;
 		}
+			
+		public virtual CommandData CreateSelectRelateTableCommand (JoinSelector selector, List<JoinModel> modelList)
+		{
+			List<DataFieldInfo> fields = selector.GetFieldInfos ();
+			string[] selectList = new string[fields.Count];
+			int index = 0;
+			foreach (DataFieldInfo fieldInfo in fields) {
+				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
+				if (!Object.Equals (aliasInfo, null)) {
+					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, true);
+				}
+				else {
+					selectList [index] = fieldInfo.CreateDataFieldSql (this, true);
+				}
+				index++;
+			}
+			string customSelect = string.Join (",", selectList);
+			return CreateSelectRelateTableCommand (customSelect, modelList);
+		}
 
-		/// <summary>
-		/// 创建内容Exists查询命令
-		/// </summary>
-		/// <param name="mapping">数据表映射</param>
-		/// <param name="query">查询表达式</param>
-		/// <returns></returns>
+		public virtual CommandData CreateSelectRelateTableCommand (string customSelect, List<JoinModel> modelList)
+		{
+			List<DataParameter> parameters = new List<DataParameter> ();
+			StringBuilder tables = new StringBuilder ();
+			foreach (JoinModel model in modelList) {
+				if (model.Connect != null) {
+					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
+				}
+				if (model.Query != null || model.Order != null) {
+					DataParameter[] queryparameters_sub;
+					DataParameter[] orderparameters_sub;
+					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
+					string morderString = GetOrderString (model.Order, out orderparameters_sub);
+					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
+					if (!string.IsNullOrEmpty (mqueryString)) {
+						tables.AppendFormat (" {0}", mqueryString);
+						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
+							parameters.AddRange (queryparameters_sub);
+						}
+					}
+					if (!string.IsNullOrEmpty (morderString)) {
+						tables.AppendFormat (" {0}", morderString);
+						if (orderparameters_sub != null && orderparameters_sub.Length > 0) {
+							parameters.AddRange (orderparameters_sub);
+						}
+					}
+					tables.AppendFormat (") as {0}", CreateDataTableSql (model.AliasTableName));
+				}
+				else {
+					tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (model.AliasTableName));
+				}
+				if (model.Connect != null && model.Connect.On != null) {
+					DataParameter[] onparameters;
+					string onString = GetOnString (model.Connect.On, out onparameters);
+					if (!string.IsNullOrEmpty (onString)) {
+						tables.AppendFormat (" {0}", onString);
+						if (onparameters != null && onparameters.Length > 0) {
+							parameters.AddRange (onparameters);
+						}
+					}
+				}
+			}
+			StringBuilder sql = new StringBuilder ();
+			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
+			CommandData command = new CommandData (sql.ToString (), parameters);
+			command.TransParamName = true;
+			return command;
+		}
+
+
 		public virtual CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
 		{
 			Region region = null;

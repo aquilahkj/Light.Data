@@ -35,6 +35,24 @@ namespace Light.Data
 			}
 		}
 
+		string aliasTableName;
+
+		public string AliasTableName {
+			get {
+				if (!string.IsNullOrEmpty (aliasTableName)) {
+					return aliasTableName;
+				}
+				else {
+					return _mapping.TableName;
+				}
+			}
+			set {
+				if (!string.IsNullOrEmpty (value)) {
+					aliasTableName = value;
+				}
+			}
+		}
+
 		public JoinModel (DataEntityMapping mapping, JoinConnect connect, QueryExpression query, OrderExpression order)
 		{
 			this._mapping = mapping;

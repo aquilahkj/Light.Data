@@ -2132,6 +2132,1140 @@ namespace Light.Data.MysqlTest
     }
 
     [Serializable]
+    [DataTable("Te_RelateA")]
+    public partial class TeRelateA : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateA>.Create("Id");
+
+		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateA>.Create("RelateBId");
+
+		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateA>.Create("RelateCId");
+
+		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateA>.Create("RelateDId");
+
+		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateA>.Create("RelateEId");
+
+		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateA>.Create("RelateFId");
+
+		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateA>.Create("Content");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RelateBIdField
+        {
+            get {
+                return relateBIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateCIdField
+        {
+            get {
+                return relateCIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateDIdField
+        {
+            get {
+                return relateDIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateEIdField
+        {
+            get {
+                return relateEIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateFIdField
+        {
+            get {
+                return relateFIdField;
+            }
+        }
+
+		public static DataFieldInfo ContentField
+        {
+            get {
+                return contentField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int relateBId;
+
+		/// <summary>
+		/// RelateBId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateBId")]
+        public int RelateBId
+        {
+            get { 
+            	return this.relateBId; 
+            }
+            set { 
+            	this.relateBId = value; 
+            }
+        }
+		private int relateCId;
+
+		/// <summary>
+		/// RelateCId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateCId")]
+        public int RelateCId
+        {
+            get { 
+            	return this.relateCId; 
+            }
+            set { 
+            	this.relateCId = value; 
+            }
+        }
+		private int relateDId;
+
+		/// <summary>
+		/// RelateDId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateDId")]
+        public int RelateDId
+        {
+            get { 
+            	return this.relateDId; 
+            }
+            set { 
+            	this.relateDId = value; 
+            }
+        }
+		private int relateEId;
+
+		/// <summary>
+		/// RelateEId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateEId")]
+        public int RelateEId
+        {
+            get { 
+            	return this.relateEId; 
+            }
+            set { 
+            	this.relateEId = value; 
+            }
+        }
+		private int relateFId;
+
+		/// <summary>
+		/// RelateFId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateFId")]
+        public int RelateFId
+        {
+            get { 
+            	return this.relateFId; 
+            }
+            set { 
+            	this.relateFId = value; 
+            }
+        }
+		private string content;
+
+		/// <summary>
+		/// Content
+		/// </summary>
+		/// <value></value>
+		[DataField("Content")]
+        public string Content
+        {
+            get { 
+            	return this.content; 
+            }
+            set { 
+            	this.content = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_RelateB")]
+    public partial class TeRelateB : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateB>.Create("Id");
+
+		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateB>.Create("RelateAId");
+
+		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateB>.Create("RelateCId");
+
+		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateB>.Create("RelateDId");
+
+		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateB>.Create("RelateEId");
+
+		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateB>.Create("RelateFId");
+
+		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateB>.Create("Content");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RelateAIdField
+        {
+            get {
+                return relateAIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateCIdField
+        {
+            get {
+                return relateCIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateDIdField
+        {
+            get {
+                return relateDIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateEIdField
+        {
+            get {
+                return relateEIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateFIdField
+        {
+            get {
+                return relateFIdField;
+            }
+        }
+
+		public static DataFieldInfo ContentField
+        {
+            get {
+                return contentField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int relateAId;
+
+		/// <summary>
+		/// RelateAId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateAId")]
+        public int RelateAId
+        {
+            get { 
+            	return this.relateAId; 
+            }
+            set { 
+            	this.relateAId = value; 
+            }
+        }
+		private int relateCId;
+
+		/// <summary>
+		/// RelateCId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateCId")]
+        public int RelateCId
+        {
+            get { 
+            	return this.relateCId; 
+            }
+            set { 
+            	this.relateCId = value; 
+            }
+        }
+		private int relateDId;
+
+		/// <summary>
+		/// RelateDId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateDId")]
+        public int RelateDId
+        {
+            get { 
+            	return this.relateDId; 
+            }
+            set { 
+            	this.relateDId = value; 
+            }
+        }
+		private int relateEId;
+
+		/// <summary>
+		/// RelateEId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateEId")]
+        public int RelateEId
+        {
+            get { 
+            	return this.relateEId; 
+            }
+            set { 
+            	this.relateEId = value; 
+            }
+        }
+		private int relateFId;
+
+		/// <summary>
+		/// RelateFId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateFId")]
+        public int RelateFId
+        {
+            get { 
+            	return this.relateFId; 
+            }
+            set { 
+            	this.relateFId = value; 
+            }
+        }
+		private string content;
+
+		/// <summary>
+		/// Content
+		/// </summary>
+		/// <value></value>
+		[DataField("Content")]
+        public string Content
+        {
+            get { 
+            	return this.content; 
+            }
+            set { 
+            	this.content = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_RelateC")]
+    public partial class TeRelateC : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateC>.Create("Id");
+
+		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateC>.Create("RelateAId");
+
+		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateC>.Create("RelateBId");
+
+		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateC>.Create("RelateDId");
+
+		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateC>.Create("RelateEId");
+
+		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateC>.Create("RelateFId");
+
+		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateC>.Create("Content");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RelateAIdField
+        {
+            get {
+                return relateAIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateBIdField
+        {
+            get {
+                return relateBIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateDIdField
+        {
+            get {
+                return relateDIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateEIdField
+        {
+            get {
+                return relateEIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateFIdField
+        {
+            get {
+                return relateFIdField;
+            }
+        }
+
+		public static DataFieldInfo ContentField
+        {
+            get {
+                return contentField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int relateAId;
+
+		/// <summary>
+		/// RelateAId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateAId")]
+        public int RelateAId
+        {
+            get { 
+            	return this.relateAId; 
+            }
+            set { 
+            	this.relateAId = value; 
+            }
+        }
+		private int relateBId;
+
+		/// <summary>
+		/// RelateBId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateBId")]
+        public int RelateBId
+        {
+            get { 
+            	return this.relateBId; 
+            }
+            set { 
+            	this.relateBId = value; 
+            }
+        }
+		private int relateDId;
+
+		/// <summary>
+		/// RelateDId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateDId")]
+        public int RelateDId
+        {
+            get { 
+            	return this.relateDId; 
+            }
+            set { 
+            	this.relateDId = value; 
+            }
+        }
+		private int relateEId;
+
+		/// <summary>
+		/// RelateEId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateEId")]
+        public int RelateEId
+        {
+            get { 
+            	return this.relateEId; 
+            }
+            set { 
+            	this.relateEId = value; 
+            }
+        }
+		private int relateFId;
+
+		/// <summary>
+		/// RelateFId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateFId")]
+        public int RelateFId
+        {
+            get { 
+            	return this.relateFId; 
+            }
+            set { 
+            	this.relateFId = value; 
+            }
+        }
+		private string content;
+
+		/// <summary>
+		/// Content
+		/// </summary>
+		/// <value></value>
+		[DataField("Content")]
+        public string Content
+        {
+            get { 
+            	return this.content; 
+            }
+            set { 
+            	this.content = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_RelateD")]
+    public partial class TeRelateD : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateD>.Create("Id");
+
+		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateD>.Create("RelateAId");
+
+		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateD>.Create("RelateBId");
+
+		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateD>.Create("RelateCId");
+
+		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateD>.Create("RelateEId");
+
+		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateD>.Create("RelateFId");
+
+		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateD>.Create("Content");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RelateAIdField
+        {
+            get {
+                return relateAIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateBIdField
+        {
+            get {
+                return relateBIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateCIdField
+        {
+            get {
+                return relateCIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateEIdField
+        {
+            get {
+                return relateEIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateFIdField
+        {
+            get {
+                return relateFIdField;
+            }
+        }
+
+		public static DataFieldInfo ContentField
+        {
+            get {
+                return contentField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int relateAId;
+
+		/// <summary>
+		/// RelateAId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateAId")]
+        public int RelateAId
+        {
+            get { 
+            	return this.relateAId; 
+            }
+            set { 
+            	this.relateAId = value; 
+            }
+        }
+		private int relateBId;
+
+		/// <summary>
+		/// RelateBId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateBId")]
+        public int RelateBId
+        {
+            get { 
+            	return this.relateBId; 
+            }
+            set { 
+            	this.relateBId = value; 
+            }
+        }
+		private int relateCId;
+
+		/// <summary>
+		/// RelateCId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateCId")]
+        public int RelateCId
+        {
+            get { 
+            	return this.relateCId; 
+            }
+            set { 
+            	this.relateCId = value; 
+            }
+        }
+		private int relateEId;
+
+		/// <summary>
+		/// RelateEId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateEId")]
+        public int RelateEId
+        {
+            get { 
+            	return this.relateEId; 
+            }
+            set { 
+            	this.relateEId = value; 
+            }
+        }
+		private int relateFId;
+
+		/// <summary>
+		/// RelateFId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateFId")]
+        public int RelateFId
+        {
+            get { 
+            	return this.relateFId; 
+            }
+            set { 
+            	this.relateFId = value; 
+            }
+        }
+		private string content;
+
+		/// <summary>
+		/// Content
+		/// </summary>
+		/// <value></value>
+		[DataField("Content")]
+        public string Content
+        {
+            get { 
+            	return this.content; 
+            }
+            set { 
+            	this.content = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_RelateE")]
+    public partial class TeRelateE : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateE>.Create("Id");
+
+		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateE>.Create("RelateAId");
+
+		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateE>.Create("RelateBId");
+
+		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateE>.Create("RelateCId");
+
+		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateE>.Create("RelateDId");
+
+		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateE>.Create("RelateFId");
+
+		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateE>.Create("Content");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RelateAIdField
+        {
+            get {
+                return relateAIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateBIdField
+        {
+            get {
+                return relateBIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateCIdField
+        {
+            get {
+                return relateCIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateDIdField
+        {
+            get {
+                return relateDIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateFIdField
+        {
+            get {
+                return relateFIdField;
+            }
+        }
+
+		public static DataFieldInfo ContentField
+        {
+            get {
+                return contentField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int relateAId;
+
+		/// <summary>
+		/// RelateAId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateAId")]
+        public int RelateAId
+        {
+            get { 
+            	return this.relateAId; 
+            }
+            set { 
+            	this.relateAId = value; 
+            }
+        }
+		private int relateBId;
+
+		/// <summary>
+		/// RelateBId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateBId")]
+        public int RelateBId
+        {
+            get { 
+            	return this.relateBId; 
+            }
+            set { 
+            	this.relateBId = value; 
+            }
+        }
+		private int relateCId;
+
+		/// <summary>
+		/// RelateCId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateCId")]
+        public int RelateCId
+        {
+            get { 
+            	return this.relateCId; 
+            }
+            set { 
+            	this.relateCId = value; 
+            }
+        }
+		private int relateDId;
+
+		/// <summary>
+		/// RelateDId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateDId")]
+        public int RelateDId
+        {
+            get { 
+            	return this.relateDId; 
+            }
+            set { 
+            	this.relateDId = value; 
+            }
+        }
+		private int relateFId;
+
+		/// <summary>
+		/// RelateFId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateFId")]
+        public int RelateFId
+        {
+            get { 
+            	return this.relateFId; 
+            }
+            set { 
+            	this.relateFId = value; 
+            }
+        }
+		private string content;
+
+		/// <summary>
+		/// Content
+		/// </summary>
+		/// <value></value>
+		[DataField("Content")]
+        public string Content
+        {
+            get { 
+            	return this.content; 
+            }
+            set { 
+            	this.content = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
+    [DataTable("Te_RelateF")]
+    public partial class TeRelateF : DataTableEntity
+    {
+    	#region "Static Field"
+		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateF>.Create("Id");
+
+		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateF>.Create("RelateAId");
+
+		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateF>.Create("RelateBId");
+
+		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateF>.Create("RelateCId");
+
+		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateF>.Create("RelateDId");
+
+		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateF>.Create("RelateEId");
+
+		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateF>.Create("Content");
+
+    	#endregion
+
+    	#region "Static DataFieldInfo"
+		public static DataFieldInfo IdField
+        {
+            get {
+                return idField;
+            }
+        }
+
+		public static DataFieldInfo RelateAIdField
+        {
+            get {
+                return relateAIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateBIdField
+        {
+            get {
+                return relateBIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateCIdField
+        {
+            get {
+                return relateCIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateDIdField
+        {
+            get {
+                return relateDIdField;
+            }
+        }
+
+		public static DataFieldInfo RelateEIdField
+        {
+            get {
+                return relateEIdField;
+            }
+        }
+
+		public static DataFieldInfo ContentField
+        {
+            get {
+                return contentField;
+            }
+        }
+
+    	#endregion
+
+    	#region "Data Property"
+		private int id;
+
+		/// <summary>
+		/// Id
+		/// </summary>
+		/// <value></value>
+		[DataField("Id", IsIdentity = true, IsPrimaryKey = true)]
+        public int Id
+        {
+            get { 
+            	return this.id; 
+            }
+            set { 
+            	this.id = value; 
+            }
+        }
+		private int relateAId;
+
+		/// <summary>
+		/// RelateAId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateAId")]
+        public int RelateAId
+        {
+            get { 
+            	return this.relateAId; 
+            }
+            set { 
+            	this.relateAId = value; 
+            }
+        }
+		private int relateBId;
+
+		/// <summary>
+		/// RelateBId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateBId")]
+        public int RelateBId
+        {
+            get { 
+            	return this.relateBId; 
+            }
+            set { 
+            	this.relateBId = value; 
+            }
+        }
+		private int relateCId;
+
+		/// <summary>
+		/// RelateCId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateCId")]
+        public int RelateCId
+        {
+            get { 
+            	return this.relateCId; 
+            }
+            set { 
+            	this.relateCId = value; 
+            }
+        }
+		private int relateDId;
+
+		/// <summary>
+		/// RelateDId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateDId")]
+        public int RelateDId
+        {
+            get { 
+            	return this.relateDId; 
+            }
+            set { 
+            	this.relateDId = value; 
+            }
+        }
+		private int relateEId;
+
+		/// <summary>
+		/// RelateEId
+		/// </summary>
+		/// <value></value>
+		[DataField("RelateEId")]
+        public int RelateEId
+        {
+            get { 
+            	return this.relateEId; 
+            }
+            set { 
+            	this.relateEId = value; 
+            }
+        }
+		private string content;
+
+		/// <summary>
+		/// Content
+		/// </summary>
+		/// <value></value>
+		[DataField("Content")]
+        public string Content
+        {
+            get { 
+            	return this.content; 
+            }
+            set { 
+            	this.content = value; 
+            }
+        }
+		#endregion
+    }
+
+    [Serializable]
     [DataTable("Te_TagInfo")]
     public partial class TeTagInfo : DataTableEntity
     {

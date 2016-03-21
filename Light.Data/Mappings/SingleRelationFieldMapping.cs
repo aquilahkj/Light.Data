@@ -8,13 +8,13 @@ namespace Light.Data
 	/// </summary>
 	class SingleRelationFieldMapping:BaseRelationFieldMapping
 	{
-		JoinItem joinItem;
-
-		public JoinItem JoinItemInfo {
-			get {
-				return joinItem;
-			}
-		}
+//		JoinItem joinItem;
+//
+//		public JoinItem JoinItemInfo {
+//			get {
+//				return joinItem;
+//			}
+//		}
 
 		public SingleRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
 			: base (fieldName, mapping, relateType, keyPairs, handler)
@@ -27,17 +27,17 @@ namespace Light.Data
 			InitialRelateMapping ();
 		}
 
-		protected override void InitialRelateMappingInc ()
-		{
-			base.InitialRelateMappingInc ();
-			DataFieldExpression expression = null;
-			for (int i = 0; i < this.relateFieldMappings.Length; i++) {
-				DataFieldInfo minfo = this.masterInfos [i];
-				DataFieldInfo rinfo = this.relateInfos [i];
-				expression = DataFieldExpression.And (expression, minfo == rinfo);
-			}
-			this.joinItem = new JoinItem (this.relateEntityMapping, this.relateInfos, expression);
-		}
+//		protected override void InitialRelateMappingInc ()
+//		{
+//			base.InitialRelateMappingInc ();
+//			DataFieldExpression expression = null;
+//			for (int i = 0; i < this.relateFieldMappings.Length; i++) {
+//				DataFieldInfo minfo = this.masterInfos [i];
+//				DataFieldInfo rinfo = this.relateInfos [i];
+//				expression = DataFieldExpression.And (expression, minfo == rinfo);
+//			}
+//			this.joinItem = new JoinItem (this.relateEntityMapping, this.masterInfos, this.relateInfos);
+//		}
 
 		public object ToProperty (DataContext context, object source, RelationContent datas)
 		{
@@ -77,14 +77,15 @@ namespace Light.Data
 			if (Object.ReferenceEquals (this, datas.CollectionRelateReferFieldMapping)) {
 				return datas.CollectionRelateReferFieldValue;
 			}
-			if (!datas.CheckJoinData (this)) {
+			string aliasName;
+			if (!datas.CheckJoinData (this, out aliasName)) {
 				return null;
 			}
 			else {
 				object value;
 				if (!datas.GetJoinData (this, out value)) {
 					foreach (DataFieldInfo info in this.relateInfos) {
-						string name = string.Format ("{0}_{1}", this.RelateMapping.TableName, info.FieldName);
+						string name = string.Format ("{0}_{1}", aliasName, info.FieldName);
 						object obj = datareader [name];
 						if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
 							datas.SetJoinData (this, null);
@@ -93,7 +94,7 @@ namespace Light.Data
 					}
 					object item = Activator.CreateInstance (this.RelateMapping.ObjectType);
 					datas.SetJoinData (this, item);
-					this.relateEntityMapping.LoadJoinTableData (context, datareader, item, datas);
+					this.relateEntityMapping.LoadJoinTableData (context, datareader, item, datas, aliasName);
 					value = item;
 
 				}

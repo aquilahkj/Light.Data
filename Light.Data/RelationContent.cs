@@ -69,11 +69,16 @@ namespace Light.Data
 			this.relationMap = relationMap;
 		}
 
-		public void SetJoinData (DataEntityMapping mapping, object value)
+		public void SetRootJoinData (DataEntityMapping mapping, object value)
 		{
 			if (mapping == relationMap.RootMapping) {
 				joinDatas [mapping] = value;
 			}
+		}
+
+		public string GetRootAliasName ()
+		{
+			return this.relationMap.RootAliasName;
 		}
 
 		public void SetJoinData (SingleRelationFieldMapping mapping, object value)
@@ -83,9 +88,9 @@ namespace Light.Data
 			}
 		}
 
-		public bool CheckJoinData (SingleRelationFieldMapping mapping)
+		public bool CheckJoinData (SingleRelationFieldMapping mapping, out string aliasName)
 		{
-			return this.relationMap.CheckValid (mapping);
+			return this.relationMap.CheckValid (mapping, out aliasName);
 		}
 
 		public bool GetJoinData (SingleRelationFieldMapping mapping, out object value)

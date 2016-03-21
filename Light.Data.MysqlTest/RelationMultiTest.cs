@@ -43,7 +43,7 @@ namespace Light.Data.MysqlTest
 
 			}
 		}
-			
+
 		[Test ()]
 		public void TestCase_SingleAndSingle ()
 		{
@@ -150,6 +150,17 @@ namespace Light.Data.MysqlTest
 						Assert.AreEqual (refer.UserExtend, refer.UserExtend.AreaInfo.UserExtend);
 					}
 				}
+			}
+		}
+
+		[Test ()]
+		public void TestCase_SingleAndSingle_r1 ()
+		{
+			InitialRelateTable (35);
+			List<TeRelateA_BE> relateList = context.LQuery<TeRelateA_BE> ().ToList ();
+			foreach (TeRelateA_BE relate in relateList) {
+				Assert.AreEqual (relate, relate.RelateB.RelateC.RelateA);
+				Assert.AreEqual (relate, relate.RelateE.RelateA);
 			}
 		}
 	}

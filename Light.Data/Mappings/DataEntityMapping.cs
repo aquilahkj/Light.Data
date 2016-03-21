@@ -154,7 +154,7 @@ namespace Light.Data
 				}
 			}
 			if (list.Count == 0) {
-				throw new LightDataException (RE.DataFieldsIsNotExists);
+				throw new LightDataException (RE.NoDataFields);
 			}
 			list.Sort ((x, y) => {
 				if (x.DataOrder.HasValue && y.DataOrder.HasValue) {
@@ -200,55 +200,64 @@ namespace Light.Data
 
 		object joinLock = new object ();
 
-		JoinCapsule baseJoinCapsule;
+		//		JoinCapsule baseJoinCapsule;
 
-		void InitialJoinCapsule ()
-		{
-			RelationMap rmap = new RelationMap (this);
-			JoinSelector selector = new JoinSelector ();
-			List<JoinModel> models = new List<JoinModel> ();
-			HashSet<string> tables = new HashSet<string> ();
-			JoinModel mainModel = new JoinModel (this, null, null, null);
-			models.Add (mainModel);
-			foreach (DataFieldMapping field in this._fieldList) {
-				DataFieldInfo info = new DataFieldInfo (field);
-				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", this.TableName, info.FieldName));
-				selector.SetAliasDataField (alias);
-			}
-			foreach (JoinItem item in rmap.GetJoinItems()) {
-				DataEntityMapping mapping = item.Mapping;
-				DataFieldExpression expression = item.Expression;
-				foreach (DataFieldMapping field in mapping._fieldList) {
-					DataFieldInfo info = new DataFieldInfo (field);
-					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", mapping.TableName, info.FieldName));
-					selector.SetAliasDataField (alias);
-				}
-				if (tables.Contains (mapping.TableName)) {
-					continue;
-				}
-				else {
-					tables.Add (mapping.TableName);
-				}
-				JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
-				JoinModel model = new JoinModel (mapping, connect, null, null);
-				models.Add (model);
-			}
-			this.baseJoinCapsule = new JoinCapsule (selector, models, rmap);
-		}
+		RelationMap relationMap;
+
+		//		void InitialRelationMap ()
+		//		{
+		//			RelationMap rmap = new RelationMap (this);
+		//			JoinSelector selector = new JoinSelector ();
+		//			List<JoinModel> models = new List<JoinModel> ();
+		//			HashSet<string> tables = new HashSet<string> ();
+		//			JoinModel mainModel = new JoinModel (this, null, null, null);
+		//			mainModel.AliasTableName = "t";
+		//			models.Add (mainModel);
+		//			foreach (DataFieldMapping field in this._fieldList) {
+		//				DataFieldInfo info = new DataFieldInfo (field);
+		//				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", "t", info.FieldName));
+		//				alias.AliasTableName = "t";
+		//				selector.SetAliasDataField (alias);
+		//			}
+		//
+		//			foreach (JoinItem item in rmap.GetJoinItems()) {
+		//				DataEntityMapping mapping = item.Mapping;
+		//				DataFieldExpression expression = item.Expression;
+		//				foreach (DataFieldMapping field in mapping._fieldList) {
+		//					DataFieldInfo info = new DataFieldInfo (field);
+		//					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", item.AliasTableName, info.FieldName));
+		//					alias.AliasTableName = item.AliasTableName;
+		//					selector.SetAliasDataField (alias);
+		//				}
+		////				if (tables.Contains (mapping.TableName)) {
+		////					continue;
+		////				}
+		////				else {
+		////					tables.Add (mapping.TableName);
+		////				}
+		//				JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
+		//				JoinModel model = new JoinModel (mapping, connect, null, null);
+		//				model.AliasTableName = item.AliasTableName;
+		//				models.Add (model);
+		//			}
+		//			this.baseJoinCapsule = new JoinCapsule (selector, models, rmap);
+		//		}
 
 		public JoinCapsule LoadJoinCapsule (QueryExpression query, OrderExpression order)
 		{
 			if (singleJoinTableRelationFields.Count == 0) {
 				return null;
 			}
-			if (baseJoinCapsule == null) {
+			if (this.relationMap == null) {
 				lock (joinLock) {
-					if (baseJoinCapsule == null) {
-						InitialJoinCapsule ();
+					if (this.relationMap == null) {
+						this.relationMap = new RelationMap (this);
+//						InitialRelationMap ();
 					}
 				}
 			}
-			return baseJoinCapsule.CloneCapsule (query, order);
+			return this.relationMap.CreateJoinCapsule (query, order);
+//			return baseJoinCapsule.CloneCapsule (query, order);
 		}
 
 		public DataFieldMapping FindDataEntityField (string fieldName)
@@ -270,7 +279,7 @@ namespace Light.Data
 			}
 		}
 
-		public void LoadJoinTableData (DataContext context, IDataReader datareader, object item, RelationContent datas)
+		public void LoadJoinTableData (DataContext context, IDataReader datareader, object item, RelationContent datas, string aliasName)
 		{
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
@@ -285,7 +294,7 @@ namespace Light.Data
 					}
 				}
 				else {
-					string name = string.Format ("{0}_{1}", this.TableName, field.Name);
+					string name = string.Format ("{0}_{1}", aliasName, field.Name);
 					object obj = datareader [name];
 					object value = field.ToProperty (obj);
 					if (!Object.Equals (value, null)) {
@@ -326,8 +335,9 @@ namespace Light.Data
 			if (this.singleJoinTableRelationFields.Count > 0) {
 				RelationContent datas = state as RelationContent;
 				datas.InitialJoinData ();
-				datas.SetJoinData (this, item);
-				LoadJoinTableData (context, datareader, item, datas);
+				datas.SetRootJoinData (this, item);
+				string aliasName = datas.GetRootAliasName ();
+				LoadJoinTableData (context, datareader, item, datas, aliasName);
 				return item;
 			}
 

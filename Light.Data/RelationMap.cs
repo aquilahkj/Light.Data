@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Light.Data
 {
@@ -12,57 +13,134 @@ namespace Light.Data
 			}
 		}
 
-		readonly List<JoinItem> itemList = new List<JoinItem> ();
+		List<RelationCycle> totalCycle = new List<RelationCycle> ();
 
-		readonly HashSet<SingleRelationFieldMapping> relateHash = new HashSet<SingleRelationFieldMapping> ();
+		int index;
 
-		readonly HashSet<string> entityHash = new HashSet<string> ();
+		readonly JoinSelector selector = new JoinSelector ();
+
+		readonly List<JoinModel> models = new List<JoinModel> ();
+
+		readonly Dictionary<DataEntityMapping,string> entityInfoDict = new Dictionary<DataEntityMapping, string> ();
+
+		readonly string rootAliasName;
+
+		public string RootAliasName {
+			get {
+				return rootAliasName;
+			}
+		}
 
 		public RelationMap (DataEntityMapping rootMapping)
 		{
 			this.rootMapping = rootMapping;
-			this.entityHash.Add (rootMapping.TableName);
-			LoadEntityMapping (this.rootMapping);
+			this.rootAliasName = "T" + index;
+			this.entityInfoDict.Add (this.rootMapping, this.rootAliasName);
+			foreach (DataFieldMapping field in this.rootMapping.FieldMappings) {
+				DataFieldInfo info = new DataFieldInfo (field);
+				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", this.rootAliasName, info.FieldName));
+				alias.AliasTableName = this.rootAliasName;
+				this.selector.SetAliasDataField (alias);
+			}
+
+			LoadEntityMapping (this.rootMapping, null);
+			foreach (RelationCycle cycle in totalCycle) {
+				SingleRelationFieldMapping[] fieldMappings = cycle.GetSingleRelationFieldMapping ();
+				foreach (SingleRelationFieldMapping fieldMapping in fieldMappings) {
+					DataEntityMapping mapping = fieldMapping.RelateMapping;
+					DataFieldExpression expression = null;
+					DataFieldInfoRelation[] relations = fieldMapping.GetDataFieldInfoRelations ();
+					string malias = this.entityInfoDict [fieldMapping.MasterMapping];
+					string ralias = this.entityInfoDict [fieldMapping.RelateMapping];
+					foreach (DataFieldInfoRelation relation in relations) {
+						DataFieldInfo minfo = relation.MasterInfo;
+						minfo.AliasTableName = malias;
+						DataFieldInfo rinfo = relation.RelateInfo;
+						rinfo.AliasTableName = ralias;
+						expression = DataFieldExpression.And (expression, minfo == rinfo);
+					}
+
+					foreach (DataFieldMapping field in mapping.FieldMappings) {
+						DataFieldInfo info = new DataFieldInfo (field);
+						AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", ralias, info.FieldName));
+						alias.AliasTableName = ralias;
+						this.selector.SetAliasDataField (alias);
+					}
+
+					JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
+					JoinModel model = new JoinModel (mapping, connect, null, null);
+					model.AliasTableName = ralias;
+					this.models.Add (model);
+				}
+			}
 		}
 
-		void LoadEntityMapping (DataEntityMapping mapping)
+		public JoinCapsule CreateJoinCapsule (QueryExpression query, OrderExpression order)
 		{
-			SingleRelationFieldMapping[] relateMappings = mapping.GetSingleJoinTableRelationFieldMappings ();
-			foreach (SingleRelationFieldMapping relateMapping in relateMappings) {
-				relateMapping.InitialRelation ();
-				if (this.entityHash.Contains (relateMapping.RelateMapping.TableName)) {
-					if (!this.relateHash.Contains (relateMapping)) {
-						bool flag = false;
-						foreach (SingleRelationFieldMapping item in this.relateHash) {
-							if (item.IsMatch (relateMapping) || item.IsReverseMatch (relateMapping)) {
-								flag = true;
-								break;
-							}
-						}
-						if (flag) {
-							this.relateHash.Add (relateMapping);
+			List<JoinModel> models1 = new List<JoinModel> ();
+			JoinModel model1 = new JoinModel (rootMapping, null, query, order);
+			model1.AliasTableName = rootAliasName;
+			models1.Add (model1);
+
+			models1.AddRange (this.models);
+			JoinCapsule clone = new JoinCapsule (this.selector, models1, this);
+			return clone;
+		}
+
+		Dictionary<SingleRelationFieldMapping,RelationCycle> fieldInfoDict = new Dictionary<SingleRelationFieldMapping, RelationCycle> ();
+
+		void LoadEntityMapping (DataEntityMapping mapping, RelationCycle cycle)
+		{
+			List<RelationCycle> levelCycle = new List<RelationCycle> ();
+			SingleRelationFieldMapping[] relateFielsMappings = mapping.GetSingleJoinTableRelationFieldMappings ();
+			foreach (SingleRelationFieldMapping relateFieldMapping in relateFielsMappings) {
+				relateFieldMapping.InitialRelation ();
+				bool exists = this.entityInfoDict.ContainsKey (relateFieldMapping.RelateMapping);
+				RelationCycle mycycle = null;
+				if (cycle != null && cycle.TryAddCycle (relateFieldMapping, exists)) {
+					mycycle = cycle;
+				}
+				if (mycycle == null) {
+					foreach (RelationCycle cycleItem in levelCycle) {
+						if (cycleItem.TryAddCycle (relateFieldMapping, exists)) {
+							mycycle = cycleItem;
+							break;
 						}
 					}
 				}
+
+				if (mycycle == null) {
+					if (!exists) {
+						mycycle = new RelationCycle (relateFieldMapping);
+						levelCycle.Add (mycycle);
+						this.totalCycle.Add (mycycle);
+						index++;
+						this.entityInfoDict.Add (relateFieldMapping.RelateMapping, "T" + index);
+						this.fieldInfoDict.Add (relateFieldMapping, mycycle);
+						LoadEntityMapping (relateFieldMapping.RelateMapping, mycycle);
+					}
+				}
 				else {
-					this.entityHash.Add (relateMapping.RelateMapping.TableName);
-					this.itemList.Add (relateMapping.JoinItemInfo);
-					this.relateHash.Add (relateMapping);
-					if (relateMapping.RelateMapping.HasJoinRelateModel) {
-						LoadEntityMapping (relateMapping.RelateMapping);
+					this.fieldInfoDict.Add (relateFieldMapping, mycycle);
+					if (!exists) {
+						index++;
+						this.entityInfoDict.Add (relateFieldMapping.RelateMapping, "T" + index);
+						LoadEntityMapping (relateFieldMapping.RelateMapping, mycycle);
 					}
 				}
 			}
 		}
 
-		public JoinItem[] GetJoinItems ()
+		public bool CheckValid (SingleRelationFieldMapping relationMapping, out string aliasName)
 		{
-			return itemList.ToArray ();
-		}
-
-		public bool CheckValid (SingleRelationFieldMapping relationMapping)
-		{
-			return this.relateHash.Contains (relationMapping);
+			if (this.fieldInfoDict.ContainsKey (relationMapping)) {
+				aliasName = this.entityInfoDict [relationMapping.RelateMapping];
+				return true;
+			}
+			else {
+				aliasName = null;
+				return false;
+			}
 		}
 	}
 }

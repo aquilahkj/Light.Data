@@ -198,5 +198,10 @@ namespace Light.Data
 		public abstract object InitialData ();
 
 		#endregion
+
+		public override string ToString ()
+		{
+			return string.Format ("[DataMapping: ObjectType={0}, FieldMappings={1}]", ObjectType, FieldMappings);
+		}
 	}
 }

@@ -46,7 +46,10 @@ namespace Light.Data
 		{
 			List<JoinModel> models1 = new List<JoinModel> ();
 			JoinModel mainModels = this.models [0];
-			models1.Add (new JoinModel (mainModels.Mapping, null, query, order));
+			JoinModel model1 = new JoinModel (mainModels.Mapping, null, query, order);
+			model1.AliasTableName = mainModels.AliasTableName;
+			models1.Add (model1);
+
 			for (int i = 1; i < this.models.Count; i++) {
 				models1.Add (this.models [i]);
 			}

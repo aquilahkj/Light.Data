@@ -51,7 +51,7 @@ namespace Light.Data
 		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
 		{
-			return BaseFieldInfo.CreateDataFieldSql (factory, isFullName);;
+			return _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
 		}
 
 		/// <summary>
@@ -62,7 +62,16 @@ namespace Light.Data
 		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName)
 		{
-			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+//			if (isFullName) {
+//				string tableName = this._aliasTableName ?? TableMapping.TableName;
+//				string field = _baseFieldInfo.CreateDataFieldSql( (factory);factory.CreateFullDataFieldSql (tableName, FieldName);
+//				return factory.CreateAliasSql (field, this._alias);
+//			}
+//			else {
+//				string field = _baseFieldInfo.CreateDataFieldSql (factory);
+//				return factory.CreateAliasSql (field, this._alias);
+//			}
+			string field = _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
 			return factory.CreateAliasSql (field, this._alias);
 		}
 
@@ -79,6 +88,15 @@ namespace Light.Data
 			}
 			else {
 				return false;
+			}
+		}
+
+		internal override string AliasTableName {
+			get {
+				return this._baseFieldInfo.AliasTableName;
+			}
+			set {
+				this._baseFieldInfo.AliasTableName = value;
 			}
 		}
 	}

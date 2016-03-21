@@ -64,7 +64,7 @@ namespace Light.Data
 				}
 			}
 			if (_fieldMappingDictionary.Count == 0) {
-				throw new LightDataException (RE.AggregationFieldsIsNotExists);
+				throw new LightDataException (RE.NoAggregationFields);
 			}
 		}
 

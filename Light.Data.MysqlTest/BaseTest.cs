@@ -288,6 +288,86 @@ namespace Light.Data.MysqlTest
 			return lists;
 		}
 
+		protected void InitialRelateTable (int count)
+		{
+			context.TruncateTable<TeRelateA> ();
+			context.TruncateTable<TeRelateB> ();
+			context.TruncateTable<TeRelateC> ();
+			context.TruncateTable<TeRelateD> ();
+			context.TruncateTable<TeRelateE> ();
+			context.TruncateTable<TeRelateF> ();
+
+			List<TeRelateA> lista = new List<TeRelateA> ();
+			List<TeRelateB> listb = new List<TeRelateB> ();
+			List<TeRelateC> listc = new List<TeRelateC> ();
+			List<TeRelateD> listd = new List<TeRelateD> ();
+			List<TeRelateE> liste = new List<TeRelateE> ();
+			List<TeRelateF> listf = new List<TeRelateF> ();
+
+			for (int i = 1; i <= count; i++) {
+				TeRelateA itema = new TeRelateA ();
+				itema.RelateBId = i;
+				itema.RelateCId = i;
+				itema.RelateDId = i;
+				itema.RelateEId = i;
+				itema.RelateFId = i;
+				itema.Content = "A" + i;
+				lista.Add (itema);
+
+				TeRelateB itemb = new TeRelateB ();
+				itemb.RelateAId = i;
+				itemb.RelateCId = i;
+				itemb.RelateDId = i;
+				itemb.RelateEId = i;
+				itemb.RelateFId = i;
+				itemb.Content = "B" + i;
+				listb.Add (itemb);
+
+				TeRelateC itemc = new TeRelateC ();
+				itemc.RelateBId = i;
+				itemc.RelateAId = i;
+				itemc.RelateDId = i;
+				itemc.RelateEId = i;
+				itemc.RelateFId = i;
+				itemc.Content = "C" + i;
+				listc.Add (itemc);
+
+				TeRelateD itemd = new TeRelateD ();
+				itemd.RelateBId = i;
+				itemd.RelateCId = i;
+				itemd.RelateAId = i;
+				itemd.RelateEId = i;
+				itemd.RelateFId = i;
+				itemd.Content = "D" + i;
+				listd.Add (itemd);
+
+				TeRelateE iteme = new TeRelateE ();
+				iteme.RelateBId = i;
+				iteme.RelateCId = i;
+				iteme.RelateDId = i;
+				iteme.RelateAId = i;
+				iteme.RelateFId = i;
+				iteme.Content = "A" + i;
+				liste.Add (iteme);
+
+				TeRelateF itemf = new TeRelateF ();
+				itemf.RelateBId = i;
+				itemf.RelateCId = i;
+				itemf.RelateDId = i;
+				itemf.RelateEId = i;
+				itemf.RelateAId = i;
+				itemf.Content = "F" + i;
+				listf.Add (itemf);
+			}
+
+			context.BulkInsert (lista.ToArray());
+			context.BulkInsert (listb.ToArray());
+			context.BulkInsert (listc.ToArray());
+			context.BulkInsert (listd.ToArray());
+			context.BulkInsert (liste.ToArray());
+			context.BulkInsert (listf.ToArray());
+		}
+
 		protected bool EqualLog (TeDataLog log1, TeDataLogHistory log2, bool checkId = true)
 		{
 			bool ret =

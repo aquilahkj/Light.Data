@@ -277,7 +277,7 @@ namespace Light.Data
 		/// </summary>
 		~TransDataContext ()
 		{
-			Dispose (false);//释放非托管资源
+			Dispose (false);
 		}
 
 	}
