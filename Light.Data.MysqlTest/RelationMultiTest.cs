@@ -161,6 +161,7 @@ namespace Light.Data.MysqlTest
 			foreach (TeRelateA_BE relate in relateList) {
 				Assert.AreEqual (relate, relate.RelateB.RelateC.RelateA);
 				Assert.AreEqual (relate, relate.RelateE.RelateA);
+				Assert.AreEqual (relate.RelateE, relate.RelateB.RelateE);
 			}
 		}
 	}
