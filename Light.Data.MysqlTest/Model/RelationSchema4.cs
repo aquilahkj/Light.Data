@@ -41,6 +41,18 @@ namespace Light.Data.MysqlTest
 				relateE = value;
 			}
 		}
+
+		private TeRelateE_A relateE1;
+
+		[RelationField ("RelateCId", "RelateAId")]
+		public TeRelateE_A RelateE1 {
+			get {
+				return relateE1;
+			}
+			set {
+				relateE1 = value;
+			}
+		}
 	}
 
 
