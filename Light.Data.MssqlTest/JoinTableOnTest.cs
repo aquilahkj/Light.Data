@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Light.Data.MysqlTest
+namespace Light.Data.MssqlTest
 {
 	[TestFixture ()]
 	public class JoinTableOnTest:BaseTest
@@ -175,10 +175,10 @@ namespace Light.Data.MysqlTest
 			listAc = context.LQuery<TeUser> ().Join<TeUserLevel> ()
 				.On (TeUser.LevelIdField == TeUserLevel.IdField)
 				.OnReset()
+				.On (TeUser.LevelIdField == TeUserLevel.IdField & TeUser.LoginTimesField == TeUserLevel.StatusField)
 				.SelectAll<TeUser> ()
 				.Select (TeUserLevel.LevelNameField, TeUserLevel.RemarkField)
 				.SelectAlias (TeUserLevel.StatusField, "LevelStatus")
-				.On (TeUser.LevelIdField == TeUserLevel.IdField & TeUser.LoginTimesField == TeUserLevel.StatusField)
 				.ToList<TeUserAndLevelModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {

@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Light.Data.MysqlTest
+namespace Light.Data.MssqlTest
 {
 	[TestFixture ()]
 	public class LQueryWhereTest:BaseTest
@@ -1308,7 +1308,7 @@ namespace Light.Data.MysqlTest
 			listAc = context.LQuery<TeUser> ().Where (TeUser.LoginTimesField.TransformLog () > 1.2d).ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			listAc.TrueForAll (x => {
-				double d = Math.Log (x.Mark);
+				double d = Math.Log (x.LoginTimes);
 				if (!double.IsInfinity (d) && !double.IsNaN (d)) {
 					return d > 1.2d;
 				}

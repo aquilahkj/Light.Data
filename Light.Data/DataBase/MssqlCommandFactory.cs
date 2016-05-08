@@ -85,14 +85,36 @@ namespace Light.Data
 			return command;
 		}
 
+		public override string CreateCollectionParamsQuerySql (string fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		{
+			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
+				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
+			}
+			string op = GetQueryCollectionPredicate (predicate);
+			if (dataParameters.Count == 0) {
+				throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
+			}
+			int i = 0;
+			StringBuilder sb = new StringBuilder ();
+			sb.AppendFormat ("{0} {1} (", fieldName, op);
+			foreach (DataParameter dataParameter in dataParameters) {
+				if (i > 0)
+					sb.Append (" union all ");
+				sb.AppendFormat ("select {0}", dataParameter.ParameterName);
+				i++;
+			}
+			sb.Append (")");
+			return sb.ToString ();
+		}
+
 		public override string CreateAvgSql (string fieldName, bool isDistinct)
 		{
-			return string.Format ("avg({1}convert(float,{0}))", CreateDataFieldSql (fieldName), isDistinct ? "distinct " : "");
+			return string.Format ("avg({1}convert(float,{0}))", fieldName, isDistinct ? "distinct " : "");
 		}
 
 		public override string CreateConditionAvgSql (string expressionSql, string fieldName, bool isDistinct)
 		{
-			return string.Format ("avg({2}case when {0} then convert(float,{1}) else 0 end)", expressionSql, CreateDataFieldSql (fieldName), isDistinct ? "distinct " : "");
+			return string.Format ("avg({2}case when {0} then convert(float,{1}) else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
 		public override string CreateMatchSql (string field, bool left, bool right)
@@ -191,12 +213,17 @@ namespace Light.Data
 
 		public override string CreateWeekDaySql (string field)
 		{
-			return string.Format ("datepart(weekday,{0})", field);
+			return string.Format ("datepart(weekday,{0})-1", field);
 		}
 
 		public override string CreateLengthSql (string field)
 		{
 			return string.Format ("len({0})", field);
+		}
+
+		public override string CreateLogSql (string field)
+		{
+			return string.Format ("log({0})", field);
 		}
 
 		public override string CreateSubStringSql (string field, int start, int size)

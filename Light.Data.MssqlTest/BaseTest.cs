@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework;
-using System.Diagnostics;
 
-namespace Light.Data.MysqlTest
+namespace Light.Data.MssqlTest
 {
 	public abstract class BaseTest
 	{
@@ -14,6 +12,7 @@ namespace Light.Data.MysqlTest
 		protected BaseTest ()
 		{
 			context = DataContext.Create ("mysql");
+
 			output.OutputFullCommand = true;
 			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
@@ -367,12 +366,12 @@ namespace Light.Data.MysqlTest
 				listf.Add (itemf);
 			}
 
-			context.BulkInsert (lista.ToArray ());
-			context.BulkInsert (listb.ToArray ());
-			context.BulkInsert (listc.ToArray ());
-			context.BulkInsert (listd.ToArray ());
-			context.BulkInsert (liste.ToArray ());
-			context.BulkInsert (listf.ToArray ());
+			context.BulkInsert (lista.ToArray());
+			context.BulkInsert (listb.ToArray());
+			context.BulkInsert (listc.ToArray());
+			context.BulkInsert (listd.ToArray());
+			context.BulkInsert (liste.ToArray());
+			context.BulkInsert (listf.ToArray());
 		}
 
 		protected bool EqualLog (TeDataLog log1, TeDataLogHistory log2, bool checkId = true)

@@ -51,7 +51,9 @@ namespace Light.Data
 
 			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-			list.AddRange (ps);
+			if (ps != null && ps.Length > 0) {
+				list.AddRange (ps);
+			}
 
 			foreach (object value in _values) {
 				string pn = factory.CreateTempParamName ();

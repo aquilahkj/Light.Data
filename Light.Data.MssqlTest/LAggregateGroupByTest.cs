@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Light.Data.MysqlTest
+namespace Light.Data.MssqlTest
 {
 	[TestFixture ()]
 	public class LAggregateGroupByTest:BaseTest
@@ -306,7 +306,7 @@ namespace Light.Data.MysqlTest
 					Assert.AreEqual (FormatDouble ((double)i / c), FormatDouble (agg.Data.Value));
 				}
 			}
-			
+
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Avg (TeUser.LoginTimesField, true), "Data").GetObjectList<LevelIdAggAvg> ();
 			dict = new Dictionary<int, int> ();
@@ -373,8 +373,8 @@ namespace Light.Data.MysqlTest
 				}
 
 			}
-			
-			
+
+
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Avg (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8, TeUser.LoginTimesField, true), "Data").GetObjectList<LevelIdAggAvg> ();
 			dict = new Dictionary<int, int> ();
@@ -409,7 +409,7 @@ namespace Light.Data.MysqlTest
 			foreach (LevelIdAggAvg agg in listAgg) {
 				int i;
 				Assert.IsTrue (dict.TryGetValue (agg.LevelId, out i));
-			
+
 				int c;
 				dictCount.TryGetValue (agg.LevelId, out c);
 				if (c > 0) {
@@ -418,8 +418,9 @@ namespace Light.Data.MysqlTest
 				else {
 					Assert.IsNull (agg.Data);
 				}
-			
+
 			}
+
 
 		}
 

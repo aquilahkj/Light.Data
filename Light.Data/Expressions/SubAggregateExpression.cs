@@ -27,12 +27,15 @@ namespace Light.Data
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-			list.AddRange (ps);
+			if (ps != null && ps.Length > 0) {
+				list.AddRange (ps);
+			}
 
 			DataParameter[] ps2;
 			queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out ps2);
-			list.AddRange (ps2);
-
+			if (ps2 != null && ps2.Length > 0) {
+				list.AddRange (ps2);
+			}
 			dataParameters = list.ToArray ();
 			return factory.CreateSubQuerySql (functionSql, _predicate, _queryFieldInfo.FieldName, _queryFieldInfo.TableMapping.TableName, queryString);
 		}

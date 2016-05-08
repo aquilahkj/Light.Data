@@ -50,9 +50,11 @@ namespace Light.Data
 			string pn = factory.CreateTempParamName ();
 			DataParameter dataParameter = new DataParameter (pn, _value);
 			List<DataParameter> list = new List<DataParameter> ();
-			DataParameter[] ps = null;
+			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-			list.AddRange (ps);
+			if (ps != null && ps.Length > 0) {
+				list.AddRange (ps);
+			}
 			list.Add (dataParameter);
 			dataParameters = list.ToArray ();
 			return factory.CreateSingleParamSql (functionSql, _predicate, _isReverse, dataParameter);

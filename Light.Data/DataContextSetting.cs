@@ -15,7 +15,7 @@ namespace Light.Data
 			string args = null;
 			int index = connection.IndexOf ("--extendparam:");
 			if (index > 1) {
-				args = connection.Substring (index + 15);
+				args = connection.Substring (index + 14);
 				connection = connection.Substring (0, index).Trim ();
 			}
 			if (!string.IsNullOrEmpty (setting.ProviderName)) {

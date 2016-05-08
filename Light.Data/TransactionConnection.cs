@@ -113,7 +113,11 @@ namespace Light.Data
 		public void Rollback ()
 		{
 			if (_transaction != null) {
-				_transaction.Rollback ();
+				try {
+					_transaction.Rollback ();
+				} catch {
+
+				}
 			}
 		}
 

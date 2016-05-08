@@ -75,7 +75,7 @@ namespace Light.Data.MysqlAdapter
 		public override void FormatStoredProcedureParameter (IDataParameter dataParmeter)
 		{
 			if (dataParmeter.ParameterName.StartsWith ("?")) {
-				dataParmeter.ParameterName = dataParmeter.ParameterName.Substring (1);
+				dataParmeter.ParameterName = dataParmeter.ParameterName.TrimStart ('?');
 			}
 		}
 
