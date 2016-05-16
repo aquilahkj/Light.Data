@@ -444,7 +444,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public K[] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo)
 		{
-			return QuerySingleFieldList<K> (fieldInfo, true).ToArray ();
+			return QuerySingleFieldList<K> (fieldInfo, false).ToArray ();
 		}
 
 		/// <summary>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Text;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
@@ -108,23 +110,44 @@ namespace Light.Data
 				if (this.outputFullCommand) {
 					if (datas != null && datas.Length > 0) {
 						string temp = command;
+						Dictionary<string,string> dict = new Dictionary<string, string> ();
+						List<string> patterns = new List<string> ();
 						foreach (DataParameter data in datas) {
 							string value = null;
 							TypeCode code = Type.GetTypeCode (data.Value.GetType ());
-							if (code == TypeCode.String || code == TypeCode.Char) {
+							Type type = data.Value.GetType ();
+							if (code == TypeCode.Empty || code == TypeCode.DBNull) {
+								value = "null";
+							}
+							else if (type.IsEnum) {
+								value = Convert.ToInt32 (value).ToString ();
+							}
+							else if (code == TypeCode.String || code == TypeCode.Char) {
 								string content = data.Value.ToString ();
 								content = content.Replace ("'", "''");
 								value = "'" + content + "'";
 							}
 							else if (code == TypeCode.DateTime) {
 								DateTime dt = (DateTime)data.Value;
-								value = "'" + dt.ToString ("u") + "'";
+								value = "'" + dt.ToString ("yyyy-MM-dd HH:mm:ss") + "'";
 							}
 							else {
 								value = data.Value.ToString ();
 							}
-							temp = temp.Replace (data.ParameterName, value);
+							dict [data.ParameterName] = value;
+							string pname = data.ParameterName.Replace ("?", "\\?");
+							patterns.Add (pname + "\\b");
 						}
+						Regex regex = new Regex (string.Join ("|", patterns), RegexOptions.Compiled);
+						temp = regex.Replace (temp, x => {
+							string data;
+							if (dict.TryGetValue (x.Value, out data)) {
+								return data;
+							}
+							else {
+								return x.Value;
+							}
+						});
 						runnableCommand = temp;
 					}
 					else {

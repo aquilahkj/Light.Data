@@ -37,7 +37,7 @@ namespace Light.Data
 				list.AddRange (ps2);
 			}
 			dataParameters = list.ToArray ();
-			return factory.CreateSubQuerySql (functionSql, _predicate, _queryFieldInfo.FieldName, _queryFieldInfo.TableMapping.TableName, queryString);
+			return factory.CreateSubQuerySql (functionSql, _predicate, _queryFieldInfo.CreateDataFieldSql (factory), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)

@@ -54,16 +54,18 @@ namespace Light.Data.MysqlTest
 				Assert.AreEqual (list [i].Id, list_s [i]);
 			}
 
-			list_s = context.LQuery<TeUser> ().QuerySingleFieldList<int> (TeUser.LevelIdField, true);
-			Assert.AreEqual (10, list_s.Count);
-			for (int i = 0; i < 10; i++) {
-				Assert.AreEqual (i + 1, list_s [i]);
+			list = context.LQuery<TeUser> ().ToList ();
+			list_s = context.LQuery<TeUser> ().QuerySingleFieldList<int> (TeUser.LevelIdField);
+			Assert.AreEqual (list.Count, list_s.Count);
+			for (int i = 0; i < list.Count; i++) {
+				Assert.AreEqual (list [i].LevelId, list_s [i]);
 			}
 
-			list_s = context.LQuery<TeUser> ().Where (TeUser.LevelIdField <= 5).QuerySingleFieldList<int> (TeUser.LevelIdField, true);
-			Assert.AreEqual (5, list_s.Count);
-			for (int i = 0; i < 5; i++) {
-				Assert.AreEqual (i + 1, list_s [i]);
+			list = context.LQuery<TeUser> ().Where (TeUser.LevelIdField <= 5).ToList ();
+			list_s = context.LQuery<TeUser> ().Where (TeUser.LevelIdField <= 5).QuerySingleFieldList<int> (TeUser.LevelIdField);
+			Assert.AreEqual (list.Count, list_s.Count);
+			for (int i = 0; i < list.Count; i++) {
+				Assert.AreEqual (list [i].LevelId, list_s [i]);
 			}
 
 			list = context.LQuery<TeUser> ().ToList ();

@@ -188,7 +188,7 @@ namespace Light.Data
 				seq = oracleIdentity;
 			}
 			else {
-				seq = string.Format ("{0}_{1}", mapping.TableName, "Sequence");//mapping.TableName + "_Sequence";
+				seq = string.Format ("{0}_Sequence", mapping.TableName);//mapping.TableName + "_Sequence";
 			}
 			return seq;
 		}

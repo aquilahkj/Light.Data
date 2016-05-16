@@ -14,10 +14,14 @@ namespace Light.Data
 			}
 		}
 
+		TypeCode _typeCode;
+
+
 		public EnumSelectFieldInfo (Enum value)
 		{
 			this._value = value;
 			this._enumType = value.GetType ();
+			this._typeCode = Type.GetTypeCode (this._enumType);
 		}
 
 		#region implemented abstract members of SelectFieldInfo
@@ -44,7 +48,7 @@ namespace Light.Data
 				dataParameter = new DataParameter (pn, _value.ToString (), "string");
 			}
 			else {
-				dataParameter = new DataParameter (pn, _value);
+				dataParameter = new DataParameter (pn, Convert.ChangeType (_value, _typeCode));
 			}
 			return pn;
 		}

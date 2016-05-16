@@ -454,6 +454,27 @@ namespace Light.Data.MssqlTest
 		}
 
 		[Test ()]
+		public void TestCase_QueryInList_String ()
+		{
+			List<TeUser> list = InitialUserTable (21);
+			List<TeUser> listEx;
+			List<TeUser> listAc;
+
+			List<string> arrayx = new List<string>{ "test3", "test5", "test7" };
+			List<string> listx = new List<string> (arrayx);
+
+			listEx = list.FindAll (x => listx.Exists (y => x.Account == y));
+			listAc = context.LQuery<TeUser> ().Where (TeUser.AccountField.In (arrayx)).ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.Account == y)));
+
+			listEx = list.FindAll (x => listx.TrueForAll (y => x.Account != y));
+			listAc = context.LQuery<TeUser> ().Where (TeUser.AccountField.NotIn (arrayx)).ToList ();
+			Assert.AreEqual (listEx.Count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.Account != y)));
+		}
+
+		[Test ()]
 		public void TestCase_QueryLikeMatch_Single_String ()
 		{
 			List<TeUser> list = InitialUserTable (21);

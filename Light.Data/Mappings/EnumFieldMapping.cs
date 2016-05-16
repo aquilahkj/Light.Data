@@ -25,6 +25,8 @@ namespace Light.Data
 			}
 		}
 
+		TypeCode _typeCode;
+
 		Regex textRegex = new Regex ("char|text|string", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue)
@@ -39,21 +41,33 @@ namespace Light.Data
 			Type itemstype = Type.GetType ("System.Nullable`1");
 			_nullableType = itemstype.MakeGenericType (type);
 			Array values = Enum.GetValues (ObjectType);
+			_typeCode = Type.GetTypeCode (ObjectType);
 			object value = values.GetValue (0);
 
 			if (_enumType == EnumFieldType.EnumToString) {
 				_minValue = value.ToString ();
 			}
 			else {
-				_minValue = value;
+				_minValue = Convert.ChangeType (value, _typeCode);
 			}
 			if (defaultValue != null) {
 				string str = defaultValue as String;
 				if (str != null) {
-					_defaultValue = Enum.Parse (type, str, true);
+					object dvalue = Enum.Parse (type, str, true);
+					if (_enumType == EnumFieldType.EnumToString) {
+						_defaultValue = dvalue.ToString ();
+					}
+					else {
+						_defaultValue = Convert.ChangeType (dvalue, _typeCode);
+					}
 				}
 				else if (defaultValue.GetType () == type) {
-					_defaultValue = defaultValue;
+					if (_enumType == EnumFieldType.EnumToString) {
+						_defaultValue = defaultValue.ToString ();
+					}
+					else {
+						_defaultValue = Convert.ChangeType (defaultValue, _typeCode);
+					}
 				}
 			}
 		}
@@ -69,6 +83,7 @@ namespace Light.Data
 				}
 				else {
 					return value;
+//					return Convert.ChangeType (value, ObjectType);
 				}
 			}
 		}
@@ -83,7 +98,7 @@ namespace Light.Data
 					return value.ToString ();
 				}
 				else {
-					return value;
+					return Convert.ChangeType (value, _typeCode);
 				}
 			}
 		}
@@ -110,7 +125,7 @@ namespace Light.Data
 					return value.ToString ();
 				}
 				else {
-					return value;
+					return Convert.ChangeType (value, _typeCode);
 				}
 			}
 		}

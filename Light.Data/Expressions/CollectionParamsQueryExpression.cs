@@ -37,7 +37,17 @@ namespace Light.Data
 			: base (fieldInfo.TableMapping)
 		{
 			Type type = values.GetType ();
-			Type elementType = type.GetElementType ();
+			Type elementType;
+			if (type.IsArray) {
+				elementType = type.GetElementType ();
+			}
+			else if (type.IsGenericType) {
+				Type[] arguments = type.GetGenericArguments ();
+				elementType = arguments [0];
+			}
+			else {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
 			TypeCode typeCode = Type.GetTypeCode (elementType);
 			if (!SupportTypeCodes.Contains (typeCode)) {
 				throw new LightDataException (RE.UnsupportValueType);

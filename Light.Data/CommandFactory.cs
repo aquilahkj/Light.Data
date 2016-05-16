@@ -229,7 +229,7 @@ namespace Light.Data
 
 		public virtual CommandData CreateTruncatCommand (DataTableEntityMapping mapping)
 		{
-			string sql = string.Format ("truncate table {0}", CreateDataTableSql (mapping));
+			string sql = string.Format ("truncate table {0};", CreateDataTableSql (mapping));
 			CommandData command = new CommandData (sql);
 			return command;
 		}
@@ -1380,7 +1380,7 @@ namespace Light.Data
 
 		public virtual string CreateLogSql (string field)
 		{
-			return string.Format ("ln({0})", field);
+			return string.Format ("log({0})", field);
 		}
 
 		public virtual string CreateExpSql (string field)

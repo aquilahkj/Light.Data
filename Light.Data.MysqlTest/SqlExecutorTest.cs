@@ -36,7 +36,7 @@ namespace Light.Data.MysqlTest
 				Assert.True (EqualUser (listEx [i], listAc [i], true));
 			}
 
-			sql = "select * from Te_User where id>5 and id<=8";
+			sql = "select * from Te_User where id>5 and Id<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
@@ -45,7 +45,7 @@ namespace Light.Data.MysqlTest
 				Assert.True (EqualUser (listEx [i], listAc [i], true));
 			}
 
-			sql = "select * from Te_User where id>@P1 and id<=@P2";
+			sql = "select * from Te_User where Id>@P1 and Id<=@P2";
 			ps = new DataParameter[2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 8);
@@ -101,7 +101,7 @@ namespace Light.Data.MysqlTest
 				Assert.True (EqualUser (listEx [i], listAc [i], true));
 			}
 
-			sql = "select * from Te_User where id>5 and id<=8";
+			sql = "select * from Te_User where id>5 and Id<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
@@ -110,7 +110,7 @@ namespace Light.Data.MysqlTest
 				Assert.True (EqualUser (listEx [i], listAc [i], true));
 			}
 
-			sql = "select * from Te_User where id>@P1 and id<=@P2";
+			sql = "select * from Te_User where Id>@P1 and Id<=@P2";
 			ps = new DataParameter[2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 8);
@@ -153,7 +153,7 @@ namespace Light.Data.MysqlTest
 			Assert.NotNull (user);
 			Assert.AreEqual ("abc", user.Account);
 
-			sql = "update Te_User set Account=@P2 where id=@P1";
+			sql = "update Te_User set Account=@P2 where Id=@P1";
 			ps = new DataParameter[2];
 			ps [0] = new DataParameter ("P1", 2);
 			ps [1] = new DataParameter ("P2", "bcd");
@@ -163,7 +163,7 @@ namespace Light.Data.MysqlTest
 			Assert.NotNull (user);
 			Assert.AreEqual ("bcd", user.Account);
 
-			sql = "update Te_User set Account=@P2 where id=@P1";
+			sql = "update Te_User set Account=@P2 where Id=@P1";
 			ps = new DataParameter[2];
 			ps [0] = new DataParameter ("P1", 3);
 			ps [1] = new DataParameter ("P2", "abc");
@@ -192,7 +192,7 @@ namespace Light.Data.MysqlTest
 			ac = Convert.ToInt32 (executor.ExecuteScalar ());
 			Assert.AreEqual (10, ac);
 
-			sql = "select count(1) from Te_User where id<=@P1";
+			sql = "select count(1) from Te_User where Id<=@P1";
 			ps = new DataParameter[1];
 			ps [0] = new DataParameter ("P1", 5);
 			executor = context.CreateSqlStringExecutor (sql, ps);
