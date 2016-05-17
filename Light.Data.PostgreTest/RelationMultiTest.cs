@@ -47,10 +47,10 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_SingleAndSingle ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (40);
 			InitialUserExtendTable (30);
-			output.UseConsoleOutput = true;
+			
 
 			List<TeUser> users;
 			List<TeUserExtend> extends;

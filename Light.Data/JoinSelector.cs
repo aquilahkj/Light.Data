@@ -13,8 +13,10 @@ namespace Light.Data
 				throw new ArgumentNullException ("entityMapping");
 			foreach (DataFieldMapping fieldMapping in entityMapping.DataEntityFields) {
 				if (fieldMapping != null) {
-					DataFieldInfo info = new DataFieldInfo (fieldMapping);
-					this.infoList [info.FieldName] = info;
+					DataFieldInfo field = new DataFieldInfo (fieldMapping);
+//					this.infoList [info.FieldName] = info;
+					AliasDataFieldInfo aliasField = new AliasDataFieldInfo (field, field.FieldName);
+					this.infoList [aliasField.Alias] = aliasField;
 				}
 			}
 		}
@@ -23,14 +25,16 @@ namespace Light.Data
 		{
 			if (Object.Equals (field, null))
 				throw new ArgumentNullException ("field");
-			this.infoList [field.FieldName] = field;
+//			this.infoList [field.FieldName] = field;
+			AliasDataFieldInfo aliasField = new AliasDataFieldInfo (field, field.FieldName);
+			this.infoList [aliasField.Alias] = aliasField;
 		}
 
-		public void SetAliasDataField (AliasDataFieldInfo field)
+		public void SetAliasDataField (AliasDataFieldInfo aliasField)
 		{
-			if (Object.Equals (field, null))
-				throw new ArgumentNullException ("field");
-			this.infoList [field.Alias] = field;
+			if (Object.Equals (aliasField, null))
+				throw new ArgumentNullException ("aliasField");
+			this.infoList [aliasField.Alias] = aliasField;
 		}
 
 		public List<DataFieldInfo> GetFieldInfos ()

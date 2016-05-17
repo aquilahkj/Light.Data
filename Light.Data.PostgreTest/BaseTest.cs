@@ -15,7 +15,7 @@ namespace Light.Data.PostgreTest
 		{
 			context = DataContext.Create ("postgre");
 			output.OutputFullCommand = true;
-			output.UseConsoleOutput = true;
+
 			context.SetCommanfOutput (output);
 		}
 
@@ -46,7 +46,7 @@ namespace Light.Data.PostgreTest
 
 		protected TeUser2 CreateTestUser2 ()
 		{
-	
+
 			TeUser2 user = new TeUser2 ();
 
 			user.Account = "test";
@@ -67,6 +67,7 @@ namespace Light.Data.PostgreTest
 
 		protected List<TeUser> InitialUserTable (int count, bool insert = true)
 		{
+			output.UseConsoleOutput = false;
 			context.TruncateTable<TeUser> ();
 			List<TeUser> lists = new List<TeUser> ();
 			for (int i = 1; i <= count; i++) {
@@ -79,7 +80,7 @@ namespace Light.Data.PostgreTest
 				userInsert.DeleteFlag = i % 2 == 0;
 				userInsert.LoginTimes = i % 6 == 0 ? 6 : i % 6;
 				userInsert.Address = i % 2 == 0 ? "addr" + userInsert.Account : null;
-	
+
 				if (i % 2 == 0) {
 					userInsert.LastLoginTime = userInsert.RegTime.AddMinutes (i);
 					userInsert.Area = i % 10 == 0 ? 10 : i % 10;
@@ -102,12 +103,14 @@ namespace Light.Data.PostgreTest
 			if (insert) {
 				context.BulkInsert (lists.ToArray ());
 			}
+			output.UseConsoleOutput = true;
 			return lists;
 		}
 
 
 		protected List<TeUserExtend> InitialUserExtendTable (int count, bool insert = true)
 		{
+			output.UseConsoleOutput = false;
 			context.TruncateTable<TeUserExtend> ();
 			List<TeUserExtend> lists = new List<TeUserExtend> ();
 			for (int i = 1; i <= count; i++) {
@@ -130,29 +133,32 @@ namespace Light.Data.PostgreTest
 			if (insert) {
 				context.BulkInsert (lists.ToArray ());
 			}
+			output.UseConsoleOutput = true;
 			return lists;
 		}
 
 		protected List<TeUserLevel> InitialUserLevelTable (int count, bool insert = true)
 		{
+			output.UseConsoleOutput = false;
 			context.TruncateTable<TeUserLevel> ();
 			List<TeUserLevel> lists = new List<TeUserLevel> ();
 			for (int i = 1; i <= count; i++) {
 				TeUserLevel level = new TeUserLevel ();
 				level.Id = i;
 				level.LevelName = "level" + i;
-//				if (i % 2 == 0) {
-//					level.Status = 0;
-//				}
-//				else {
-//					level.Status = 1;
-//				}
+				//				if (i % 2 == 0) {
+				//					level.Status = 0;
+				//				}
+				//				else {
+				//					level.Status = 1;
+				//				}
 				level.Status = i % 6 == 0 ? 6 : i % 6;
 				lists.Add (level);
 			}
 			if (insert) {
 				context.BulkInsert (lists.ToArray ());	
 			}
+			output.UseConsoleOutput = true;
 			return lists;
 		}
 
@@ -202,14 +208,14 @@ namespace Light.Data.PostgreTest
 				user1.Telephone == user2.Telephone &&
 				user1.LastLoginTime == user2.LastLoginTime &&
 				user1.CheckLevelType == user2.CheckLevelType &&
-				user1.CheckPoint == user2.CheckPoint &&
+				CheckDouble (user1.CheckPoint, user2.CheckPoint) &&
 				user1.CheckStatus == user2.CheckStatus &&
 				user1.Area == user2.Area &&
 				user1.DeleteFlag == user2.DeleteFlag &&
 				user1.RefereeId == user2.RefereeId &&
 				user1.LoginTimes == user2.LoginTimes &&
 				user1.Mark == user2.Mark &&
-				user1.HotRate == user2.HotRate;
+				CheckDouble (user1.HotRate, user2.HotRate);
 			if (checkId) {
 				ret = ret && (user1.Id == user2.Id);
 			}
@@ -264,6 +270,7 @@ namespace Light.Data.PostgreTest
 
 		protected List<TeDataLog> InitialDataLogTable (int count, bool insert = true)
 		{
+			output.UseConsoleOutput = false;
 			context.TruncateTable<TeDataLog> ();
 			List<TeDataLog> lists = new List<TeDataLog> ();
 			for (int i = 1; i <= count; i++) {
@@ -292,11 +299,13 @@ namespace Light.Data.PostgreTest
 			if (insert) {
 				context.BulkInsert (lists.ToArray ());
 			}
+			output.UseConsoleOutput = true;
 			return lists;
 		}
 
 		protected void InitialRelateTable (int count)
 		{
+			output.UseConsoleOutput = false;
 			context.TruncateTable<TeRelateA> ();
 			context.TruncateTable<TeRelateB> ();
 			context.TruncateTable<TeRelateC> ();
@@ -373,6 +382,7 @@ namespace Light.Data.PostgreTest
 			context.BulkInsert (listd.ToArray ());
 			context.BulkInsert (liste.ToArray ());
 			context.BulkInsert (listf.ToArray ());
+			output.UseConsoleOutput = true;
 		}
 
 		protected bool EqualLog (TeDataLog log1, TeDataLogHistory log2, bool checkId = true)
@@ -433,6 +443,7 @@ namespace Light.Data.PostgreTest
 
 		protected List<TeAreaInfo> InitialAreaInfoTable (int count, bool insert = true)
 		{
+			output.UseConsoleOutput = false;
 			context.TruncateTable<TeAreaInfo> ();
 			List<TeAreaInfo> lists = new List<TeAreaInfo> ();
 			for (int i = 1; i <= count; i++) {
@@ -455,6 +466,7 @@ namespace Light.Data.PostgreTest
 			if (insert) {
 				context.BulkInsert (lists.ToArray ());
 			}
+			output.UseConsoleOutput = true;
 			return lists;
 		}
 
@@ -497,6 +509,24 @@ namespace Light.Data.PostgreTest
 			return t;
 		}
 
+
+		protected static bool CheckDouble (double d1, double d2, int digis = 2)
+		{
+			return Math.Round (d1, digis, MidpointRounding.AwayFromZero) == Math.Round (d2, digis, MidpointRounding.AwayFromZero);
+		}
+
+		protected static bool CheckDouble (double? d1, double? d2, int digis = 2)
+		{
+			if (!d1.HasValue && !d2.HasValue) {
+				return true;
+			}
+			else if (d1.HasValue && d2.HasValue) {
+				return CheckDouble (d1.Value, d2.Value, digis);
+			}
+			else {
+				return false;
+			}
+		}
 	}
 }
 

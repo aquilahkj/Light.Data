@@ -82,8 +82,13 @@ namespace Light.Data
 					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {
-					return value;
-//					return Convert.ChangeType (value, ObjectType);
+					Type type = value.GetType ();
+					TypeCode code = Type.GetTypeCode (type);
+					if (code != this._typeCode) {
+						value = Convert.ChangeType (value, this._typeCode);
+					}
+					object nvalue = Convert.ChangeType (value, _typeCode);
+					return nvalue;
 				}
 			}
 		}

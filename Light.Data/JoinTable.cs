@@ -391,7 +391,7 @@ namespace Light.Data
 		{
 			foreach (DataFieldInfo field in fields) {
 				JoinModel m = null;
-				foreach (JoinModel model in _modelList) {
+				foreach (JoinModel model in this._modelList) {
 					if (model.Mapping.Equals (field.TableMapping)) {
 						m = model;
 						break;
@@ -420,7 +420,7 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (alias))
 				throw new ArgumentNullException ("alias");
 			JoinModel m = null;
-			foreach (JoinModel model in _modelList) {
+			foreach (JoinModel model in this._modelList) {
 				if (model.Mapping.Equals (field.TableMapping)) {
 					m = model;
 					break;

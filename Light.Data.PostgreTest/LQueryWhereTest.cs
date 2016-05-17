@@ -1154,10 +1154,10 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_Query_SubQuery_Match ()
 		{
-			output.UseConsoleOutput = false;
+			
 			List<TeUser> list = InitialUserTable (21);
 			List<TeUserLevel> listLevel = InitialUserLevelTable (8);
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> listEx;
 			List<TeUser> listAc;
 			List<TeUserLevel> listSub;
@@ -1227,9 +1227,9 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_Query_FieldMatch ()
 		{
-			output.UseConsoleOutput = false;
+			
 			List<TeUser> list = InitialUserTable (51);
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> listEx;
 			List<TeUser> listAc;
 

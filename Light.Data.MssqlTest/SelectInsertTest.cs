@@ -10,10 +10,10 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_FullInsert ()
 		{
-			output.UseConsoleOutput = false;
+			
 			List<TeDataLog> list = InitialDataLogTable (57);
 
-			output.UseConsoleOutput = true;
+			
 			List<TeDataLog> listEx;
 			List<TeDataLogHistory> listAc;
 

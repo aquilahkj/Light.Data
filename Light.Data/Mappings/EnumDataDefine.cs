@@ -10,6 +10,8 @@ namespace Light.Data
 
 		static Dictionary<Type, EnumDataDefine> DefineListString = new Dictionary<Type, EnumDataDefine> ();
 
+		TypeCode _typeCode;
+
 		public static EnumDataDefine ParseDefine (Type type, EnumFieldMapping mapping)
 		{
 			if (type == mapping.ObjectType) {
@@ -38,6 +40,7 @@ namespace Light.Data
 					}
 				}
 			}
+
 			return define;	
 		}
 
@@ -51,6 +54,7 @@ namespace Light.Data
 			_enumType = enumType;
 			Array values = Enum.GetValues (type);
 			_defaultValue = values.GetValue (0);
+			_typeCode = Type.GetTypeCode (ObjectType);
 		}
 
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
@@ -74,7 +78,15 @@ namespace Light.Data
 					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {
-					return value;
+//					return value;
+
+					Type type = value.GetType ();
+					TypeCode code = Type.GetTypeCode (type);
+					if (code != this._typeCode) {
+						value = Convert.ChangeType (value, this._typeCode);
+					}
+					object nvalue = Convert.ChangeType (value, _typeCode);
+					return nvalue;
 				}
 			}
 		}

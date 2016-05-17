@@ -136,9 +136,9 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_ConstantInsert ()
 		{
-			output.UseConsoleOutput = false;
+			
 			List<TeDataLog> list = InitialDataLogTable (57);
-			output.UseConsoleOutput = true;
+			
 			List<TeDataLog> listEx;
 			List<TeDataLogHistory> listAc;
 

@@ -13,7 +13,7 @@ namespace Light.Data.Demo
 			DataContext context = DataContext.Default;
 			CommandOutput output = new CommandOutput ();
 			output.OutputFullCommand = true;
-			output.UseConsoleOutput = true;
+			
 			context.SetCommanfOutput (output);
 
 

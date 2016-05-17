@@ -10,10 +10,10 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_QueryHaving_Base ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (57);
 
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> list;
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
@@ -51,13 +51,13 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_QueryHaving_AndOr ()
 		{
-			output.UseConsoleOutput = false;
-			output.UseConsoleOutput = false;
+			
+			
 			InitialUserTable (57);
 
-			output.UseConsoleOutput = true;
+			
 
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> list;
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
@@ -226,10 +226,10 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_QuerySingleParam ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (57);
 
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> list;
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
@@ -398,10 +398,10 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_QueryHaving_Between ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (57);
 
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> list;
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
@@ -465,10 +465,10 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_QueryHaving_AnyAllInArray ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (57);
 
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> list;
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
@@ -651,10 +651,10 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_QueryHaving_Null ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (57);
 
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> list;
 			List<LevelIdAggAvg> listEx;
 			List<LevelIdAggAvg> listAc;

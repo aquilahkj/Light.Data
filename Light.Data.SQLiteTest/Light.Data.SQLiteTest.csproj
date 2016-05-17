@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2042AD78-0C11-4837-83E4-94D084B5537B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Light.Data.SQLiteTest</RootNamespace>
+    <AssemblyName>Light.Data.SQLiteTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test.cs" />
+    <Compile Include="Model\AggregateSchema.cs" />
+    <Compile Include="Model\BaseSchema.cs" />
+    <Compile Include="Model\ConfigSchema.cs" />
+    <Compile Include="Model\DBSchema.cs" />
+    <Compile Include="Model\DBSchema_Mysql.cs">
+      <DependentUpon>..\..\Light.Data.MysqlTest\Model\DBSchema_Mysql.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ExSchema.cs" />
+    <Compile Include="Model\JoinTableSchema.cs" />
+    <Compile Include="Model\RelationSchema.cs" />
+    <Compile Include="Model\RelationSchema2.cs" />
+    <Compile Include="Model\RelationSchema3.cs" />
+    <Compile Include="Model\RelationSchema4.cs" />
+    <Compile Include="BaseCommandTest.cs" />
+    <Compile Include="BaseCommandTest2.cs" />
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="ConfigMappingTest.cs" />
+    <Compile Include="DataOrderTest.cs" />
+    <Compile Include="DefaultValueTest.cs" />
+    <Compile Include="JoinTableBaseTest.cs" />
+    <Compile Include="JoinTableOnTest.cs" />
+    <Compile Include="JoinTableOrderByTest.cs" />
+    <Compile Include="JoinTableWhereTest.cs" />
+    <Compile Include="LAggregateDataFieldTest.cs" />
+    <Compile Include="LAggregateGroupByTest.cs" />
+    <Compile Include="LAggregateHavingTest.cs" />
+    <Compile Include="LAggregateOrderByTest.cs" />
+    <Compile Include="LAggregateWhereTest.cs" />
+    <Compile Include="LQueryAggreateTest.cs" />
+    <Compile Include="LQueryMultiTest.cs" />
+    <Compile Include="LQueryOrderByTest.cs" />
+    <Compile Include="LQueryPageTest.cs" />
+    <Compile Include="LQuerySingleFileldTest.cs" />
+    <Compile Include="LQueryWhereTest.cs" />
+    <Compile Include="RelationCollectionTest.cs" />
+    <Compile Include="RelationMultiTest.cs" />
+    <Compile Include="RelationSingle1Test.cs" />
+    <Compile Include="RelationSingle2Test.cs" />
+    <Compile Include="SelectInsertTest.cs" />
+    <Compile Include="SqlExecutorTest.cs" />
+    <Compile Include="TransContextTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="lightdata\lightdata_check1.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata\lightdata_check2.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata2\lightdata_check1.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata2\lightdata_check2.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Model\DBSchema_Mysql.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DBSchema_Mysql.cs</LastGenOutput>
+    </None>
+    <None Include="app.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="lightdata_check1.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Light.Data\Light.Data.csproj">
+      <Project>{AB57F3CC-2F20-4FCC-BDE7-E6ED904B68DB}</Project>
+      <Name>Light.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Light.Data.SQLiteAdapter\Light.Data.SQLiteAdapter.csproj">
+      <Project>{F3D22279-8E9F-409F-8055-C6CD0A336CD8}</Project>
+      <Name>Light.Data.SQLiteAdapter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lightdata\" />
+    <Folder Include="lightdata2\" />
+    <Folder Include="Model\" />
+  </ItemGroup>
+</Project>

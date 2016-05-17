@@ -1421,8 +1421,8 @@ namespace Light.Data
 
 		public virtual string CreateParamName (string name)
 		{
-			if (!name.StartsWith ("?")) {
-				return "?" + name;
+			if (!name.StartsWith ("@")) {
+				return "@" + name;
 			}
 			else {
 				return name;

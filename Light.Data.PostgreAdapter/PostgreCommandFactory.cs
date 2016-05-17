@@ -299,16 +299,6 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		//		public override string CreatePowerSql (string field, object value, bool forward)
-		//		{
-		//			if (forward) {
-		//				return string.Format ("power({0},{1})", field, value);
-		//			}
-		//			else {
-		//				return string.Format ("power({0},{1})", value, field);
-		//			}
-		//		}
-
 		public override string CreateDataBaseTimeSql ()
 		{
 			return "current_time";

@@ -274,10 +274,10 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_GroupBy_Avg ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (57);
 
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> list;
 			List<LevelIdAggAvg> listAgg;
 			Dictionary<int,int> dict;

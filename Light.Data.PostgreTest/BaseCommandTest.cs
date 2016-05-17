@@ -10,7 +10,7 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_SaveErase_Single ()
 		{
-//			output.UseConsoleOutput = false;
+//			
 			context.TruncateTable<TeUser> ();
 
 			TeUser userInsert = CreateTestUser (true);

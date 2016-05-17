@@ -241,7 +241,9 @@
     <Compile Include="Mappings\CustomFieldMapping.cs" />
     <Compile Include="Mappings\DataEntityMapping.cs" />
     <Compile Include="Mappings\DataFieldMapping.cs" />
-    <Compile Include="Mappings\DataMapping.cs" />
+    <Compile Include="Mappings\DataMapping.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Mappings\DataTableEntityMapping.cs" />
     <Compile Include="Mappings\EnumFieldMapping.cs" />
     <Compile Include="Mappings\FieldMapping.cs" />

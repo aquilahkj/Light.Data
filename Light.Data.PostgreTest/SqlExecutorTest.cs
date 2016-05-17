@@ -140,9 +140,9 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_SqlString_Execute ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (10);
-			output.UseConsoleOutput = true;
+			
 			string sql;
 			TeUser user;
 			SqlExecutor executor;
@@ -298,9 +298,9 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_StoreProcedure_Query ()
 		{
-			output.UseConsoleOutput = false;
+			
 			List<TeUser> list = InitialUserTable (10);
-			output.UseConsoleOutput = true;
+			
 			List<TeUser> listEx;
 			List<TeUser> listAc;
 			string sql;
@@ -355,9 +355,9 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_StoreProcedure_Execute ()
 		{
-			output.UseConsoleOutput = false;
+			
 			InitialUserTable (10);
-			output.UseConsoleOutput = true;
+			
 			string sql;
 			TeUser user;
 			SqlExecutor executor;
