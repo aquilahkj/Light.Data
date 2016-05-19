@@ -6,170 +6,6 @@ using Light.Data;
 namespace Light.Data.MssqlTest
 {
     [Serializable]
-    [DataTable("MqDeviceInfo")]
-    public partial class MqDeviceInfo : DataTableEntity
-    {
-    	#region "Static Field"
-		static readonly DataFieldInfo imeiField = DataFieldInfo<MqDeviceInfo>.Create("Imei");
-
-		static readonly DataFieldInfo flagField = DataFieldInfo<MqDeviceInfo>.Create("Flag");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<MqDeviceInfo>.Create("Status");
-
-		static readonly DataFieldInfo validField = DataFieldInfo<MqDeviceInfo>.Create("Valid");
-
-		static readonly DataFieldInfo registerTimeField = DataFieldInfo<MqDeviceInfo>.Create("RegisterTime");
-
-		static readonly DataFieldInfo remarkField = DataFieldInfo<MqDeviceInfo>.Create("Remark");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo ImeiField
-        {
-            get {
-                return imeiField;
-            }
-        }
-
-		public static DataFieldInfo FlagField
-        {
-            get {
-                return flagField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo ValidField
-        {
-            get {
-                return validField;
-            }
-        }
-
-		public static DataFieldInfo RegisterTimeField
-        {
-            get {
-                return registerTimeField;
-            }
-        }
-
-		public static DataFieldInfo RemarkField
-        {
-            get {
-                return remarkField;
-            }
-        }
-
-    	#endregion
-
-    	#region "Data Property"
-		private string imei;
-
-		/// <summary>
-		/// Imei
-		/// </summary>
-		/// <value></value>
-		[DataField("Imei", IsPrimaryKey = true)]
-        public string Imei
-        {
-            get { 
-            	return this.imei; 
-            }
-            set { 
-            	this.imei = value; 
-            }
-        }
-		private string flag;
-
-		/// <summary>
-		/// Flag
-		/// </summary>
-		/// <value></value>
-		[DataField("Flag")]
-        public string Flag
-        {
-            get { 
-            	return this.flag; 
-            }
-            set { 
-            	this.flag = value; 
-            }
-        }
-		private int status;
-
-		/// <summary>
-		/// Status
-		/// </summary>
-		/// <value></value>
-		[DataField("Status")]
-        public int Status
-        {
-            get { 
-            	return this.status; 
-            }
-            set { 
-            	this.status = value; 
-            }
-        }
-		private int valid;
-
-		/// <summary>
-		/// Valid
-		/// </summary>
-		/// <value></value>
-		[DataField("Valid")]
-        public int Valid
-        {
-            get { 
-            	return this.valid; 
-            }
-            set { 
-            	this.valid = value; 
-            }
-        }
-		private DateTime registerTime;
-
-		/// <summary>
-		/// RegisterTime
-		/// </summary>
-		/// <value></value>
-		[DataField("RegisterTime")]
-        public DateTime RegisterTime
-        {
-            get { 
-            	return this.registerTime; 
-            }
-            set { 
-            	this.registerTime = value; 
-            }
-        }
-		private string remark;
-
-		/// <summary>
-		/// Remark
-		/// </summary>
-		/// <value></value>
-		[DataField("Remark", IsNullable = true)]
-        public string Remark
-        {
-            get { 
-            	return this.remark; 
-            }
-            set { 
-            	this.remark = value; 
-            }
-        }
-		#endregion
-    }
-
-    [Serializable]
     [DataTable("Te_AreaInfo")]
     public partial class TeAreaInfo : DataTableEntity
     {
@@ -507,14 +343,14 @@ namespace Light.Data.MssqlTest
             	this.publishTime = value; 
             }
         }
-		private string status;
+		private int status;
 
 		/// <summary>
 		/// Status
 		/// </summary>
 		/// <value></value>
 		[DataField("Status")]
-        public string Status
+        public int Status
         {
             get { 
             	return this.status; 
@@ -726,14 +562,14 @@ namespace Light.Data.MssqlTest
             	this.parentId = value; 
             }
         }
-		private string status;
+		private int status;
 
 		/// <summary>
 		/// Status
 		/// </summary>
 		/// <value></value>
 		[DataField("Status")]
-        public string Status
+        public int Status
         {
             get { 
             	return this.status; 

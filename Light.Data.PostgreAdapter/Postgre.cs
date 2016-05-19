@@ -114,6 +114,14 @@ namespace Light.Data.PostgreAdapter
 					CommandTimeOut = timeout;
 				}
 			}
+
+			if (extendParams ["StrictMode"] != null) {
+				bool strictMode;
+				if (bool.TryParse (extendParams ["StrictMode"], out strictMode)) {
+					PostgreCommandFactory oracleFactory = _factory as PostgreCommandFactory;
+					oracleFactory.SetStrictMode (strictMode);
+				}
+			}
 		}
 	}
 }

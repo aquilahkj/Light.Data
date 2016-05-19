@@ -47,19 +47,22 @@ namespace Light.Data
 				foreach (DataParameter param in parameters) {
 					string parameterName = param.ParameterName;
 
-					if (parameterName.StartsWith ("@")) {
-						parameterName = parameterName.TrimStart ('@');
-					}
-					string mName = "@" + parameterName;
+//					if (parameterName.StartsWith ("@")) {
+//						parameterName = parameterName.TrimStart ('@');
+//					}
+//					string mName = "@" + parameterName;
 					IDataParameter dataParameter = context.DataBase.CreateParameter (parameterName, param.Value, param.DbType, param.Direction);
 					param.SetDataParameter (dataParameter);
 					_command.Parameters.Add (dataParameter);
-					if (commandType == CommandType.Text) {
-						if (mName != dataParameter.ParameterName) {
-							_command.CommandText = _command.CommandText.Replace (mName, dataParameter.ParameterName);
-						}
-					}
-					else if (commandType == CommandType.StoredProcedure) {
+//					if (commandType == CommandType.Text) {
+//						if (parameterName != dataParameter.ParameterName) {
+//							_command.CommandText = _command.CommandText.Replace (parameterName, dataParameter.ParameterName);
+//						}
+//					}
+//					else if (commandType == CommandType.StoredProcedure) {
+//						context.DataBase.FormatStoredProcedureParameter (dataParameter);
+//					}
+					if (commandType == CommandType.StoredProcedure) {
 						context.DataBase.FormatStoredProcedureParameter (dataParameter);
 					}
 				}

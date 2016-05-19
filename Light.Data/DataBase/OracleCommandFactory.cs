@@ -13,8 +13,16 @@ namespace Light.Data
 
 		Regex _roundReplaceRegex;
 
+		bool _identityAuto;
+
+		public void SetIdentityAuto (bool identityAuto)
+		{
+			_identityAuto = identityAuto;
+		}
+
 		public OracleCommandFactory ()
 		{
+			_identityAuto = true;
 			_canInnerPage = true;
 			LoadRoundRegex ();
 		}
@@ -31,6 +39,16 @@ namespace Light.Data
 			_roundReplaceRegex = new Regex (string.Format (@"round\(.*,{0}\)", _roundScale), RegexOptions.Compiled);
 		}
 
+		public override CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
+		{
+			CommandData data = base.CreateTruncateCommand (mapping);
+			if (mapping.IdentityField != null) {
+				string restartSeq = string.Format ("alter sequence \"{0}\" increment by 1;", GetIndentitySeq (mapping));
+				data.CommandText += restartSeq;
+			}
+			return data;
+		}
+
 		public override string CreateDataFieldSql (string fieldName)
 		{
 			return fieldName;
@@ -43,8 +61,7 @@ namespace Light.Data
 
 		public override CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
 		{
-//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (entity.GetType ());
-			bool identityIntegrated = CheckIndentityIntegrated (mapping);
+			bool identityAuto = CheckIndentityAuto (mapping);
 
 			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
 
@@ -61,7 +78,7 @@ namespace Light.Data
 			string insert = string.Join (",", insertList);
 			string values = string.Join (",", valuesList);
 			StringBuilder sql = new StringBuilder ();
-			if (identityIntegrated) {
+			if (!identityAuto) {
 				sql.AppendFormat ("insert into {0}({3},{1})values({4}.nextval,{2})", CreateDataTableSql (mapping.TableName), insert, values, CreateDataFieldSql (mapping.IdentityField.Name), GetIndentitySeq (mapping));
 			}
 			else {
@@ -71,20 +88,29 @@ namespace Light.Data
 			return command;
 		}
 
-		private static bool CheckIndentityIntegrated (DataTableEntityMapping mapping)
+		static Dictionary<DataTableEntityMapping,bool> IdentityDict = new Dictionary<DataTableEntityMapping, bool> ();
+
+		private bool CheckIndentityAuto (DataTableEntityMapping mapping)
 		{
-			bool identityIntegrated = false;
+			bool identityAuto = false;
 
 			if (mapping.IdentityField != null) {
-				string oracleIdentityAuto = mapping.ExtentParams ["OracleIdentityAuto"];
-				if (oracleIdentityAuto != null && oracleIdentityAuto.ToLower () == "true") {
-					identityIntegrated = false;
+				bool ret;
+				if (IdentityDict.TryGetValue (mapping, out ret)) {
+					identityAuto = ret;
 				}
 				else {
-					identityIntegrated = true;
+					string oracleIdentityAuto = mapping.ExtentParams ["OracleIdentityAuto"];
+					if (oracleIdentityAuto != null && bool.TryParse (oracleIdentityAuto, out ret)) {
+						identityAuto = ret;
+					}
+					else {
+						identityAuto = _identityAuto;
+					}
+					IdentityDict [mapping] = ret;
 				}
 			}
-			return identityIntegrated;
+			return identityAuto;
 		}
 
 		public override CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
@@ -95,16 +121,7 @@ namespace Light.Data
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-//			object tmpEntity = entitys.GetValue (0);
-//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
-
-//
-//			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
-//			List<string> insertList = new List<string> ();
-//			foreach (DataParameter dataParameter in paramList) {
-//				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
-//			}
-			bool identityIntegrated = CheckIndentityIntegrated (mapping);
+			bool identityAuto = CheckIndentityAuto (mapping);
 			int totalCount = entitys.Length;
 			List<string> insertList = new List<string> ();
 			foreach (DataFieldMapping field in mapping.NoIdentityFields) {
@@ -112,7 +129,7 @@ namespace Light.Data
 			}
 			string insert = string.Join (",", insertList);
 			string insertsql;
-			if (identityIntegrated) {
+			if (!identityAuto) {
 				insertsql = string.Format ("insert into {0}({2},{1})", CreateDataTableSql (mapping.TableName), insert, CreateDataFieldSql (mapping.IdentityField.Name));
 			}
 			else {
@@ -122,7 +139,7 @@ namespace Light.Data
 			int createCount = 0;
 			int totalCreateCount = 0;
 			string identityString = null;
-			if (identityIntegrated) {
+			if (identityAuto) {
 				identityString = GetIndentitySeq (mapping);
 			}
 			StringBuilder totalSql = new StringBuilder ();
@@ -143,7 +160,7 @@ namespace Light.Data
 					paramIndex++;
 				}
 				string value = string.Join (",", valueList);
-				if (identityIntegrated) {
+				if (identityAuto) {
 					totalSql.AppendFormat ("{0}values({2}.nextval,{1});", insertsql, value, identityString);
 				}
 				else {
@@ -188,7 +205,7 @@ namespace Light.Data
 				seq = oracleIdentity;
 			}
 			else {
-				seq = string.Format ("{0}_Sequence", mapping.TableName);//mapping.TableName + "_Sequence";
+				seq = string.Format ("{0}_seq", mapping.TableName);//mapping.TableName + "_Sequence";
 			}
 			return seq;
 		}

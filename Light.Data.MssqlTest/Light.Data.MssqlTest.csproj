@@ -46,7 +46,7 @@
     <Compile Include="Model\ConfigSchema.cs" />
     <Compile Include="Model\DBSchema.cs" />
     <Compile Include="Model\DBSchema_Mysql.cs">
-      <DependentUpon>..\..\Light.Data.MysqlTest\Model\DBSchema_Mysql.tt</DependentUpon>
+      <DependentUpon>DBSchema_Mysql.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\ExSchema.cs" />
     <Compile Include="Model\JoinTableSchema.cs" />

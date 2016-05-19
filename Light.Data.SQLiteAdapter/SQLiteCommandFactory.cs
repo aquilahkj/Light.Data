@@ -11,7 +11,7 @@ namespace Light.Data.SQLiteAdapter
 			_canInnerPage = true;
 		}
 
-		public override CommandData CreateTruncatCommand (DataTableEntityMapping mapping)
+		public override CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
 		{
 			string sql = string.Format ("delete from {0};update sqlite_sequence set seq=0 where name='{1}';", CreateDataTableSql (mapping), mapping.TableName);
 			CommandData command = new CommandData (sql);

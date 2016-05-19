@@ -10,19 +10,18 @@ namespace Light.Data.PostgreTest
 		[Test ()]
 		public void TestCase_SaveErase_Single ()
 		{
-//			
 			context.TruncateTable<TeUser> ();
 
 			TeUser userInsert = CreateTestUser (true);
 			userInsert.Save ();
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.Greater (userInsert.Id, 0);
 			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user1);
 			Assert.True (EqualUser (userInsert, user1));
 			user1.LastLoginTime = GetNow ();
 			user1.Status = 2;
 			user1.Save ();
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.AreEqual (userInsert.Id, user1.Id);
 			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user2);
 			Assert.True (EqualUser (user1, user2));
@@ -38,14 +37,14 @@ namespace Light.Data.PostgreTest
 
 			TeUser userInsert = CreateTestUser (true);
 			context.Insert (userInsert);
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.Greater (userInsert.Id, 0);
 			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user1);
 			Assert.True (EqualUser (userInsert, user1));
 			user1.LastLoginTime = GetNow ();
 			user1.Status = 2;
 			context.Update (user1);
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.AreEqual (userInsert.Id, user1.Id);
 			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user2);
 			Assert.True (EqualUser (user1, user2));
@@ -87,16 +86,17 @@ namespace Light.Data.PostgreTest
 
 			TeUser userInsert = CreateTestUser (true);
 			context.Insert (userInsert);
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.Greater (userInsert.Id, 0);
+			int id = userInsert.Id;
 			userInsert.Account = "abc";
 			context.InsertOrUpdate (userInsert);
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.AreEqual (id, userInsert.Id);
 			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.True (EqualUser (userInsert, user1));
 
 			userInsert.Id = 0;
 			context.InsertOrUpdate (userInsert);
-			Assert.AreEqual (2, userInsert.Id);
+			Assert.AreEqual (id + 1, userInsert.Id);
 			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.True (EqualUser (userInsert, user2));
 
@@ -119,7 +119,7 @@ namespace Light.Data.PostgreTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			for (int i = 0; i < count; i++) {
 				Assert.True (EqualUser (listEx [i], listAc [i], true));
@@ -176,7 +176,8 @@ namespace Light.Data.PostgreTest
 
 			updates = new List<UpdateSetValue> ();
 			updates.Add (new UpdateSetValue (TeUser.StatusField, 3));
-			result = context.UpdateMass<TeUser> (updates.ToArray (), TeUser.IdField.Between (1, rdd));
+			result = context.UpdateMass<TeUser> (updates.ToArray (), TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1));
+
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (count, listAc.Count);
@@ -200,7 +201,7 @@ namespace Light.Data.PostgreTest
 
 			updates = new List<UpdateSetValue> ();
 			updates.Add (new UpdateSetValue (TeUser.StatusField, 6));
-			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (1, rdd)).Update (updates.ToArray ());
+			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Update (updates.ToArray ());
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (count, listAc.Count);
@@ -280,13 +281,13 @@ namespace Light.Data.PostgreTest
 
 			int result;
 			List<TeUser> listAc;
-			int rdd = 20;
+			const int rdd = 20;
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
-			result = context.DeleteMass<TeUser> (TeUser.IdField.Between (1, rdd));
+			result = context.DeleteMass<TeUser> (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1));
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (count - rdd, listAc.Count);
@@ -306,13 +307,13 @@ namespace Light.Data.PostgreTest
 
 			int result;
 			List<TeUser> listAc;
-			int rdd = 20;
+			const int rdd = 20;
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
-			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (1, rdd)).Delete ();
+			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (count - rdd, listAc.Count);

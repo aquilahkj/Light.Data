@@ -19,13 +19,15 @@ namespace Light.Data
 			return string.Format ("_param_{0}_", Guid.NewGuid ().ToString ("N"));
 		}
 
+		//		protected bool _supportJoinTableInnerQuery = true;
+
 		protected string _wildcards = "%";
 
-		Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string> ();
+		protected Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string> ();
 
-		Dictionary<QueryCollectionPredicate, string> _queryCollectionPredicateDict = new Dictionary<QueryCollectionPredicate, string> ();
+		protected Dictionary<QueryCollectionPredicate, string> _queryCollectionPredicateDict = new Dictionary<QueryCollectionPredicate, string> ();
 
-		Dictionary<JoinType, string> _joinCollectionPredicateDict = new Dictionary<JoinType, string> ();
+		protected Dictionary<JoinType, string> _joinCollectionPredicateDict = new Dictionary<JoinType, string> ();
 
 		protected void InitialPredicate ()
 		{
@@ -227,7 +229,7 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateTruncatCommand (DataTableEntityMapping mapping)
+		public virtual CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
 		{
 			string sql = string.Format ("truncate table {0};", CreateDataTableSql (mapping));
 			CommandData command = new CommandData (sql);
@@ -469,20 +471,44 @@ namespace Light.Data
 			string customSelect = string.Join (",", selectList);
 			return CreateSelectJoinTableCommand (customSelect, modelList, query, order);
 		}
-			
+
 		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
 		{
 			List<DataParameter> parameters = new List<DataParameter> ();
 			StringBuilder tables = new StringBuilder ();
+			OrderExpression totalOrder = null;
+			QueryExpression totalQuery = null;
 			foreach (JoinModel model in modelList) {
 				if (model.Connect != null) {
 					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
 				}
-				if (model.Query != null || model.Order != null) {
+//				if (model.Query != null || model.Order != null) {
+//					DataParameter[] queryparameters_sub;
+//					DataParameter[] orderparameters_sub;
+//					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
+//					string morderString = GetOrderString (model.Order, out orderparameters_sub);
+//					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
+//					if (!string.IsNullOrEmpty (mqueryString)) {
+//						tables.AppendFormat (" {0}", mqueryString);
+//						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
+//							parameters.AddRange (queryparameters_sub);
+//						}
+//					}
+//					if (!string.IsNullOrEmpty (morderString)) {
+//						tables.AppendFormat (" {0}", morderString);
+//						if (orderparameters_sub != null && orderparameters_sub.Length > 0) {
+//							parameters.AddRange (orderparameters_sub);
+//						}
+//					}
+//					tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
+//				}
+//				else {
+//					tables.Append (CreateDataTableSql (model.Mapping.TableName));
+//				}
+
+				if (model.Query != null) {
 					DataParameter[] queryparameters_sub;
-					DataParameter[] orderparameters_sub;
 					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
-					string morderString = GetOrderString (model.Order, out orderparameters_sub);
 					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
 					if (!string.IsNullOrEmpty (mqueryString)) {
 						tables.AppendFormat (" {0}", mqueryString);
@@ -490,16 +516,25 @@ namespace Light.Data
 							parameters.AddRange (queryparameters_sub);
 						}
 					}
-					if (!string.IsNullOrEmpty (morderString)) {
-						tables.AppendFormat (" {0}", morderString);
-						if (orderparameters_sub != null && orderparameters_sub.Length > 0) {
-							parameters.AddRange (orderparameters_sub);
-						}
+					string aliseName = model.AliasTableName;
+					if (aliseName != null) {
+						tables.AppendFormat (") as {0}", CreateDataTableSql (aliseName));
 					}
-					tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
+					else {
+						tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
+					}
 				}
 				else {
-					tables.Append (CreateDataTableSql (model.Mapping.TableName));
+					string aliseName = model.AliasTableName;
+					if (aliseName != null) {
+						tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
+					}
+					else {
+						tables.Append (CreateDataTableSql (model.Mapping.TableName));
+					}
+				}
+				if (model.Order != null) {
+					totalOrder &= model.Order;
 				}
 				if (model.Connect != null && model.Connect.On != null) {
 					DataParameter[] onparameters;
@@ -512,11 +547,13 @@ namespace Light.Data
 					}
 				}
 			}
+			totalQuery &= query;
+			totalOrder &= order;
 			StringBuilder sql = new StringBuilder ();
 			DataParameter[] queryparameters;
 			DataParameter[] orderparameters;
-			string queryString = GetQueryString (query, out queryparameters, true);
-			string orderString = GetOrderString (order, out orderparameters, true);
+			string queryString = GetQueryString (totalQuery, out queryparameters, true);
+			string orderString = GetOrderString (totalOrder, out orderparameters, true);
 
 			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
 			if (!string.IsNullOrEmpty (queryString)) {
@@ -535,7 +572,7 @@ namespace Light.Data
 			command.TransParamName = true;
 			return command;
 		}
-			
+
 		public virtual CommandData CreateSelectRelateTableCommand (JoinSelector selector, List<JoinModel> modelList)
 		{
 			List<DataFieldInfo> fields = selector.GetFieldInfos ();
@@ -552,9 +589,10 @@ namespace Light.Data
 				index++;
 			}
 			string customSelect = string.Join (",", selectList);
-			return CreateSelectRelateTableCommand (customSelect, modelList);
+			return CreateSelectJoinTableCommand (customSelect, modelList, null, null);
 		}
 
+		/*
 		public virtual CommandData CreateSelectRelateTableCommand (string customSelect, List<JoinModel> modelList)
 		{
 			List<DataParameter> parameters = new List<DataParameter> ();
@@ -581,10 +619,22 @@ namespace Light.Data
 							parameters.AddRange (orderparameters_sub);
 						}
 					}
-					tables.AppendFormat (") as {0}", CreateDataTableSql (model.AliasTableName));
+					string aliseName = model.AliasTableName;
+					if (aliseName != null) {
+						tables.AppendFormat (") as {0}", CreateDataTableSql (aliseName));
+					}
+					else {
+						tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
+					}
 				}
 				else {
-					tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (model.AliasTableName));
+					string aliseName = model.AliasTableName;
+					if (aliseName != null) {
+						tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), aliseName);
+					}
+					else {
+						tables.Append (CreateDataTableSql (model.AliasTableName));
+					}
 				}
 				if (model.Connect != null && model.Connect.On != null) {
 					DataParameter[] onparameters;
@@ -603,7 +653,7 @@ namespace Light.Data
 			command.TransParamName = true;
 			return command;
 		}
-
+		*/
 
 		public virtual CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
 		{
@@ -830,7 +880,6 @@ namespace Light.Data
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
 			}
-
 			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.AddParameters (setparameters);
 			command.TransParamName = true;

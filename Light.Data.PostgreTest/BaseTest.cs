@@ -15,7 +15,7 @@ namespace Light.Data.PostgreTest
 		{
 			context = DataContext.Create ("postgre");
 			output.OutputFullCommand = true;
-
+			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
 		}
 

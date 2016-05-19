@@ -15,7 +15,7 @@ namespace Light.Data.SQLiteTest
 		{
 			context = DataContext.Create ("sqlite");
 			output.OutputFullCommand = true;
-			
+			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
 		}
 

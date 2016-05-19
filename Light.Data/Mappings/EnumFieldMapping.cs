@@ -87,8 +87,7 @@ namespace Light.Data
 					if (code != this._typeCode) {
 						value = Convert.ChangeType (value, this._typeCode);
 					}
-					object nvalue = Convert.ChangeType (value, _typeCode);
-					return nvalue;
+					return value;
 				}
 			}
 		}

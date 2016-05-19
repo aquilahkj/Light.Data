@@ -13,7 +13,7 @@ namespace Light.Data.MssqlTest
 		{
 			context = DataContext.Create ("mssql");
 			output.OutputFullCommand = true;
-
+			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
 		}
 

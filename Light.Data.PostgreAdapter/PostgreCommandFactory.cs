@@ -9,11 +9,19 @@ namespace Light.Data.PostgreAdapter
 		public PostgreCommandFactory ()
 		{
 			_canInnerPage = true;
+			_strictMode = true;
 		}
 
-		public override CommandData CreateTruncatCommand (DataTableEntityMapping mapping)
+		bool _strictMode;
+
+		public void SetStrictMode (bool strictMode)
 		{
-			CommandData data = base.CreateTruncatCommand (mapping);
+			_strictMode = strictMode;
+		}
+
+		public override CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
+		{
+			CommandData data = base.CreateTruncateCommand (mapping);
 			if (mapping.IdentityField != null) {
 				string restartSeq = string.Format ("alter sequence \"{0}\" restart;", GetIndentitySeq (mapping));
 				data.CommandText += restartSeq;
@@ -28,12 +36,22 @@ namespace Light.Data.PostgreAdapter
 
 		public override string CreateDataFieldSql (string fieldName)
 		{
-			return string.Format ("\"{0}\"", fieldName);
+			if (_strictMode) {
+				return string.Format ("\"{0}\"", fieldName);
+			}
+			else {
+				return fieldName;
+			}
 		}
 
 		public override string CreateDataTableSql (string tableName)
 		{
-			return string.Format ("\"{0}\"", tableName);
+			if (_strictMode) {
+				return string.Format ("\"{0}\"", tableName);
+			}
+			else {
+				return tableName;
+			}
 		}
 
 		public override string CreateDividedSql (string field, object value, bool forward)

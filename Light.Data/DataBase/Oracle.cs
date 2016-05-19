@@ -129,6 +129,21 @@ namespace Light.Data
 					oracleFactory.SetRoundScale (roundScale);
 				}
 			}
+
+			if (extendParams ["InnerPager"] != null) {
+				if (extendParams ["InnerPager"].ToLower () == "true") {
+					InnerPager = true;
+				}
+			}
+
+			if (extendParams ["OracleIdentityAuto"] != null) {
+				bool oracleIdentityAuto;
+				if (bool.TryParse (extendParams ["OracleIdentityAuto"], out oracleIdentityAuto)) {
+					OracleCommandFactory oracleFactory = _factory as OracleCommandFactory;
+					oracleFactory.SetIdentityAuto (oracleIdentityAuto);
+				}
+			}
+
 		}
 
 

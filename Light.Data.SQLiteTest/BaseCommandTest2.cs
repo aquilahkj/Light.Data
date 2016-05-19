@@ -14,14 +14,14 @@ namespace Light.Data.SQLiteTest
 
 			TeUser2 userInsert = CreateTestUser2 ();
 			context.Insert (userInsert);
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.Greater (userInsert.Id, 0);
 			TeUser2 user1 = context.SelectSingleFromId<TeUser2> (userInsert.Id);
 			Assert.NotNull (user1);
 			Assert.True (EqualUser (userInsert, user1));
 			user1.LastLoginTime = GetNow ();
 			user1.Status = 2;
 			context.Update (user1);
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.AreEqual (userInsert.Id, user1.Id);
 			TeUser2 user2 = context.SelectSingleFromId<TeUser2> (userInsert.Id);
 			Assert.NotNull (user2);
 			Assert.True (EqualUser (user1, user2));
@@ -37,16 +37,17 @@ namespace Light.Data.SQLiteTest
 
 			TeUser2 userInsert = CreateTestUser2 ();
 			context.Insert (userInsert);
-			Assert.AreEqual (1, userInsert.Id);
+			Assert.Greater (userInsert.Id, 0);
+			int id = userInsert.Id;
 			userInsert.Account = "abc";
 			context.InsertOrUpdate (userInsert);
-			Assert.AreEqual (1, userInsert.Id);
+			context.InsertOrUpdate (userInsert);
 			TeUser2 user1 = context.SelectSingleFromId<TeUser2> (userInsert.Id);
 			Assert.True (EqualUser (userInsert, user1));
 
 			userInsert.Id = 0;
 			context.InsertOrUpdate (userInsert);
-			Assert.AreEqual (2, userInsert.Id);
+			Assert.AreEqual (id + 1, userInsert.Id);
 			TeUser2 user2 = context.SelectSingleFromId<TeUser2> (userInsert.Id);
 			Assert.True (EqualUser (userInsert, user2));
 
@@ -126,7 +127,7 @@ namespace Light.Data.SQLiteTest
 
 			updates = new List<UpdateSetValue> ();
 			updates.Add (new UpdateSetValue (TeUser2.StatusField, 3));
-			result = context.UpdateMass<TeUser2> (updates.ToArray (), TeUser2.IdField.Between (1, rdd));
+			result = context.UpdateMass<TeUser2> (updates.ToArray (), TeUser2.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1));
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser2> ().ToList ();
 			Assert.AreEqual (count, listAc.Count);
@@ -150,7 +151,7 @@ namespace Light.Data.SQLiteTest
 
 			updates = new List<UpdateSetValue> ();
 			updates.Add (new UpdateSetValue (TeUser2.StatusField, 6));
-			result = context.LQuery<TeUser2> ().Where (TeUser2.IdField.Between (1, rdd)).Update (updates.ToArray ());
+			result = context.LQuery<TeUser2> ().Where (TeUser2.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Update (updates.ToArray ());
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser2> ().ToList ();
 			Assert.AreEqual (count, listAc.Count);
@@ -230,13 +231,13 @@ namespace Light.Data.SQLiteTest
 
 			int result;
 			List<TeUser2> listAc;
-			int rdd = 20;
+			const int rdd = 20;
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BulkInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
-			result = context.DeleteMass<TeUser2> (TeUser2.IdField.Between (1, rdd));
+			result = context.DeleteMass<TeUser> (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1));
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser2> ().ToList ();
 			Assert.AreEqual (count - rdd, listAc.Count);
@@ -262,7 +263,7 @@ namespace Light.Data.SQLiteTest
 			result = context.BulkInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
-			result = context.LQuery<TeUser2> ().Where (TeUser2.IdField.Between (1, rdd)).Delete ();
+			result = context.LQuery<TeUser2> ().Where (TeUser2.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser2> ().ToList ();
 			Assert.AreEqual (count - rdd, listAc.Count);

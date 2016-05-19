@@ -15,7 +15,7 @@ namespace Light.Data.MysqlTest
 		{
 			context = DataContext.Create ("mysql");
 			output.OutputFullCommand = true;
-
+			output.UseConsoleOutput = true;
 			context.SetCommanfOutput (output);
 		}
 

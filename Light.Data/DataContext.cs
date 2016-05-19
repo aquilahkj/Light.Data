@@ -506,11 +506,11 @@ namespace Light.Data
 				}
 
 			}
-			int result = 0;
-			foreach (int i in results) {
-				result += i;
-			}
-			return result;
+//			int result = 0;
+//			foreach (int i in results) {
+//				result += i;
+//			}
+			return datas.Length;
 		}
 
 		static object[] CreateObjectList (object lastId, int len)
@@ -689,7 +689,7 @@ namespace Light.Data
 			where T : class, new()
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(T));
-			CommandData commandData = _dataBase.Factory.CreateTruncatCommand (mapping);
+			CommandData commandData = _dataBase.Factory.CreateTruncateCommand (mapping);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
