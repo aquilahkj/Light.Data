@@ -33,14 +33,18 @@ namespace Light.Data
 
 		private static AggregateTableMapping CreateMapping (Type type)
 		{
-			string extendParam = null;
+//			string extendParam = null;
 			AggregateTableMapping aggregateMapping;
 			IAggregateTableConfig config = ConfigManager.LoadAggregateTableConfig (type);
-			if (config != null) {
-				extendParam = config.ExtendParams;
+//			if (config != null) {
+//				extendParam = config.ExtendParams;
+//			}
+			if (config == null) {
+				throw new LightDataException (string.Format (RE.TheTypeOfAggregateTableIsNoConfig, type.Name));
 			}
 			aggregateMapping = new AggregateTableMapping (type);
-			aggregateMapping.ExtentParams = new ExtendParamsCollection (extendParam);
+//			aggregateMapping.ExtentParams = new ExtendParamsCollection (extendParam);
+
 			return aggregateMapping;
 		}
 
@@ -50,6 +54,7 @@ namespace Light.Data
 			: base (type)
 		{
 			InitialDataFieldMapping ();
+			InitialExtendParams ();
 		}
 
 		private void InitialDataFieldMapping ()
@@ -65,6 +70,17 @@ namespace Light.Data
 			}
 			if (_fieldMappingDictionary.Count == 0) {
 				throw new LightDataException (RE.NoAggregationFields);
+			}
+		}
+
+		private void InitialExtendParams ()
+		{
+			ExtendParamCollection extendParams = ConfigManager.LoadAggregateExtendParamsConfig (ObjectType);
+			if (extendParams != null) {
+				this.ExtentParams = extendParams;
+			}
+			else {
+				this.ExtentParams = new ExtendParamCollection ();
 			}
 		}
 

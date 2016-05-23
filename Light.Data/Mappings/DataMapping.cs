@@ -89,14 +89,14 @@ namespace Light.Data
 		private static DataMapping CreateMapping (Type type)
 		{
 			string tableName;
-			string extentParam;
+//			string extentParam;
 			bool isEntityTable;
 			DataMapping dataMapping;
 
 			IDataTableConfig config = ConfigManager.LoadDataTableConfig (type);
 			if (config != null) {
 				tableName = config.TableName;
-				extentParam = config.ExtendParams;
+//				extentParam = config.ExtendParams;
 				isEntityTable = config.IsEntityTable;
 			}
 			else {
@@ -121,7 +121,7 @@ namespace Light.Data
 					dataMapping = new DataTableEntityMapping (type, tableName, false);
 				}
 			}
-			dataMapping.ExtentParams = new ExtendParamsCollection (extentParam);
+//			dataMapping.ExtentParams = new ExtendParamsCollection (extentParam);
 			return dataMapping;
 		}
 
@@ -155,13 +155,13 @@ namespace Light.Data
 			}
 		}
 
-		ExtendParamsCollection extentParams;
+		ExtendParamCollection extentParams;
 
 		/// <summary>
 		/// Gets or sets the extent parameters.
 		/// </summary>
 		/// <value>The extent parameters.</value>
-		public ExtendParamsCollection ExtentParams {
+		public ExtendParamCollection ExtentParams {
 			get {
 				return extentParams;
 			}

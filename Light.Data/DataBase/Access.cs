@@ -103,9 +103,10 @@ namespace Light.Data
 			}
 		}
 
-		public override void SetExtentArguments (string arguments)
+		public override void SetExtendParams (ExtendParamCollection extendParams)
 		{
-			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
+//			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
+
 			if (extendParams ["CompatibleSQL92"] != null) {
 				if (extendParams ["CompatibleSQL92"].ToLower () == "false") {
 					AccessCommandFactory accessFactory = _factory as AccessCommandFactory;

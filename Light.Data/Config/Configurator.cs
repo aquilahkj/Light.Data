@@ -38,8 +38,8 @@ namespace Light.Data
 		{
 			Configurator[] configFiles = null;
 			string configPath;
-			if (ConfigurationManager.AppSettings ["liaghDataConfig"] != null) {
-				configPath = ConfigurationManager.AppSettings ["liaghDataConfig"];
+			if (ConfigurationManager.AppSettings ["lighDataConfig"] != null) {
+				configPath = ConfigurationManager.AppSettings ["lighDataConfig"];
 				configFiles = LoadConfiguratorFromPath (configPath);
 			}
 			return configFiles;

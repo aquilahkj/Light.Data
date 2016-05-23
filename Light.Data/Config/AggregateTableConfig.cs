@@ -32,9 +32,9 @@ namespace Light.Data
 		/// Gets or sets the extend parameters.
 		/// </summary>
 		/// <value>The extend parameters.</value>
-		public string ExtendParams {
-			get;
-			set;
-		}
+//		public ExtendParamsCollection ExtendParams {
+//			get;
+//			set;
+//		}
 	}
 }

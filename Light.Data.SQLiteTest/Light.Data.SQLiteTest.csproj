@@ -55,7 +55,6 @@
     <Compile Include="BaseCommandTest2.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="ConfigMappingTest.cs" />
-    <Compile Include="DataOrderTest.cs" />
     <Compile Include="DefaultValueTest.cs" />
     <Compile Include="JoinTableBaseTest.cs" />
     <Compile Include="JoinTableOnTest.cs" />

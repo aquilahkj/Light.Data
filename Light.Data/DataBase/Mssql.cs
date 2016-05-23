@@ -102,9 +102,9 @@ namespace Light.Data
 			}
 		}
 
-		public override void SetExtentArguments (string arguments)
+		public override void SetExtendParams (ExtendParamCollection extendParams)
 		{
-			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
+//			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
 
 			if (extendParams ["Version"] != null) {
 				int version;

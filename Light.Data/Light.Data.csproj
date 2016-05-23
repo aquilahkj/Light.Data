@@ -192,7 +192,6 @@
     <Compile Include="Expressions\NullAggregateExpression.cs" />
     <Compile Include="Expressions\SubQueryExpression.cs" />
     <Compile Include="Expressions\SubAggregateExpression.cs" />
-    <Compile Include="ExtendParamsCollection.cs" />
     <Compile Include="Function\AggregateFunction.cs" />
     <Compile Include="AggregateType.cs" />
     <Compile Include="Attributes\AggregateFieldAttribute.cs" />
@@ -309,6 +308,9 @@
     <Compile Include="Expressions\QueryPredicate.cs" />
     <Compile Include="RelationCycle.cs" />
     <Compile Include="Mappings\DataFieldInfoRelation.cs" />
+    <Compile Include="Config\ConnectionExtendManager.cs" />
+    <Compile Include="Attributes\ExtendParamAttribute.cs" />
+    <Compile Include="Config\ExtendParamCollection.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

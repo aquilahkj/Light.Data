@@ -39,12 +39,6 @@ namespace Light.Data
 
 		public string AliasTableName {
 			get {
-//				if (!string.IsNullOrEmpty (aliasTableName)) {
-//					return aliasTableName;
-//				}
-//				else {
-//					return _mapping.TableName;
-//				}
 				return aliasTableName;
 			}
 			set {
@@ -54,13 +48,6 @@ namespace Light.Data
 			}
 		}
 
-//		public bool HasAliasTableName
-//		{
-//			get {
-//				return !string.IsNullOrEmpty (aliasTableName);
-//			}
-//		}
-
 		public JoinModel (DataEntityMapping mapping, JoinConnect connect, QueryExpression query, OrderExpression order)
 		{
 			this._mapping = mapping;
@@ -68,7 +55,6 @@ namespace Light.Data
 			this._query = query;
 			this._order = order;
 		}
-
 
 	}
 }

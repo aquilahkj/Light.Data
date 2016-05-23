@@ -110,7 +110,16 @@ namespace Light.Data
 		/// Sets the extent arguments.
 		/// </summary>
 		/// <param name="arguments">Arguments.</param>
-		public virtual void SetExtentArguments (string arguments)
+		public virtual void SetExtendParams (string arguments)
+		{
+
+		}
+
+		/// <summary>
+		/// Sets the extent arguments.
+		/// </summary>
+		/// <param name="extendParams">Extend parameters.</param>
+		public virtual void SetExtendParams (ExtendParamCollection extendParams)
 		{
 
 		}

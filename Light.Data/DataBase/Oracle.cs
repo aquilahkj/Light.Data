@@ -106,9 +106,10 @@ namespace Light.Data
 			}
 		}
 
-		public override void SetExtentArguments (string arguments)
+		public override void SetExtendParams (ExtendParamCollection extendParams)
 		{
-			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
+//			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
+
 			if (extendParams ["InnerPager"] != null) {
 				if (extendParams ["InnerPager"].ToLower () == "true") {
 					InnerPager = true;

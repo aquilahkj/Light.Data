@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Light.Data.SQLiteAdapter")]
 [assembly: InternalsVisibleTo("Light.Data.PostgreAdapter")]
 [assembly: InternalsVisibleTo("Light.Data.DB2Adaper")]
-[assembly: InternalsVisibleTo("Light.Data.Test")]
+[assembly: InternalsVisibleTo("Light.Data.UnitTest")]
 [assembly: InternalsVisibleTo("Light.Data.OracleTest")]
 [assembly: InternalsVisibleTo("Light.Data.AccessTest")]
 [assembly: InternalsVisibleTo("Light.Data.MssqlTest")]

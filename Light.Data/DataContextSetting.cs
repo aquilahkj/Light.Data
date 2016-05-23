@@ -12,12 +12,12 @@ namespace Light.Data
 			}
 			Type type;
 			string connection = setting.ConnectionString;
-			string args = null;
-			int index = connection.IndexOf ("--extendparam:");
-			if (index > 1) {
-				args = connection.Substring (index + 14);
-				connection = connection.Substring (0, index).Trim ();
-			}
+//			string args = null;
+//			int index = connection.IndexOf ("--extendparam:");
+//			if (index > 1) {
+//				args = connection.Substring (index + 14);
+//				connection = connection.Substring (0, index).Trim ();
+//			}
 			if (!string.IsNullOrEmpty (setting.ProviderName)) {
 				type = Type.GetType (setting.ProviderName, throwOnError);
 			}
@@ -44,7 +44,12 @@ namespace Light.Data
 					throw new LightDataException (string.Format (RE.TypeIsNotDatabaseType, type.FullName));
 				}
 			}
-			dataBase.SetExtentArguments (args);
+			ExtendParamCollection extendParams = ConnectionExtendManager.GetExtendParams (setting.Name);
+			if (extendParams == null) {
+				extendParams = new ExtendParamCollection ();
+			}
+			dataBase.SetExtendParams (extendParams);
+//			dataBase.SetExtentArguments (args);
 			DataContextSetting context = new DataContextSetting (connection, setting.Name, dataBase);
 			return context;
 		}

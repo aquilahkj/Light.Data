@@ -179,6 +179,26 @@ namespace Light.Data
 			return null;
 		}
 
+		public static ExtendParamCollection LoadAggregateExtendParamsConfig (Type type)
+		{
+			AggregateTableConfig config = InnerLoadAggregateTableConfig (type);
+			if (config != null) {
+				return config.ExtendParams;
+			}
+			ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection<AggregateExtendParamAttribute> (type);
+			return extendParams;
+		}
+
+		public static ExtendParamCollection LoadDataTableExtendParamsConfig (Type type)
+		{
+			DataTableConfig config = InnerLoadDataTableConfig (type);
+			if (config != null) {
+				return config.ExtendParams;
+			}
+			ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection<DataTableExtendParamAttribute> (type);
+			return extendParams;
+		}
+
 		/// <summary>
 		/// Loads the relation field config.
 		/// </summary>
@@ -203,5 +223,8 @@ namespace Light.Data
 			}
 			return config;
 		}
+	
+		
+	
 	}
 }

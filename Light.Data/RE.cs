@@ -208,6 +208,10 @@ namespace Light.Data
 		/// </summary>
 		public const string TheTypeOfDataEntityIsNoConfig = "the type {0} of data entity is no config";
 		/// <summary>
+		/// The type of aggregate table is no config.
+		/// </summary>
+		public const string TheTypeOfAggregateTableIsNoConfig = "the type {0} of aggregate table is no config";
+		/// <summary>
 		/// the relation field {0} is exists.
 		/// </summary>
 		public const string TheRelationFieldIsExists = "the relation field {0} is exists";

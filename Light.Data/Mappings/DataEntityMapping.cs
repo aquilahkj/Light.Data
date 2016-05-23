@@ -28,6 +28,7 @@ namespace Light.Data
 			_isDataEntity = isDataEntity;
 			InitialDataFieldMapping ();
 			InitialRelationField ();
+			InitialExtendParams ();
 		}
 
 		internal SingleRelationFieldMapping[] GetSingleRelationFieldMappings ()
@@ -101,6 +102,17 @@ namespace Light.Data
 
 					}
 				}
+			}
+		}
+
+		void InitialExtendParams ()
+		{
+			ExtendParamCollection extendParams = ConfigManager.LoadDataTableExtendParamsConfig (ObjectType);
+			if (extendParams != null) {
+				this.ExtentParams = extendParams;
+			}
+			else {
+				this.ExtentParams = new ExtendParamCollection();
 			}
 		}
 

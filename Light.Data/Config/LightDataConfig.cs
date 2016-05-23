@@ -50,10 +50,10 @@ namespace Light.Data
 			if (tableName != null) {
 				config.TableName = tableName;
 			}
-			string extendParams = GetAttributeValue (typeNode, "extendParams");
-			if (extendParams != null) {
-				config.ExtendParams = extendParams;
-			}
+//			string extendParams = GetAttributeValue (typeNode, "extendParams");
+//			if (extendParams != null) {
+//				config.ExtendParams = extendParams;
+//			}
 
 			string isEntityTable = GetAttributeValue (typeNode, "isEntityTable");
 			if (isEntityTable != null) {
@@ -67,15 +67,24 @@ namespace Light.Data
 			}
 
 			foreach (XmlNode fieldNode in typeNode.ChildNodes) {
-				IConfiguratorFieldConfig fieldConfig = null;
+//				IConfiguratorFieldConfig fieldConfig = null;
 				if (fieldNode.Name == "dataField") {
-					fieldConfig = LoadDataFieldConfig (fieldNode, dataType);
+					IConfiguratorFieldConfig fieldConfig = LoadDataFieldConfig (fieldNode, dataType);
+					if (fieldConfig != null) {
+						config.SetField (fieldConfig);
+					}
 				}
 				else if (fieldNode.Name == "relationField") {
-					fieldConfig = LoadRelationFieldConfig (fieldNode, dataType);
+					IConfiguratorFieldConfig fieldConfig = LoadRelationFieldConfig (fieldNode, dataType);
+					if (fieldConfig != null) {
+						config.SetField (fieldConfig);
+					}
 				}
-				if (fieldConfig != null) {
-					config.SetField (fieldConfig);
+				else if (fieldNode.Name == "extendParams") {
+					if (config.ExtendParams == null) {
+						ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection (fieldNode);
+						config.ExtendParams = extendParams;
+					}
 				}
 			}
 			return config;
@@ -92,19 +101,26 @@ namespace Light.Data
 			}
 			Type dataType = Type.GetType (typeName, true);
 			AggregateTableConfig config = new AggregateTableConfig (dataType);
-			string extendParams = GetAttributeValue (typeNode, "extendParams");
-			if (extendParams != null) {
-				config.ExtendParams = extendParams;
-			}
+//			string extendParams = GetAttributeValue (typeNode, "extendParams");
+//			if (extendParams != null) {
+//				config.ExtendParams = extendParams;
+//			}
 			foreach (XmlNode fieldNode in typeNode.ChildNodes) {
-				IConfiguratorFieldConfig fieldConfig = null;
+//				IConfiguratorFieldConfig fieldConfig = null;
 				if (fieldNode.Name == "aggregateField") {
-					fieldConfig = LoadAggregateFieldConfig (fieldNode, dataType);
+					IConfiguratorFieldConfig fieldConfig = LoadAggregateFieldConfig (fieldNode, dataType);
+					if (fieldConfig != null) {
+						config.SetField (fieldConfig);
+					}
 				}
-				if (fieldConfig != null) {
-					config.SetField (fieldConfig);
+				else if (fieldNode.Name == "extendParams") {
+					if (config.ExtendParams == null) {
+						ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection (fieldNode);
+						config.ExtendParams = extendParams;
+					}
 				}
 			}
+
 			return config;
 		}
 

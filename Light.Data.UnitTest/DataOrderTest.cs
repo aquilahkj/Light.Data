@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Light.Data.MysqlTest
+namespace Light.Data.UnitTest
 {
 	[TestFixture ()]
 	public class DataOrderTest
