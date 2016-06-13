@@ -395,7 +395,7 @@ namespace Light.Data.OracleAdapter
 			return AddRound (sql);
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, string aliasName, bool fullFieldName)
 		{
 			return "dbms_random.value";
 		}

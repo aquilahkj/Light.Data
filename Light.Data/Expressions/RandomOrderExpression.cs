@@ -13,6 +13,8 @@ namespace Light.Data
 			
 		}
 
+		string _aliasTableName;
+
 		public void SetTableMapping (DataEntityMapping mapping)
 		{
 			if (mapping == null) {
@@ -24,13 +26,37 @@ namespace Light.Data
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			dataParameters = new DataParameter[0];
-			return factory.CreateRandomOrderBySql (TableMapping, fullFieldName);
+			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, fullFieldName);
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
 			dataParameters = new DataParameter[0];
-			return factory.CreateRandomOrderBySql (TableMapping, fullFieldName);
+			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, fullFieldName);
+		}
+
+		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
+		{
+			RandomOrderExpression expression = new RandomOrderExpression (this.TableMapping);
+			expression._aliasTableName = aliasTableName;
+			return expression;
+		}
+
+		public override bool Equals (OrderExpression target)
+		{
+			if (Object.Equals (target, null)) {
+				return false;
+			}
+			if (Object.ReferenceEquals (this, target)) {
+				return true;
+			}
+			if (this.GetType () == target.GetType ()) {
+				RandomOrderExpression exp = target as RandomOrderExpression;
+				return this._aliasTableName == exp._aliasTableName;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 }

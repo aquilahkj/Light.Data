@@ -23,6 +23,14 @@ namespace Light.Data
 			return factory.CreateConditionAvgSql (sql, _fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		}
 
+//		internal override AggregateFunction CreateAliasTableFunction (string aliasTableName)
+//		{
+//			DataFieldInfo info = this._fieldinfo.Clone () as DataFieldInfo;
+//			info.AliasTableName = aliasTableName;
+//			AvgFunction function = new AvgFunction (this.TableMapping, info, this._isDistinct);
+//			return function;
+//		}
+
 		protected override bool EqualsDetail (AggregateFunction function)
 		{
 			if (base.EqualsDetail (function)) {

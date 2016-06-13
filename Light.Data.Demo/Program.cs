@@ -10,6 +10,10 @@ namespace Light.Data.Demo
 	{
 		public static void Main (string[] args)
 		{
+			string ff = null;
+			int df;
+			bool fg = int.TryParse (ff, out df);
+
 			DataContext context = DataContext.Default;
 			CommandOutput output = new CommandOutput ();
 			output.OutputFullCommand = true;

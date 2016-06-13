@@ -8,7 +8,10 @@ namespace Light.Data
 	class AggregateOrderExpression : OrderExpression
 	{
 		AggregateFunction _function;
+
 		OrderType _orderType = OrderType.ASC;
+
+		string _aliasTableName;
 
 		public AggregateOrderExpression (AggregateFunction function, OrderType orderType)
 			: base (function.TableMapping)
@@ -29,9 +32,30 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (alise)) {
 				return CreateSqlString (factory, fullFieldName, out dataParameters);
 			}
-			dataParameters = null; 
-			string name = factory.CreateDataFieldSql (alise);
-			return factory.CreateOrderBySql (name, _orderType);
+			else {
+				dataParameters = null;
+				string name;
+				if (string.IsNullOrEmpty (this._aliasTableName)) {
+					name = factory.CreateDataFieldSql (alise);
+				}
+				else {
+					name = factory.CreateFullDataFieldSql (this._aliasTableName, alise);
+				}
+				return factory.CreateOrderBySql (name, _orderType);
+			}
+		}
+
+		//		internal override string CreateSqlString (CommandFactory factory, string aliasTableName, out DataParameter[] dataParameters)
+		//		{
+		//			string functionSql = _function.CreateSqlString (factory, false, out dataParameters);
+		//			return factory.CreateOrderBySql (functionSql, _orderType);
+		//		}
+
+		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
+		{
+			AggregateOrderExpression expression = new AggregateOrderExpression (this._function, this._orderType);
+			expression._aliasTableName = aliasTableName;
+			return expression;
 		}
 
 		public override bool Equals (OrderExpression target)
@@ -44,7 +68,7 @@ namespace Light.Data
 			}
 			if (this.GetType () == target.GetType ()) {
 				AggregateOrderExpression exp = target as AggregateOrderExpression;
-				return this._function.Equals (exp._function) && this._orderType == exp._orderType;
+				return this._function.Equals (exp._function) && this._orderType == exp._orderType && this._aliasTableName == exp._aliasTableName;
 			}
 			else {
 				return false;

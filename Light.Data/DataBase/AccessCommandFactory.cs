@@ -71,22 +71,23 @@ namespace Light.Data
 			return string.Format ("[{0}]", tableName);
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, string aliasName, bool fullFieldName)
 		{
 			Random rnd = new Random (unchecked((int)DateTime.Now.Ticks));
 			int intRandomNumber = rnd.Next () * -1;
 
 			DataFieldMapping keyfield = null;
 			string fieldNames = null;
+			string tableName = aliasName ?? mapping.TableName;
 			DataTableEntityMapping tableMapping = mapping as DataTableEntityMapping;
 			if (tableMapping != null) {
 				if (tableMapping.HasIdentity) {
-					fieldNames = CreateRandomField (tableMapping.IdentityField, mapping.TableName, fullFieldName);
+					fieldNames = CreateRandomField (tableMapping.IdentityField, tableName, fullFieldName);
 				}
 				else if (tableMapping.HasPrimaryKey) {
 					List<string> list = new List<string> ();
 					foreach (DataFieldMapping item in tableMapping.PrimaryKeyFields) {
-						string name = CreateRandomField (item, mapping.TableName, fullFieldName);
+						string name = CreateRandomField (item, tableName, fullFieldName);
 						list.Add (name);
 					}
 					fieldNames = string.Join ("*", list);
@@ -110,10 +111,10 @@ namespace Light.Data
 					}
 				}
 				if (numberField != null) {
-					fieldNames = CreateRandomField (numberField, mapping.TableName, fullFieldName);
+					fieldNames = CreateRandomField (numberField, tableName, fullFieldName);
 				}
 				else if (stringField != null) {
-					fieldNames = CreateRandomField (stringField, mapping.TableName, fullFieldName);
+					fieldNames = CreateRandomField (stringField, tableName, fullFieldName);
 				}
 			}
 			if (fieldNames != null) {

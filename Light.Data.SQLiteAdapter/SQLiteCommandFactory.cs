@@ -127,7 +127,7 @@ namespace Light.Data.SQLiteAdapter
 			}
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, string aliasName, bool fullFieldName)
 		{
 			return "random()";
 		}

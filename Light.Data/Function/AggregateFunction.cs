@@ -685,6 +685,11 @@ namespace Light.Data
 			return new ConditionMinFunction (fieldInfo.TableMapping, expression, fieldInfo);
 		}
 
+//		internal virtual AggregateFunction CreateAliasTableFunction(string aliasTableName)
+//		{
+//			return this;
+//		}
+
 		/// <summary>
 		/// Determines whether the specified <see cref="Light.Data.AggregateFunction"/> is equal to the current <see cref="Light.Data.AggregateFunction"/>.
 		/// </summary>

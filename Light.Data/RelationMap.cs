@@ -78,6 +78,7 @@ namespace Light.Data
 		public JoinCapsule CreateJoinCapsule (QueryExpression query, OrderExpression order)
 		{
 			List<JoinModel> models1 = new List<JoinModel> ();
+
 			JoinModel model1 = new JoinModel (rootMapping, null, query, order);
 			model1.AliasTableName = rootAliasName;
 			models1.Add (model1);

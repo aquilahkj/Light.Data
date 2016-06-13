@@ -32,6 +32,19 @@ namespace Light.Data
 			return factory.CreateOrderBySql (name, _orderType);
 		}
 
+//		internal override string CreateSqlString (CommandFactory factory, string aliasTableName, out DataParameter[] dataParameters)
+//		{
+//			dataParameters = new DataParameter[0];
+//			return factory.CreateOrderBySql (_fieldInfo.CreateDataFieldSql (factory, aliasTableName), _orderType);
+//		}
+
+		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
+		{
+			DataFieldInfo info = this._fieldInfo.Clone () as DataFieldInfo;
+			info.AliasTableName = aliasTableName;
+			return new FieldOrderExpression (info, this._orderType);
+		}
+
 		public override bool Equals (OrderExpression target)
 		{
 			if (Object.Equals (target, null)) {

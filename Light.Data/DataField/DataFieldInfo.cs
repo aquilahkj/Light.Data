@@ -23,15 +23,24 @@ namespace Light.Data
 		private DataFieldInfo (string name)
 			: base (typeof(T), name)
 		{
-
+			
 		}
 	}
 
 	/// <summary>
 	/// Data field info.
 	/// </summary>
-	public class DataFieldInfo : BasicFieldInfo
+	public class DataFieldInfo : BasicFieldInfo,ICloneable
 	{
+		#region ICloneable implementation
+
+		public object Clone ()
+		{
+			return this.MemberwiseClone ();
+		}
+
+		#endregion
+
 		internal DataFieldInfo (Type type, string name) :
 			this (DataMapping.GetEntityMapping (type), name)
 		{
@@ -831,6 +840,18 @@ namespace Light.Data
 				return factory.CreateDataFieldSql (FieldName);
 			}
 		}
+
+//		/// <summary>
+//		/// Creates the data field sql.
+//		/// </summary>
+//		/// <returns>The data field sql.</returns>
+//		/// <param name="factory">Factory.</param>
+//		/// <param name="aliasTableName">Alias table name.</param>
+//		internal virtual string CreateDataFieldSql (CommandFactory factory, string aliasTableName)
+//		{
+//			return factory.CreateFullDataFieldSql (aliasTableName, FieldName);
+//		}
+
 
 		/// <summary>
 		/// Transforms the starts with match.

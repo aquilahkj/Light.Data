@@ -31,16 +31,19 @@ namespace Light.Data
 			else if (expression1 != null && expression2 == null) {
 				return expression1;
 			}
+			else if (Object.ReferenceEquals (expression1, expression2)) {
+				return expression1;
+			}
 			else if (expression1 is RandomOrderExpression || expression2 is RandomOrderExpression) {
 				return expression2;
 			}
 			DataEntityMapping demapping = null;
-			if (expression1.TableMapping != null) {
-				demapping = expression1.TableMapping;
-			}
-			else if (expression2.TableMapping != null) {
-				demapping = expression2.TableMapping;
-			}
+//			if (expression1.TableMapping != null) {
+//				demapping = expression1.TableMapping;
+//			}
+//			else if (expression2.TableMapping != null) {
+//				demapping = expression2.TableMapping;
+//			}
 			OrderExpression newExpression = new OrderExpression (demapping);
 			List<OrderExpression> list = new List<OrderExpression> ();
 			if (expression1._orderExpressions == null) {
@@ -58,6 +61,7 @@ namespace Light.Data
 			newExpression._orderExpressions = list;
 			return newExpression;
 		}
+
 		/// <param name="expression1">Expression1.</param>
 		/// <param name="expression2">Expression2.</param>
 		public static OrderExpression operator & (OrderExpression expression1, OrderExpression expression2)
@@ -111,6 +115,34 @@ namespace Light.Data
 			dataParameters = list.ToArray ();
 			return factory.CreateCatchExpressionSql (array);
 		}
+
+//		internal virtual string CreateSqlString (CommandFactory factory, string aliasTableName, out DataParameter[] dataParameters)
+//		{
+//			string[] array = new string[_orderExpressions.Count];
+//			List<DataParameter> list = new List<DataParameter> ();
+//			int len = array.Length;
+//			for (int i = 0; i < len; i++) {
+//				DataParameter[] dps;
+//				array [i] = _orderExpressions [i].CreateSqlString (factory, aliasTableName, out dps);
+//				list.AddRange (dps);
+//			}
+//			dataParameters = list.ToArray ();
+//
+//			return factory.CreateCatchExpressionSql (array);
+//		}
+
+		internal virtual OrderExpression CreateAliasTableNameOrder(string aliasTableName)
+		{
+			OrderExpression newExpression = new OrderExpression (TableMapping);
+			List<OrderExpression> list = new List<OrderExpression> ();
+			foreach (OrderExpression item in list) {
+				OrderExpression newitem = item.CreateAliasTableNameOrder (aliasTableName);
+				list.Add (item);
+			}
+			newExpression._orderExpressions = list;
+			return newExpression;
+		}
+
 		/// <summary>
 		/// Determines whether the specified <see cref="Light.Data.OrderExpression"/> is equal to the current <see cref="Light.Data.OrderExpression"/>.
 		/// </summary>

@@ -163,7 +163,7 @@ namespace Light.Data.PostgreAdapter
 			return sb.ToString ();
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, string aliasName, bool fullFieldName)
 		{
 			return "random()";
 		}

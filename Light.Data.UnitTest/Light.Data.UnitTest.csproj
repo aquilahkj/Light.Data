@@ -67,6 +67,7 @@
     <Compile Include="DataOrderTest.cs" />
     <Compile Include="Model\ExSchema.cs" />
     <Compile Include="Model\ConfigSchema.cs" />
+    <Compile Include="Model\DbSchema.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />

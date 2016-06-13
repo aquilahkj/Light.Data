@@ -427,7 +427,7 @@ namespace Light.Data
 			}
 		}
 
-		protected virtual CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		protected virtual CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)
 		{
 			StringBuilder sql = new StringBuilder ();
 			List<DataParameter> parameters = new List<DataParameter> ();
@@ -435,7 +435,7 @@ namespace Light.Data
 			DataParameter[] orderparameters;
 			string queryString = GetQueryString (query, out queryparameters);
 			string orderString = GetOrderString (order, out orderparameters);
-			sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
+			sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
 				if (queryparameters != null && queryparameters.Length > 0) {
@@ -500,10 +500,22 @@ namespace Light.Data
 //							parameters.AddRange (orderparameters_sub);
 //						}
 //					}
-//					tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
+//					string aliseName = model.AliasTableName;
+//					if (aliseName != null) {
+//						tables.AppendFormat (") as {0}", CreateDataTableSql (aliseName));
+//					}
+//					else {
+//						tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
+//					}
 //				}
 //				else {
-//					tables.Append (CreateDataTableSql (model.Mapping.TableName));
+//					string aliseName = model.AliasTableName;
+//					if (aliseName != null) {
+//						tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
+//					}
+//					else {
+//						tables.Append (CreateDataTableSql (model.Mapping.TableName));
+//					}
 //				}
 
 				if (model.Query != null) {
@@ -534,7 +546,7 @@ namespace Light.Data
 					}
 				}
 				if (model.Order != null) {
-					totalOrder &= model.Order;
+					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);;
 				}
 				if (model.Connect != null && model.Connect.On != null) {
 					DataParameter[] onparameters;
@@ -1176,7 +1188,7 @@ namespace Light.Data
 			return string.Format ("{0} {1}", fieldName, orderType.ToString ().ToLower ());
 		}
 
-		public virtual string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
+		public virtual string CreateRandomOrderBySql (DataEntityMapping mapping, string aliasName, bool fullFieldName)
 		{
 			return "newid()";
 		}
