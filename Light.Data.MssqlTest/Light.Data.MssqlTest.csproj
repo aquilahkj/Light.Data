@@ -53,6 +53,8 @@
     <Compile Include="Model\RelationSchema2.cs" />
     <Compile Include="Model\RelationSchema3.cs" />
     <Compile Include="Model\RelationSchema4.cs" />
+    <Compile Include="SqlExecutorTest.cs" />
+    <Compile Include="Model\DataLogSchema.cs" />
     <Compile Include="BaseCommandTest.cs" />
     <Compile Include="BaseCommandTest2.cs" />
     <Compile Include="BaseTest.cs" />
@@ -78,7 +80,6 @@
     <Compile Include="RelationSingle1Test.cs" />
     <Compile Include="RelationSingle2Test.cs" />
     <Compile Include="SelectInsertTest.cs" />
-    <Compile Include="SqlExecutorTest.cs" />
     <Compile Include="TransContextTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -119,6 +120,10 @@
     <ProjectReference Include="..\Light.Data\Light.Data.csproj">
       <Project>{AB57F3CC-2F20-4FCC-BDE7-E6ED904B68DB}</Project>
       <Name>Light.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Light.Data.UnitTest\Light.Data.UnitTest.csproj">
+      <Project>{94A466D1-E0E0-43CB-89DB-9613A2898D72}</Project>
+      <Name>Light.Data.UnitTest</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

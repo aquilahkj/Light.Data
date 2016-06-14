@@ -1,11 +1,12 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Collections.Generic;
+using Light.Data.UnitTest;
 
 namespace Light.Data.PostgreTest
 {
 	[TestFixture ()]
-	public class TransContextTest:BaseTest
+	public class TransContextTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_TransInsert ()
@@ -32,7 +33,7 @@ namespace Light.Data.PostgreTest
 			}
 			userAc = context.SelectSingleFromId<TeUser> (user.Id);
 			Assert.NotNull (userAc);
-			Assert.True (EqualUser (user, userAc));
+			AssertExtend.AreObjectsEqual (user, userAc);
 
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
@@ -284,10 +285,7 @@ namespace Light.Data.PostgreTest
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (list.Count, listAc.Count);
-			for (int i = 0; i < list.Count; i++) {
-				Assert.True (EqualUser (list [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (list, listAc);
 
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -305,10 +303,7 @@ namespace Light.Data.PostgreTest
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (list.Count, listAc.Count);
-			for (int i = 0; i < list.Count; i++) {
-				Assert.True (EqualUser (list [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (list, listAc);
 
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
