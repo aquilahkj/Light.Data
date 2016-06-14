@@ -1,10 +1,11 @@
 ﻿using System;
+using Light.Data;
 
 namespace Light.Data.UnitTest
 {
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueMini : DataTableEntity
+	internal partial class TeCheckValueMini : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -189,7 +190,7 @@ namespace Light.Data.UnitTest
 
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueDefault : DataTableEntity
+	internal partial class TeCheckValueDefault : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -374,7 +375,7 @@ namespace Light.Data.UnitTest
 
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueDefault2 : DataTableEntity
+	internal partial class TeCheckValueDefault2 : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -559,7 +560,7 @@ namespace Light.Data.UnitTest
 
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueDefault3 : DataTableEntity
+	internal partial class TeCheckValueDefault3 : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -745,7 +746,7 @@ namespace Light.Data.UnitTest
 
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueOrder1 : DataTableEntity
+	internal partial class TeCheckValueOrder1 : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -930,7 +931,7 @@ namespace Light.Data.UnitTest
 
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueOrder2 : DataTableEntity
+	internal partial class TeCheckValueOrder2 : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -1115,7 +1116,7 @@ namespace Light.Data.UnitTest
 
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueOrder3 : DataTableEntity
+	internal partial class TeCheckValueOrder3 : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -1300,7 +1301,7 @@ namespace Light.Data.UnitTest
 
 	[Serializable]
 	[DataTable ("Te_CheckValue")]
-	public partial class TeCheckValueOrder4 : DataTableEntity
+	internal partial class TeCheckValueOrder4 : DataTableEntity
 	{
 		#region "Static Field"
 

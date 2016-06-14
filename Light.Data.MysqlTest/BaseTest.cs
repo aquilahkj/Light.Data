@@ -11,6 +11,8 @@ namespace Light.Data.MysqlTest
 
 		readonly protected CommandOutput output = new CommandOutput ();
 
+		public const double DELTA = 0.0001;
+
 		protected BaseTest ()
 		{
 			context = DataContext.Create ("mysql");
@@ -65,6 +67,39 @@ namespace Light.Data.MysqlTest
 			return user;
 		}
 
+		protected TeDataLog CreateTestLog (bool useContext)
+		{
+			TeDataLog log;
+			if (useContext) {
+				log = context.CreateNew<TeDataLog> ();
+			} else {
+				log = new TeDataLog ();
+			}
+			log.UserId = 1;
+			log.ArticleId = 10;
+			log.RecordTime = new DateTime (2001, 10, 20);
+			log.Status = 1;
+			log.Action = 1;
+			log.RequestUrl = "http://light.data/test";
+
+			return log;
+		}
+
+		protected TeAreaInfo CreateTestAreaInfo (bool useContext)
+		{
+			TeAreaInfo info;
+			if (useContext) {
+				info = context.CreateNew<TeAreaInfo> ();
+			} else {
+				info = new TeAreaInfo ();
+			}
+			info.Name = "area";
+			info.V1 = 1;
+			info.V2 = 2;
+			info.V3 = 3;
+			return info;
+		}
+
 		protected List<TeUser> InitialUserTable (int count, bool insert = true)
 		{
 			output.UseConsoleOutput = false;
@@ -106,7 +141,6 @@ namespace Light.Data.MysqlTest
 			output.UseConsoleOutput = true;
 			return lists;
 		}
-
 
 		protected List<TeUserExtend> InitialUserExtendTable (int count, bool insert = true)
 		{
@@ -162,112 +196,6 @@ namespace Light.Data.MysqlTest
 			return lists;
 		}
 
-		protected bool EqualUser (TeUser2 user1, TeUser2 user2, bool checkId = true)
-		{
-			bool ret =
-				user1.Account == user2.Account &&
-				user1.Address == user2.Address &&
-				user1.Birthday == user2.Birthday &&
-				user1.Email == user2.Email &&
-				user1.Gender == user2.Gender &&
-				user1.LevelId == user2.LevelId &&
-				user1.NickName == user2.NickName &&
-				user1.Password == user2.Password &&
-				user1.RegTime == user2.RegTime &&
-				user1.Status == user2.Status &&
-				user1.Telephone == user2.Telephone &&
-				user1.LastLoginTime == user2.LastLoginTime &&
-				user1.CheckLevelType == user2.CheckLevelType &&
-				user1.CheckPoint == user2.CheckPoint &&
-				user1.CheckStatus == user2.CheckStatus &&
-				user1.Area == user2.Area &&
-				user1.DeleteFlag == user2.DeleteFlag &&
-				user1.RefereeId == user2.RefereeId &&
-				user1.LoginTimes == user2.LoginTimes &&
-				user1.Mark == user2.Mark &&
-				user1.HotRate == user2.HotRate;
-			if (checkId) {
-				ret = ret && (user1.Id == user2.Id);
-			}
-			return ret;
-		}
-
-		protected bool EqualUser (TeUser user1, TeUser user2, bool checkId = true)
-		{
-			bool ret =
-				user1.Account == user2.Account &&
-				user1.Address == user2.Address &&
-				user1.Birthday == user2.Birthday &&
-				user1.Email == user2.Email &&
-				user1.Gender == user2.Gender &&
-				user1.LevelId == user2.LevelId &&
-				user1.NickName == user2.NickName &&
-				user1.Password == user2.Password &&
-				user1.RegTime == user2.RegTime &&
-				user1.Status == user2.Status &&
-				user1.Telephone == user2.Telephone &&
-				user1.LastLoginTime == user2.LastLoginTime &&
-				user1.CheckLevelType == user2.CheckLevelType &&
-				CheckDouble (user1.CheckPoint, user2.CheckPoint) &&
-				user1.CheckStatus == user2.CheckStatus &&
-				user1.Area == user2.Area &&
-				user1.DeleteFlag == user2.DeleteFlag &&
-				user1.RefereeId == user2.RefereeId &&
-				user1.LoginTimes == user2.LoginTimes &&
-				user1.Mark == user2.Mark &&
-				CheckDouble (user1.HotRate, user2.HotRate);
-			if (checkId) {
-				ret = ret && (user1.Id == user2.Id);
-			}
-			return ret;
-		}
-
-		protected bool EqualUserExtend (TeUserExtend user1, TeUserExtend user2, bool checkId = true)
-		{
-			bool ret =
-				user1.UserId == user2.UserId &&
-				user1.Extend1 == user2.Extend1 &&
-				user1.Extend2 == user2.Extend2 &&
-				user1.Extend3 == user2.Extend3 &&
-				user1.ExtendAreaId == user2.ExtendAreaId;
-			if (checkId) {
-				ret = ret && (user1.Id == user2.Id);
-			}
-			return ret;
-		}
-
-		protected bool EqualAreaInfo (TeAreaInfo info1, TeAreaInfo info2, bool checkId = true)
-		{
-			bool ret =
-				info1.Name == info2.Name &&
-				info1.V1 == info2.V1 &&
-				info1.V2 == info2.V2 &&
-				info1.V3 == info2.V3;
-			if (checkId) {
-				ret = ret && (info1.Id == info2.Id);
-			}
-			return ret;
-		}
-
-		protected TeDataLog CreateTestLog (bool useContext)
-		{
-			TeDataLog log;
-			if (useContext) {
-				log = context.CreateNew<TeDataLog> ();
-			}
-			else {
-				log = new TeDataLog ();
-			}
-			log.UserId = 1;
-			log.ArticleId = 10;
-			log.RecordTime = new DateTime (2001, 10, 20);
-			log.Status = 1;
-			log.Action = 1;
-			log.RequestUrl = "http://light.data/test";
-
-			return log;
-		}
-
 		protected List<TeDataLog> InitialDataLogTable (int count, bool insert = true)
 		{
 			output.UseConsoleOutput = false;
@@ -295,6 +223,35 @@ namespace Light.Data.MysqlTest
 				}
 
 				lists.Add (logInsert);
+			}
+			if (insert) {
+				context.BulkInsert (lists.ToArray ());
+			}
+			output.UseConsoleOutput = true;
+			return lists;
+		}
+
+		protected List<TeAreaInfo> InitialAreaInfoTable (int count, bool insert = true)
+		{
+			output.UseConsoleOutput = false;
+			context.TruncateTable<TeAreaInfo> ();
+			List<TeAreaInfo> lists = new List<TeAreaInfo> ();
+			for (int i = 1; i <= count; i++) {
+				TeAreaInfo infoInsert = CreateTestAreaInfo (false);
+				infoInsert.Name += i;
+
+				if (i % 2 == 0) {
+					infoInsert.V1 = i % 8 == 0 ? 8 : i % 8;
+				}
+				if (i % 3 == 0) {
+					infoInsert.V2 = i % 7 == 0 ? 7 : i % 7;
+				}
+
+				if (i % 5 == 0) {
+					infoInsert.V3 = i % 5 == 0 ? 5 : i % 5;
+				}
+
+				lists.Add (infoInsert);
 			}
 			if (insert) {
 				context.BulkInsert (lists.ToArray ());
@@ -385,147 +342,11 @@ namespace Light.Data.MysqlTest
 			output.UseConsoleOutput = true;
 		}
 
-		protected bool EqualLog (TeDataLog log1, TeDataLogHistory log2, bool checkId = true)
-		{
-			bool ret =
-				log1.UserId == log2.UserId &&
-				log1.ArticleId == log2.ArticleId &&
-				log1.Action == log2.Action &&
-				log1.RecordTime == log2.RecordTime &&
-				log1.RequestUrl == log2.RequestUrl &&
-				log1.CheckPoint == log2.CheckPoint &&
-				log1.CheckData == log2.CheckData &&
-				log1.CheckTime == log2.CheckTime &&
-				log1.CheckId == log2.CheckId &&
-				log1.CheckLevelTypeInt == log2.CheckLevelTypeInt &&
-				log1.CheckLevelTypeString == log2.CheckLevelTypeString;
-			if (checkId) {
-				ret = ret && (log1.Id == log2.Id);
-			}
-			return ret;
-		}
-
-		protected bool EqualLog (TeDataLog log1, TeDataLogHistory2 log2, bool checkId = true)
-		{
-			bool ret =
-				log1.UserId == log2.UserId &&
-				log1.ArticleId == log2.ArticleId &&
-				log1.Action == log2.Action &&
-				log1.RecordTime == log2.RecordTime &&
-				log1.RequestUrl == log2.RequestUrl &&
-				log1.CheckPoint == log2.CheckPoint &&
-				log1.CheckData == log2.CheckData &&
-				log1.CheckTime == log2.CheckTime &&
-				log1.CheckId == log2.CheckId &&
-				log1.CheckLevelTypeInt == log2.CheckLevelTypeInt &&
-				log1.CheckLevelTypeString == log2.CheckLevelTypeString;
-			if (checkId) {
-				ret = ret && (log1.Id == log2.Id);
-			}
-			return ret;
-		}
-
-		protected TeAreaInfo CreateTestAreaInfo (bool useContext)
-		{
-			TeAreaInfo info;
-			if (useContext) {
-				info = context.CreateNew<TeAreaInfo> ();
-			}
-			else {
-				info = new TeAreaInfo ();
-			}
-			info.Name = "area";
-			info.V1 = 1;
-			info.V2 = 2;
-			info.V3 = 3;
-			return info;
-		}
-
-		protected List<TeAreaInfo> InitialAreaInfoTable (int count, bool insert = true)
-		{
-			output.UseConsoleOutput = false;
-			context.TruncateTable<TeAreaInfo> ();
-			List<TeAreaInfo> lists = new List<TeAreaInfo> ();
-			for (int i = 1; i <= count; i++) {
-				TeAreaInfo infoInsert = CreateTestAreaInfo (false);
-				infoInsert.Name += i;
-
-				if (i % 2 == 0) {
-					infoInsert.V1 = i % 8 == 0 ? 8 : i % 8;
-				}
-				if (i % 3 == 0) {
-					infoInsert.V2 = i % 7 == 0 ? 7 : i % 7;
-				}
-
-				if (i % 5 == 0) {
-					infoInsert.V3 = i % 5 == 0 ? 5 : i % 5;
-				}
-
-				lists.Add (infoInsert);
-			}
-			if (insert) {
-				context.BulkInsert (lists.ToArray ());
-			}
-			output.UseConsoleOutput = true;
-			return lists;
-		}
-
-		protected bool EqualLevel (TeUserLevel info1, TeUserLevel info2)
-		{
-			bool ret =
-				info1.Id == info2.Id &&
-				info1.LevelName == info2.LevelName &&
-				info1.Remark == info2.Remark &&
-				info1.Status == info2.Status;
-			return ret;
-		}
-
-
-		protected bool EqualLog (TeAreaInfo info1, TeAreaInfo info2, bool checkId = true)
-		{
-			bool ret =
-				info1.Name == info2.Name &&
-				info1.V1 == info2.V1 &&
-				info1.V2 == info2.V2 &&
-				info1.V3 == info2.V3;
-			if (checkId) {
-				ret = ret && (info1.Id == info2.Id);
-			}
-			return ret;
-		}
-
 		protected DateTime GetNow ()
 		{
 			DateTime now = DateTime.Now;
 			DateTime d = new DateTime (now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
 			return d;
-		}
-
-		protected static double FormatDouble (double d)
-		{
-			string cc = d.ToString ("##.####");
-			double t;
-			double.TryParse (cc, out t);
-			return t;
-		}
-
-
-		protected static bool CheckDouble (double d1, double d2, int digis = 2)
-		{
-			return Math.Round (d1, digis, MidpointRounding.AwayFromZero) == Math.Round (d2, digis, MidpointRounding.AwayFromZero);
-		}
-
-		protected static bool CheckDouble (double? d1, double? d2, int digis = 2)
-		{
-			if (!d1.HasValue && !d2.HasValue) {
-				return true;
-			}
-			else if (d1.HasValue && d2.HasValue) {
-				return CheckDouble (d1.Value, d2.Value, digis);
-			}
-			else {
-				return false;
-			}
 		}
 	}
 }

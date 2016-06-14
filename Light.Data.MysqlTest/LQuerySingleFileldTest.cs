@@ -2,11 +2,12 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections;
+using Light.Data.UnitTest;
 
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class LQuerySingleFileldTest:BaseTest
+	public class LQuerySingleFileldTest : BaseTest
 	{
 		[Test ()]
 		public void TeatCase_List_Array_Le ()
@@ -14,18 +15,14 @@ namespace Light.Data.MysqlTest
 			const int count = 57;
 			List<TeUser> list1 = InitialUserTable (count);
 			List<TeUser> listReslt = context.LQuery<TeUser> ().ToList ();
-			Assert.AreEqual (count, listReslt.Count);
-			for (int i = 0; i < count; i++) {
-				Assert.IsTrue (EqualUser (listReslt [i], list1 [i], true));
-			}
-			TeUser[] arrayResult = context.LQuery<TeUser> ().ToArray ();
-			Assert.AreEqual (count, arrayResult.Length);
-			for (int i = 0; i < count; i++) {
-				Assert.IsTrue (EqualUser (arrayResult [i], list1 [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (list1, listReslt);
+
+			TeUser [] arrayResult = context.LQuery<TeUser> ().ToArray ();
+			AssertExtend.AreEnumerableEqual (list1.ToArray (), arrayResult);
+
 			int index = 0;
 			foreach (TeUser user in context.LQuery<TeUser> ()) {
-				Assert.IsTrue (EqualUser (user, list1 [index], true));
+				AssertExtend.AreObjectsEqual (list1 [index], user);
 				index++;
 			}
 		}
@@ -105,7 +102,7 @@ namespace Light.Data.MysqlTest
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].HotRate, list_s [i]);
 			}
-				
+
 
 			list = context.LQuery<TeUser> ().ToList ();
 			list_null_s = context.LQuery<TeUser> ().QuerySingleFieldList<double?> (TeUser.CheckPointField);

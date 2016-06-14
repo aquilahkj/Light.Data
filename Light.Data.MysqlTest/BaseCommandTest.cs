@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Collections.Generic;
+using Light.Data.UnitTest;
 
 namespace Light.Data.MysqlTest
 {
@@ -17,14 +18,14 @@ namespace Light.Data.MysqlTest
 			Assert.Greater (userInsert.Id, 0);
 			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user1);
-			Assert.True (EqualUser (userInsert, user1));
+			AssertExtend.AreTypeEqual (userInsert, user1);
 			user1.LastLoginTime = GetNow ();
 			user1.Status = 2;
 			user1.Save ();
 			Assert.AreEqual (userInsert.Id, user1.Id);
 			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user2);
-			Assert.True (EqualUser (user1, user2));
+			AssertExtend.AreTypeEqual (user1, user2);
 			user2.Erase ();
 			TeUser user3 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.Null (user3);
@@ -40,14 +41,14 @@ namespace Light.Data.MysqlTest
 			Assert.Greater (userInsert.Id, 0);
 			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user1);
-			Assert.True (EqualUser (userInsert, user1));
+			AssertExtend.AreTypeEqual (userInsert, user1);
 			user1.LastLoginTime = GetNow ();
 			user1.Status = 2;
 			context.Update (user1);
 			Assert.AreEqual (userInsert.Id, user1.Id);
 			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.NotNull (user2);
-			Assert.True (EqualUser (user1, user2));
+			AssertExtend.AreTypeEqual (user1, user2);
 			context.Delete (user2);
 			TeUser user3 = context.SelectSingleFromId<TeUser> (userInsert.Id);
 			Assert.Null (user3);
@@ -66,13 +67,13 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (1, levelInsert.Id);
 			TeUserLevel level1 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
 			Assert.NotNull (level1);
-			Assert.IsTrue (EqualLevel (levelInsert, level1));
+			AssertExtend.AreObjectsEqual (levelInsert, level1);
 			level1.Status = 2;
 			context.Update (level1);
 			Assert.AreEqual (1, levelInsert.Id);
 			TeUserLevel level2 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
 			Assert.NotNull (level2);
-			Assert.IsTrue (EqualLevel (level1, level2));
+			AssertExtend.AreObjectsEqual (level1, level2);
 			context.Delete (level2);
 			TeUserLevel level3 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
 			Assert.Null (level3);
@@ -92,13 +93,13 @@ namespace Light.Data.MysqlTest
 			context.InsertOrUpdate (userInsert);
 			Assert.AreEqual (id, userInsert.Id);
 			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
-			Assert.True (EqualUser (userInsert, user1));
+			AssertExtend.AreTypeEqual (userInsert, user1);
 
 			userInsert.Id = 0;
 			context.InsertOrUpdate (userInsert);
 			Assert.AreEqual (id + 1, userInsert.Id);
 			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
-			Assert.True (EqualUser (userInsert, user2));
+			AssertExtend.AreTypeEqual (userInsert, user2);
 
 		}
 
@@ -121,25 +122,20 @@ namespace Light.Data.MysqlTest
 			result = context.BulkInsert (listEx.ToArray ());
 			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
-			for (int i = 0; i < count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray (), 20);
 			Assert.AreEqual (result, count);
 			listAc = context.LQuery<TeUser> ().ToList ();
-			for (int i = 0; i < count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray (), 100);
 			Assert.AreEqual (result, count);
 			listAc = context.LQuery<TeUser> ().ToList ();
-			for (int i = 0; i < count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]

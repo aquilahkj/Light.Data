@@ -546,7 +546,7 @@ namespace Light.Data
 					}
 				}
 				if (model.Order != null) {
-					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);;
+					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
 				}
 				if (model.Connect != null && model.Connect.On != null) {
 					DataParameter[] onparameters;

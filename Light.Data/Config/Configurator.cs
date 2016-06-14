@@ -24,8 +24,7 @@ namespace Light.Data
 			XmlNode node = obj as XmlNode;
 			if (node != null) {
 				return LoadConfiguratorFromXml (node);
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
@@ -34,12 +33,12 @@ namespace Light.Data
 		/// Loads the configurator from app setting.
 		/// </summary>
 		/// <returns>The configurator from app setting.</returns>
-		public static Configurator[] LoadConfiguratorFromAppSetting ()
+		public static Configurator [] LoadConfiguratorFromAppSetting ()
 		{
-			Configurator[] configFiles = null;
+			Configurator [] configFiles = null;
 			string configPath;
-			if (ConfigurationManager.AppSettings ["lighDataConfig"] != null) {
-				configPath = ConfigurationManager.AppSettings ["lighDataConfig"];
+			if (ConfigurationManager.AppSettings ["lightDataConfig"] != null) {
+				configPath = ConfigurationManager.AppSettings ["lightDataConfig"];
 				configFiles = LoadConfiguratorFromPath (configPath);
 			}
 			return configFiles;
@@ -50,15 +49,14 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The configurator from path.</returns>
 		/// <param name="configPath">Config path.</param>
-		public static Configurator[] LoadConfiguratorFromPath (string configPath)
+		public static Configurator [] LoadConfiguratorFromPath (string configPath)
 		{
-			Configurator[] configFiles = null;
+			Configurator [] configFiles = null;
 			if (!string.IsNullOrEmpty (configPath)) {
 				if (configPath.EndsWith (".config")) {
 					Configurator configFile = LoadConfiguratorFromFile (configPath);
-					configFiles = new []{ configFile };
-				}
-				else {
+					configFiles = new [] { configFile };
+				} else {
 					configFiles = LoadConfiguratorFromConfigFileDir (configPath);
 				}
 			}
@@ -69,7 +67,7 @@ namespace Light.Data
 		/// Loads the configurator from assembly.
 		/// </summary>
 		/// <returns>The configurator from assembly.</returns>
-		public static Configurator[] LoadConfiguratorFromAssembly ()
+		public static Configurator [] LoadConfiguratorFromAssembly ()
 		{
 			Assembly assembly;
 			assembly = Assembly.GetEntryAssembly ();
@@ -84,13 +82,13 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The configurator from assembly.</returns>
 		/// <param name="assembly">Assembly.</param>
-		public static Configurator[] LoadConfiguratorFromAssembly (Assembly assembly)
+		public static Configurator [] LoadConfiguratorFromAssembly (Assembly assembly)
 		{
 			if (assembly == null) {
 				return null;
 			}
-			Configurator[] configFiles = null;
-			XmlConfiguratorAttribute[] attribute = AttributeCore.GetAssemblyAttributes<XmlConfiguratorAttribute> (assembly, true);
+			Configurator [] configFiles = null;
+			XmlConfiguratorAttribute [] attribute = AttributeCore.GetAssemblyAttributes<XmlConfiguratorAttribute> (assembly, true);
 			if (attribute.Length > 0) {
 				string configPath = attribute [0].ConfigPath;
 				configFiles = LoadConfiguratorFromPath (configPath);
@@ -103,7 +101,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The configurator from config file dir.</returns>
 		/// <param name="directory">Directory.</param>
-		public static Configurator[] LoadConfiguratorFromConfigFileDir (string directory)
+		public static Configurator [] LoadConfiguratorFromConfigFileDir (string directory)
 		{
 			if (string.IsNullOrEmpty (directory)) {
 				throw new ArgumentNullException ("directory");
@@ -111,19 +109,17 @@ namespace Light.Data
 			List<Configurator> list = new List<Configurator> ();
 			string fullPathConfigDirectory;
 			string applicationBaseDirectory = null;
-			try {
-				applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-			} catch {
-			}
+
+			applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
 			if (applicationBaseDirectory != null) {
 				fullPathConfigDirectory = Path.Combine (applicationBaseDirectory, directory);
-			}
-			else {
+			} else {
 				fullPathConfigDirectory = directory;
 			}
 			DirectoryInfo dir = new DirectoryInfo (fullPathConfigDirectory);
 			if (dir.Exists) {
-				FileInfo[] infos = dir.GetFiles ();
+				FileInfo [] infos = dir.GetFiles ();
 				foreach (FileInfo info in infos) {
 					if (info.Extension == ".config") {
 						try {
@@ -132,7 +128,7 @@ namespace Light.Data
 								list.Add (config);
 							}
 						} catch {
-								
+
 						}
 					}
 				}
@@ -160,8 +156,7 @@ namespace Light.Data
 			}
 			if (applicationBaseDirectory != null) {
 				fullPathConfigFile = Path.Combine (applicationBaseDirectory, fileName);
-			}
-			else {
+			} else {
 				fullPathConfigFile = fileName;
 			}
 

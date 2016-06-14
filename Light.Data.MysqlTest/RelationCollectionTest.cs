@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Collections.Generic;
-using Light.Data;
+using Light.Data.UnitTest;
 
 namespace Light.Data.MysqlTest
 {
@@ -31,13 +31,7 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				List<TeUser> us = new List<TeUser> ();
-				us.AddRange (lu.Users);
-				Assert.AreEqual (kvs.Value.Count, us.Count);
-				for (int i = 0; i < us.Count; i++) {
-					Assert.IsTrue (EqualUser (kvs.Value [i], us [i]));
-				}
-
+				AssertExtend.AreEnumerableEqual (kvs.Value, lu.Users);
 			}
 		}
 			
@@ -64,13 +58,7 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				List<TeUser> us = new List<TeUser> ();
-				us.AddRange (lu.Users2);
-				Assert.AreEqual (kvs.Value.Count, us.Count);
-				for (int i = 0; i < us.Count; i++) {
-					Assert.IsTrue (EqualUser (kvs.Value [i], us [i]));
-				}
-
+				AssertExtend.AreTypeEqual (kvs.Value, lu.Users2);
 			}
 		}
 
@@ -97,13 +85,7 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser2 lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				List<TeUser> us = new List<TeUser> ();
-				us.AddRange (lu.Users);
-				Assert.AreEqual (kvs.Value.Count, us.Count);
-				for (int i = 0; i < us.Count; i++) {
-					Assert.IsTrue (EqualUser (kvs.Value [i], us [i]));
-				}
-
+				AssertExtend.AreEnumerableEqual (kvs.Value, lu.Users);
 			}
 		}
 			
@@ -130,13 +112,7 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser2 lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				List<TeUser> us = new List<TeUser> ();
-				us.AddRange (lu.Users2);
-				Assert.AreEqual (kvs.Value.Count, us.Count);
-				for (int i = 0; i < us.Count; i++) {
-					Assert.IsTrue (EqualUser (kvs.Value [i], us [i]));
-				}
-
+				AssertExtend.AreTypeEqual (kvs.Value, lu.Users2);
 			}
 		}
 
@@ -163,13 +139,7 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser3 lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				List<TeUser> us = new List<TeUser> ();
-				us.AddRange (lu.Users);
-				Assert.AreEqual (kvs.Value.Count, us.Count);
-				for (int i = 0; i < us.Count; i++) {
-					Assert.IsTrue (EqualUser (kvs.Value [i], us [i]));
-				}
-
+				AssertExtend.AreEnumerableEqual (kvs.Value, lu.Users);
 			}
 		}
 
@@ -196,13 +166,7 @@ namespace Light.Data.MysqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser3 lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				List<TeUser> us = new List<TeUser> ();
-				us.AddRange (lu.Users2);
-				Assert.AreEqual (kvs.Value.Count, us.Count);
-				for (int i = 0; i < us.Count; i++) {
-					Assert.IsTrue (EqualUser (kvs.Value [i], us [i]));
-				}
-
+				AssertExtend.AreTypeEqual (kvs.Value, lu.Users2);
 			}
 		}
 	}

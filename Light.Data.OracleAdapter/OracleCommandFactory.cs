@@ -344,7 +344,7 @@ namespace Light.Data.OracleAdapter
 					}
 				}
 				if (model.Order != null) {
-					totalOrder &= model.Order;
+					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
 				}
 				if (model.Connect != null && model.Connect.On != null) {
 					DataParameter[] onparameters;
@@ -618,6 +618,8 @@ namespace Light.Data.OracleAdapter
 
 		public override string CreateParamName (string name)
 		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
 			if (!name.StartsWith (":")) {
 				return ":" + name;
 			}

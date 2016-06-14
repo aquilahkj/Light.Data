@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class LAggregateGroupByTest:BaseTest
+	public class LAggregateGroupByTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_GroupBy_Count ()
@@ -13,8 +13,8 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (57);
 			List<TeUser> list;
 			List<LevelIdAgg> listAgg;
-			Dictionary<int,int> dict;
-			Dictionary<int,HashSet<int>> dictdist;
+			Dictionary<int, int> dict;
+			Dictionary<int, HashSet<int>> dictdist;
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Count (), "Data").GetObjectList<LevelIdAgg> ();
@@ -40,8 +40,7 @@ namespace Light.Data.MysqlTest
 				dict.TryGetValue (user.LevelId, out i);
 				if (user.Area != null) {
 					dict [user.LevelId] = i + 1;
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -68,13 +67,11 @@ namespace Light.Data.MysqlTest
 					}
 					if (hash.Contains (user.RefereeId.Value)) {
 						dict [user.LevelId] = i;
-					}
-					else {
+					} else {
 						hash.Add (user.RefereeId.Value);
 						dict [user.LevelId] = i + 1;
 					}
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -93,8 +90,7 @@ namespace Light.Data.MysqlTest
 				dict.TryGetValue (user.LevelId, out i);
 				if (user.RefereeId != null && user.RefereeId.Value >= 4 && user.RefereeId.Value <= 8) {
 					dict [user.LevelId] = i + 1;
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -113,8 +109,7 @@ namespace Light.Data.MysqlTest
 				dict.TryGetValue (user.LevelId, out i);
 				if (user.RefereeId != null && user.RefereeId.Value >= 4 && user.RefereeId.Value <= 8 && user.Area != null) {
 					dict [user.LevelId] = i + 1;
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -141,13 +136,11 @@ namespace Light.Data.MysqlTest
 					}
 					if (hash.Contains (user.Area.Value)) {
 						dict [user.LevelId] = i;
-					}
-					else {
+					} else {
 						hash.Add (user.Area.Value);
 						dict [user.LevelId] = i + 1;
 					}
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -167,8 +160,8 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (57);
 			List<TeUser> list;
 			List<LevelIdAgg> listAgg;
-			Dictionary<int,int> dict;
-			Dictionary<int,HashSet<int>> dictdist;
+			Dictionary<int, int> dict;
+			Dictionary<int, HashSet<int>> dictdist;
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Sum (TeUser.LoginTimesField), "Data").GetObjectList<LevelIdAgg> ();
@@ -201,8 +194,7 @@ namespace Light.Data.MysqlTest
 				}
 				if (hash.Contains (user.LoginTimes)) {
 					dict [user.LevelId] = i;
-				}
-				else {
+				} else {
 					hash.Add (user.LoginTimes);
 					dict [user.LevelId] = i + user.LoginTimes;
 				}
@@ -222,8 +214,7 @@ namespace Light.Data.MysqlTest
 				dict.TryGetValue (user.LevelId, out i);
 				if (user.RefereeId != null && user.RefereeId.Value >= 4 && user.RefereeId.Value <= 8) {
 					dict [user.LevelId] = i + user.LoginTimes;
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -251,13 +242,11 @@ namespace Light.Data.MysqlTest
 					}
 					if (hash.Contains (user.LoginTimes)) {
 						dict [user.LevelId] = i;
-					}
-					else {
+					} else {
 						hash.Add (user.LoginTimes);
 						dict [user.LevelId] = i + user.LoginTimes;
 					}
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -274,15 +263,15 @@ namespace Light.Data.MysqlTest
 		[Test ()]
 		public void TestCase_GroupBy_Avg ()
 		{
-			
+
 			InitialUserTable (57);
 
-			
+
 			List<TeUser> list;
 			List<LevelIdAggAvg> listAgg;
-			Dictionary<int,int> dict;
-			Dictionary<int,int> dictCount;
-			Dictionary<int,HashSet<int>> dictdist;
+			Dictionary<int, int> dict;
+			Dictionary<int, int> dictCount;
+			Dictionary<int, HashSet<int>> dictdist;
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Avg (TeUser.LoginTimesField), "Data").GetObjectList<LevelIdAggAvg> ();
@@ -303,10 +292,10 @@ namespace Light.Data.MysqlTest
 				int c;
 				Assert.IsTrue (dictCount.TryGetValue (agg.LevelId, out c));
 				if (agg.Data.HasValue) {
-					Assert.AreEqual (FormatDouble ((double)i / c), FormatDouble (agg.Data.Value));
+					Assert.AreEqual ((double)i / c, agg.Data.Value, DELTA);
 				}
 			}
-			
+
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Avg (TeUser.LoginTimesField, true), "Data").GetObjectList<LevelIdAggAvg> ();
 			dict = new Dictionary<int, int> ();
@@ -323,8 +312,7 @@ namespace Light.Data.MysqlTest
 				}
 				if (hash.Contains (user.LoginTimes)) {
 					dict [user.LevelId] = i;
-				}
-				else {
+				} else {
 					hash.Add (user.LoginTimes);
 					dict [user.LevelId] = i + user.LoginTimes;
 					int c;
@@ -338,7 +326,7 @@ namespace Light.Data.MysqlTest
 				Assert.IsTrue (dict.TryGetValue (agg.LevelId, out i));
 				int c;
 				Assert.IsTrue (dictCount.TryGetValue (agg.LevelId, out c));
-				Assert.AreEqual (FormatDouble ((double)i / c), FormatDouble (agg.Data.Value));
+				Assert.AreEqual ((double)i / c, agg.Data.Value, DELTA);
 			}
 
 			list = context.LQuery<TeUser> ().ToList ();
@@ -353,8 +341,7 @@ namespace Light.Data.MysqlTest
 					int c;
 					dictCount.TryGetValue (user.LevelId, out c);
 					dictCount [user.LevelId] = c + 1;
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -366,15 +353,14 @@ namespace Light.Data.MysqlTest
 				int c;
 				dictCount.TryGetValue (agg.LevelId, out c);
 				if (c > 0) {
-					Assert.AreEqual (FormatDouble ((double)i / c), FormatDouble (agg.Data.Value));
-				}
-				else {
+					Assert.AreEqual ((double)i / c, agg.Data.Value, DELTA);
+				} else {
 					Assert.IsNull (agg.Data);
 				}
 
 			}
-			
-			
+
+
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Avg (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8, TeUser.LoginTimesField, true), "Data").GetObjectList<LevelIdAggAvg> ();
 			dict = new Dictionary<int, int> ();
@@ -392,16 +378,14 @@ namespace Light.Data.MysqlTest
 					}
 					if (hash.Contains (user.LoginTimes)) {
 						dict [user.LevelId] = i;
-					}
-					else {
+					} else {
 						hash.Add (user.LoginTimes);
 						dict [user.LevelId] = i + user.LoginTimes;
 						int c;
 						dictCount.TryGetValue (user.LevelId, out c);
 						dictCount [user.LevelId] = c + 1;
 					}
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -409,16 +393,15 @@ namespace Light.Data.MysqlTest
 			foreach (LevelIdAggAvg agg in listAgg) {
 				int i;
 				Assert.IsTrue (dict.TryGetValue (agg.LevelId, out i));
-			
+
 				int c;
 				dictCount.TryGetValue (agg.LevelId, out c);
 				if (c > 0) {
-					Assert.AreEqual (FormatDouble ((double)i / c), FormatDouble (agg.Data.Value));
-				}
-				else {
+					Assert.AreEqual ((double)i / c, agg.Data.Value, DELTA);
+				} else {
 					Assert.IsNull (agg.Data);
 				}
-			
+
 			}
 
 		}
@@ -429,7 +412,7 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (57);
 			List<TeUser> list;
 			List<LevelIdAgg> listAgg;
-			Dictionary<int,int> dict;
+			Dictionary<int, int> dict;
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Max (TeUser.LoginTimesField), "Data").GetObjectList<LevelIdAgg> ();
@@ -460,8 +443,7 @@ namespace Light.Data.MysqlTest
 					if (user.LoginTimes > i) {
 						dict [user.LevelId] = user.LoginTimes;
 					}
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -479,7 +461,7 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (57);
 			List<TeUser> list;
 			List<LevelIdAgg> listAgg;
-			Dictionary<int,int> dict;
+			Dictionary<int, int> dict;
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Min (TeUser.LoginTimesField), "Data").GetObjectList<LevelIdAgg> ();
@@ -510,8 +492,7 @@ namespace Light.Data.MysqlTest
 					if (user.LoginTimes < i || i == 0) {
 						dict [user.LevelId] = user.LoginTimes;
 					}
-				}
-				else {
+				} else {
 					dict [user.LevelId] = i;
 				}
 			}
@@ -529,8 +510,8 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (57);
 			List<TeUser> list;
 			List<LevelIdAggMul> listAgg;
-			Dictionary<int,int> dict;
-			Dictionary<int,int> dictCount;
+			Dictionary<int, int> dict;
+			Dictionary<int, int> dictCount;
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField)
 				.Aggregate (AggregateFunction.Count (), "Count")
@@ -552,7 +533,7 @@ namespace Light.Data.MysqlTest
 				Assert.IsTrue (dict.TryGetValue (agg.LevelId, out i));
 				int c;
 				Assert.IsTrue (dictCount.TryGetValue (agg.LevelId, out c));
-				Assert.AreEqual (FormatDouble ((double)i / c), FormatDouble (agg.Avg));
+				Assert.AreEqual ((double)i / c, agg.Avg, DELTA);
 				Assert.AreEqual (c, agg.Count);
 			}
 
@@ -564,7 +545,7 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (57);
 			List<TeUser> list;
 			List<LevelIdAggEnum> listAgg;
-			Dictionary<GenderType,int> dict;
+			Dictionary<GenderType, int> dict;
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.GenderField).Aggregate (AggregateFunction.Count (), "Data").GetObjectList<LevelIdAggEnum> ();
@@ -589,7 +570,7 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (57);
 			List<TeUser> list;
 			List<LevelIdAggEnumNull> listAgg;
-			Dictionary<CheckLevelType?,int> dict;
+			Dictionary<CheckLevelType?, int> dict;
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.CheckLevelTypeField).Aggregate (AggregateFunction.Count (), "Data").GetObjectList<LevelIdAggEnumNull> ();
@@ -600,8 +581,7 @@ namespace Light.Data.MysqlTest
 					int i;
 					dict.TryGetValue (user.CheckLevelType, out i);
 					dict [user.CheckLevelType] = i + 1;
-				}
-				else {
+				} else {
 					nullCount++;
 				}
 			}
@@ -611,8 +591,7 @@ namespace Light.Data.MysqlTest
 					int i;
 					Assert.IsTrue (dict.TryGetValue (agg.CheckLevelType, out i));
 					Assert.AreEqual (i, agg.Data);
-				}
-				else {
+				} else {
 					Assert.AreEqual (nullCount, agg.Data);
 				}
 			}

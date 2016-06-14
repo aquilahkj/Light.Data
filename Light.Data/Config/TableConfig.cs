@@ -10,7 +10,7 @@ namespace Light.Data
 	{
 		readonly Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig> ();
 
-		ExtendParamCollection _extendParams=null;
+		ExtendParamCollection _extendParams = null;
 
 		public ExtendParamCollection ExtendParams {
 			get {

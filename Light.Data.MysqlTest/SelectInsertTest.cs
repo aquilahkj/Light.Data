@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Collections.Generic;
+using Light.Data.UnitTest;
 
 namespace Light.Data.MysqlTest
 {
@@ -18,59 +19,37 @@ namespace Light.Data.MysqlTest
 			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> ();
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).Insert<TeDataLogHistory> ();
 			listEx = list.FindAll (x => x.Id <= 20);
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
-
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Execute ();
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).CreateInsertor<TeDataLogHistory> ().Execute ();
 			listEx = list.FindAll (x => x.Id <= 20);
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Where (TeDataLog.IdField <= 20).Execute ();
 			listEx = list.FindAll (x => x.Id <= 20);
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
-
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Where (TeDataLog.IdField <= 20).OrderBy (TeDataLog.IdField.OrderByDesc ()).Execute ();
 			listEx = list.FindAll (x => x.Id <= 20);
 			listEx.Sort ((x, y) => x.Id < y.Id ? 1 : -1);
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Console.WriteLine (i);
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().Where (TeDataLog.IdField <= 20).CreateInsertor<TeDataLogHistory> ().Execute ();
@@ -78,10 +57,7 @@ namespace Light.Data.MysqlTest
 
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 		}
 
 		[Test ()]
@@ -100,8 +76,6 @@ namespace Light.Data.MysqlTest
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => x.CheckId == null && x.CheckPoint == null && x.CheckTime == null && x.CheckData == null));
-		
-
 		}
 
 		[Test ()]
@@ -118,19 +92,13 @@ namespace Light.Data.MysqlTest
 				.Execute ();
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().Insert<TeDataLogHistory> (TeDataLog.IdField, TeDataLog.UserIdField, TeDataLog.ArticleIdField, TeDataLog.RecordTimeField, TeDataLog.StatusField, TeDataLog.ActionField, TeDataLog.RequestUrlField, TeDataLog.CheckIdField, TeDataLog.CheckPointField, TeDataLog.CheckTimeField, TeDataLog.CheckDataField, TeDataLog.CheckLevelTypeIntField, TeDataLog.CheckLevelTypeStringField);
 			listEx = list;
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 		}
 
 		[Test ()]
@@ -208,10 +176,7 @@ namespace Light.Data.MysqlTest
 			});
 			listEx.AddRange (listTemp);
 			listAc = context.LQuery<TeDataLogHistory2> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory2> ();
 			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory2> ().Execute ();
@@ -225,10 +190,7 @@ namespace Light.Data.MysqlTest
 			});
 			listEx.AddRange (listTemp);
 			listAc = context.LQuery<TeDataLogHistory2> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAc);
 
 			context.TruncateTable<TeDataLogHistory> ();
 			context.LQuery<TeDataLog> ().CreateInsertor<TeDataLogHistory> ().Execute ();
@@ -239,10 +201,7 @@ namespace Light.Data.MysqlTest
 			listTemp = context.LQuery<TeDataLog> ().ToList ();
 			listEx.AddRange (listTemp);
 			listAce = context.LQuery<TeDataLogHistory> ().ToList ();
-			Assert.AreEqual (listEx.Count, listAce.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.IsTrue (EqualLog (listEx [i], listAce [i]));
-			}
+			AssertExtend.AreEnumerableTypeEqual<ITeDataLog> (listEx, listAce);
 		}
 	}
 }

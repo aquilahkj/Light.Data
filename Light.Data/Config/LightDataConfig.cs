@@ -87,6 +87,9 @@ namespace Light.Data
 					}
 				}
 			}
+			if (config.ExtendParams == null) {
+				config.ExtendParams = new ExtendParamCollection ();
+			}
 			return config;
 		}
 
@@ -120,7 +123,9 @@ namespace Light.Data
 					}
 				}
 			}
-
+			if (config.ExtendParams == null) {
+				config.ExtendParams = new ExtendParamCollection ();
+			}
 			return config;
 		}
 

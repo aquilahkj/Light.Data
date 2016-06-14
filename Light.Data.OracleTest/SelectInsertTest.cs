@@ -68,7 +68,6 @@ namespace Light.Data.OracleTest
 			listAc = context.LQuery<TeDataLogHistory> ().ToList ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			for (int i = 0; i < listEx.Count; i++) {
-				Console.WriteLine (i);
 				Assert.IsTrue (EqualLog (listEx [i], listAc [i]));
 			}
 

@@ -31,11 +31,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\DBSchema.cs" />
@@ -79,10 +79,10 @@
     <Compile Include="RelationMultiTest.cs" />
     <Compile Include="Model\RelationSchema3.cs" />
     <Compile Include="Model\RelationSchema4.cs" />
+    <Compile Include="Model\DataLogSchema.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="app.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -108,6 +108,7 @@
     <None Include="lightdata2\lightdata_check2.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
@@ -122,6 +123,10 @@
     <ProjectReference Include="..\Light.Data.MysqlAdapter\Light.Data.MysqlAdapter.csproj">
       <Project>{F2798589-B359-4CC1-BD0F-F5E58C416F71}</Project>
       <Name>Light.Data.MysqlAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Light.Data.UnitTest\Light.Data.UnitTest.csproj">
+      <Project>{94A466D1-E0E0-43CB-89DB-9613A2898D72}</Project>
+      <Name>Light.Data.UnitTest</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

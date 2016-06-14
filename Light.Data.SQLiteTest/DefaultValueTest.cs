@@ -41,7 +41,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (2, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("test", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -60,7 +60,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (2, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("test", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -124,7 +124,7 @@ namespace Light.Data.SQLiteTest
 			foreach (TeCheckValueDefault valueAc in listAc) {
 				Assert.AreEqual (2, valueAc.CheckId);
 				Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-				Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+				Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 				Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 				Assert.AreEqual ("test", valueAc.CheckData);
 				Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -147,7 +147,7 @@ namespace Light.Data.SQLiteTest
 			foreach (TeCheckValueDefault2 valueAc in listAc) {
 				Assert.AreEqual (2, valueAc.CheckId);
 				Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-				Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime).TotalSeconds, 1);
+				Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime).TotalSeconds, 2);
 				Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 				Assert.AreEqual ("test", valueAc.CheckData);
 				Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);

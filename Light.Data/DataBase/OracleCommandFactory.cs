@@ -505,6 +505,8 @@ namespace Light.Data
 
 		public override string CreateParamName (string name)
 		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
 			if (!name.StartsWith (":")) {
 				return ":" + name;
 			}

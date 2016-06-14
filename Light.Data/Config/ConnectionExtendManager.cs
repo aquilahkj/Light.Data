@@ -7,7 +7,7 @@ namespace Light.Data
 {
 	static class ConnectionExtendManager
 	{
-		static readonly string SECTION_NAME = "connectionExtendConfig";
+		static readonly string SECTION_NAME = "connectionExtendSettings";
 
 		static readonly Dictionary<string,ExtendParamCollection> paramDict = new Dictionary<string, ExtendParamCollection> ();
 

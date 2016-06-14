@@ -4,7 +4,7 @@ namespace Light.Data.UnitTest
 {
 	[Serializable]
 	[DataTable ("TeCheckValueConfig")]
-	public partial class TeCheckValueConfig : DataTableEntity
+	internal partial class TeCheckValueConfig : DataTableEntity
 	{
 		#region "Static Field"
 
@@ -187,7 +187,7 @@ namespace Light.Data.UnitTest
 		#endregion
 	}
 
-	public partial class TeCheckValueConfig0
+	internal partial class TeCheckValueConfig0
 	{
 		#region "Data Property"
 
@@ -299,7 +299,7 @@ namespace Light.Data.UnitTest
 		#endregion
 	}
 
-	public partial class TeCheckValueConfig1
+	internal partial class TeCheckValueConfig1
 	{
 		#region "Data Property"
 
@@ -411,7 +411,7 @@ namespace Light.Data.UnitTest
 		#endregion
 	}
 
-	public partial class TeCheckValueConfig2
+	internal partial class TeCheckValueConfig2
 	{
 		#region "Data Property"
 
@@ -523,7 +523,7 @@ namespace Light.Data.UnitTest
 		#endregion
 	}
 
-	public partial class TeCheckValueConfig3
+	internal partial class TeCheckValueConfig3
 	{
 		#region "Data Property"
 
@@ -635,7 +635,7 @@ namespace Light.Data.UnitTest
 		#endregion
 	}
 
-	public partial class TeCheckValueConfigS1
+	internal partial class TeCheckValueConfigS1
 	{
 		#region "Data Property"
 
@@ -747,33 +747,33 @@ namespace Light.Data.UnitTest
 		#endregion
 	}
 
-	public partial class TeCheckValueConfigC1:TeCheckValueConfig2
+	internal partial class TeCheckValueConfigC1:TeCheckValueConfig2
 	{
 		
 	}
 
-	public partial class TeCheckValueConfigC2:TeCheckValueConfig2
+	internal partial class TeCheckValueConfigC2:TeCheckValueConfig2
 	{
 		
 	}
 
-	public partial class TeCheckValueConfigC3:TeCheckValueConfig2
+	internal partial class TeCheckValueConfigC3:TeCheckValueConfig2
 	{
 
 	}
 
-	public partial class TeCheckValueConfigC4:TeCheckValueConfig2
+	internal partial class TeCheckValueConfigC4:TeCheckValueConfig2
 	{
 
 	}
 
-	public partial class TeCheckValueConfigA1:TeCheckValueConfig2
+	internal partial class TeCheckValueConfigA1:TeCheckValueConfig2
 	{
 
 	}
 
 	[AggregateTable]
-	public partial class LevelIdAggConfig
+	internal partial class LevelIdAggConfig
 	{
 		int levelId;
 
@@ -800,7 +800,7 @@ namespace Light.Data.UnitTest
 		}
 	}
 		
-	public partial class LevelIdAggConfig0
+	internal partial class LevelIdAggConfig0
 	{
 		int levelId;
 
@@ -825,7 +825,7 @@ namespace Light.Data.UnitTest
 		}
 	}
 
-	public partial class LevelIdAggConfig1
+	internal partial class LevelIdAggConfig1
 	{
 		int levelId;
 
@@ -850,7 +850,7 @@ namespace Light.Data.UnitTest
 		}
 	}
 
-	public partial class LevelIdAggConfig2
+	internal partial class LevelIdAggConfig2
 	{
 		int levelId;
 
@@ -875,7 +875,7 @@ namespace Light.Data.UnitTest
 		}
 	}
 
-	public partial class LevelIdAggConfigA1
+	internal partial class LevelIdAggConfigA1
 	{
 		int levelId;
 

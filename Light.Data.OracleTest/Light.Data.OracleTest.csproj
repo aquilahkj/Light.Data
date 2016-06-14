@@ -31,13 +31,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test.cs" />
     <Compile Include="Model\AggregateSchema.cs" />
     <Compile Include="Model\BaseSchema.cs" />
     <Compile Include="Model\ConfigSchema.cs" />
@@ -51,20 +50,6 @@
     <Compile Include="Model\RelationSchema2.cs" />
     <Compile Include="Model\RelationSchema3.cs" />
     <Compile Include="Model\RelationSchema4.cs" />
-    <Compile Include="BaseCommandTest.cs" />
-    <Compile Include="BaseCommandTest2.cs" />
-    <Compile Include="BaseTest.cs" />
-    <Compile Include="ConfigMappingTest.cs" />
-    <Compile Include="DefaultValueTest.cs" />
-    <Compile Include="JoinTableBaseTest.cs" />
-    <Compile Include="JoinTableOnTest.cs" />
-    <Compile Include="JoinTableOrderByTest.cs" />
-    <Compile Include="JoinTableWhereTest.cs" />
-    <Compile Include="LAggregateDataFieldTest.cs" />
-    <Compile Include="LAggregateGroupByTest.cs" />
-    <Compile Include="LAggregateHavingTest.cs" />
-    <Compile Include="LAggregateOrderByTest.cs" />
-    <Compile Include="LAggregateWhereTest.cs" />
     <Compile Include="LQueryAggreateTest.cs" />
     <Compile Include="LQueryMultiTest.cs" />
     <Compile Include="LQueryOrderByTest.cs" />
@@ -79,10 +64,24 @@
     <Compile Include="SqlExecutorTest.cs" />
     <Compile Include="TransContextTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\DataLogSchema.cs" />
+    <Compile Include="BaseCommandTest.cs" />
+    <Compile Include="BaseCommandTest2.cs" />
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="ConfigMappingTest.cs" />
+    <Compile Include="DefaultValueTest.cs" />
+    <Compile Include="JoinTableBaseTest.cs" />
+    <Compile Include="JoinTableOnTest.cs" />
+    <Compile Include="JoinTableOrderByTest.cs" />
+    <Compile Include="JoinTableWhereTest.cs" />
+    <Compile Include="LAggregateDataFieldTest.cs" />
+    <Compile Include="LAggregateGroupByTest.cs" />
+    <Compile Include="LAggregateHavingTest.cs" />
+    <Compile Include="LAggregateOrderByTest.cs" />
+    <Compile Include="LAggregateWhereTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="lightdata\lightdata_check1.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -108,6 +107,7 @@
     <None Include="lightdata_check1.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Light.Data\Light.Data.csproj">
@@ -117,6 +117,10 @@
     <ProjectReference Include="..\Light.Data.OracleAdapter\Light.Data.OracleAdapter.csproj">
       <Project>{C162B4E6-51A0-4169-99DB-1E80E11E141A}</Project>
       <Name>Light.Data.OracleAdapter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Light.Data.UnitTest\Light.Data.UnitTest.csproj">
+      <Project>{94A466D1-E0E0-43CB-89DB-9613A2898D72}</Project>
+      <Name>Light.Data.UnitTest</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

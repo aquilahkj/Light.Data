@@ -1,12 +1,12 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Collections.Generic;
-using Light.Data;
+using Light.Data.UnitTest;
 
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class RelationMultiTest:BaseTest
+	public class RelationMultiTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_CollectionAndSingle ()
@@ -17,8 +17,8 @@ namespace Light.Data.MysqlTest
 
 			List<TeUser> users;
 			List<TeUserLevel> levels;
-			Dictionary<int,List<TeUser>> dict;
-			List<TeUserLevelWithUserRefer> list; 
+			Dictionary<int, List<TeUser>> dict;
+			List<TeUserLevelWithUserRefer> list;
 
 
 			users = context.LQuery<TeUser> ().ToList ();
@@ -29,14 +29,14 @@ namespace Light.Data.MysqlTest
 			}
 			list = context.LQuery<TeUserLevelWithUserRefer> ().ToList ();
 			Assert.AreEqual (dict.Count, list.Count);
-			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
+			foreach (KeyValuePair<int, List<TeUser>> kvs in dict) {
 				TeUserLevelWithUserRefer lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
 				List<TeUserWithLevelRefer> us = new List<TeUserWithLevelRefer> ();
 				us.AddRange (lu.Users);
 				Assert.AreEqual (kvs.Value.Count, us.Count);
 				for (int i = 0; i < us.Count; i++) {
-					Assert.IsTrue (EqualUser (kvs.Value [i], us [i]));
+					AssertExtend.AreTypeEqual<TeUser> (kvs.Value [i], us [i]);
 					Assert.NotNull (us [i].UserLevel);
 					Assert.AreEqual (lu, us [i].UserLevel);
 				}
@@ -53,7 +53,7 @@ namespace Light.Data.MysqlTest
 
 			List<TeUser> users;
 			List<TeUserExtend> extends;
-			List<TeUserWithExtendRefer> list; 
+			List<TeUserWithExtendRefer> list;
 
 
 			users = context.LQuery<TeUser> ().ToList ();
@@ -64,12 +64,11 @@ namespace Light.Data.MysqlTest
 			foreach (TeUser user in users) {
 				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
 				TeUserWithExtendRefer refer = list.Find (x => x.Id == user.Id);
-				Assert.IsTrue (EqualUser (user, refer));
+				AssertExtend.AreTypeEqual<TeUser> (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
-				}
-				else {
-					Assert.IsTrue (EqualUserExtend (extend, refer.UserExtend));
+				} else {
+					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 				}
 			}
@@ -84,7 +83,7 @@ namespace Light.Data.MysqlTest
 
 			List<TeUser> users;
 			List<TeUserExtend> extends;
-			List<TeUserWithExtendRefer1> list; 
+			List<TeUserWithExtendRefer1> list;
 
 
 			users = context.LQuery<TeUser> ().ToList ();
@@ -95,17 +94,16 @@ namespace Light.Data.MysqlTest
 			foreach (TeUser user in users) {
 				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
 				TeUserWithExtendRefer1 refer = list.Find (x => x.Id == user.Id);
-				Assert.IsTrue (EqualUser (user, refer));
+				AssertExtend.AreTypeEqual<TeUser> (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
 					Assert.IsNull (refer.UserExtend1);
-				}
-				else {
-					Assert.IsTrue (EqualUserExtend (extend, refer.UserExtend));
+				} else {
+					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
 					Assert.AreEqual (refer.UserExtend, refer.UserExtend1);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 					Assert.IsNotNull (refer.UserExtend.User1);
-					Assert.IsTrue (EqualUser (user, refer.UserExtend.User1));
+					AssertExtend.AreTypeEqual<TeUser> (user, refer.UserExtend.User1);
 				}
 				Assert.IsNull (refer.UserExtend2);
 			}
@@ -121,7 +119,7 @@ namespace Light.Data.MysqlTest
 			List<TeUser> users;
 			List<TeUserExtend> extends;
 			List<TeAreaInfo> areaInfos;
-			List<TeUserWithExtendRefer2> list; 
+			List<TeUserWithExtendRefer2> list;
 
 
 			users = context.LQuery<TeUser> ().ToList ();
@@ -134,19 +132,17 @@ namespace Light.Data.MysqlTest
 				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
 
 				TeUserWithExtendRefer2 refer = list.Find (x => x.Id == user.Id);
-				Assert.IsTrue (EqualUser (user, refer));
+				AssertExtend.AreTypeEqual<TeUser> (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
-				}
-				else {
-					Assert.IsTrue (EqualUserExtend (extend, refer.UserExtend));
+				} else {
+					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 					TeAreaInfo areaInfo = areaInfos.Find (x => x.Id == extend.ExtendAreaId);
 					if (areaInfo == null) {
 						Assert.IsNull (refer.UserExtend.AreaInfo);
-					}
-					else {
-						Assert.IsTrue (EqualAreaInfo (areaInfo, refer.UserExtend.AreaInfo));
+					} else {
+						AssertExtend.AreTypeEqual<TeAreaInfo> (areaInfo, refer.UserExtend.AreaInfo);
 						Assert.AreEqual (refer.UserExtend, refer.UserExtend.AreaInfo.UserExtend);
 					}
 				}

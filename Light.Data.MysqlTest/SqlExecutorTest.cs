@@ -2,11 +2,12 @@
 using System.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
+using Light.Data.UnitTest;
 
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class SqlExecutorTest:BaseTest
+	public class SqlExecutorTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_SqlString_QueryList ()
@@ -16,46 +17,34 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listAc;
 			string sql;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 
 			sql = "select * from Te_User";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User where id>5 and Id<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User where Id>@P1 and Id<=@P2";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 8);
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -66,10 +55,7 @@ namespace Light.Data.MysqlTest
 			}
 
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -80,47 +66,35 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listAc;
 			string sql;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 
 			sql = "select * from Te_User";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User where id>5 and Id<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User where Id>@P1 and Id<=@P2";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 8);
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from Te_User";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -131,10 +105,7 @@ namespace Light.Data.MysqlTest
 			}
 
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -144,7 +115,7 @@ namespace Light.Data.MysqlTest
 			string sql;
 			TeUser user;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 
 			sql = "update Te_User set Account='abc' where id=1";
 			executor = context.CreateSqlStringExecutor (sql);
@@ -154,7 +125,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual ("abc", user.Account);
 
 			sql = "update Te_User set Account=@P2 where Id=@P1";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 2);
 			ps [1] = new DataParameter ("P2", "bcd");
 			executor = context.CreateSqlStringExecutor (sql, ps);
@@ -164,7 +135,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual ("bcd", user.Account);
 
 			sql = "update Te_User set Account=@P2 where Id=@P1";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 3);
 			ps [1] = new DataParameter ("P2", "abc");
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -184,7 +155,7 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (10);
 			string sql;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 			int ac;
 
 			sql = "select count(1) from Te_User";
@@ -193,7 +164,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (10, ac);
 
 			sql = "select count(1) from Te_User where Id<=@P1";
-			ps = new DataParameter[1];
+			ps = new DataParameter [1];
 			ps [0] = new DataParameter ("P1", 5);
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			ac = Convert.ToInt32 (executor.ExecuteScalar ());
@@ -215,10 +186,10 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (10);
 			string sql;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 
 			sql = "sptest7";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 0, ParameterDirection.Output);
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
@@ -226,7 +197,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (5, Convert.ToInt32 (ps [1].OutputValue));
 
 			sql = "sptest7";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 0, ParameterDirection.Output);
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -246,38 +217,29 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listAc;
 			string sql;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 
 			sql = "sptest1";
 			executor = context.CreateStoreProcedureExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "sptest1";
 			executor = context.CreateStoreProcedureExecutor (sql);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 
 			sql = "sptest2";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 8);
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "sptest1";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -287,10 +249,7 @@ namespace Light.Data.MysqlTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -301,38 +260,29 @@ namespace Light.Data.MysqlTest
 			List<TeUser> listAc;
 			string sql;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 
 			sql = "sptest1";
 			executor = context.CreateStoreProcedureExecutor (sql);
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "sptest1";
 			executor = context.CreateStoreProcedureExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "sptest2";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 5);
 			ps [1] = new DataParameter ("P2", 8);
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "sptest1";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -342,10 +292,7 @@ namespace Light.Data.MysqlTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -355,7 +302,7 @@ namespace Light.Data.MysqlTest
 			string sql;
 			TeUser user;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 
 			sql = "sptest3";
 			executor = context.CreateStoreProcedureExecutor (sql);
@@ -365,7 +312,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual ("abc", user.Account);
 
 			sql = "sptest4";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 2);
 			ps [1] = new DataParameter ("P2", "bcd");
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
@@ -375,7 +322,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual ("bcd", user.Account);
 
 			sql = "sptest4";
-			ps = new DataParameter[2];
+			ps = new DataParameter [2];
 			ps [0] = new DataParameter ("P1", 3);
 			ps [1] = new DataParameter ("P2", "abc");
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -395,7 +342,7 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (10);
 			string sql;
 			SqlExecutor executor;
-			DataParameter[] ps;
+			DataParameter [] ps;
 			int ac;
 
 			sql = "sptest5";
@@ -404,7 +351,7 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (10, ac);
 
 			sql = "sptest6";
-			ps = new DataParameter[1];
+			ps = new DataParameter [1];
 			ps [0] = new DataParameter ("P1", 5);
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			ac = Convert.ToInt32 (executor.ExecuteScalar ());

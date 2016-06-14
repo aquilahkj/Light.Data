@@ -125,21 +125,21 @@ namespace Light.Data.MssqlTest
 				Assert.True (EqualUser (listEx [i], listAc [i], true));
 			}
 
-			context.TruncateTable<TeUser> ();
-			result = context.BulkInsert (listEx.ToArray (), 20);
-			Assert.AreEqual (result, count);
-			listAc = context.LQuery<TeUser> ().ToList ();
-			for (int i = 0; i < count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			//context.TruncateTable<TeUser> ();
+			//result = context.BulkInsert (listEx.ToArray (), 20);
+			//Assert.AreEqual (result, count);
+			//listAc = context.LQuery<TeUser> ().ToList ();
+			//for (int i = 0; i < count; i++) {
+			//	Assert.True (EqualUser (listEx [i], listAc [i], true));
+			//}
 
-			context.TruncateTable<TeUser> ();
-			result = context.BulkInsert (listEx.ToArray (), 100);
-			Assert.AreEqual (result, count);
-			listAc = context.LQuery<TeUser> ().ToList ();
-			for (int i = 0; i < count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			//context.TruncateTable<TeUser> ();
+			//result = context.BulkInsert (listEx.ToArray (), 100);
+			//Assert.AreEqual (result, count);
+			//listAc = context.LQuery<TeUser> ().ToList ();
+			//for (int i = 0; i < count; i++) {
+			//	Assert.True (EqualUser (listEx [i], listAc [i], true));
+			//}
 		}
 
 		[Test ()]
@@ -307,7 +307,7 @@ namespace Light.Data.MssqlTest
 
 			int result;
 			List<TeUser> listAc;
-			const int rdd = 20;
+			const int rdd = 5;
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());

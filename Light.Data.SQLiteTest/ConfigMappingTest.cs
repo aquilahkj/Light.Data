@@ -206,7 +206,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (1, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("TeCheckValueConfigC2", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -267,7 +267,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (1, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("TeCheckValueConfigC2", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -300,7 +300,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (1, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("TeCheckValueConfigC3", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -333,7 +333,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (1, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("TeCheckValueConfigC4", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -366,7 +366,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (1, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("TeCheckValueConfigA1", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);
@@ -427,7 +427,7 @@ namespace Light.Data.SQLiteTest
 
 			Assert.AreEqual (1, valueAc.CheckId);
 			Assert.AreEqual (DEMO_DOUBLE, valueAc.CheckRate);
-			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 1);
+			Assert.LessOrEqual ((DateTime.Now - valueAc.CheckTime.Value).TotalSeconds, 2);
 			Assert.AreEqual (DateTime.Now.Date, valueAc.CheckDate);
 			Assert.AreEqual ("TeCheckValueConfigC1", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.High, valueAc.CheckLevel);

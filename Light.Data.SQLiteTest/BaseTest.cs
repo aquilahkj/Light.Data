@@ -24,8 +24,7 @@ namespace Light.Data.SQLiteTest
 			TeUser user;
 			if (useContext) {
 				user = context.CreateNew<TeUser> ();
-			}
-			else {
+			} else {
 				user = new TeUser ();
 			}
 			user.Account = "test";
@@ -46,7 +45,7 @@ namespace Light.Data.SQLiteTest
 
 		protected TeUser2 CreateTestUser2 ()
 		{
-	
+
 			TeUser2 user = new TeUser2 ();
 
 			user.Account = "test";
@@ -80,7 +79,7 @@ namespace Light.Data.SQLiteTest
 				userInsert.DeleteFlag = i % 2 == 0;
 				userInsert.LoginTimes = i % 6 == 0 ? 6 : i % 6;
 				userInsert.Address = i % 2 == 0 ? "addr" + userInsert.Account : null;
-	
+
 				if (i % 2 == 0) {
 					userInsert.LastLoginTime = userInsert.RegTime.AddMinutes (i);
 					userInsert.Area = i % 10 == 0 ? 10 : i % 10;
@@ -146,17 +145,17 @@ namespace Light.Data.SQLiteTest
 				TeUserLevel level = new TeUserLevel ();
 				level.Id = i;
 				level.LevelName = "level" + i;
-//				if (i % 2 == 0) {
-//					level.Status = 0;
-//				}
-//				else {
-//					level.Status = 1;
-//				}
+				//				if (i % 2 == 0) {
+				//					level.Status = 0;
+				//				}
+				//				else {
+				//					level.Status = 1;
+				//				}
 				level.Status = i % 6 == 0 ? 6 : i % 6;
 				lists.Add (level);
 			}
 			if (insert) {
-				context.BulkInsert (lists.ToArray ());	
+				context.BulkInsert (lists.ToArray ());
 			}
 			output.UseConsoleOutput = true;
 			return lists;
@@ -254,8 +253,7 @@ namespace Light.Data.SQLiteTest
 			TeDataLog log;
 			if (useContext) {
 				log = context.CreateNew<TeDataLog> ();
-			}
-			else {
+			} else {
 				log = new TeDataLog ();
 			}
 			log.UserId = 1;
@@ -430,8 +428,7 @@ namespace Light.Data.SQLiteTest
 			TeAreaInfo info;
 			if (useContext) {
 				info = context.CreateNew<TeAreaInfo> ();
-			}
-			else {
+			} else {
 				info = new TeAreaInfo ();
 			}
 			info.Name = "area";
@@ -519,11 +516,9 @@ namespace Light.Data.SQLiteTest
 		{
 			if (!d1.HasValue && !d2.HasValue) {
 				return true;
-			}
-			else if (d1.HasValue && d2.HasValue) {
+			} else if (d1.HasValue && d2.HasValue) {
 				return CheckDouble (d1.Value, d2.Value, digis);
-			}
-			else {
+			} else {
 				return false;
 			}
 		}

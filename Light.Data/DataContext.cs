@@ -11,7 +11,7 @@ namespace Light.Data
 	/// </summary>
 	public class DataContext
 	{
-		static Dictionary<string,DataContextSetting> Settings = new Dictionary<string, DataContextSetting> ();
+		static Dictionary<string, DataContextSetting> Settings = new Dictionary<string, DataContextSetting> ();
 
 		static DataContextSetting DefaultContextSetting;
 
@@ -46,8 +46,7 @@ namespace Light.Data
 		{
 			if (DefaultContextSetting == null) {
 				throw new LightDataException (RE.DefaultConnectionNotExists);
-			}
-			else {
+			} else {
 				DataContext context = new DataContext (DefaultContextSetting.Connection, DefaultContextSetting.Name, DefaultContextSetting.DataBase);
 				return context;
 			}
@@ -67,12 +66,10 @@ namespace Light.Data
 				if (setting != null) {
 					DataContext context = new DataContext (setting.Connection, setting.Name, setting.DataBase);
 					return context;
-				}
-				else {
+				} else {
 					throw new LightDataException (RE.SpecifiedConfigNameConnectionStringError);
 				}
-			}
-			else {
+			} else {
 				throw new LightDataException (RE.SpecifiedConfigNameConnectionStringNotExists);
 			}
 		}
@@ -203,8 +200,7 @@ namespace Light.Data
 			DataEntityMapping mapping = DataMapping.GetEntityMapping (type);
 			if (mapping != null) {
 				return mapping.TableName;
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
@@ -215,9 +211,9 @@ namespace Light.Data
 		/// <returns>The table name.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public string GetTableName<T> ()
-             where T : class, new()
+			 where T : class, new()
 		{
-			return GetTableName (typeof(T));
+			return GetTableName (typeof (T));
 		}
 
 		/// <summary>
@@ -232,16 +228,15 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateEntityExistsCommand (mapping, data);
 			Region region = new Region (0, 1);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
-				foreach (object obj in QueryDataReader(pm, command, region, SafeLevel.Default,null)) {
+				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof (Int32));
+				foreach (object obj in QueryDataReader (pm, command, region, SafeLevel.Default, null)) {
 					exists = true;
 				}
 			}
 			int result;
 			if (exists) {
 				result = Update (mapping, data);
-			}
-			else {
+			} else {
 				result = Insert (mapping, data);
 			}
 			return result;
@@ -296,8 +291,7 @@ namespace Light.Data
 			DataTableEntity entity = data as DataTableEntity;
 			if (entity != null) {
 				return Update (mapping, data, entity.GetUpdateFields ());
-			}
-			else {
+			} else {
 				return Update (mapping, data, null);
 			}
 		}
@@ -308,7 +302,7 @@ namespace Light.Data
 		/// <returns>result.</returns>
 		/// <param name="data">Data.</param>
 		/// <param name="updateFields">Update fields.</param>
-		internal int Update (object data, string[] updateFields)
+		internal int Update (object data, string [] updateFields)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
 			return Update (mapping, data, updateFields);
@@ -319,13 +313,12 @@ namespace Light.Data
 			DataTableEntity entity = data as DataTableEntity;
 			if (entity != null) {
 				return Update (mapping, data, entity.GetUpdateFields ());
-			}
-			else {
+			} else {
 				return Update (mapping, data, null);
 			}
 		}
 
-		private int Update (DataTableEntityMapping mapping, object data, string[] updateFields)
+		private int Update (DataTableEntityMapping mapping, object data, string [] updateFields)
 		{
 			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateUpdateCommand (mapping, data, updateFields);
@@ -362,9 +355,9 @@ namespace Light.Data
 		/// <returns>The new.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T CreateNew<T> ()
-            where T : class, new()
+			where T : class, new()
 		{
-			DataTableEntityMapping rawmapping = DataMapping.GetTableMapping (typeof(T));
+			DataTableEntityMapping rawmapping = DataMapping.GetTableMapping (typeof (T));
 			object obj = rawmapping.InitialData ();
 			if (rawmapping.IsDataEntity) {
 				DataEntity data = obj as DataEntity;
@@ -382,9 +375,9 @@ namespace Light.Data
 		/// <param name="query">Query.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public int DeleteMass<T> (QueryExpression query)
-            where T : class, new()
+			where T : class, new()
 		{
-			return DeleteMass (typeof(T), query);
+			return DeleteMass (typeof (T), query);
 		}
 
 		/// <summary>
@@ -393,7 +386,7 @@ namespace Light.Data
 		/// <returns>result.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public int DeleteMass<T> ()
-            where T : class, new()
+			where T : class, new()
 		{
 			return DeleteMass<T> (null);
 		}
@@ -427,10 +420,10 @@ namespace Light.Data
 		/// <param name="updates">Updates.</param>
 		/// <param name="query">Query.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int UpdateMass<T> (UpdateSetValue[] updates, QueryExpression query)
-            where T : class, new()
+		public int UpdateMass<T> (UpdateSetValue [] updates, QueryExpression query)
+			where T : class, new()
 		{
-			return UpdateMass (typeof(T), updates, query);
+			return UpdateMass (typeof (T), updates, query);
 		}
 
 		/// <summary>
@@ -439,19 +432,19 @@ namespace Light.Data
 		/// <typeparam name="T">更新对象类型</typeparam>
 		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
 		/// <returns>受影响行数</returns>
-		public int UpdateMass<T> (UpdateSetValue[] updates)
-            where T : class, new()
+		public int UpdateMass<T> (UpdateSetValue [] updates)
+			where T : class, new()
 		{
 			return UpdateMass<T> (updates, null);
 		}
 
-		internal int UpdateMass (Type type, UpdateSetValue[] updates, QueryExpression query)
+		internal int UpdateMass (Type type, UpdateSetValue [] updates, QueryExpression query)
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
 			return UpdateMass (mapping, updates, query);
 		}
 
-		internal int UpdateMass (DataTableEntityMapping mapping, UpdateSetValue[] updates, QueryExpression query)
+		internal int UpdateMass (DataTableEntityMapping mapping, UpdateSetValue [] updates, QueryExpression query)
 		{
 			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (mapping, updates, query);
@@ -478,8 +471,8 @@ namespace Light.Data
 			Type arrayType = datas.GetType ();
 			Type type = arrayType.GetElementType ();
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
-			CommandData[] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (mapping, datas, batchCount);
-			IDbCommand[] dbcommands = new IDbCommand[commandDatas.Length];
+			CommandData [] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (mapping, datas, batchCount);
+			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
 				dbcommands [i] = commandDatas [i].CreateCommand (_dataBase);
 			}
@@ -488,16 +481,16 @@ namespace Light.Data
 				CommandData commandDataIdentity = _dataBase.Factory.CreateIdentityCommand (mapping);
 				identityCommand = commandDataIdentity.CreateCommand (_dataBase);
 			}
-				
+
 			object obj;
-			int[] results = ExecuteBluckInsertCommands (dbcommands, identityCommand, SafeLevel.Default, out obj);
+			int [] results = ExecuteBluckInsertCommands (dbcommands, identityCommand, SafeLevel.Default, out obj);
 			foreach (IDbCommand command in dbcommands) {
 				command.Dispose ();
 			}
 			if (!Object.Equals (obj, null)) {
 				object id = Convert.ChangeType (obj, mapping.IdentityField.ObjectType);
 				int len = datas.Length;
-				object[] ids = CreateObjectList (id, len);
+				object [] ids = CreateObjectList (id, len);
 
 				for (int i = 0; i < len; i++) {
 					object data = datas.GetValue (i);
@@ -506,48 +499,43 @@ namespace Light.Data
 				}
 
 			}
-//			int result = 0;
-//			foreach (int i in results) {
-//				result += i;
-//			}
+			//			int result = 0;
+			//			foreach (int i in results) {
+			//				result += i;
+			//			}
 			return datas.Length;
 		}
 
-		static object[] CreateObjectList (object lastId, int len)
+		static object [] CreateObjectList (object lastId, int len)
 		{
 			TypeCode code = Type.GetTypeCode (lastId.GetType ());
-			object[] results = new object[len];
+			object [] results = new object [len];
 			if (code == TypeCode.Int16) {
 				short id = (short)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			}
-			else if (code == TypeCode.Int32) {
+			} else if (code == TypeCode.Int32) {
 				int id = (int)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			}
-			else if (code == TypeCode.Int64) {
+			} else if (code == TypeCode.Int64) {
 				long id = (long)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			}
-			else if (code == TypeCode.UInt16) {
+			} else if (code == TypeCode.UInt16) {
 				ushort id = (ushort)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			}
-			else if (code == TypeCode.UInt32) {
+			} else if (code == TypeCode.UInt32) {
 				uint id = (uint)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			}
-			else if (code == TypeCode.UInt64) {
+			} else if (code == TypeCode.UInt64) {
 				ulong id = (ulong)lastId;
 				id++;
 				for (int i = len - 1; i >= 0; i--) {
@@ -557,7 +545,7 @@ namespace Light.Data
 			return results;
 		}
 
-		internal int SelectInsert (Type insertType, DataFieldInfo[] insertFields, Type selectType, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
+		internal int SelectInsert (Type insertType, DataFieldInfo [] insertFields, Type selectType, SelectFieldInfo [] selectFields, QueryExpression query, OrderExpression order)
 		{
 			DataTableEntityMapping insertMapping = DataMapping.GetTableMapping (insertType);
 			DataTableEntityMapping selectMapping = DataMapping.GetTableMapping (selectType);
@@ -576,12 +564,12 @@ namespace Light.Data
 		/// <returns>object.</returns>
 		/// <param name="primaryKeys">Primary keys.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public T SelectSingleFromKey<T> (params object[] primaryKeys)
-            where T : class, new()
+		public T SelectSingleFromKey<T> (params object [] primaryKeys)
+			where T : class, new()
 		{
 			if (primaryKeys == null || primaryKeys.Length == 0)
 				throw new ArgumentNullException ("primaryKeys");
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(T));
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof (T));
 			if (primaryKeys.Length != mapping.PrimaryKeyCount) {
 				throw new LightDataException (RE.TheNumberOfPrimaryKeysIsNotMatch);
 			}
@@ -605,7 +593,7 @@ namespace Light.Data
 		/// <param name="id">Identifier.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (int id)
-            where T : class, new()
+			where T : class, new()
 		{
 			return SelectSingleFromIdObj<T> (id);
 		}
@@ -617,7 +605,7 @@ namespace Light.Data
 		/// <param name="id">Identifier.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (uint id)
-            where T : class, new()
+			where T : class, new()
 		{
 			return SelectSingleFromIdObj<T> (id);
 		}
@@ -629,7 +617,7 @@ namespace Light.Data
 		/// <param name="id">Identifier.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (long id)
-            where T : class, new()
+			where T : class, new()
 		{
 			return SelectSingleFromIdObj<T> (id);
 		}
@@ -641,15 +629,15 @@ namespace Light.Data
 		/// <param name="id">Identifier.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T SelectSingleFromId<T> (ulong id)
-            where T : class, new()
+			where T : class, new()
 		{
 			return SelectSingleFromIdObj<T> (id);
 		}
 
 		private T SelectSingleFromIdObj<T> (object id)
-            where T : class, new()
+			where T : class, new()
 		{
-			DataTableEntityMapping dtmapping = DataMapping.GetTableMapping (typeof(T));
+			DataTableEntityMapping dtmapping = DataMapping.GetTableMapping (typeof (T));
 			if (dtmapping.IdentityField == null) {
 				throw new LightDataException (RE.DataTableNotIdentityField);
 			}
@@ -664,7 +652,7 @@ namespace Light.Data
 		/// <returns>The LEnumerable.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public LEnumerable<T> LQuery<T> ()
-            where T : class, new()
+			where T : class, new()
 		{
 			return new LEnumerable<T> (this);
 		}
@@ -675,7 +663,7 @@ namespace Light.Data
 		/// <returns>The aggregate.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public AggregateTable<T> LAggregate<T> ()
-            where T : class, new()
+			where T : class, new()
 		{
 			return new AggregateTable<T> (this);
 		}
@@ -685,17 +673,17 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The table.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int TruncateTable<T> () 
+		public int TruncateTable<T> ()
 			where T : class, new()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(T));
+			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof (T));
 			CommandData commandData = _dataBase.Factory.CreateTruncateCommand (mapping);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
 
 		internal IEnumerable<T> QueryDataMappingEnumerable<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-			where T:class, new()
+			where T : class, new()
 		{
 			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
@@ -704,9 +692,9 @@ namespace Light.Data
 		}
 
 		internal List<T> QueryDataList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-			where T:class, new()
+			where T : class, new()
 		{
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof(T));
+			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof (T));
 			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			List<T> list = new List<T> ();
@@ -718,7 +706,7 @@ namespace Light.Data
 		}
 
 		internal List<T> QueryJoinDataList<T> (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-			where T:class, new()
+			where T : class, new()
 		{
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
 			List<T> list = new List<T> ();
@@ -741,7 +729,7 @@ namespace Light.Data
 
 		internal List<K> QueryColumeList<K> (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{
-			Type outputType = typeof(K);
+			Type outputType = typeof (K);
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
 			List<K> list = new List<K> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
@@ -763,9 +751,9 @@ namespace Light.Data
 		}
 
 		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-			where T:class, new()
+			where T : class, new()
 		{
-			AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof(T));
+			AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof (T));
 			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
@@ -776,14 +764,14 @@ namespace Light.Data
 		}
 
 		internal T SelectSingle<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
-			where T:class, new()
+			where T : class, new()
 		{
-			T target = default(T);
+			T target = default (T);
 			Region region = new Region (index, 1);
 			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				foreach (T obj in QueryDataMappingReader<T>(mapping, command, innerRegion ? null : region, level, commandData.State)) {
+				foreach (T obj in QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State)) {
 					target = obj;
 					break;
 				}
@@ -814,8 +802,7 @@ namespace Light.Data
 				object obj = ExecuteScalar (command, level);
 				if (Object.Equals (obj, DBNull.Value)) {
 					return null;
-				}
-				else {
+				} else {
 					return obj;
 				}
 			}
@@ -827,8 +814,8 @@ namespace Light.Data
 			Region region = new Region (0, 1);
 			CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof(Int32));
-				foreach (object obj in QueryDataReader(pm, command, region, level,null)) {
+				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof (Int32));
+				foreach (object obj in QueryDataReader (pm, command, region, level, null)) {
 					exists = true;
 				}
 			}
@@ -840,8 +827,7 @@ namespace Light.Data
 			DataTable dt = QueryDataSet (dbcommand, level).Tables [0];
 			if (region == null) {
 				return dt;
-			}
-			else {
+			} else {
 				DataTable dt1 = new DataTable ();
 				DataRowCollection drs = dt.Rows;
 				int start = region.Start;
@@ -865,7 +851,7 @@ namespace Light.Data
 		{
 			if (this.output != null) {
 				int count = command.Parameters.Count;
-				DataParameter[] list = new DataParameter[count];
+				DataParameter [] list = new DataParameter [count];
 				int index = 0;
 				foreach (IDataParameter value in command.Parameters) {
 					list [index] = new DataParameter (value.ParameterName, value.Value, value.DbType.ToString (), value.Direction);
@@ -887,7 +873,7 @@ namespace Light.Data
 		{
 			if (this.output != null) {
 				int count = command.Parameters.Count;
-				DataParameter[] list = new DataParameter[count];
+				DataParameter [] list = new DataParameter [count];
 				int index = 0;
 				foreach (IDataParameter value in command.Parameters) {
 					list [index] = new DataParameter (value.ParameterName, value.Value, value.DbType.ToString (), value.Direction);
@@ -898,12 +884,12 @@ namespace Light.Data
 			}
 		}
 
-		internal virtual int[] ExecuteBluckInsertCommands (IDbCommand[] insertCommands, IDbCommand indentityCommand, SafeLevel level, out object lastId)
+		internal virtual int [] ExecuteBluckInsertCommands (IDbCommand [] insertCommands, IDbCommand indentityCommand, SafeLevel level, out object lastId)
 		{
 			if (level == SafeLevel.None) {
 				level = SafeLevel.Default;
 			}
-			int[] rInts = new int[insertCommands.Length];
+			int [] rInts = new int [insertCommands.Length];
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				try {
@@ -918,8 +904,7 @@ namespace Light.Data
 						transaction.SetupCommand (indentityCommand);
 						OutputCommand ("ExecuteInsertCommand_Indentity", indentityCommand, level);
 						lastId = indentityCommand.ExecuteScalar ();
-					}
-					else {
+					} else {
 						lastId = null;
 					}
 					transaction.Commit ();
@@ -933,12 +918,12 @@ namespace Light.Data
 			return rInts;
 		}
 
-		internal virtual int[] ExecuteMultiCommands (IDbCommand[] dbcommands, SafeLevel level)
+		internal virtual int [] ExecuteMultiCommands (IDbCommand [] dbcommands, SafeLevel level)
 		{
 			if (level == SafeLevel.None) {
 				level = SafeLevel.Default;
 			}
-			int[] rInts = new int[dbcommands.Length];
+			int [] rInts = new int [dbcommands.Length];
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				try {
@@ -1046,8 +1031,7 @@ namespace Light.Data
 			if (region != null) {
 				start = region.Start;
 				size = region.Size;
-			}
-			else {
+			} else {
 				start = 0;
 				size = int.MaxValue;
 			}
@@ -1080,15 +1064,14 @@ namespace Light.Data
 		}
 
 		internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
-			where T :class, new()
+			where T : class, new()
 		{
 			int start;
 			int size;
 			if (region != null) {
 				start = region.Start;
 				size = region.Size;
-			}
-			else {
+			} else {
 				start = 0;
 				size = int.MaxValue;
 			}
@@ -1158,7 +1141,7 @@ namespace Light.Data
 		/// <param name="sqlString">Sql string.</param>
 		/// <param name="param">Parameter.</param>
 		/// <param name="level">Level.</param>
-		public SqlExecutor CreateSqlStringExecutor (string sqlString, DataParameter[] param, SafeLevel level)
+		public SqlExecutor CreateSqlStringExecutor (string sqlString, DataParameter [] param, SafeLevel level)
 		{
 			SqlExecutor executor = new SqlExecutor (sqlString, param, CommandType.Text, level, this);
 			return executor;
@@ -1170,7 +1153,7 @@ namespace Light.Data
 		/// <returns>The sql string executor.</returns>
 		/// <param name="sqlString">Sql string.</param>
 		/// <param name="param">Parameter.</param>
-		public SqlExecutor CreateSqlStringExecutor (string sqlString, DataParameter[] param)
+		public SqlExecutor CreateSqlStringExecutor (string sqlString, DataParameter [] param)
 		{
 			return CreateSqlStringExecutor (sqlString, param, SafeLevel.Default);
 		}
@@ -1203,7 +1186,7 @@ namespace Light.Data
 		/// <param name="storeProcedure">Store procedure.</param>
 		/// <param name="param">Parameter.</param>
 		/// <param name="level">Level.</param>
-		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure, DataParameter[] param, SafeLevel level)
+		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure, DataParameter [] param, SafeLevel level)
 		{
 			SqlExecutor executor = new SqlExecutor (storeProcedure, param, CommandType.StoredProcedure, level, this);
 			return executor;
@@ -1215,7 +1198,7 @@ namespace Light.Data
 		/// <returns>The store procedure executor.</returns>
 		/// <param name="storeProcedure">Store procedure.</param>
 		/// <param name="param">Parameter.</param>
-		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure, DataParameter[] param)
+		public SqlExecutor CreateStoreProcedureExecutor (string storeProcedure, DataParameter [] param)
 		{
 			return CreateStoreProcedureExecutor (storeProcedure, param, SafeLevel.Default);
 		}
@@ -1286,9 +1269,9 @@ namespace Light.Data
 		/// <param name="extendState">Extend state.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		internal List<T> QueryDataRelateList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level, object extendState)
-			where T:class, new()
+			where T : class, new()
 		{
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof(T));
+			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof (T));
 			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null, extendState);
 			List<T> list = new List<T> ();

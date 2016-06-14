@@ -2,13 +2,13 @@
 
 namespace Light.Data.UnitTest
 {
-	public enum GenderType
+	internal enum GenderType
 	{
 		Male,
 		Female
 	}
 
-	public enum CheckLevelType
+	internal enum CheckLevelType
 	{
 		Low,
 		Normal,

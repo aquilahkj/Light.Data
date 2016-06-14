@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class LQueryAggreateTest:BaseTest
+	public class LQueryAggreateTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_Exists ()
@@ -73,19 +73,19 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (21);
 			double sum1 = CalAvg (1, 21, 10);
 			double result1 = Convert.ToDouble (context.LQuery<TeUser> ().Avg (TeUser.LevelIdField));
-			Assert.AreEqual (FormatDouble (sum1), FormatDouble (result1));
+			Assert.AreEqual (sum1, result1, DELTA);
 
 			double sum1d = CalAvg (1, 21, 10, true);
 			double result1d = Convert.ToDouble (context.LQuery<TeUser> ().Avg (TeUser.LevelIdField, true));
-			Assert.AreEqual (FormatDouble (sum1d), FormatDouble (result1d));
+			Assert.AreEqual (sum1d, result1d, DELTA);
 
 			double sum2 = CalAvg (6, 18, 10);
 			double result2 = Convert.ToDouble (context.LQuery<TeUser> ().Where (TeUser.IdField.Between (6, 18)).Avg (TeUser.LevelIdField));
-			Assert.AreEqual (FormatDouble (sum2), FormatDouble (result2));
+			Assert.AreEqual (sum2, result2, DELTA);
 
 			double sum2d = CalAvg (6, 18, 10, true);
 			double result2d = Convert.ToDouble (context.LQuery<TeUser> ().Where (TeUser.IdField.Between (6, 18)).Avg (TeUser.LevelIdField, true));
-			Assert.AreEqual (FormatDouble (sum2d), FormatDouble (result2d));
+			Assert.AreEqual (sum2d, result2d, DELTA);
 
 			double result3 = Convert.ToDouble (context.LQuery<TeUser> ().Where (TeUser.IdField > 21).Avg (TeUser.LevelIdField));
 			Assert.AreEqual (0d, result3);
@@ -95,11 +95,11 @@ namespace Light.Data.MysqlTest
 
 			double sum4 = CalAvg (7, 16, 10);
 			double result4 = Convert.ToDouble (context.LQuery<TeUser> ().Where (TeUser.IdField >= 7 & TeUser.IdField <= 16).Avg (TeUser.LevelIdField));
-			Assert.AreEqual (FormatDouble (sum4), FormatDouble (result4));
+			Assert.AreEqual (sum4, result4, DELTA);
 
 			double sum4d = CalAvg (7, 16, 10, true);
 			double result4d = Convert.ToDouble (context.LQuery<TeUser> ().Where (TeUser.IdField >= 7 & TeUser.IdField <= 16).Avg (TeUser.LevelIdField, true));
-			Assert.AreEqual (FormatDouble (sum4d), FormatDouble (result4d));
+			Assert.AreEqual (sum4d, result4d, DELTA);
 
 			double result5 = Convert.ToDouble (context.LQuery<TeUser> ().Where (TeUser.IdField == 1 & TeUser.CheckPointField.IsNotNull ()).Avg (TeUser.LevelIdField));
 			Assert.AreEqual (0d, result5);
@@ -206,8 +206,7 @@ namespace Light.Data.MysqlTest
 				if (distinct) {
 					if (hash.Contains (t)) {
 						continue;
-					}
-					else {
+					} else {
 						hash.Add (t);
 					}
 				}
@@ -228,8 +227,7 @@ namespace Light.Data.MysqlTest
 				if (distinct) {
 					if (hash.Contains (t)) {
 						continue;
-					}
-					else {
+					} else {
 						hash.Add (t);
 					}
 				}
@@ -237,8 +235,7 @@ namespace Light.Data.MysqlTest
 			}
 			if (distinct) {
 				return (double)result / hash.Count;
-			}
-			else {
+			} else {
 				return (double)result / (end - start + 1);
 			}
 		}
