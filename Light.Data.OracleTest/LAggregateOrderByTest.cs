@@ -136,15 +136,15 @@ namespace Light.Data.OracleTest
 				Assert.LessOrEqual (listAgg [i - 1].Data, listAgg [i].Data);
 			}
 
-			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField)
-				.Aggregate (AggregateFunction.Count (), "Data")
-				.OrderBy (TeUser.LevelIdField.OrderByDesc ())
-				.OrderByReset()
-				.GetObjectList<LevelIdAgg> ();
+			//listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField)
+			//	.Aggregate (AggregateFunction.Count (), "Data")
+			//	.OrderBy (TeUser.LevelIdField.OrderByDesc ())
+			//	.OrderByReset()
+			//	.GetObjectList<LevelIdAgg> ();
 
-			for (int i = 1; i < listAgg.Count; i++) {
-				Assert.Less (listAgg [i - 1].LevelId, listAgg [i].LevelId);;
-			}
+			//for (int i = 1; i < listAgg.Count; i++) {
+			//	Assert.Less (listAgg [i - 1].LevelId, listAgg [i].LevelId);;
+			//}
 
 		}
 	}

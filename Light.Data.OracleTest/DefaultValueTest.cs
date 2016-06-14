@@ -15,6 +15,7 @@ namespace Light.Data.OracleTest
 			TeCheckValueMini valueAc;
 
 			value = context.CreateNew<TeCheckValueMini> ();
+			value.CheckData = " ";
 			value.Save ();
 			valueAc = context.SelectSingleFromId<TeCheckValueMini> (value.Id);
 
@@ -22,7 +23,7 @@ namespace Light.Data.OracleTest
 			Assert.AreEqual (0, valueAc.CheckRate);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckTime);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckDate);
-			Assert.AreEqual ("", valueAc.CheckData);
+			Assert.AreEqual (" ", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.Low, valueAc.CheckLevel);
 		}
 
@@ -91,6 +92,7 @@ namespace Light.Data.OracleTest
 			List<TeCheckValueMini> list = new List<TeCheckValueMini> ();
 			for (int i = 0; i < count; i++) {
 				TeCheckValueMini value = context.CreateNew<TeCheckValueMini> ();
+				value.CheckData = " ";
 				list.Add (value);
 			}
 			context.BulkInsert (list.ToArray ());
@@ -101,7 +103,7 @@ namespace Light.Data.OracleTest
 				Assert.AreEqual (0, valueAc.CheckRate);
 				Assert.AreEqual (DateTime.MinValue, valueAc.CheckTime);
 				Assert.AreEqual (DateTime.MinValue, valueAc.CheckDate);
-				Assert.AreEqual ("", valueAc.CheckData);
+				Assert.AreEqual (" ", valueAc.CheckData);
 				Assert.AreEqual (CheckLevelType.Low, valueAc.CheckLevel);
 			}
 		}

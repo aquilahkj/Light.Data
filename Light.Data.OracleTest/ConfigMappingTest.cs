@@ -20,6 +20,7 @@ namespace Light.Data.OracleTest
 			TeCheckValueConfig valueAc;
 
 			value = context.CreateNew<TeCheckValueConfig> ();
+			value.CheckData = " ";
 			value.Save ();
 			valueAc = context.SelectSingleFromId<TeCheckValueConfig> (value.Id);
 
@@ -27,7 +28,7 @@ namespace Light.Data.OracleTest
 			Assert.AreEqual (0, valueAc.CheckRate);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckTime);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckDate);
-			Assert.AreEqual ("", valueAc.CheckData);
+			Assert.AreEqual (" ", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.Low, valueAc.CheckLevel);
 
 			value.CheckId = 2;
@@ -80,6 +81,7 @@ namespace Light.Data.OracleTest
 			TeCheckValueConfig0 valueAc;
 
 			value = new TeCheckValueConfig0 ();
+			value.CheckData = " ";
 			context.Insert (value);
 			valueAc = context.SelectSingleFromId<TeCheckValueConfig0> (value.Id);
 
@@ -87,7 +89,7 @@ namespace Light.Data.OracleTest
 			Assert.AreEqual (0, valueAc.CheckRate);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckTime);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckDate);
-			Assert.AreEqual ("", valueAc.CheckData);
+			Assert.AreEqual (" ", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.Low, valueAc.CheckLevel);
 
 			value.CheckId = 2;
@@ -112,6 +114,7 @@ namespace Light.Data.OracleTest
 			TeCheckValueConfig1 valueAc;
 
 			value = new TeCheckValueConfig1 ();
+			value.CheckData = " ";
 			context.Insert (value);
 			valueAc = context.SelectSingleFromId<TeCheckValueConfig1> (value.Id);
 
@@ -119,7 +122,7 @@ namespace Light.Data.OracleTest
 			Assert.AreEqual (0, valueAc.CheckRate);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckTime);
 			Assert.AreEqual (DateTime.MinValue, valueAc.CheckDate);
-			Assert.AreEqual ("", valueAc.CheckData);
+			Assert.AreEqual (" ", valueAc.CheckData);
 			Assert.AreEqual (CheckLevelType.Low, valueAc.CheckLevel);
 
 			value.CheckId = 2;

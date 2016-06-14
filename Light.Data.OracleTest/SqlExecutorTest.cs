@@ -2,6 +2,7 @@
 using System.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
+using Light.Data.UnitTest;
 
 namespace Light.Data.OracleTest
 {
@@ -22,28 +23,20 @@ namespace Light.Data.OracleTest
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
 			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">5 and \"Id\"<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">:P1 and \"Id\"<=:P2";
 			ps = new DataParameter[2];
@@ -52,10 +45,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -66,10 +56,7 @@ namespace Light.Data.OracleTest
 			}
 
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -87,28 +74,19 @@ namespace Light.Data.OracleTest
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">5 and \"Id\"<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">:P1 and \"Id\"<=:P2";
 			ps = new DataParameter[2];
@@ -117,10 +95,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -131,10 +106,7 @@ namespace Light.Data.OracleTest
 			}
 
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -254,10 +226,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -265,11 +234,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
-
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest2";
 			ps = new DataParameter[3];
@@ -279,10 +244,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -294,10 +256,7 @@ namespace Light.Data.OracleTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -317,10 +276,7 @@ namespace Light.Data.OracleTest
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -328,10 +284,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest2";
 			ps = new DataParameter[3];
@@ -341,10 +294,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -356,10 +306,7 @@ namespace Light.Data.OracleTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			for (int i = 0; i < listEx.Count; i++) {
-				Assert.True (EqualUser (listEx [i], listAc [i], true));
-			}
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
 
 		[Test ()]

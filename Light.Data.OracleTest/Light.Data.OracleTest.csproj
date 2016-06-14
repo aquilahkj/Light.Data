@@ -50,17 +50,6 @@
     <Compile Include="Model\RelationSchema2.cs" />
     <Compile Include="Model\RelationSchema3.cs" />
     <Compile Include="Model\RelationSchema4.cs" />
-    <Compile Include="LQueryAggreateTest.cs" />
-    <Compile Include="LQueryMultiTest.cs" />
-    <Compile Include="LQueryOrderByTest.cs" />
-    <Compile Include="LQueryPageTest.cs" />
-    <Compile Include="LQuerySingleFileldTest.cs" />
-    <Compile Include="LQueryWhereTest.cs" />
-    <Compile Include="RelationCollectionTest.cs" />
-    <Compile Include="RelationMultiTest.cs" />
-    <Compile Include="RelationSingle1Test.cs" />
-    <Compile Include="RelationSingle2Test.cs" />
-    <Compile Include="SelectInsertTest.cs" />
     <Compile Include="SqlExecutorTest.cs" />
     <Compile Include="TransContextTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +68,17 @@
     <Compile Include="LAggregateHavingTest.cs" />
     <Compile Include="LAggregateOrderByTest.cs" />
     <Compile Include="LAggregateWhereTest.cs" />
+    <Compile Include="LQueryAggreateTest.cs" />
+    <Compile Include="LQueryMultiTest.cs" />
+    <Compile Include="LQueryOrderByTest.cs" />
+    <Compile Include="LQueryPageTest.cs" />
+    <Compile Include="LQuerySingleFileldTest.cs" />
+    <Compile Include="LQueryWhereTest.cs" />
+    <Compile Include="RelationCollectionTest.cs" />
+    <Compile Include="RelationMultiTest.cs" />
+    <Compile Include="RelationSingle1Test.cs" />
+    <Compile Include="RelationSingle2Test.cs" />
+    <Compile Include="SelectInsertTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -93,21 +93,21 @@ namespace Light.Data.OracleTest
 				}
 			}
 
-			listEx = new List<TeUser> (list);
-			listAc = context.LQuery<TeUser> ()
-				.LeftJoin<TeUserLevel> ()
-				.On (TeUser.LevelIdField == TeUserLevel.IdField)
-				.SelectAll<TeUser> ()
-				.Select (TeUserLevel.LevelNameField, TeUserLevel.RemarkField)
-				.SelectAlias (TeUserLevel.StatusField, "LevelStatus")
-				.OrderBy (TeUserLevel.StatusField.OrderByAsc())
-				.OrderByReset()
-				.ToList<TeUserAndLevelModel> ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
+			//listEx = new List<TeUser> (list);
+			//listAc = context.LQuery<TeUser> ()
+			//	.LeftJoin<TeUserLevel> ()
+			//	.On (TeUser.LevelIdField == TeUserLevel.IdField)
+			//	.SelectAll<TeUser> ()
+			//	.Select (TeUserLevel.LevelNameField, TeUserLevel.RemarkField)
+			//	.SelectAlias (TeUserLevel.StatusField, "LevelStatus")
+			//	.OrderBy (TeUserLevel.StatusField.OrderByAsc())
+			//	.OrderByReset()
+			//	.ToList<TeUserAndLevelModel> ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
 
-			for (int i = 1; i < listAc.Count; i++) {
-				Assert.Less (listAc [i - 1].Id, listAc [i].Id);
-			}
+			//for (int i = 1; i < listAc.Count; i++) {
+			//	Assert.Less (listAc [i - 1].Id, listAc [i].Id);
+			//}
 		}
 
 
