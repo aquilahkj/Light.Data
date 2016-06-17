@@ -1121,6 +1121,9 @@ namespace Light.Data
 		public TransDataContext CreateTransDataContext ()
 		{
 			TransDataContext context = new TransDataContext (_connectionString, _configName, _dataBase);
+			if (this.output != null) {
+				context.output = this.output;
+			}
 			return context;
 		}
 
