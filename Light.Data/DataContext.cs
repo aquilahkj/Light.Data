@@ -499,11 +499,15 @@ namespace Light.Data
 				}
 
 			}
-			//			int result = 0;
-			//			foreach (int i in results) {
-			//				result += i;
-			//			}
-			return datas.Length;
+			int result = 0;
+			foreach (int i in results) {
+				result += i;
+			}
+			if (result >= 0) {
+				return result;
+			} else {
+				return datas.Length;
+			}
 		}
 
 		static object [] CreateObjectList (object lastId, int len)
