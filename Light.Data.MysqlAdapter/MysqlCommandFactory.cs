@@ -263,6 +263,15 @@ namespace Light.Data.MysqlAdapter
 		{
 			return "now()";
 		}
+
+		public override string CreateParamName (string name)
+		{
+			if (!name.StartsWith ("?")) {
+				return "?" + name;
+			} else {
+				return name;
+			}
+		}
 	}
 }
 
