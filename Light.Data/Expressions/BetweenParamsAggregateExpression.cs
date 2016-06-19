@@ -1,22 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class BetweenParamsAggregateExpression : AggregateHavingExpression
 	{
-		AggregateFunction _function = null;
+		readonly static HashSet<TypeCode> SupportTypeCodes = new HashSet<TypeCode> ();
 
-		bool _isNot = false;
+		static BetweenParamsAggregateExpression ()
+		{
+			SupportTypeCodes.Add (TypeCode.Byte);
+			SupportTypeCodes.Add (TypeCode.Char);
+			SupportTypeCodes.Add (TypeCode.DateTime);
+			SupportTypeCodes.Add (TypeCode.Decimal);
+			SupportTypeCodes.Add (TypeCode.Double);
+			SupportTypeCodes.Add (TypeCode.Int16);
+			SupportTypeCodes.Add (TypeCode.Int32);
+			SupportTypeCodes.Add (TypeCode.Int64);
+			SupportTypeCodes.Add (TypeCode.SByte);
+			SupportTypeCodes.Add (TypeCode.Single);
+			SupportTypeCodes.Add (TypeCode.UInt16);
+			SupportTypeCodes.Add (TypeCode.UInt32);
+			SupportTypeCodes.Add (TypeCode.UInt64);
+		}
 
-		object _fromValue = null;
+		AggregateFunction _function;
 
-		object _toValue = null;
+		bool _isNot;
+
+		object _fromValue;
+
+		object _toValue;
 
 		public BetweenParamsAggregateExpression (AggregateFunction function, bool isNot, object fromValue, object toValue)
 			: base (function.TableMapping)
 		{
+			TypeCode typeCode1 = Type.GetTypeCode (fromValue.GetType ());
+			if (!SupportTypeCodes.Contains (typeCode1)) {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
+			TypeCode typeCode2 = Type.GetTypeCode (toValue.GetType ());
+			if (!SupportTypeCodes.Contains (typeCode2)) {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
 			_function = function;
 			_isNot = isNot;
 			_fromValue = fromValue;
@@ -28,12 +54,14 @@ namespace Light.Data
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
 
-			DataParameter fromParam = new DataParameter (pn, _fromValue, null);
-			DataParameter toParam = new DataParameter (pn1, _toValue, null);
+			DataParameter fromParam = new DataParameter (pn, _fromValue);
+			DataParameter toParam = new DataParameter (pn1, _toValue);
 			List<DataParameter> list = new List<DataParameter> ();
-			DataParameter[] ps = null;
+			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-			list.AddRange (ps);
+			if (ps != null && ps.Length > 0) {
+				list.AddRange (ps);
+			}
 			list.Add (fromParam);
 			list.Add (toParam);
 			dataParameters = list.ToArray ();
@@ -51,9 +79,9 @@ namespace Light.Data
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
 
-			DataParameter fromParam = new DataParameter (pn, _fromValue, null);
-			DataParameter toParam = new DataParameter (pn1, _toValue, null);
-			dataParameters = new DataParameter[] { fromParam, toParam };
+			DataParameter fromParam = new DataParameter (pn, _fromValue);
+			DataParameter toParam = new DataParameter (pn1, _toValue);
+			dataParameters = new [] { fromParam, toParam };
 
 			return factory.CreateBetweenParamsQuerySql (name, _isNot, fromParam, toParam);
 

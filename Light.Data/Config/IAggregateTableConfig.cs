@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
+	/// <summary>
+	/// Interface of aggregate table config.
+	/// </summary>
 	interface IAggregateTableConfig
 	{
 		/// <summary>
-		/// 关联表类型
+		/// Gets or sets the extend parameters.
 		/// </summary>
-		Type RelateType {
-			get;
-		}
-
-		/// <summary>
-		/// 扩展参数
-		/// </summary>
-		string ExtendParams {
-			get;
-			set;
-		}
+		/// <value>The extend parameters.</value>
+//		ExtendParamsCollection ExtendParams {
+//			get;
+//			set;
+//		}
 	}
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
+﻿using System.Configuration;
 
 namespace Light.Data
 {
     /// <summary>
-    /// 配置节点处理类
+    /// Light data configuration section handler.
     /// </summary>
     public class LightDataConfigurationSectionHandler : IConfigurationSectionHandler
     {

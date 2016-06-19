@@ -5,28 +5,28 @@ using System.Text;
 namespace Light.Data
 {
 	/// <summary>
-	/// 统计类型
+	/// Aggregate type.
 	/// </summary>
 	public enum AggregateType
 	{
 		/// <summary>
-		/// 总数
+		/// The COUNT.
 		/// </summary>
 		COUNT,
 		/// <summary>
-		/// 平均值
+		/// The AVG.
 		/// </summary>
 		AVG,
 		/// <summary>
-		/// 最大值
+		/// The MAX.
 		/// </summary>
 		MAX,
 		/// <summary>
-		/// 最小值
+		/// The MIN.
 		/// </summary>
 		MIN,
 		/// <summary>
-		/// 总和
+		/// The SUM.
 		/// </summary>
 		SUM
 	}

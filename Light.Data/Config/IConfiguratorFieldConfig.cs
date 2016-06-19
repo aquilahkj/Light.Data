@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
+	/// <summary>
+	/// Interface of configurator field config.
+	/// </summary>
 	interface IConfiguratorFieldConfig
 	{
 		/// <summary>
-		/// 配置字段名
+		/// Gets the name of the field.
 		/// </summary>
+		/// <value>The name of the field.</value>
 		string FieldName {
 			get;
 		}

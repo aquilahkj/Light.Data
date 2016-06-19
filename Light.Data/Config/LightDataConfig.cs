@@ -1,185 +1,206 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Xml;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Light data config.
+	/// </summary>
 	class LightDataConfig : IConfig
 	{
-		Dictionary<Type, DataTableConfig> _dataTableConfigs = new Dictionary<Type, DataTableConfig> ();
+		readonly Dictionary<Type, DataTableConfig> _dataTableConfigs = new Dictionary<Type, DataTableConfig> ();
 
-		Dictionary<Type, AggregateTableConfig> _aggregateTableConfigs = new Dictionary<Type, AggregateTableConfig> ();
+		readonly Dictionary<Type, AggregateTableConfig> _aggregateTableConfigs = new Dictionary<Type, AggregateTableConfig> ();
 
+		/// <summary>
+		/// Loads the config.
+		/// </summary>
+		/// <param name="configNode">Config node.</param>
 		public void LoadConfig (XmlNode configNode)
 		{
 			if (configNode == null) {
 				throw new ArgumentNullException ("configNode");
 			}
-//			_dataTableConfigs = new Dictionary<Type, DataTableConfig> ();
-//			_aggregateTableConfigs = new Dictionary<Type, AggregateTableConfig> ();
 			foreach (XmlNode typeNode in configNode.ChildNodes) {
-				if (typeNode.Name == "DataType") {
+				if (typeNode.Name == "dataType") {
 					DataTableConfig config = LoadDataTableConfig (typeNode);
 					this._dataTableConfigs.Add (config.DataType, config);
 				}
-				else if (typeNode.Name == "AggregateType") {
+				else if (typeNode.Name == "aggregateType") {
 					AggregateTableConfig config = LoadAggregateTableConfig (typeNode);
 					this._aggregateTableConfigs.Add (config.DataType, config);
 				}
 			}
 		}
 
-		DataTableConfig LoadDataTableConfig (XmlNode typeNode)
+		static DataTableConfig LoadDataTableConfig (XmlNode typeNode)
 		{
 			if (typeNode == null) {
-				throw new ArgumentException ("TypeNode");
+				throw new ArgumentNullException ("typeNode");
+			}
+			string typeName = GetAttributeValue (typeNode, "type");
+			if (typeName == null) {
+				throw new LightDataException (RE.ConfigDataTypeValueIsEmpty);
+			}
+			Type dataType = Type.GetType (typeName, true);
+			DataTableConfig config = new DataTableConfig (dataType);
+			string tableName = GetAttributeValue (typeNode, "tableName");
+			if (tableName != null) {
+				config.TableName = tableName;
+			}
+//			string extendParams = GetAttributeValue (typeNode, "extendParams");
+//			if (extendParams != null) {
+//				config.ExtendParams = extendParams;
+//			}
+
+			string isEntityTable = GetAttributeValue (typeNode, "isEntityTable");
+			if (isEntityTable != null) {
+				bool value;
+				if (bool.TryParse (isEntityTable, out value)) {
+					config.IsEntityTable = value;
+				}
+				else {
+					throw new LightDataException (string.Format (RE.ConfigDataLoadError, "isEntityTable"));
+				}
 			}
 
-			if (typeNode.Name != "DataType") {
-				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "DataType"));
-			}
-			DataTableConfig config = null;
-			Type dataType = null;
-			string typeName = null;
-			if (typeNode.Attributes ["Type"] != null) {
-				typeName = typeNode.Attributes ["Type"].Value;
-			}
-			if (string.IsNullOrEmpty (typeName)) {
-				throw new LightDataException (string.Format (RE.ConfigDataTypeValueIsEmpty, "Type"));
-			}
-			dataType = System.Type.GetType (typeName, true);
-			config = new DataTableConfig (dataType);
-
-			if (typeNode.Attributes ["TableName"] != null) {
-				config.TableName = typeNode.Attributes ["TableName"].Value;
-			}
-			if (typeNode.Attributes ["ExtendParams"] != null) {
-				config.ExtendParams = typeNode.Attributes ["ExtendParams"].Value;
-			}
-			if (typeNode.Attributes ["IsEntityTable"] != null) {
-				config.IsEntityTable = Convert.ToBoolean (typeNode.Attributes ["IsEntityTable"].Value);
-			}
 			foreach (XmlNode fieldNode in typeNode.ChildNodes) {
-				IConfiguratorFieldConfig fieldConfig = null;
-				if (fieldNode.Name == "DataField") {
-					fieldConfig = LoadDataFieldConfig (fieldNode, dataType);
+//				IConfiguratorFieldConfig fieldConfig = null;
+				if (fieldNode.Name == "dataField") {
+					IConfiguratorFieldConfig fieldConfig = LoadDataFieldConfig (fieldNode, dataType);
+					if (fieldConfig != null) {
+						config.SetField (fieldConfig);
+					}
 				}
-				else if (fieldNode.Name == "IgnoraField") {
-					fieldConfig = LoadIgnoraFieldConfig (fieldNode, dataType);
+				else if (fieldNode.Name == "relationField") {
+					IConfiguratorFieldConfig fieldConfig = LoadRelationFieldConfig (fieldNode, dataType);
+					if (fieldConfig != null) {
+						config.SetField (fieldConfig);
+					}
 				}
-				else if (fieldNode.Name == "RelationField") {
-					fieldConfig = LoadRelationFieldConfig (fieldNode, dataType);
+				else if (fieldNode.Name == "extendParams") {
+					if (config.ExtendParams == null) {
+						ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection (fieldNode);
+						config.ExtendParams = extendParams;
+					}
 				}
-				if (fieldConfig != null) {
-					config.SetField (fieldConfig);
-				}
+			}
+			if (config.ExtendParams == null) {
+				config.ExtendParams = new ExtendParamCollection ();
 			}
 			return config;
 		}
 
-		AggregateTableConfig LoadAggregateTableConfig (XmlNode typeNode)
+		static AggregateTableConfig LoadAggregateTableConfig (XmlNode typeNode)
 		{
 			if (typeNode == null) {
-				throw new ArgumentException ("TypeNode");
+				throw new ArgumentNullException ("typeNode");
 			}
-
-			if (typeNode.Name != "AggregateType") {
-				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "AggregateType"));
+			string typeName = GetAttributeValue (typeNode, "type");
+			if (typeName == null) {
+				throw new LightDataException (RE.ConfigDataTypeValueIsEmpty);
 			}
-			AggregateTableConfig config = null;
-			Type dataType = null;
-			Type relateType = null;
-			string dataTypeName = null;
-			string relateTypeName = null;
-			if (typeNode.Attributes ["Type"] != null) {
-				dataTypeName = typeNode.Attributes ["Type"].Value;
-			}
-			if (string.IsNullOrEmpty (dataTypeName)) {
-				throw new LightDataException (string.Format (RE.ConfigDataTypeValueIsEmpty, "Type"));
-			}
-			if (typeNode.Attributes ["RelateType"] != null) {
-				relateTypeName = typeNode.Attributes ["RelateType"].Value;
-			}
-			//if (string.IsNullOrEmpty(relateTypeName))
-			//{
-			//    throw new LightDataException(string.Format(RE.ConfigDataTypeValueIsEmpty, "RelateType"));
-			//}
-
-			dataType = System.Type.GetType (dataTypeName, true);
-			if (!string.IsNullOrEmpty (relateTypeName)) {
-				relateType = System.Type.GetType (relateTypeName, true);
-			}
-			config = new AggregateTableConfig (dataType, relateType);
-
-			if (typeNode.Attributes ["ExtendParams"] != null) {
-				config.ExtendParams = typeNode.Attributes ["ExtendParams"].Value;
-			}
-
+			Type dataType = Type.GetType (typeName, true);
+			AggregateTableConfig config = new AggregateTableConfig (dataType);
+//			string extendParams = GetAttributeValue (typeNode, "extendParams");
+//			if (extendParams != null) {
+//				config.ExtendParams = extendParams;
+//			}
 			foreach (XmlNode fieldNode in typeNode.ChildNodes) {
-				IConfiguratorFieldConfig fieldConfig = null;
-				if (fieldNode.Name == "AggregateField") {
-					fieldConfig = LoadAggregateFieldConfig (fieldNode, dataType);
+//				IConfiguratorFieldConfig fieldConfig = null;
+				if (fieldNode.Name == "aggregateField") {
+					IConfiguratorFieldConfig fieldConfig = LoadAggregateFieldConfig (fieldNode, dataType);
+					if (fieldConfig != null) {
+						config.SetField (fieldConfig);
+					}
 				}
-				if (fieldNode.Name == "IgnoraField") {
-					fieldConfig = LoadIgnoraFieldConfig (fieldNode, dataType);
+				else if (fieldNode.Name == "extendParams") {
+					if (config.ExtendParams == null) {
+						ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection (fieldNode);
+						config.ExtendParams = extendParams;
+					}
 				}
-				if (fieldConfig != null) {
-					config.SetField (fieldConfig);
-				}
+			}
+			if (config.ExtendParams == null) {
+				config.ExtendParams = new ExtendParamCollection ();
 			}
 			return config;
 		}
 
-		DataFieldConfig LoadDataFieldConfig (XmlNode fieldNode, Type dataType)
+		static DataFieldConfig LoadDataFieldConfig (XmlNode fieldNode, Type dataType)
 		{
 			if (fieldNode == null) {
-				throw new ArgumentException ("FieldNode");
+				throw new ArgumentNullException ("fieldNode");
 			}
 			if (dataType == null) {
-				throw new ArgumentException ("DataType");
+				throw new ArgumentNullException ("dataType");
 			}
-			if (fieldNode.Name != "DataField") {
-				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "DataField"));
+			if (fieldNode.Name != "dataField") {
+				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "dataField"));
 			}
-			DataFieldConfig config = null;
-			string fieldName = null;
-			if (fieldNode.Attributes ["FieldName"] != null) {
-				fieldName = fieldNode.Attributes ["FieldName"].Value;
-			}
-			if (string.IsNullOrEmpty (fieldName)) {
+			DataFieldConfig config;
+			string fieldName = GetAttributeValue (fieldNode, "fieldName");
+			if (fieldName == null) {
 				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, dataType.Name));
 			}
 			PropertyInfo property = dataType.GetProperty (fieldName);
 			if (property == null) {
-				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, dataType.Name, fieldName));
+				throw new LightDataException (string.Format (RE.ConfigDataFieldIsNotExists, dataType.Name, fieldName));
 			}
 
 			config = new DataFieldConfig (fieldName);
-
-			if (fieldNode.Attributes ["Name"] != null) {
-				config.Name = fieldNode.Attributes ["Name"].Value;
+			string name = GetAttributeValue (fieldNode, "name");
+			if (name != null) {
+				config.Name = name;
 			}
-			if (fieldNode.Attributes ["DataOrder"] != null) {
-				string order = fieldNode.Attributes ["Name"].Value;
-				if (!string.IsNullOrEmpty (order)) {
-					config.DataOrder = Convert.ToInt32 (order);
+			string dataOrder = GetAttributeValue (fieldNode, "dataOrder");
+			if (dataOrder != null) {
+				int value;
+				if (int.TryParse (dataOrder, out value)) {
+					config.DataOrder = value;
+				}
+				else {
+					throw new LightDataException (string.Format (RE.ConfigDataLoadError, "dataOrder"));
 				}
 			}
-			if (fieldNode.Attributes ["IsNullable"] != null) {
-				config.IsNullable = Convert.ToBoolean (fieldNode.Attributes ["IsNullable"].Value);
+			string isNullable = GetAttributeValue (fieldNode, "isNullable");
+			if (isNullable != null) {
+				bool value;
+				if (bool.TryParse (isNullable, out value)) {
+					config.IsNullable = value;
+				}
+				else {
+					throw new LightDataException (string.Format (RE.ConfigDataLoadError, "isNullable"));
+				}
 			}
-			if (fieldNode.Attributes ["IsPrimaryKey"] != null) {
-				config.IsPrimaryKey = Convert.ToBoolean (fieldNode.Attributes ["IsPrimaryKey"].Value);
+			string isPrimaryKey = GetAttributeValue (fieldNode, "isPrimaryKey");
+			if (isPrimaryKey != null) {
+				bool value;
+				if (bool.TryParse (isPrimaryKey, out value)) {
+					config.IsPrimaryKey = value;
+				}
+				else {
+					throw new LightDataException (string.Format (RE.ConfigDataLoadError, "isPrimaryKey"));
+				}
 			}
-			if (fieldNode.Attributes ["IsIdentity"] != null) {
-				config.IsIdentity = Convert.ToBoolean (fieldNode.Attributes ["IsIdentity"].Value);
+			string isIdentity = GetAttributeValue (fieldNode, "isIdentity");
+			if (isIdentity != null) {
+				bool value;
+				if (bool.TryParse (isIdentity, out value)) {
+					config.IsIdentity = value;
+				}
+				else {
+					throw new LightDataException (string.Format (RE.ConfigDataLoadError, "isIdentity"));
+				}
 			}
-			if (fieldNode.Attributes ["DBType"] != null) {
-				config.DBType = fieldNode.Attributes ["DBType"].Value;
+			string dbType = GetAttributeValue (fieldNode, "dbType");
+			if (dbType != null) {
+				config.DBType = dbType;
 			}
-			if (fieldNode.Attributes ["DefaultValue"] != null) {
+			string defaultValue = GetAttributeValue (fieldNode, "defaultValue");
+			if (defaultValue != null) {
 				Type type = property.PropertyType;
 				if (type.IsGenericType) {
 					Type frameType = type.GetGenericTypeDefinition ();
@@ -188,58 +209,59 @@ namespace Light.Data
 						type = arguments [0];
 					}
 				}
-				if (type.IsEnum) {
-					config.DefaultValue = Enum.Parse (type, fieldNode.Attributes ["DefaultValue"].Value, true);
+				object value;
+				if (type == typeof(string)) {
+					value = defaultValue;
+				}
+				else if (type.IsEnum) {
+					try {
+						value = Enum.Parse (type, defaultValue, true);
+					} catch {
+						throw new LightDataException (string.Format (RE.ConfigDataLoadError, "defaultValue"));
+					}
 				}
 				else {
-					config.DefaultValue = Convert.ChangeType (fieldNode.Attributes ["DefaultValue"].Value, type);
+					if (type == typeof(DateTime)) {
+						DateTime dt;
+						if (DateTime.TryParse (defaultValue, out dt)) {
+							value = dt;
+						}
+						else {
+							try {
+								value = Enum.Parse (typeof(DefaultTime), defaultValue, true);
+							} catch {
+								throw new LightDataException (string.Format (RE.ConfigDataLoadError, "defaultValue"));
+							}
+						}
+					}
+					else {
+						try {
+							value = Convert.ChangeType (defaultValue, type);
+						} catch {
+							throw new LightDataException (string.Format (RE.ConfigDataLoadError, "defaultValue"));
+						}
+					}
 				}
+				config.DefaultValue = value;
 			}
 			return config;
 		}
 
-		IgnoraFieldConfig LoadIgnoraFieldConfig (XmlNode fieldNode, Type dataType)
+		static RelationFieldConfig LoadRelationFieldConfig (XmlNode fieldNode, Type dataType)
 		{
 			if (fieldNode == null) {
-				throw new ArgumentException ("FieldNode");
+				throw new ArgumentNullException ("fieldNode");
 			}
 			if (dataType == null) {
-				throw new ArgumentException ("IgnoraField");
+				throw new ArgumentNullException ("dataType");
 			}
-			if (fieldNode.Name != "IgnoraField") {
-				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "IgnoraField"));
+			if (fieldNode.Name != "relationField") {
+				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "relationField"));
 			}
-			IgnoraFieldConfig config = null;
+			RelationFieldConfig config;
 			string fieldName = null;
-			if (fieldNode.Attributes ["FieldName"] != null) {
-				fieldName = fieldNode.Attributes ["FieldName"].Value;
-			}
-			if (string.IsNullOrEmpty (fieldName)) {
-				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, dataType.Name));
-			}
-			PropertyInfo property = dataType.GetProperty (fieldName);
-			if (property == null) {
-				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, dataType.Name, fieldName));
-			}
-			config = new IgnoraFieldConfig (fieldName);
-			return config;
-		}
-
-		RelationFieldConfig LoadRelationFieldConfig (XmlNode fieldNode, Type dataType)
-		{
-			if (fieldNode == null) {
-				throw new ArgumentException ("FieldNode");
-			}
-			if (dataType == null) {
-				throw new ArgumentException ("IgnoraField");
-			}
-			if (fieldNode.Name != "RelationField") {
-				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "RelationField"));
-			}
-			RelationFieldConfig config = null;
-			string fieldName = null;
-			if (fieldNode.Attributes ["FieldName"] != null) {
-				fieldName = fieldNode.Attributes ["FieldName"].Value;
+			if (fieldNode.Attributes ["fieldName"] != null) {
+				fieldName = fieldNode.Attributes ["fieldName"].Value;
 			}
 			if (string.IsNullOrEmpty (fieldName)) {
 				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, dataType.Name));
@@ -249,24 +271,27 @@ namespace Light.Data
 				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, dataType.Name, fieldName));
 			}
 			config = new RelationFieldConfig (fieldName);
-			if (fieldNode.Attributes ["Property"] != null) {
-				config.PropertyName = fieldNode.Attributes ["Property"].Value;
+			if (fieldNode.Attributes ["property"] != null) {
+				RelationMode mode;
+				if (Enum.TryParse<RelationMode> (fieldNode.Attributes ["property"].Value, out mode)) {
+					config.RelationMode = mode;
+				}
 			}
 			foreach (XmlNode keyNode in fieldNode.ChildNodes) {
-				if (keyNode.Name == "RelationKey") {
-					string masterKey = null;
-					string relateKey = null;
-					if (keyNode.Attributes ["MasterKey"] != null) {
-						masterKey = keyNode.Attributes ["MasterKey"].Value;
+				if (keyNode.Name == "relationKey") {
+					string masterKey;
+					string relateKey;
+					if (keyNode.Attributes ["masterKey"] != null) {
+						masterKey = keyNode.Attributes ["masterKey"].Value;
 					}
 					else {
-						throw new LightDataException (string.Format (RE.ConfigDataLoadError, "MasterKey"));
+						throw new LightDataException (string.Format (RE.ConfigDataLoadError, "masterKey"));
 					}
-					if (keyNode.Attributes ["RelateKey"] != null) {
-						relateKey = keyNode.Attributes ["RelateKey"].Value;
+					if (keyNode.Attributes ["relateKey"] != null) {
+						relateKey = keyNode.Attributes ["relateKey"].Value;
 					}
 					else {
-						throw new LightDataException (string.Format (RE.ConfigDataLoadError, "RelateKey"));
+						throw new LightDataException (string.Format (RE.ConfigDataLoadError, "relateKey"));
 					}
 					config.AddRelationKeys (masterKey, relateKey);
 				}
@@ -274,38 +299,52 @@ namespace Light.Data
 			return config;
 		}
 
-		AggregateFieldConfig LoadAggregateFieldConfig (XmlNode fieldNode, Type aggregateType)
+		static AggregateFieldConfig LoadAggregateFieldConfig (XmlNode fieldNode, Type aggregateType)
 		{
 			if (fieldNode == null) {
-				throw new ArgumentException ("FieldNode");
+				throw new ArgumentNullException ("fieldNode");
 			}
 			if (aggregateType == null) {
-				throw new ArgumentException ("AggregateType");
+				throw new ArgumentNullException ("aggregateType");
 			}
-			if (fieldNode.Name != "AggregateField") {
-				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "AggregateField"));
-			}
-			AggregateFieldConfig config = null;
-			string fieldName = null;
-			if (fieldNode.Attributes ["FieldName"] != null) {
-				fieldName = fieldNode.Attributes ["FieldName"].Value;
-			}
-			if (string.IsNullOrEmpty (fieldName)) {
+			AggregateFieldConfig config;
+			string fieldName = GetAttributeValue (fieldNode, "fieldName");
+			if (fieldName == null) {
 				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, aggregateType.Name));
 			}
 			PropertyInfo property = aggregateType.GetProperty (fieldName);
 			if (property == null) {
-				throw new LightDataException (string.Format (RE.ConfigDataFieldNameIsEmpty, aggregateType.Name, fieldName));
+				throw new LightDataException (string.Format (RE.ConfigDataFieldIsNotExists, aggregateType.Name, fieldName));
 			}
 
 			config = new AggregateFieldConfig (fieldName);
 
-			if (fieldNode.Attributes ["Name"] != null) {
-				config.Name = fieldNode.Attributes ["Name"].Value;
+			string name = GetAttributeValue (fieldNode, "name");
+			if (name != null) {
+				config.Name = name;
 			}
 			return config;
 		}
 
+		static string GetAttributeValue (XmlNode node, string name)
+		{
+			string value = null;
+			if (node.Attributes [name] != null) {
+				value = node.Attributes [name].Value;
+				if (value != null) {
+					value = value.Trim ();
+					if (value == string.Empty) {
+						value = null;
+					}
+				}
+			}
+			return value;
+		}
+
+		/// <summary>
+		/// Combines the config.
+		/// </summary>
+		/// <param name="config">Config.</param>
 		public void CombineConfig (LightDataConfig config)
 		{
 			foreach (KeyValuePair<Type, DataTableConfig> kvs in config._dataTableConfigs) {
@@ -316,24 +355,49 @@ namespace Light.Data
 			}
 		}
 
-		public bool ContainDataTableConfig (Type type)
-		{
-			return _dataTableConfigs.ContainsKey (type);
-		}
-
+		/// <summary>
+		/// Gets the data table config.
+		/// </summary>
+		/// <returns>The data table config.</returns>
+		/// <param name="type">Type.</param>
 		public DataTableConfig GetDataTableConfig (Type type)
 		{
-			return _dataTableConfigs [type];
+			DataTableConfig config;
+			_dataTableConfigs.TryGetValue (type, out config);
+			return config;
 		}
 
-		public bool ContainAggregateTableConfig (Type type)
-		{
-			return _aggregateTableConfigs.ContainsKey (type);
-		}
-
+		/// <summary>
+		/// Gets the aggregate table config.
+		/// </summary>
+		/// <returns>The aggregate table config.</returns>
+		/// <param name="type">Type.</param>
 		public AggregateTableConfig GetAggregateTableConfig (Type type)
 		{
-			return _aggregateTableConfigs [type];
+			AggregateTableConfig config;
+			_aggregateTableConfigs.TryGetValue (type, out config);
+			return config;
+		}
+
+		/// <summary>
+		/// Searchs for assembly.
+		/// </summary>
+		/// <returns>The for assembly.</returns>
+		/// <param name="assembly">Assembly.</param>
+		public LightDataConfig SearchForAssembly (Assembly assembly)
+		{
+			LightDataConfig config = new LightDataConfig ();
+			foreach (KeyValuePair<Type, DataTableConfig> kvs in _dataTableConfigs) {
+				if (kvs.Key.Assembly == assembly) {
+					config._dataTableConfigs [kvs.Key] = kvs.Value;
+				}
+			}
+			foreach (KeyValuePair<Type, AggregateTableConfig> kvs in _aggregateTableConfigs) {
+				if (kvs.Key.Assembly == assembly) {
+					config._aggregateTableConfigs [kvs.Key] = kvs.Value;
+				}
+			}
+			return config;
 		}
 	}
 }

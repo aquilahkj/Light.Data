@@ -1,43 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Collections;
 
 namespace Light.Data
 {
-	abstract class TableConfig : IEnumerable<IConfiguratorFieldConfig>
+	/// <summary>
+	/// Table config.
+	/// </summary>
+	abstract class TableConfig
 	{
-		Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig> ();
+		readonly Dictionary<string, IConfiguratorFieldConfig> _fieldConfigDictionary = new Dictionary<string, IConfiguratorFieldConfig> ();
 
+		ExtendParamCollection _extendParams = null;
+
+		public ExtendParamCollection ExtendParams {
+			get {
+				return _extendParams;
+			}
+			set {
+				_extendParams = value;
+			}
+		}
+
+		/// <summary>
+		/// Sets the field.
+		/// </summary>
+		/// <param name="config">Config.</param>
 		public void SetField (IConfiguratorFieldConfig config)
 		{
 			this.SetField (config.FieldName, config);
 		}
 
+		/// <summary>
+		/// Sets the field.
+		/// </summary>
+		/// <param name="fieldName">Field name.</param>
+		/// <param name="config">Config.</param>
 		public void SetField (string fieldName, IConfiguratorFieldConfig config)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("FieldName");
+				throw new ArgumentNullException ("fieldName");
 			}
 			if (config == null) {
-				throw new ArgumentNullException ("Config");
+				throw new ArgumentNullException ("config");
 			}
 			_fieldConfigDictionary.Add (fieldName, config);
 		}
 
+		/// <summary>
+		/// Gets the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="fieldName">Field name.</param>
 		public IConfiguratorFieldConfig GetField (string fieldName)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("FieldName");
+				throw new ArgumentNullException ("fieldName");
 			}
-			if (_fieldConfigDictionary.ContainsKey (fieldName)) {
-				return _fieldConfigDictionary [fieldName];
-			}
-			else {
-				return null;
-			}
+			IConfiguratorFieldConfig config;
+			_fieldConfigDictionary.TryGetValue (fieldName, out config);
+			return config;
 		}
 
+		/// <summary>
+		/// Gets or sets the <see cref="Light.Data.TableConfig"/> with the specified fieldName.
+		/// </summary>
+		/// <param name="fieldName">Field name.</param>
 		public IConfiguratorFieldConfig this [string fieldName] {
 			get {
 				return GetField (fieldName);
@@ -47,14 +74,11 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Gets the enumerator.
+		/// </summary>
+		/// <returns>The enumerator.</returns>
 		public IEnumerator<IConfiguratorFieldConfig> GetEnumerator ()
-		{
-			foreach (KeyValuePair<string, IConfiguratorFieldConfig> kv in _fieldConfigDictionary) {
-				yield return kv.Value;
-			}
-		}
-
-		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			foreach (KeyValuePair<string, IConfiguratorFieldConfig> kv in _fieldConfigDictionary) {
 				yield return kv.Value;

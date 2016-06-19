@@ -1,72 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
-    interface IDataFieldConfig 
-    {
-        /// <summary>
-        /// 数据库列名
-        /// </summary>
-        string Name
-        {
-            get;
-            set;
-        }
+	/// <summary>
+	/// Interface of data field config.
+	/// </summary>
+	interface IDataFieldConfig
+	{
+		/// <summary>
+		/// Gets or sets the name.
+		/// </summary>
+		/// <value>The name.</value>
+		string Name {
+			get;
+			set;
+		}
 
 		/// <summary>
-		/// 字段排序
+		/// Gets or sets the data order.
 		/// </summary>
-        int DataOrder
-        {
-            get;
-            set;
-        }
+		/// <value>The data order.</value>
+		int DataOrder {
+			get;
+			set;
+		}
 
-        /// <summary>
-        /// 是否可空
-        /// </summary>
-        bool IsNullable
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is nullable.
+		/// </summary>
+		/// <value><c>true</c> if this instance is nullable; otherwise, <c>false</c>.</value>
+		bool IsNullable {
+			get;
+			set;
+		}
 
-        /// <summary>
-        /// 是否主键
-        /// </summary>
-        bool IsPrimaryKey
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is primary key.
+		/// </summary>
+		/// <value><c>true</c> if this instance is primary key; otherwise, <c>false</c>.</value>
+		bool IsPrimaryKey {
+			get;
+			set;
+		}
 
-        /// <summary>
-        /// 是否自增ID
-        /// </summary>
-        bool IsIdentity
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is identity.
+		/// </summary>
+		/// <value><c>true</c> if this instance is identity; otherwise, <c>false</c>.</value>
+		bool IsIdentity {
+			get;
+			set;
+		}
 
-        /// <summary>
-        /// 数据类型
-        /// </summary>
-        string DBType
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// Gets or sets the type of the DB.
+		/// </summary>
+		/// <value>The type of the DB.</value>
+		string DBType {
+			get;
+			set;
+		}
 
-        /// <summary>
-        /// 默认值
-        /// </summary>
-        object DefaultValue
-        {
-            get;
-            set;
-        }
-    }
+		/// <summary>
+		/// Gets or sets the default value.
+		/// </summary>
+		/// <value>The default value.</value>
+		object DefaultValue {
+			get;
+			set;
+		}
+	}
 }

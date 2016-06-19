@@ -1,75 +1,134 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Configuration;
+using System.IO;
 using System.Reflection;
 using System.Xml;
-using System.IO;
-using System.Configuration;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Configurator.
+	/// </summary>
 	class Configurator
 	{
-		public static Configurator LoadConfiguratorFromSystemConfig (string sectionName)
+		static readonly string SECTION_NAME = "lightDataConfig";
+
+		/// <summary>
+		/// Loads the configurator from system config.
+		/// </summary>
+		/// <returns>The configurator from system config.</returns>
+		public static Configurator LoadConfiguratorFromSystemConfig ()
 		{
-			if (string.IsNullOrEmpty (sectionName)) {
-				throw new ArgumentNullException ("sectionName");
-			}
-			object obj = ConfigurationManager.GetSection (sectionName);
+			object obj = ConfigurationManager.GetSection (SECTION_NAME);
 			XmlNode node = obj as XmlNode;
 			if (node != null) {
 				return LoadConfiguratorFromXml (node);
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
 
-		public static Configurator LoadConfiguratorFromAssembly (Assembly assembly, string sectionName)
+		/// <summary>
+		/// Loads the configurator from app setting.
+		/// </summary>
+		/// <returns>The configurator from app setting.</returns>
+		public static Configurator [] LoadConfiguratorFromAppSetting ()
 		{
-			if (assembly == null) {
-				throw new ArgumentNullException ("assembly");
+			Configurator [] configFiles = null;
+			string configPath;
+			if (ConfigurationManager.AppSettings ["lightDataConfig"] != null) {
+				configPath = ConfigurationManager.AppSettings ["lightDataConfig"];
+				configFiles = LoadConfiguratorFromPath (configPath);
 			}
-			Configurator configFile = null;
-			XmlConfiguratorAttribute[] attribute = AttributeCore.GetAssemblyAttributes<XmlConfiguratorAttribute> (assembly, true);
-			if (attribute.Length > 0) {
-				if (!string.IsNullOrEmpty (attribute [0].ConfigPath)) {
-					configFile = LoadConfiguratorFromFile (attribute [0].ConfigPath, sectionName);
-				}
-			}
-			return configFile;
+			return configFiles;
 		}
 
-		public static Configurator[] LoadConfiguratorFromConfigFileDir (string directory, string sectionName)
+		/// <summary>
+		/// Loads the configurator from path.
+		/// </summary>
+		/// <returns>The configurator from path.</returns>
+		/// <param name="configPath">Config path.</param>
+		public static Configurator [] LoadConfiguratorFromPath (string configPath)
+		{
+			Configurator [] configFiles = null;
+			if (!string.IsNullOrEmpty (configPath)) {
+				if (configPath.EndsWith (".config")) {
+					Configurator configFile = LoadConfiguratorFromFile (configPath);
+					configFiles = new [] { configFile };
+				} else {
+					configFiles = LoadConfiguratorFromConfigFileDir (configPath);
+				}
+			}
+			return configFiles;
+		}
+
+		/// <summary>
+		/// Loads the configurator from assembly.
+		/// </summary>
+		/// <returns>The configurator from assembly.</returns>
+		public static Configurator [] LoadConfiguratorFromAssembly ()
+		{
+			Assembly assembly;
+			assembly = Assembly.GetEntryAssembly ();
+			if (assembly == null) {
+				assembly = Assembly.GetExecutingAssembly ();
+			}
+			return LoadConfiguratorFromAssembly (assembly);
+		}
+
+		/// <summary>
+		/// Loads the configurator from assembly.
+		/// </summary>
+		/// <returns>The configurator from assembly.</returns>
+		/// <param name="assembly">Assembly.</param>
+		public static Configurator [] LoadConfiguratorFromAssembly (Assembly assembly)
+		{
+			if (assembly == null) {
+				return null;
+			}
+			Configurator [] configFiles = null;
+			XmlConfiguratorAttribute [] attribute = AttributeCore.GetAssemblyAttributes<XmlConfiguratorAttribute> (assembly, true);
+			if (attribute.Length > 0) {
+				string configPath = attribute [0].ConfigPath;
+				configFiles = LoadConfiguratorFromPath (configPath);
+			}
+			return configFiles;
+		}
+
+		/// <summary>
+		/// Loads the configurator from config file dir.
+		/// </summary>
+		/// <returns>The configurator from config file dir.</returns>
+		/// <param name="directory">Directory.</param>
+		public static Configurator [] LoadConfiguratorFromConfigFileDir (string directory)
 		{
 			if (string.IsNullOrEmpty (directory)) {
 				throw new ArgumentNullException ("directory");
 			}
 			List<Configurator> list = new List<Configurator> ();
-			string fullPathConfigDirectory = null;
+			string fullPathConfigDirectory;
 			string applicationBaseDirectory = null;
-			try {
-				applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-			} catch {
-			}
+
+			applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
 			if (applicationBaseDirectory != null) {
 				fullPathConfigDirectory = Path.Combine (applicationBaseDirectory, directory);
-			}
-			else {
+			} else {
 				fullPathConfigDirectory = directory;
 			}
 			DirectoryInfo dir = new DirectoryInfo (fullPathConfigDirectory);
 			if (dir.Exists) {
-				FileInfo[] infos = dir.GetFiles ();
+				FileInfo [] infos = dir.GetFiles ();
 				foreach (FileInfo info in infos) {
-					if (info.Extension == "config") {
+					if (info.Extension == ".config") {
 						try {
-							Configurator config = LoadConfiguratorFromFile (info, sectionName);
+							Configurator config = LoadConfiguratorFromFile (info);
 							if (config != null) {
 								list.Add (config);
 							}
 						} catch {
-								
+
 						}
 					}
 				}
@@ -78,13 +137,18 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
-		public static Configurator LoadConfiguratorFromFile (string fileName, string sectionName)
+		/// <summary>
+		/// Loads the configurator from file.
+		/// </summary>
+		/// <returns>The configurator from file.</returns>
+		/// <param name="fileName">File name.</param>
+		public static Configurator LoadConfiguratorFromFile (string fileName)
 		{
 			if (string.IsNullOrEmpty (fileName)) {
 				throw new ArgumentNullException ("fileName");
 			}
-			Configurator configFile = null;
-			string fullPathConfigFile = null;
+			Configurator configFile;
+			string fullPathConfigFile;
 			string applicationBaseDirectory = null;
 			try {
 				applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -92,30 +156,34 @@ namespace Light.Data
 			}
 			if (applicationBaseDirectory != null) {
 				fullPathConfigFile = Path.Combine (applicationBaseDirectory, fileName);
-			}
-			else {
+			} else {
 				fullPathConfigFile = fileName;
 			}
 
-			configFile = LoadConfiguratorFromFile (new FileInfo (fullPathConfigFile), sectionName);
+			configFile = LoadConfiguratorFromFile (new FileInfo (fullPathConfigFile));
 			return configFile;
 		}
 
-		public static Configurator LoadConfiguratorFromFile (FileInfo fileInfo, string sectionName)
+		/// <summary>
+		/// Loads the configurator from file.
+		/// </summary>
+		/// <returns>The configurator from file.</returns>
+		/// <param name="fileInfo">File info.</param>
+		public static Configurator LoadConfiguratorFromFile (FileInfo fileInfo)
 		{
 			if (fileInfo == null) {
 				throw new ArgumentNullException ("fileInfo");
 			}
 			Configurator configFile = null;
 			if (fileInfo.Exists) {
-				FileStream fs = null;
+				FileStream fs;
 
 				fs = fileInfo.Open (FileMode.Open, FileAccess.Read, FileShare.Read);
 
 				if (fs != null) {
 					try {
 						// Load the configuration from the stream
-						configFile = LoadConfiguratorFromStream (fs, sectionName);
+						configFile = LoadConfiguratorFromStream (fs);
 					} finally {
 						// Force the file closed whatever happens
 						fs.Close ();
@@ -125,13 +193,15 @@ namespace Light.Data
 			return configFile;
 		}
 
-		public static Configurator LoadConfiguratorFromStream (Stream configStream, string sectionName)
+		/// <summary>
+		/// Loads the configurator from stream.
+		/// </summary>
+		/// <returns>The configurator from stream.</returns>
+		/// <param name="configStream">Config stream.</param>
+		public static Configurator LoadConfiguratorFromStream (Stream configStream)
 		{
 			if (configStream == null) {
 				throw new ArgumentNullException ("configStream");
-			}
-			if (string.IsNullOrEmpty (sectionName)) {
-				throw new ArgumentNullException ("sectionName");
 			}
 			Configurator configFile = null;
 			XmlDocument doc = new XmlDocument ();
@@ -141,14 +211,19 @@ namespace Light.Data
 			XmlReader xmlReader = XmlReader.Create (configStream, setting);
 
 			doc.Load (xmlReader);
-			XmlNodeList configNodeList = doc.GetElementsByTagName (sectionName);
+			XmlNodeList configNodeList = doc.GetElementsByTagName (SECTION_NAME);
 			if (configNodeList.Count == 1) {
-				configFile = LoadConfiguratorFromXml (configNodeList [0] as XmlElement);
+				configFile = LoadConfiguratorFromXml (configNodeList [0]);
 			}
 
 			return configFile;
 		}
 
+		/// <summary>
+		/// Loads the configurator from xml.
+		/// </summary>
+		/// <returns>The configurator from xml.</returns>
+		/// <param name="configNode">Config node.</param>
 		public static Configurator LoadConfiguratorFromXml (XmlNode configNode)
 		{
 			if (configNode == null) {
@@ -167,8 +242,7 @@ namespace Light.Data
 
 		public T CreateConfig<T> () where T : IConfig, new()
 		{
-			T config = default(T);
-			config = new T ();
+			T config = new T ();
 			config.LoadConfig (_node);
 			return config;
 		}

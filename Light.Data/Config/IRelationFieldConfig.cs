@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
+	/// <summary>
+	/// Interface of relation field config.
+	/// </summary>
     interface IRelationFieldConfig
     {
-        IEnumerable<RelationKey> GetRelationKeys();
+		RelationKey[]  GetRelationKeys();
 
 		/// <summary>
-		/// 关联数据表对应字段数
+		/// Gets the relation key count.
 		/// </summary>
 		/// <value>The relation key count.</value>
         int RelationKeyCount
@@ -17,13 +17,12 @@ namespace Light.Data
             get;
         }
 
-        /// <summary>
-        ///  关联数据表对应字段名
-        /// </summary>
-        string PropertyName
-        {
-            get;
-        }
-
+		/// <summary>
+		/// Gets the relation mode.
+		/// </summary>
+		/// <value>The relation mode.</value>
+		RelationMode RelationMode {
+			get;
+		}
     }
 }

@@ -1,49 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
+
 using Light.Data;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data mapping.
+	/// </summary>
 	abstract class DataMapping : IFieldCollection
 	{
 		#region static
 
 		static object _synobj = new object ();
 
-		//        static Dictionary<Assembly, Dictionary<Type, DataMapping>> _assemblyMapping = new Dictionary<Assembly, Dictionary<Type, DataMapping>>();
-
 		static Dictionary<Type, DataMapping> _defaultMapping = new Dictionary<Type, DataMapping> ();
 
+		/// <summary>
+		/// Gets the mapping.
+		/// </summary>
+		/// <returns>The mapping.</returns>
+		/// <param name="type">Type.</param>
 		public static DataMapping GetMapping (Type type)
 		{
-//            Assembly callingAssembly = DataContext.CallingAssembly;
-//            Dictionary<Type, DataMapping> mappings = null;
-//            if (callingAssembly == null)
-//            {
-//                mappings = _defaultMapping;
-//            }
-//            else
-//            {
-//                if (!_assemblyMapping.ContainsKey(callingAssembly))
-//                {
-//                    lock (_synobj)
-//                    {
-//                        if (!_assemblyMapping.ContainsKey(callingAssembly))
-//                        {
-//                            _assemblyMapping.Add(callingAssembly, new Dictionary<Type, DataMapping>());
-//                        }
-//                    }
-//                }
-//                mappings = _assemblyMapping[callingAssembly];
-//            }
-
 			Dictionary<Type, DataMapping> mappings = _defaultMapping;
-			DataMapping mapping = null;
+			DataMapping mapping;
 			mappings.TryGetValue (type, out mapping);
 			if (mapping == null) {
 				lock (_synobj) {
@@ -68,10 +50,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取数据表映射图
+		/// Gets the table mapping.
 		/// </summary>
-		/// <param name="type">映射类型</param>
-		/// <returns>数据表映射图</returns>
+		/// <returns>The table mapping.</returns>
+		/// <param name="type">Type.</param>
 		public static DataTableEntityMapping GetTableMapping (Type type)
 		{
 			DataTableEntityMapping dataMapping = GetMapping (type) as DataTableEntityMapping;
@@ -84,10 +66,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 获取关系映射图
+		/// Gets the entity mapping.
 		/// </summary>
-		/// <param name="type">映射类型</param>
-		/// <returns>关系映射图</returns>
+		/// <returns>The entity mapping.</returns>
+		/// <param name="type">Type.</param>
 		public static DataEntityMapping GetEntityMapping (Type type)
 		{
 			DataEntityMapping dataMapping = GetMapping (type) as DataEntityMapping;
@@ -100,22 +82,25 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 创建关系映射图
+		/// Creates the mapping.
 		/// </summary>
-		/// <param name="type">映射类型</param>
-		/// <returns>关系映射图</returns>
+		/// <returns>The mapping.</returns>
+		/// <param name="type">Type.</param>
 		private static DataMapping CreateMapping (Type type)
 		{
-			string tableName = null;
-			string extentParam = null;
-			bool isEntityTable = true;
+			string tableName;
+//			string extentParam;
+			bool isEntityTable;
 			DataMapping dataMapping;
 
 			IDataTableConfig config = ConfigManager.LoadDataTableConfig (type);
 			if (config != null) {
 				tableName = config.TableName;
-				extentParam = config.ExtendParams;
+//				extentParam = config.ExtendParams;
 				isEntityTable = config.IsEntityTable;
+			}
+			else {
+				throw new LightDataException (string.Format (RE.TheTypeOfDataEntityIsNoConfig, type.Name));
 			}
 
 			if (string.IsNullOrEmpty (tableName)) {
@@ -136,124 +121,87 @@ namespace Light.Data
 					dataMapping = new DataTableEntityMapping (type, tableName, false);
 				}
 			}
-			dataMapping.ExtentParams = new ExtendParamsCollection (extentParam);
+//			dataMapping.ExtentParams = new ExtendParamsCollection (extentParam);
 			return dataMapping;
 		}
 
 		#endregion
 
-		protected DataMapping (Type type)
-		{
-			ObjectType = type;
-		}
-
-		/// <summary>
-		/// 映射数据类型
-		/// </summary>
-		internal Type ObjectType {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// 扩展参数集合
-		/// </summary>
-		internal ExtendParamsCollection ExtentParams {
-			get;
-			set;
-		}
-
 		protected Dictionary<string, FieldMapping> _fieldMappingDictionary = new Dictionary<string, FieldMapping> ();
 
-		protected Dictionary<string, FieldMapping> _fieldMappingAlterNameDictionary = new Dictionary<string, FieldMapping> ();
-
-		protected Dictionary<string, FieldMapping> _fieldMappingAllNameDictionary = new Dictionary<string, FieldMapping> ();
-
+		protected List<FieldMapping> _fieldList = new List<FieldMapping> ();
 
 		/// <summary>
-		/// 获取字段名数组
+		/// Initializes a new instance of the <see cref="Light.Data.DataMapping"/> class.
 		/// </summary>
-		/// <returns></returns>
-		public string[] GetFieldNames ()
+		/// <param name="type">Type.</param>
+		protected DataMapping (Type type)
 		{
-			return GetFieldNames (GetFieldMappings ());
+			this.objectType = type;
 		}
 
-		private string[] GetFieldNames (IEnumerable<FieldMapping> fields)
-		{
-			List<string> list = new List<string> ();
-			foreach (DataFieldMapping field in fields) {
-				ComplexFieldMapping cmField = field as ComplexFieldMapping;
-				if (cmField != null) {
-					list.AddRange (GetFieldNames (cmField.GetFieldMappings ()));
-				}
-				else {
-					list.Add (field.Name);
-				}
+		Type objectType;
+
+		/// <summary>
+		/// Gets or sets the type of the object.
+		/// </summary>
+		/// <value>The type of the object.</value>
+		public Type ObjectType {
+			get {
+				return objectType;
 			}
-			return list.ToArray ();
+			protected set {
+				objectType = value;
+			}
+		}
+
+		ExtendParamCollection extentParams;
+
+		/// <summary>
+		/// Gets or sets the extent parameters.
+		/// </summary>
+		/// <value>The extent parameters.</value>
+		public ExtendParamCollection ExtentParams {
+			get {
+				return extentParams;
+			}
+			protected set {
+				extentParams = value;
+			}
 		}
 
 		#region IFieldCollection 成员
 
-		public virtual IEnumerable<FieldMapping> GetFieldMappings ()
-		{
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-				yield return kv.Value;
+		public IEnumerable<FieldMapping> FieldMappings {
+			get {
+				foreach (FieldMapping item in this._fieldList) {
+					yield return item;
+				}
+			}
+		}
+
+		public int FieldCount {
+			get {
+				return this._fieldList.Count;
 			}
 		}
 
 		public virtual FieldMapping FindFieldMapping (string fieldName)
 		{
-			if (!_fieldMappingAllNameDictionary.ContainsKey (fieldName)) {
-				lock (_fieldMappingAllNameDictionary) {
-					if (!_fieldMappingAllNameDictionary.ContainsKey (fieldName)) {
-						FieldMapping mapping = SearchFieldMapping (fieldName);
-						if (mapping != null) {
-							_fieldMappingAllNameDictionary [fieldName] = mapping;
-						}
-						return mapping;
-					}
-				}
-			}
-			return _fieldMappingAllNameDictionary [fieldName];
+			FieldMapping mapping;
+			_fieldMappingDictionary.TryGetValue (fieldName, out mapping);
+			return mapping;
 		}
 
-		private FieldMapping SearchFieldMapping (string fieldName)
-		{
-			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
-				FieldMapping m = _fieldMappingDictionary [fieldName];
-				if (m is PrimitiveFieldMapping || m is EnumFieldMapping) {
-					return m;
-				}
-			}
-			if (_fieldMappingAlterNameDictionary.ContainsKey (fieldName)) {
-				FieldMapping m = _fieldMappingAlterNameDictionary [fieldName];
-				if (m is PrimitiveFieldMapping || m is EnumFieldMapping) {
-					return m;
-				}
-			}
-
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-				if (fieldName.StartsWith (kv.Key + "_") && kv.Value is ComplexFieldMapping) {
-					return ((ComplexFieldMapping)kv.Value).FindFieldMapping (fieldName);
-				}
-			}
-
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingAlterNameDictionary) {
-				if (fieldName.StartsWith (kv.Key + "_") && kv.Value is ComplexFieldMapping) {
-					return ((ComplexFieldMapping)kv.Value).FindFieldMapping (fieldName);
-				}
-			}
-			return null;
-		}
-
-		public abstract object LoadData (DataContext context, IDataReader datareader);
-
-		public abstract object LoadData (DataContext context, DataRow datarow);
+		public abstract object LoadData (DataContext context, IDataReader datareader, object state);
 
 		public abstract object InitialData ();
 
 		#endregion
+
+		public override string ToString ()
+		{
+			return string.Format ("[DataMapping: ObjectType={0}, FieldMappings={1}]", ObjectType, FieldMappings);
+		}
 	}
 }

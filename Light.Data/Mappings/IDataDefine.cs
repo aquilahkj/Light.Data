@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
+﻿using System.Data;
 
 namespace Light.Data
 {
 	interface IDataDefine
 	{
-		object LoadData (DataContext context, IDataReader datareader);
-
-		object LoadData (DataContext context, DataRow datarow);
+		object LoadData (DataContext context, IDataReader datareader, object state);
 	}
 }

@@ -20,7 +20,6 @@ namespace Light.Data.MysqlAdapter
 		public override string CreateDataTableSql (string tableName)
 		{
 			return string.Format ("`{0}`", tableName);
-			;
 		}
 
 		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
@@ -37,7 +36,8 @@ namespace Light.Data.MysqlAdapter
 			return command;
 		}
 
-		public override CommandData[] CreateBulkInsertCommand (Array entitys, int batchCount)
+
+		public override CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
 				throw new ArgumentNullException ("entitys");
@@ -45,18 +45,11 @@ namespace Light.Data.MysqlAdapter
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-			object tmpEntity = entitys.GetValue (0);
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
-			List<FieldMapping> fields = new List<FieldMapping> ();
+
 			int totalCount = entitys.Length;
-			fields.AddRange (mapping.GetFieldMappings ());
-			if (mapping.IdentityField != null) {
-				fields.Remove (mapping.IdentityField);
-			}
-			List<DataParameter> paramList = GetDataParameters (fields, tmpEntity);
 			List<string> insertList = new List<string> ();
-			foreach (DataParameter dataParameter in paramList) {
-				insertList.Add (CreateDataFieldSql (dataParameter.ParameterName));
+			foreach (DataFieldMapping field in mapping.NoIdentityFields) {
+				insertList.Add (CreateDataFieldSql (field.Name));
 			}
 
 			string insert = string.Join (",", insertList);
@@ -69,8 +62,8 @@ namespace Light.Data.MysqlAdapter
 			List<DataParameter> dataParams = new List<DataParameter> ();
 			List<CommandData> commands = new List<CommandData> ();
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = GetDataParameters (fields, entity);
-				string[] valueList = new string[paramList.Count];
+				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
+				string[] valueList = new string[entityParams.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
 					string paramName = CreateParamName ("P" + paramIndex);
@@ -84,7 +77,7 @@ namespace Light.Data.MysqlAdapter
 				values.AppendFormat ("({0})", value);
 				createCount++;
 				totalCreateCount++;
-				if (createCount == batchCount || totalCreateCount == totalCount) {
+				if (createCount == batchCount || totalCreateCount == totalCount || totalCreateCount == totalCount - 1) {
 					CommandData command = new CommandData (string.Format ("{0}values{1};", insertsql, values), dataParams);
 					commands.Add (command);
 					if (totalCreateCount == totalCount) {
@@ -124,7 +117,7 @@ namespace Light.Data.MysqlAdapter
 			return sb.ToString ();
 		}
 
-		public override string CreateRandomOrderBySql (DataEntityMapping mapping, bool fullFieldName)
+		public override string CreateRandomOrderBySql (DataEntityMapping mapping, string aliasName, bool fullFieldName)
 		{
 			return "rand()";
 		}
@@ -161,7 +154,7 @@ namespace Light.Data.MysqlAdapter
 			}
 			else {
 				string format1 = format.ToUpper ();
-				string sqlformat = null;
+				string sqlformat;
 				switch (format1) {
 				case "YMD":
 					sqlformat = "%Y%m%d";
@@ -232,12 +225,12 @@ namespace Light.Data.MysqlAdapter
 
 		public override string CreateWeekSql (string field)
 		{
-			return string.Format ("week({0})", field);
+			return string.Format ("week({0},7)", field);
 		}
 
 		public override string CreateWeekDaySql (string field)
 		{
-			return string.Format ("weekday({0})", field);
+			return string.Format ("dayofweek({0})-1", field);
 		}
 
 		public override string CreateLengthSql (string field)
@@ -247,6 +240,7 @@ namespace Light.Data.MysqlAdapter
 
 		public override string CreateSubStringSql (string field, int start, int size)
 		{
+			start++;
 			if (size == 0) {
 				return string.Format ("substring({0},{1})", field, start);
 			}
@@ -255,14 +249,28 @@ namespace Light.Data.MysqlAdapter
 			}
 		}
 
-		public override string CreatePowerSql (string field, object value)
+		public override string CreatePowerSql (string field, object value, bool forward)
 		{
-			return string.Format ("power({0},{1})", field, value);
+			if (forward) {
+				return string.Format ("power({0},{1})", field, value);
+			}
+			else {
+				return string.Format ("power({0},{1})", value, field);
+			}
 		}
 
 		public override string CreateDataBaseTimeSql ()
 		{
 			return "now()";
+		}
+
+		public override string CreateParamName (string name)
+		{
+			if (!name.StartsWith ("?")) {
+				return "?" + name;
+			} else {
+				return name;
+			}
 		}
 	}
 }

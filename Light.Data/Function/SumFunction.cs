@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class SumFunction : AggregateFunction
 	{
-		DataFieldInfo _fieldinfo = null;
+		DataFieldInfo _fieldinfo;
 
-		bool _isDistinct = false;
+		bool _isDistinct;
 
 		internal SumFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
 			: base (mapping)
@@ -19,7 +16,7 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			dataParameters = new DataParameter[0];
+			dataParameters = null;
 			return factory.CreateSumSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		}
 

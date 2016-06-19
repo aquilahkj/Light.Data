@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class FieldOrderExpression : OrderExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
 		OrderType _orderType = OrderType.ASC;
 
@@ -32,6 +30,19 @@ namespace Light.Data
 			dataParameters = new DataParameter[0];
 			string name = factory.CreateDataFieldSql (alise);
 			return factory.CreateOrderBySql (name, _orderType);
+		}
+
+//		internal override string CreateSqlString (CommandFactory factory, string aliasTableName, out DataParameter[] dataParameters)
+//		{
+//			dataParameters = new DataParameter[0];
+//			return factory.CreateOrderBySql (_fieldInfo.CreateDataFieldSql (factory, aliasTableName), _orderType);
+//		}
+
+		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
+		{
+			DataFieldInfo info = this._fieldInfo.Clone () as DataFieldInfo;
+			info.AliasTableName = aliasTableName;
+			return new FieldOrderExpression (info, this._orderType);
 		}
 
 		public override bool Equals (OrderExpression target)

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
 	/// 取值范围对象
 	/// </summary>
-	public class Region
+	 class Region
 	{
 		/// <summary>
 		/// 构造函数
@@ -16,8 +14,14 @@ namespace Light.Data
 		/// <param name="size">取值数量</param>
 		public Region (int start, int size)
 		{
-			Start = start;
-			Size = size;
+			if (start < 0) {
+				throw new ArgumentOutOfRangeException ("start");
+			}
+			_start = start;
+			if (size < 0) {
+				throw new ArgumentOutOfRangeException ("size");
+			}
+			_size = size;
 		}
 
 		int _start;
@@ -31,7 +35,7 @@ namespace Light.Data
 			}
 			set {
 				if (value < 0) {
-					throw new LightDataException (RE.RegionStartInvaild);
+					throw new ArgumentOutOfRangeException ("start");
 				}
 				else {
 					_start = value;
@@ -50,7 +54,7 @@ namespace Light.Data
 			}
 			set {
 				if (value <= 0) {
-					throw new LightDataException (RE.RegionSizeInvaild);
+					throw new ArgumentOutOfRangeException ("size");
 				}
 				else {
 					_size = value;

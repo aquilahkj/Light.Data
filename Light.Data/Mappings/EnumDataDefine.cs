@@ -1,98 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 
 namespace Light.Data
 {
 	class EnumDataDefine : DataDefine
 	{
-		public static EnumDataDefine Create (Type type, EnumFieldType fieldType, string fieldName)
+		static Dictionary<Type, EnumDataDefine> DefineListNumerics = new Dictionary<Type, EnumDataDefine> ();
+
+		static Dictionary<Type, EnumDataDefine> DefineListString = new Dictionary<Type, EnumDataDefine> ();
+
+		TypeCode _typeCode;
+
+		public static EnumDataDefine ParseDefine (Type type, EnumFieldMapping mapping)
 		{
-			EnumDataDefine mapping = CreateType (type, fieldType);
-			mapping.FieldName = fieldName;
-			return mapping;
+			if (type == mapping.ObjectType) {
+				EnumDataDefine define = GetDefine (mapping.ObjectType, false, mapping.EnumType);
+				return define;
+			}
+			else if (type == mapping.NullableType) {
+				EnumDataDefine define = GetDefine (mapping.ObjectType, true, mapping.EnumType);
+				return define;
+			}
+			else {
+				throw new LightDataException (RE.UnmatchDataDefineType);
+			}
 		}
 
-		public static EnumDataDefine Create (Type type, EnumFieldType fieldType, int fieldOrder)
+		static EnumDataDefine GetDefine (Type type, bool isNullable, EnumFieldType enumType)
 		{
-			EnumDataDefine mapping = CreateType (type, fieldType);
-			mapping.FieldOrder = fieldOrder;
-			return mapping;
-		}
-
-		private static EnumDataDefine CreateType (Type type, EnumFieldType fieldType)
-		{
-			Type rawType = null;
-			bool isNullable = false;
-			if (type.IsGenericType) {
-				Type frameType = type.GetGenericTypeDefinition ();
-				if (frameType.FullName == "System.Nullable`1") {
-					Type[] arguments = type.GetGenericArguments ();
-					rawType = arguments [0];
-					isNullable = true;
+			EnumDataDefine define;
+			Dictionary<Type, EnumDataDefine> dict;
+			dict = enumType == EnumFieldType.EnumToNumerics ? DefineListNumerics : DefineListString;
+			if (!dict.TryGetValue (type, out define)) {
+				lock (dict) {
+					if (!dict.TryGetValue (type, out define)) {
+						define = new EnumDataDefine (type, isNullable, enumType);
+						dict [type] = define;
+					}
 				}
 			}
-			if (rawType == null) {
-				rawType = type;
-			}
-			if (!rawType.IsEnum) {
-				throw new LightDataException (RE.SingleFieldSelectTypeError);
-			}
-			EnumDataDefine mapping = null;
-			mapping = new EnumDataDefine (type, rawType, fieldType);
-			mapping.IsNullable = isNullable;
-			return mapping;
+
+			return define;	
 		}
 
-		EnumFieldType _enumType = EnumFieldType.EnumToInt;
+		EnumFieldType _enumType;
 
-		Type _rawType = null;
+		readonly object _defaultValue = null;
 
-		object _defaultValue = null;
-
-		Dictionary<int, object> _dict = new Dictionary<int, object> ();
-
-		private EnumDataDefine (Type type, Type rawType, EnumFieldType enumType)
-			: base (type)
+		private EnumDataDefine (Type type, bool isNullable, EnumFieldType enumType)
+			: base (type, isNullable)
 		{
-			_rawType = rawType;
 			_enumType = enumType;
-			Array values = Enum.GetValues (_rawType);
+			Array values = Enum.GetValues (type);
 			_defaultValue = values.GetValue (0);
-			for (int i = 0; i < values.Length; i++) {
-				object obj = values.GetValue (i);
-				_dict.Add (obj.GetHashCode (), obj);
-			}
+			_typeCode = Type.GetTypeCode (ObjectType);
 		}
 
-		public override object LoadData (DataContext context, IDataReader datareader)
+		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
-			object obj;
-			if (!string.IsNullOrEmpty (FieldName)) {
-				obj = datareader [FieldName];
-			}
-			else {
-				obj = datareader [FieldOrder];
-			}
+			object obj = datareader [0];
 			return GetValue (obj);
 		}
 
-		public override object LoadData (DataContext context, DataRow datarow)
+		object GetValue (object value)
 		{
-			object obj;
-			if (!string.IsNullOrEmpty (FieldName)) {
-				obj = datarow [FieldName];
-			}
-			else {
-				obj = datarow [FieldOrder];
-			}
-			return GetValue (obj);
-		}
-
-		object GetValue (object obj)
-		{
-			if (Object.Equals (obj, DBNull.Value)) {
+			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
 				if (!IsNullable) {
 					return _defaultValue;
 				}
@@ -102,16 +75,17 @@ namespace Light.Data
 			}
 			else {
 				if (_enumType == EnumFieldType.EnumToString) {
-					return Enum.Parse (_rawType, obj.ToString ());
+					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {
-					int result = Convert.ToInt32 (obj);
-					if (_dict.ContainsKey (result)) {
-						return _dict [result];
+//					return value;
+
+					Type type = value.GetType ();
+					TypeCode code = Type.GetTypeCode (type);
+					if (code != this._typeCode) {
+						value = Convert.ChangeType (value, this._typeCode);
 					}
-					else {
-						throw new LightDataException (string.Format (RE.ValueNotInEnumType, result, _rawType));
-					}
+					return value;
 				}
 			}
 		}

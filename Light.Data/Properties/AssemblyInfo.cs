@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Light.Data")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MS")]
+[assembly: AssemblyCompany("LD")]
 [assembly: AssemblyProduct("Light.Data")]
 [assembly: AssemblyCopyright("Copyright © MS 2009")]
 [assembly: AssemblyTrademark("")]
@@ -21,6 +21,14 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Light.Data.SQLiteAdapter")]
 [assembly: InternalsVisibleTo("Light.Data.PostgreAdapter")]
 [assembly: InternalsVisibleTo("Light.Data.DB2Adaper")]
+[assembly: InternalsVisibleTo("Light.Data.UnitTest")]
+[assembly: InternalsVisibleTo("Light.Data.OracleTest")]
+[assembly: InternalsVisibleTo("Light.Data.AccessTest")]
+[assembly: InternalsVisibleTo("Light.Data.MssqlTest")]
+[assembly: InternalsVisibleTo("Light.Data.MysqlTest")]
+[assembly: InternalsVisibleTo("Light.Data.SQLiteTest")]
+[assembly: InternalsVisibleTo("Light.Data.PostgreTest")]
+[assembly: InternalsVisibleTo("Light.Data.DB2Test")]
 // 将 ComVisible 设置为 false 使此程序集中的类型
 // 对 COM 组件不可见。如果需要从 COM 访问此程序集中的类型，
 // 则将该类型上的 ComVisible 属性设置为 true。

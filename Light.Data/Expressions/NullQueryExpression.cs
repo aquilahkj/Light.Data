@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class NullQueryExpression : QueryExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
-		bool _isNull = false;
+		bool _isNull;
 
 		public NullQueryExpression (DataFieldInfo fieldInfo, bool isNull)
 			: base (fieldInfo.TableMapping)

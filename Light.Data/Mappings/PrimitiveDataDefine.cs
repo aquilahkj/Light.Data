@@ -1,104 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 
 namespace Light.Data
 {
 	class PrimitiveDataDefine : DataDefine
 	{
-		static Dictionary<Type, bool> DefineList = new Dictionary<Type, bool> ();
+		static Dictionary<Type, PrimitiveDataDefine> DefineList = new Dictionary<Type, PrimitiveDataDefine> ();
 
 		static PrimitiveDataDefine ()
 		{
-			DefineList.Add (typeof(Boolean), false);
-			DefineList.Add (typeof(Char), false);
-			DefineList.Add (typeof(SByte), false);
-			DefineList.Add (typeof(Byte), false);
-			DefineList.Add (typeof(Int16), false);
-			DefineList.Add (typeof(UInt16), false);
-			DefineList.Add (typeof(Int32), false);
-			DefineList.Add (typeof(UInt32), false);
-			DefineList.Add (typeof(Int64), false);
-			DefineList.Add (typeof(UInt64), false);
-			DefineList.Add (typeof(Single), false);
-			DefineList.Add (typeof(Double), false);
-			DefineList.Add (typeof(Decimal), false);
-			DefineList.Add (typeof(DateTime), false);
-			//DefineList.Add(typeof(String), true);
+			DefineList.Add (typeof(Char), new PrimitiveDataDefine (typeof(Char), false));
+			DefineList.Add (typeof(Boolean), new PrimitiveDataDefine (typeof(Boolean), false));
+			DefineList.Add (typeof(SByte), new PrimitiveDataDefine (typeof(SByte), false));
+			DefineList.Add (typeof(Byte), new PrimitiveDataDefine (typeof(Byte), false));
+			DefineList.Add (typeof(Int16), new PrimitiveDataDefine (typeof(Int16), false));
+			DefineList.Add (typeof(UInt16), new PrimitiveDataDefine (typeof(UInt16), false));
+			DefineList.Add (typeof(Int32), new PrimitiveDataDefine (typeof(Int32), false));
+			DefineList.Add (typeof(UInt32), new PrimitiveDataDefine (typeof(UInt32), false));
+			DefineList.Add (typeof(Int64), new PrimitiveDataDefine (typeof(Int64), false));
+			DefineList.Add (typeof(UInt64), new PrimitiveDataDefine (typeof(UInt64), false));
+			DefineList.Add (typeof(Single), new PrimitiveDataDefine (typeof(Single), false));
+			DefineList.Add (typeof(Double), new PrimitiveDataDefine (typeof(Double), false));
+			DefineList.Add (typeof(Decimal), new PrimitiveDataDefine (typeof(Decimal), false));
+			DefineList.Add (typeof(DateTime), new PrimitiveDataDefine (typeof(DateTime), false));
 
-			DefineList.Add (typeof(Nullable<Boolean>), true);
-			DefineList.Add (typeof(Nullable<Char>), true);
-			DefineList.Add (typeof(Nullable<SByte>), true);
-			DefineList.Add (typeof(Nullable<Byte>), true);
-			DefineList.Add (typeof(Nullable<Int16>), true);
-			DefineList.Add (typeof(Nullable<UInt16>), true);
-			DefineList.Add (typeof(Nullable<Int32>), true);
-			DefineList.Add (typeof(Nullable<UInt32>), true);
-			DefineList.Add (typeof(Nullable<Int64>), true);
-			DefineList.Add (typeof(Nullable<UInt64>), true);
-			DefineList.Add (typeof(Nullable<Single>), true);
-			DefineList.Add (typeof(Nullable<Double>), true);
-			DefineList.Add (typeof(Nullable<Decimal>), true);
-			DefineList.Add (typeof(Nullable<DateTime>), true);
+			DefineList.Add (typeof(Char?), new PrimitiveDataDefine (typeof(Char), false));
+			DefineList.Add (typeof(String), new PrimitiveDataDefine (typeof(String), true));
+			DefineList.Add (typeof(Boolean?), new PrimitiveDataDefine (typeof(Boolean), true));
+			DefineList.Add (typeof(SByte?), new PrimitiveDataDefine (typeof(SByte), true));
+			DefineList.Add (typeof(Byte?), new PrimitiveDataDefine (typeof(Byte), true));
+			DefineList.Add (typeof(Int16?), new PrimitiveDataDefine (typeof(Int16), true));
+			DefineList.Add (typeof(UInt16?), new PrimitiveDataDefine (typeof(UInt16), true));
+			DefineList.Add (typeof(Int32?), new PrimitiveDataDefine (typeof(Int32), true));
+			DefineList.Add (typeof(UInt32?), new PrimitiveDataDefine (typeof(UInt32), true));
+			DefineList.Add (typeof(Int64?), new PrimitiveDataDefine (typeof(Int64), true));
+			DefineList.Add (typeof(UInt64?), new PrimitiveDataDefine (typeof(UInt64), true));
+			DefineList.Add (typeof(Single?), new PrimitiveDataDefine (typeof(Single), true));
+			DefineList.Add (typeof(Double?), new PrimitiveDataDefine (typeof(Double), true));
+			DefineList.Add (typeof(Decimal?), new PrimitiveDataDefine (typeof(Decimal), true));
+			DefineList.Add (typeof(DateTime?), new PrimitiveDataDefine (typeof(DateTime), true));
 		}
 
-		public static PrimitiveDataDefine Create (Type type, string fieldName)
+		public static PrimitiveDataDefine ParseDefine (Type type, PrimitiveFieldMapping mapping)
 		{
-			PrimitiveDataDefine mapping = CreateType (type);
-			mapping.FieldName = fieldName;
-			return mapping;
-		}
-
-		public static PrimitiveDataDefine Create (Type type, int fieldOrder)
-		{
-			PrimitiveDataDefine mapping = CreateType (type);
-			mapping.FieldOrder = fieldOrder;
-			return mapping;
-		}
-
-		private static PrimitiveDataDefine CreateType (Type type)
-		{
-			PrimitiveDataDefine mapping = null;
-			bool isnullable;
-			if (DefineList.TryGetValue (type, out isnullable)) {
-				mapping = new PrimitiveDataDefine (type);
-				mapping.IsNullable = isnullable;
-				return mapping;
+			Type otype = mapping.IsNullable ? mapping.NullableType : mapping.ObjectType;
+			if (otype != type) {
+				throw new LightDataException (RE.UnmatchDataDefineType);
 			}
-			if (type == typeof(string)) {
-				mapping = new PrimitiveDataDefine (typeof(string));
+			PrimitiveDataDefine define;
+			if (!DefineList.TryGetValue (type, out define)) {
+				throw new LightDataException (RE.UnsupportDataDefineType);
 			}
-			else {
-				throw new LightDataException (RE.SingleFieldSelectTypeError);
+			return define;
+		}
+
+		public static PrimitiveDataDefine ParseDefine (Type type)
+		{
+			PrimitiveDataDefine define;
+			if (!DefineList.TryGetValue (type, out define)) {
+
 			}
-			return mapping;
+			return define;
 		}
 
-		public static PrimitiveDataDefine CreateString (bool isNullable, string fieldName)
-		{
-			PrimitiveDataDefine mapping = CreateFromStringType (isNullable);
-			mapping.FieldName = fieldName;
-			return mapping;
-		}
-
-		public static PrimitiveDataDefine CreateString (bool isNullable, int fieldOrder)
-		{
-			PrimitiveDataDefine mapping = CreateFromStringType (isNullable);
-			mapping.FieldOrder = fieldOrder;
-			return mapping;
-		}
-
-		private static PrimitiveDataDefine CreateFromStringType (bool isNullable)
-		{
-			PrimitiveDataDefine mapping = null;
-			mapping = new PrimitiveDataDefine (typeof(string));
-			mapping.IsNullable = isNullable;
-			return mapping;
-		}
-
-		private PrimitiveDataDefine (Type type)
-			: base (type)
+		private PrimitiveDataDefine (Type type, bool isNullable)
+			: base (type, isNullable)
 		{
 			_typeCode = Type.GetTypeCode (type);
 		}
@@ -106,40 +73,29 @@ namespace Light.Data
 		TypeCode _typeCode;
 
 		/// <summary>
-		/// 
+		/// Loads the data.
 		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="datareader"></param>
-		/// <returns></returns>
-		public override object LoadData (DataContext context, IDataReader datareader)
+		/// <returns>The data.</returns>
+		/// <param name="context">Context.</param>
+		/// <param name="datareader">Datareader.</param>
+		/// <param name="state">State.</param>
+		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
-			object obj;
-			if (!string.IsNullOrEmpty (FieldName)) {
-				obj = datareader [FieldName];
-			}
-			else {
-				obj = datareader [FieldOrder];
-			}
+			object obj = datareader [0];
 			return GetValue (obj);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="datarow"></param>
-		/// <returns></returns>
-		public override object LoadData (DataContext context, DataRow datarow)
-		{
-			object obj;
-			if (!string.IsNullOrEmpty (FieldName)) {
-				obj = datarow [FieldName];
-			}
-			else {
-				obj = datarow [FieldOrder];
-			}
-			return GetValue (obj);
-		}
+		//		/// <summary>
+		//		///
+		//		/// </summary>
+		//		/// <param name="context"></param>
+		//		/// <param name="datarow"></param>
+		//		/// <returns></returns>
+		//		public override object LoadData (DataContext context, DataRow datarow)
+		//		{
+		//			object obj = datarow [0];
+		//			return GetValue (obj);
+		//		}
 
 		object GetValue (object obj)
 		{
@@ -155,6 +111,5 @@ namespace Light.Data
 				return Convert.ChangeType (obj, ObjectType);
 			}
 		}
-
 	}
 }

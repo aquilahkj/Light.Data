@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -44,11 +42,16 @@ namespace Light.Data
 			return sql;
 		}
 
-//		internal override string DBType {
-//			get {
-//				return string.Empty;
-//			}
-//		}
+		internal override string DBType {
+			get {
+				return string.Empty;
+			}
+		}
+
+		internal override object ToParameter (object value)
+		{
+			return value;
+		}
 
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{

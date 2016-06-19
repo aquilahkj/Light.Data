@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
+	/// <summary>
+	/// Enum field type.
+	/// </summary>
 	enum EnumFieldType
 	{
-		EnumToInt,
+		/// <summary>
+		/// The enum to numerics.
+		/// </summary>
+		EnumToNumerics,
+		/// <summary>
+		/// The enum to string.
+		/// </summary>
 		EnumToString
 	}
 }

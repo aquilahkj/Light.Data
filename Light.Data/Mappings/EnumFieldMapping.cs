@@ -1,96 +1,139 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
 	class EnumFieldMapping : DataFieldMapping
 	{
-		EnumFieldType _enumType = EnumFieldType.EnumToInt;
+		EnumFieldType _enumType = EnumFieldType.EnumToNumerics;
 
-		object _defaultValue = null;
+		readonly object _minValue = null;
 
-		Dictionary<int, object> _dict = new Dictionary<int, object> ();
+		readonly object _defaultValue = null;
 
 		public EnumFieldType EnumType {
 			get {
 				return _enumType;
 			}
-			private set {
-				_enumType = value;
+		}
+
+		Type _nullableType;
+
+		public Type NullableType {
+			get {
+				return _nullableType;
 			}
 		}
 
-		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
+		TypeCode _typeCode;
+
+		Regex textRegex = new Regex ("char|text|string", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
-//			ObjectType = type;
-//			Name = fieldName;
-//			IndexName = indexName;
-//			TypeMapping = mapping;
-			if (string.IsNullOrEmpty (dbType) || dbType.IndexOf ("char", 0, StringComparison.OrdinalIgnoreCase) == -1) {
-				EnumType = EnumFieldType.EnumToInt;
+			if (dbType != null && textRegex.IsMatch (dbType)) {
+				_enumType = EnumFieldType.EnumToString;
 			}
 			else {
-				EnumType = EnumFieldType.EnumToString;
+				_enumType = EnumFieldType.EnumToNumerics;
 			}
-//			DBType = dbType;
-
+			Type itemstype = Type.GetType ("System.Nullable`1");
+			_nullableType = itemstype.MakeGenericType (type);
 			Array values = Enum.GetValues (ObjectType);
-			_defaultValue = values.GetValue (0);
+			_typeCode = Type.GetTypeCode (ObjectType);
+			object value = values.GetValue (0);
 
-			for (int i = 0; i < values.Length; i++) {
-				object obj = values.GetValue (i);
-				_dict.Add (Convert.ToInt32 (obj), obj);
+			if (_enumType == EnumFieldType.EnumToString) {
+				_minValue = value.ToString ();
+			}
+			else {
+				_minValue = Convert.ChangeType (value, _typeCode);
+			}
+			if (defaultValue != null) {
+				string str = defaultValue as String;
+				if (str != null) {
+					object dvalue = Enum.Parse (type, str, true);
+					if (_enumType == EnumFieldType.EnumToString) {
+						_defaultValue = dvalue.ToString ();
+					}
+					else {
+						_defaultValue = Convert.ChangeType (dvalue, _typeCode);
+					}
+				}
+				else if (defaultValue.GetType () == type) {
+					if (_enumType == EnumFieldType.EnumToString) {
+						_defaultValue = defaultValue.ToString ();
+					}
+					else {
+						_defaultValue = Convert.ChangeType (defaultValue, _typeCode);
+					}
+				}
 			}
 		}
 
 		public override object ToProperty (object value)
 		{
-			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
-				if (IsNullable) {
-					return null;
-				}
-				else {
-					return _defaultValue;
-				}
+			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
+				return null;
 			}
 			else {
 				if (EnumType == EnumFieldType.EnumToString) {
 					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {
-					int result = Convert.ToInt32 (value);//value.GetHashCode();
-					if (_dict.ContainsKey (result)) {
-						return _dict [result];
+					Type type = value.GetType ();
+					TypeCode code = Type.GetTypeCode (type);
+					if (code != this._typeCode) {
+						value = Convert.ChangeType (value, this._typeCode);
 					}
-					else {
-						throw new LightDataException (string.Format (RE.ValueNotInEnumType, result, ObjectType));
-					}
+					return value;
 				}
 			}
 		}
 
-		public override object ToColumn (object value)
+		public override object ToParameter (object value)
 		{
 			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
+				return null;
+			}
+			else {
+				if (_enumType == EnumFieldType.EnumToString) {
+					return value.ToString ();
+				}
+				else {
+					return Convert.ChangeType (value, _typeCode);
+				}
+			}
+		}
+
+		#region implemented abstract members of DataFieldMapping
+
+		public override object ToColumn (object value)
+		{
+			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
 				if (IsNullable) {
 					return null;
 				}
 				else {
-					value = _defaultValue;
+					if (_defaultValue != null) {
+						return _defaultValue;
+					}
+					else {
+						return _minValue;
+					}
 				}
 			}
-			if (EnumType == EnumFieldType.EnumToString) {
-				return value.ToString ();
-			}
 			else {
-				return Convert.ToInt32 (value);
+				if (_enumType == EnumFieldType.EnumToString) {
+					return value.ToString ();
+				}
+				else {
+					return Convert.ChangeType (value, _typeCode);
+				}
 			}
 		}
 
-
+		#endregion
 	}
-
-
 }

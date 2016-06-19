@@ -5,16 +5,16 @@ using System.Text;
 namespace Light.Data
 {
 	/// <summary>
-	/// 排序类型
+	/// Order type.
 	/// </summary>
 	public enum OrderType
 	{
 		/// <summary>
-		/// 顺序
+		/// ASC.
 		/// </summary>
 		ASC,
 		/// <summary>
-		/// 倒序
+		/// DESC.
 		/// </summary>
 		DESC
 	}

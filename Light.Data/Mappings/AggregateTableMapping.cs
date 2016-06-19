@@ -2,42 +2,24 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Aggregate table mapping.
+	/// </summary>
 	class AggregateTableMapping : DataMapping
 	{
 		#region static
 
 		static object _synobj = new object ();
 
-//		static Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> _assemblyMapping = new Dictionary<Assembly, Dictionary<Type, AggregateTableMapping>> ();
-
 		static Dictionary<Type, AggregateTableMapping> _defaultMapping = new Dictionary<Type, AggregateTableMapping> ();
-
 
 		public static AggregateTableMapping GetAggregateMapping (Type type)
 		{
-//			Assembly callingAssembly = DataContext.CallingAssembly;
-//			Dictionary<Type, AggregateTableMapping> mappings = null;
-//			if (callingAssembly == null) {
-//				mappings = _defaultMapping;
-//			}
-//			else {
-//				if (!_assemblyMapping.ContainsKey (callingAssembly)) {
-//					lock (_synobj) {
-//						if (!_assemblyMapping.ContainsKey (callingAssembly)) {
-//							_assemblyMapping.Add (callingAssembly, new Dictionary<Type, AggregateTableMapping> ());
-//						}
-//					}
-//				}
-//				mappings = _assemblyMapping [callingAssembly];
-//			}
-
 			Dictionary<Type, AggregateTableMapping> mappings = _defaultMapping;
-			AggregateTableMapping mapping = null;
+			AggregateTableMapping mapping;
 			if (!mappings.TryGetValue (type, out mapping)) {
 				lock (_synobj) {
 					if (!mappings.ContainsKey (type)) {
@@ -51,110 +33,70 @@ namespace Light.Data
 
 		private static AggregateTableMapping CreateMapping (Type type)
 		{
-			Type relateType = null;
-			string extendParam = null;
-			AggregateTableMapping aggregateMapping = null;
+//			string extendParam = null;
+			AggregateTableMapping aggregateMapping;
 			IAggregateTableConfig config = ConfigManager.LoadAggregateTableConfig (type);
-			if (config != null) {
-				relateType = config.RelateType;
-				extendParam = config.ExtendParams;
+//			if (config != null) {
+//				extendParam = config.ExtendParams;
+//			}
+			if (config == null) {
+				throw new LightDataException (string.Format (RE.TheTypeOfAggregateTableIsNoConfig, type.Name));
 			}
-			aggregateMapping = new AggregateTableMapping (type, relateType);
-			aggregateMapping.ExtentParams = new ExtendParamsCollection (extendParam);
+			aggregateMapping = new AggregateTableMapping (type);
+//			aggregateMapping.ExtentParams = new ExtendParamsCollection (extendParam);
+
 			return aggregateMapping;
 		}
 
 		#endregion
 
-		AggregateTableMapping (Type type, Type relateType)
+		AggregateTableMapping (Type type)
 			: base (type)
 		{
-			if (relateType != null && relateType != type) {
-				RelateType = relateType;
-			}
 			InitialDataFieldMapping ();
+			InitialExtendParams ();
 		}
 
-		public Type RelateType {
-			get;
-			private set;
-		}
-
-		protected void InitialDataFieldMapping ()
+		private void InitialDataFieldMapping ()
 		{
 			PropertyInfo[] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
 			foreach (PropertyInfo pi in propertys) {
 				IAggregateFieldConfig config = ConfigManager.LoadAggregateFieldConfig (pi);
 				if (config != null) {
-					Type type = pi.PropertyType;
-					string name = string.IsNullOrEmpty (config.Name) ? pi.Name : config.Name;
-
-					AggregateFieldMapping mapping = new AggregateFieldMapping (type, name, pi.Name, this);
-					mapping.Handler = new PropertyHandler (pi);
-					//_fieldMappingDictionary.Add(mapping.Name, mapping);
+					DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (pi, config, this);
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
+					_fieldList.Add (mapping);
 				}
 			}
 			if (_fieldMappingDictionary.Count == 0) {
-				throw new LightDataException (RE.AggregationFieldsIsNotExists);
+				throw new LightDataException (RE.NoAggregationFields);
 			}
 		}
 
-		public override IEnumerable<FieldMapping> GetFieldMappings ()
+		private void InitialExtendParams ()
 		{
-			foreach (KeyValuePair<string, FieldMapping> kv in _fieldMappingDictionary) {
-				yield return kv.Value;
-			}
-		}
-
-		public override FieldMapping FindFieldMapping (string fieldName)
-		{
-			if (_fieldMappingDictionary.ContainsKey (fieldName)) {
-				return _fieldMappingDictionary [fieldName];
+			ExtendParamCollection extendParams = ConfigManager.LoadAggregateExtendParamsConfig (ObjectType);
+			if (extendParams != null) {
+				this.ExtentParams = extendParams;
 			}
 			else {
-				throw new LightDataException (string.Format (RE.FieldMappingIsNotExists, fieldName));
+				this.ExtentParams = new ExtendParamCollection ();
 			}
 		}
 
-		public override object LoadData (DataContext context, IDataReader datareader)
+		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			object item = Activator.CreateInstance (ObjectType);
-			LoadDataField (item, this, datareader);
-			return item;
-		}
-
-		private void LoadDataField (object source, IFieldCollection collection, IDataReader datareader)
-		{
-			foreach (AggregateFieldMapping field in collection.GetFieldMappings()) {
+			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
 				object obj = datareader [field.Name];
-				bool isnull = Object.Equals (obj, DBNull.Value);
-				if (!isnull) {
-					field.Handler.Set (source, field.ToProperty (obj));
+				object value = field.ToProperty (obj);
+				if (!Object.Equals (value, null)) {
+					field.Handler.Set (item, value);
 				}
 			}
-		}
-
-		public override object LoadData (DataContext context, DataRow datarow)
-		{
-			object item = Activator.CreateInstance (ObjectType);
-			LoadDataField (item, this, datarow);
 			return item;
-		}
-
-		private void LoadDataField (object source, IFieldCollection collection, DataRow datarow)
-		{
-			foreach (AggregateFieldMapping field in collection.GetFieldMappings()) {
-				if (field == null)
-					continue;
-				object obj = datarow [field.Name];
-				bool isnull = Object.Equals (obj, DBNull.Value);
-				if (!isnull) {
-					field.Handler.Set (source, field.ToProperty (obj));
-				}
-			}
 		}
 
 		public override object InitialData ()

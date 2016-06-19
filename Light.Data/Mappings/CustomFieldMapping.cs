@@ -1,19 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 自定义字段类型，用于建立没有在数据表字段映射的字段信息(DataFieldInfo)
+	/// Custom field mapping.
 	/// </summary>
 	class CustomFieldMapping : DataFieldMapping
 	{
 		public CustomFieldMapping (string fieldName, DataEntityMapping mapping)
-			: base (null, fieldName, null, mapping, false, null)
+			: base (null, fieldName, null, mapping, true, null)
 		{
-//			Name = fieldName;
-//			TypeMapping = mapping;
+
 		}
+
+		#region implemented abstract members of FieldMapping
+
+		public override object ToProperty (object value)
+		{
+			if (Object.Equals (value, DBNull.Value)) {
+				return null;
+			}
+			else {
+				return value;
+			}
+		}
+
+		public override object ToParameter (object value)
+		{
+			if (Object.Equals (value, DBNull.Value)) {
+				return null;
+			}
+			else {
+				return value;
+			}
+		}
+
+		#endregion
+
+		#region implemented abstract members of DataFieldMapping
+
+		public override object ToColumn (object value)
+		{
+			return value;
+		}
+
+		#endregion
 	}
 }

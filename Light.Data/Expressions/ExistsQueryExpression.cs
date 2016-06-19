@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class ExistsQueryExpression : QueryExpression
 	{
-		QueryExpression _queryExpression = null;
+		QueryExpression _queryExpression;
 
-		bool _isNot = false;
+		bool _isNot;
 
 		public ExistsQueryExpression (QueryExpression expression, bool isNot)
 			: base (expression.TableMapping)
 		{
 			_queryExpression = expression;
 			_isNot = isNot;
-//			IgnoreConsistency = true;
 		}
 
 

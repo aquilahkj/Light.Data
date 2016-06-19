@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class DatePartDataFieldInfo : ExtendDataFieldInfo
@@ -47,11 +44,11 @@ namespace Light.Data
 			return sql;
 		}
 
-//		internal override string DBType {
-//			get {
-//				return string.Empty;
-//			}
-//		}
+		internal override string DBType {
+			get {
+				return "int";
+			}
+		}
 
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{

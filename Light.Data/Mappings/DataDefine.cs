@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Data;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Data define.
+	/// </summary>
 	abstract class DataDefine : IDataDefine
 	{
-		Type _type = null;
+		Type _type;
 
 		public Type ObjectType {
 			get {
@@ -14,46 +16,22 @@ namespace Light.Data
 			}
 		}
 
-		protected DataDefine (Type type)
+		protected DataDefine (Type type, bool isNullable)
 		{
 			_type = type;
+			_isNullable = isNullable;
 		}
 
-		string _fieldName = null;
-
-		protected string FieldName {
-			get {
-				return _fieldName;
-			}
-			set {
-				_fieldName = value;
-			}
-		}
-
-		int _fieldOrder = 0;
-
-		public int FieldOrder {
-			get {
-				return _fieldOrder;
-			}
-			set {
-				_fieldOrder = value;
-			}
-		}
-
-		bool _isNullable = false;
+		readonly bool _isNullable;
 
 		public bool IsNullable {
 			get {
 				return _isNullable;
 			}
-			set {
-				_isNullable = value;
-			}
 		}
 
-		public abstract object LoadData (DataContext context, System.Data.IDataReader datareader);
+		public abstract object LoadData (DataContext context, IDataReader datareader, object state);
 
-		public abstract object LoadData (DataContext context, System.Data.DataRow datarow);
+		//		public abstract object LoadData (DataContext context, System.Data.DataRow datarow);
 	}
 }

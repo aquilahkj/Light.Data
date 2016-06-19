@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class MaxFunction : AggregateFunction
 	{
-		DataFieldInfo _fieldinfo = null;
+		DataFieldInfo _fieldinfo;
 
 		internal MaxFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo)
 			: base (mapping)
@@ -17,7 +14,7 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			dataParameters = new DataParameter[0];
+			dataParameters = null;
 			return factory.CreateMaxSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName));
 		}
 

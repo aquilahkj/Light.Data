@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class ConditionAvgFunction : AggregateFunction
 	{
-		QueryExpression _expression = null;
+		QueryExpression _expression;
 
-		DataFieldInfo _fieldinfo = null;
+		DataFieldInfo _fieldinfo;
 
-		bool _isDistinct = false;
+		bool _isDistinct;
 
 		internal ConditionAvgFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo, bool isDistinct)
 			: base (mapping)
@@ -25,6 +22,14 @@ namespace Light.Data
 			string sql = _expression.CreateSqlString (factory, fullFieldName, out dataParameters);
 			return factory.CreateConditionAvgSql (sql, _fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		}
+
+//		internal override AggregateFunction CreateAliasTableFunction (string aliasTableName)
+//		{
+//			DataFieldInfo info = this._fieldinfo.Clone () as DataFieldInfo;
+//			info.AliasTableName = aliasTableName;
+//			AvgFunction function = new AvgFunction (this.TableMapping, info, this._isDistinct);
+//			return function;
+//		}
 
 		protected override bool EqualsDetail (AggregateFunction function)
 		{

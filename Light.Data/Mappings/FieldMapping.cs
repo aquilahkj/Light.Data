@@ -1,34 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Field mapping.
+	/// </summary>
 	abstract class FieldMapping
 	{
 		protected static readonly string _fieldRegex = @"^([a-zA-Z][a-z0-9A-Z_]*)$";
 
 		#region 私有变量
 
-		string _dbType = null;
+		protected string _dbType;
 
-		bool _isNullable = false;
+		protected bool _isNullable;
 
-		Type _objectType = null;
+		protected Type _objectType;
 
-		string _name = null;
+		protected string _name;
 
-		int? _dataOrder = null;
+		protected string _indexName;
 
-		string _indexName = null;
+		protected DataMapping _typeMapping;
 
-		DataMapping _typeMapping = null;
+		protected PropertyHandler _handler;
 
-		PropertyHandler _handler = null;
-
-		object _defaultValue = null;
-
-		TypeCode _typeCode = TypeCode.Empty;
+		protected TypeCode _typeCode = TypeCode.Empty;
 
 		#endregion
 
@@ -58,15 +55,6 @@ namespace Light.Data
 			}
 		}
 
-		public int? DataOrder {
-			get {
-				return _dataOrder;
-			}
-			protected set {
-				_dataOrder = value;
-			}
-		}
-
 		public string IndexName {
 			get {
 				return _indexName;
@@ -79,21 +67,9 @@ namespace Light.Data
 			}
 		}
 
-		public PropertyHandler Handler {
+		public TypeCode TypeCode {
 			get {
-				return _handler;
-			}
-			set {
-				_handler = value;
-			}
-		}
-
-		public object DefaultValue {
-			get {
-				return _defaultValue;
-			}
-			set {
-				_defaultValue = value;
+				return _typeCode;
 			}
 		}
 
@@ -101,84 +77,22 @@ namespace Light.Data
 
 		#region 公共方法
 
-		protected FieldMapping (Type objectType, string name, string indexName, DataMapping typeMapping, bool isNullable, string dbType)
+		protected FieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType)
 		{
-			this._objectType = objectType;
-			if (objectType != null) {
-				this._typeCode = Type.GetTypeCode (objectType);
+			this._objectType = type;
+			if (type != null) {
+				this._typeCode = Type.GetTypeCode (type);
 			}
-			this._name = name;
+			this._name = fieldName;
 			this._indexName = indexName;
-			this._typeMapping = typeMapping;
+			this._typeMapping = mapping;
 			this._isNullable = isNullable;
 			this._dbType = dbType;
 		}
 
-		public virtual object ToProperty (object value)
-		{
-			if (Object.Equals (value, null) || Object.Equals (value, DBNull.Value)) {
-				TypeCode code = Type.GetTypeCode (ObjectType);
-				if (code == TypeCode.String) {
-					if (IsNullable)
-						return null;
-					else
-						return string.Empty;
-				}
-				else if (code == TypeCode.Boolean) {
-					return false;
-				}
-				else if (code == TypeCode.DateTime) {
-					return DateTime.MinValue;
-				}
-				else if (code == TypeCode.Char) {
-					return Char.MinValue;
-				}
-				else {
-					return 0;
-				}
-			}
-			else {
-				if (ObjectType != null && value.GetType () != ObjectType) {
-					value = Convert.ChangeType (value, ObjectType);
-				}
-				return value;
-			}
-		}
+		public abstract object ToProperty (object value);
 
-		public virtual object ToColumn (object value)
-		{
-			if (Object.Equals (value, null)) {
-				if (IsNullable) {
-					return null;
-				}
-				else {
-					if (_typeCode == TypeCode.Object || _typeCode == TypeCode.Empty || _typeCode == TypeCode.DBNull) {
-						return null;
-					}
-					if (_typeCode == TypeCode.String) {
-						return string.Empty;
-					}
-					else if (_typeCode == TypeCode.Boolean) {
-						return false;
-					}
-					else if (_typeCode == TypeCode.DateTime) {
-						return DateTime.MinValue;
-					}
-					else if (_typeCode == TypeCode.Char) {
-						return Char.MinValue;
-					}
-					else {
-						return 0;
-					}
-				}
-			}
-			else {
-				if (ObjectType != null && value.GetType () != ObjectType) {
-					value = Convert.ChangeType (value, ObjectType);
-				}
-				return value;
-			}
-		}
+		public abstract object ToParameter (object value);
 
 		#endregion
 	}

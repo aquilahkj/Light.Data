@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
@@ -18,11 +16,16 @@ namespace Light.Data
 			return factory.CreateLengthSql (field);
 		}
 
-//		internal override string DBType {
-//			get {
-//				return string.Empty;
-//			}
-//		}
+		internal override string DBType {
+			get {
+				return "int";
+			}
+		}
+
+		internal override object ToParameter (object value)
+		{
+			return Convert.ToInt32 (value);
+		}
 
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{

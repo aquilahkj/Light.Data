@@ -1,232 +1,230 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Config manager.
+	/// </summary>
 	static class ConfigManager
 	{
-		static readonly string SECTION_NAME = "LightDataConfig";
+		readonly static LightDataConfig InnerLightDataConfig;
 
-		static LightDataConfig _lightDataConfig = null;
-
-		//        static Dictionary<Assembly, LightDataConfig> _assemblyConfig = new Dictionary<Assembly, LightDataConfig>();
+		readonly static Dictionary<Assembly,LightDataConfig> LoadAssemblys = new Dictionary<Assembly,LightDataConfig> ();
 
 		static ConfigManager ()
 		{
-//			Configurator configuator = null;
-			//if (DataContextConfiguration.CallingAssembly != null)
-			//{
-			//    configuator = Configurator.LoadConfiguratorFromAssembly(DataContextConfiguration.CallingAssembly, SECTION_NAME);
-			//}
-
 			LightDataConfig dataConfig = new LightDataConfig ();
 
-			Configurator systemConfiguator = Configurator.LoadConfiguratorFromSystemConfig (SECTION_NAME);
+			Configurator systemConfiguator = Configurator.LoadConfiguratorFromSystemConfig ();
 			if (systemConfiguator != null) {
 				LightDataConfig config = systemConfiguator.CreateConfig<LightDataConfig> ();
 				dataConfig.CombineConfig (config);
 			}
-			Configurator defaultConfiguator = Configurator.LoadConfiguratorFromFile ("lightdata.config", SECTION_NAME);
-			if (systemConfiguator != null) {
-				LightDataConfig config = defaultConfiguator.CreateConfig<LightDataConfig> ();
+
+			Configurator defaultFileConfiguator = Configurator.LoadConfiguratorFromFile ("lightdata.config");
+			if (defaultFileConfiguator != null) {
+				LightDataConfig config = defaultFileConfiguator.CreateConfig<LightDataConfig> ();
 				dataConfig.CombineConfig (config);
 			}
-			Configurator[] dirConfiguators = Configurator.LoadConfiguratorFromConfigFileDir ("lightdata", SECTION_NAME);
-			if (dirConfiguators != null && dirConfiguators.Length > 0) {
-				foreach(Configurator configuator in dirConfiguators)
-				{
+
+			Configurator[] defaultDirConfiguators = Configurator.LoadConfiguratorFromConfigFileDir ("lightdata");
+			if (defaultDirConfiguators != null && defaultDirConfiguators.Length > 0) {
+				foreach (Configurator configuator in defaultDirConfiguators) {
 					LightDataConfig config = configuator.CreateConfig<LightDataConfig> ();
 					dataConfig.CombineConfig (config);
 				}
 			}
 
-
-			//			if (configuator == null) {
-//				configuator = Configurator.LoadConfiguratorFromFile ("LightData.config", SECTION_NAME);
-//			}
-//			if (configuator == null) {
-//				configuator = Configurator.LoadConfiguratorFromSystemConfig (SECTION_NAME);
-//			}
-//			if (configuator != null) {
-//				_lightDataConfig = configuator.CreateConfig<LightDataConfig> ();
-//			}
-
-			_lightDataConfig = dataConfig;
-		}
-
-		//        static LightDataConfig GetAssemblyConfig()
-		//        {
-		//            Assembly callingAssembly = DataContext.CallingAssembly;
-		//            if (callingAssembly == null)
-		//            {
-		//                return null;
-		//            }
-		//            if (!_assemblyConfig.ContainsKey(callingAssembly))
-		//            {
-		//                Configurator configuator = Configurator.LoadConfiguratorFromAssembly(callingAssembly, SECTION_NAME);
-		//                LightDataConfig lightDataConfig = null;
-		//                if (configuator != null)
-		//                {
-		//                     lightDataConfig = configuator.CreateConfig<LightDataConfig>();
-		//                }
-		//                _assemblyConfig.Add(callingAssembly, lightDataConfig);
-		//            }
-		//            return _assemblyConfig[callingAssembly];
-		//        }
-
-		public static LightDataConfig GetConfig ()
-		{
-//            LightDataConfig config = GetAssemblyConfig();
-//            if (config == null)
-//            {
-//                config = _lightDataConfig;
-//            }
-//            return config;
-			return _lightDataConfig;
-		}
-
-		internal static IDataTableConfig LoadDataTableConfig (Type type)
-		{
-			IDataTableConfig config = null;
-			if (config == null) {
-				LightDataConfig lightDataConfig = GetConfig ();
-				if (lightDataConfig != null && lightDataConfig.ContainDataTableConfig (type)) {
-					config = lightDataConfig.GetDataTableConfig (type);
+			Configurator[] appSettingConfiguators = Configurator.LoadConfiguratorFromAppSetting ();
+			if (appSettingConfiguators != null && appSettingConfiguators.Length > 0) {
+				foreach (Configurator configuator in appSettingConfiguators) {
+					LightDataConfig config = configuator.CreateConfig<LightDataConfig> ();
+					dataConfig.CombineConfig (config);
 				}
 			}
-			if (config == null) {
-				DataTableAttribute[] attributes = AttributeCore.GetTypeAttributes<DataTableAttribute> (type, true);
-				if (attributes.Length > 0) {
-					config = attributes [0];
+			InnerLightDataConfig = dataConfig;
+		}
+
+		static LightDataConfig GetDataConfigFromAssembly (Assembly assembly)
+		{
+			LightDataConfig config = null;
+			Configurator[] assemblyConfiguators = Configurator.LoadConfiguratorFromAssembly (assembly);
+			if (assemblyConfiguators != null && assemblyConfiguators.Length > 0) {
+				foreach (Configurator configuator in assemblyConfiguators) {
+					config = configuator.CreateConfig<LightDataConfig> ();
+					config = config.SearchForAssembly (assembly);
 				}
 			}
 			return config;
 		}
 
-		internal static IDataFieldConfig LoadDataFieldConfig (PropertyInfo pi)
+		static LightDataConfig GetConfig ()
 		{
-			IDataFieldConfig config = null;
+			return InnerLightDataConfig;
+		}
+
+		static DataTableConfig InnerLoadDataTableConfig (Type type)
+		{
+			DataTableConfig config = InnerLightDataConfig.GetDataTableConfig (type);
 			if (config == null) {
-				LightDataConfig lightDataConfig = GetConfig ();
-				if (lightDataConfig != null && lightDataConfig.ContainDataTableConfig (pi.ReflectedType)) {
-					DataTableConfig dtconfig = lightDataConfig.GetDataTableConfig (pi.ReflectedType);
-					IConfiguratorFieldConfig fieldConfig = dtconfig [pi.Name];
-					if (fieldConfig != null) {
-						if (fieldConfig is IgnoraFieldConfig) {
-							return null;
+				LightDataConfig dataConfig;
+				if (!LoadAssemblys.TryGetValue (type.Assembly, out dataConfig)) {
+					lock (LoadAssemblys) {
+						if (!LoadAssemblys.TryGetValue (type.Assembly, out dataConfig)) {
+							dataConfig = GetDataConfigFromAssembly (type.Assembly);
+							LoadAssemblys.Add (type.Assembly, dataConfig);
 						}
-						config = dtconfig [pi.Name] as DataFieldConfig;
 					}
 				}
-			}
-			if (config == null) {
-				DataFieldAttribute[] attributes = AttributeCore.GetPropertyAttributes<DataFieldAttribute> (pi, true);
-				if (attributes.Length > 0) {
-					config = attributes [0];
+				if (dataConfig != null) {
+					config = dataConfig.GetDataTableConfig (type);
 				}
 			}
 			return config;
 		}
 
-		internal static IAggregateTableConfig LoadAggregateTableConfig (Type type)
+		static AggregateTableConfig InnerLoadAggregateTableConfig (Type type)
 		{
-			IAggregateTableConfig config = null;
+			AggregateTableConfig config = InnerLightDataConfig.GetAggregateTableConfig (type);
 			if (config == null) {
-				LightDataConfig lightDataConfig = GetConfig ();
-				if (lightDataConfig != null && lightDataConfig.ContainAggregateTableConfig (type)) {
-					config = lightDataConfig.GetAggregateTableConfig (type);
-				}
-			}
-			if (config == null) {
-				AggregateTableAttribute[] attributes = AttributeCore.GetTypeAttributes<AggregateTableAttribute> (type, true);
-				if (attributes.Length > 0) {
-					config = attributes [0];
-				}
-			}
-
-			return config;
-		}
-
-		internal static IAggregateFieldConfig LoadAggregateFieldConfig (PropertyInfo pi)
-		{
-			IAggregateFieldConfig config = null;
-			if (config == null) {
-				LightDataConfig lightDataConfig = GetConfig ();
-				if (lightDataConfig != null && lightDataConfig.ContainAggregateTableConfig (pi.ReflectedType)) {
-					AggregateTableConfig atconfig = lightDataConfig.GetAggregateTableConfig (pi.ReflectedType);
-					IConfiguratorFieldConfig fieldConfig = atconfig [pi.Name];
-					if (fieldConfig != null) {
-						if (fieldConfig is IgnoraFieldConfig) {
-							return null;
+				LightDataConfig dataConfig;
+				if (!LoadAssemblys.TryGetValue (type.Assembly, out dataConfig)) {
+					lock (LoadAssemblys) {
+						if (!LoadAssemblys.TryGetValue (type.Assembly, out dataConfig)) {
+							dataConfig = GetDataConfigFromAssembly (type.Assembly);
+							LoadAssemblys.Add (type.Assembly, dataConfig);
 						}
-						config = atconfig [pi.Name] as AggregateFieldConfig;
 					}
 				}
-			}
-			if (config == null) {
-				AggregateFieldAttribute[] attributes = AttributeCore.GetPropertyAttributes<AggregateFieldAttribute> (pi, true);
-				if (attributes.Length > 0) {
-					config = attributes [0];
+				if (dataConfig != null) {
+					config = dataConfig.GetAggregateTableConfig (type);
 				}
 			}
 			return config;
 		}
 
-		//internal static IRelationConfig[] LoadRelationConfigs(PropertyInfo pi)
-		//{
-		//    IRelationConfig[] configs = null;
-		//    RelationAttribute[] attributes = AttributeCore.GetPropertyAttributes<RelationAttribute>(pi, true);
-		//    if (attributes.Length > 0)
-		//    {
-		//        configs = attributes;
-		//    }
-		//    return configs;
-		//}
+		/// <summary>
+		/// Loads the data table config.
+		/// </summary>
+		/// <returns>The data table config.</returns>
+		/// <param name="type">Type.</param>
+		public static IDataTableConfig LoadDataTableConfig (Type type)
+		{
+			IDataTableConfig config = InnerLoadDataTableConfig (type);
+			if (config != null) {
+				return config;
+			}
+			DataTableAttribute[] attributes = AttributeCore.GetTypeAttributes<DataTableAttribute> (type, true);
+			if (attributes.Length > 0) {
+				return attributes [0];
+			}
+			return null;
+		}
 
-		//internal static IRelationPropertyConfig LoadRelationPropertyConfig(PropertyInfo pi)
-		//{
-		//    IRelationPropertyConfig config = null;
-		//    RelationPropertyAttribute[] attributes = AttributeCore.GetPropertyAttributes<RelationPropertyAttribute>(pi, true);
-		//    if (attributes.Length > 0)
-		//    {
-		//        config = attributes[0];
-		//    }
-		//    return config;
-		//}
+		/// <summary>
+		/// Loads the data field config.
+		/// </summary>
+		/// <returns>The data field config.</returns>
+		/// <param name="pi">Pi.</param>
+		public static IDataFieldConfig LoadDataFieldConfig (PropertyInfo pi)
+		{
+			DataTableConfig config = InnerLoadDataTableConfig (pi.ReflectedType);
+			if (config != null) {
+				return config [pi.Name] as DataFieldConfig;
+			}
 
-		internal static IRelationFieldConfig LoadRelationFieldConfig (PropertyInfo pi)
+			DataFieldAttribute[] attributes = AttributeCore.GetPropertyAttributes<DataFieldAttribute> (pi, true);
+			if (attributes.Length > 0) {
+				return attributes [0];
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Loads the aggregate table config.
+		/// </summary>
+		/// <returns>The aggregate table config.</returns>
+		/// <param name="type">Type.</param>
+		public static IAggregateTableConfig LoadAggregateTableConfig (Type type)
+		{
+			IAggregateTableConfig config = InnerLoadAggregateTableConfig (type);
+			if (config != null) {
+				return config;
+			}
+			AggregateTableAttribute[] attributes = AttributeCore.GetTypeAttributes<AggregateTableAttribute> (type, true);
+			if (attributes.Length > 0) {
+				return attributes [0];
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Loads the aggregate field config.
+		/// </summary>
+		/// <returns>The aggregate field config.</returns>
+		/// <param name="pi">Pi.</param>
+		public static IAggregateFieldConfig LoadAggregateFieldConfig (PropertyInfo pi)
+		{
+			AggregateTableConfig config = InnerLoadAggregateTableConfig (pi.ReflectedType);
+			if (config != null) {
+				return config [pi.Name] as AggregateFieldConfig;
+			}
+
+			AggregateFieldAttribute[] attributes = AttributeCore.GetPropertyAttributes<AggregateFieldAttribute> (pi, true);
+			if (attributes.Length > 0) {
+				return attributes [0];
+			}
+			return null;
+		}
+
+		public static ExtendParamCollection LoadAggregateExtendParamsConfig (Type type)
+		{
+			AggregateTableConfig config = InnerLoadAggregateTableConfig (type);
+			if (config != null) {
+				return config.ExtendParams;
+			}
+			ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection<AggregateExtendParamAttribute> (type);
+			return extendParams;
+		}
+
+		public static ExtendParamCollection LoadDataTableExtendParamsConfig (Type type)
+		{
+			DataTableConfig config = InnerLoadDataTableConfig (type);
+			if (config != null) {
+				return config.ExtendParams;
+			}
+			ExtendParamCollection extendParams = ExtendParamCollection.CreateExtendParamsCollection<DataTableExtendParamAttribute> (type);
+			return extendParams;
+		}
+
+		/// <summary>
+		/// Loads the relation field config.
+		/// </summary>
+		/// <returns>The relation field config.</returns>
+		/// <param name="pi">Pi.</param>
+		public static IRelationFieldConfig LoadRelationFieldConfig (PropertyInfo pi)
 		{
 			IRelationFieldConfig config = null;
 			if (config == null) {
-				LightDataConfig lightDataConfig = GetConfig ();
-				if (lightDataConfig != null && lightDataConfig.ContainDataTableConfig (pi.ReflectedType)) {
-					DataTableConfig dtconfig = lightDataConfig.GetDataTableConfig (pi.ReflectedType);
-					IConfiguratorFieldConfig fieldConfig = dtconfig [pi.Name];
-					if (fieldConfig != null) {
-						if (fieldConfig is IgnoraFieldConfig) {
-							return null;
-						}
-						config = dtconfig [pi.Name] as RelationFieldConfig;
-					}
-				}
-			}
-			if (config == null) {
-				RelationAttribute[] relationAttributes = AttributeCore.GetPropertyAttributes<RelationAttribute> (pi, true);
+				RelationFieldAttribute[] relationAttributes = AttributeCore.GetPropertyAttributes<RelationFieldAttribute> (pi, true);
 				if (relationAttributes.Length > 0) {
 					RelationFieldConfig rfConfig = new RelationFieldConfig (pi.Name);
-					foreach (RelationAttribute ra in relationAttributes) {
+					foreach (RelationFieldAttribute ra in relationAttributes) {
 						rfConfig.AddRelationKeys (ra.MasterKey, ra.RelateKey);
 					}
 					RelationPropertyAttribute[] relationPropertyAttributes = AttributeCore.GetPropertyAttributes<RelationPropertyAttribute> (pi, true);
 					if (relationPropertyAttributes.Length > 0) {
-						rfConfig.PropertyName = relationPropertyAttributes [0].PropertyName;
+						rfConfig.RelationMode = relationPropertyAttributes [0].RelationMode;
 					}
 					config = rfConfig;
 				}
 			}
 			return config;
 		}
+	
+		
+	
 	}
 }

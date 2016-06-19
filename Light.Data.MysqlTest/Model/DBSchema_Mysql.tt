@@ -87,7 +87,7 @@ namespace <#=namespaceName#>
 		/// <#=c.ColumnComment#>
 		/// </summary>
 		/// <value></value>
-		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #>)]
+		[DataField("<#=c.ColumnName#>"<# if (c.IsIdentity) { #>, IsIdentity = true<# } #><# if (c.IsPrimaryKey) { #>, IsPrimaryKey = true<# } #><# if (c.AllowNull) { #>, IsNullable = true<# } #><# if (c.DBType!=null) { #>, DBType = "<#=c.DBType#>"<# } #>)]
         public <#=c.DataType#> <#=StringUtil.ToPascalCase(c.ColumnName)#>
         {
             get { 
@@ -461,7 +461,12 @@ ORDER BY
             }
             Match match=Regex.Match(this._columnComment,"^#EnumType:(?<type>\\w+)#",RegexOptions.Compiled);
           	if (match.Success) {
-				this._dataType=match.Groups["type"].Value;
+          		string enumType=match.Groups["type"].Value;
+          		if(this._dataType=="string")
+          		{
+          			this._dbType="varchar";
+          		}
+				this._dataType=enumType;
 			}
 			else if(columnType.Contains("unsigned"))
 			{
@@ -564,6 +569,15 @@ ORDER BY
             get
             {
                 return this._dataType;
+            }
+        }
+
+        string _dbType = null;
+        public string DBType
+        {
+            get
+            {
+                return this._dbType;
             }
         }
 

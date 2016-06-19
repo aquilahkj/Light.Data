@@ -1,11 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class SingleParamAggregateExpression : AggregateHavingExpression
 	{
+		readonly static HashSet<TypeCode> SupportTypeCodes = new HashSet<TypeCode> ();
+
+		static SingleParamAggregateExpression ()
+		{
+			SupportTypeCodes.Add (TypeCode.Byte);
+			SupportTypeCodes.Add (TypeCode.Char);
+			SupportTypeCodes.Add (TypeCode.DateTime);
+			SupportTypeCodes.Add (TypeCode.Decimal);
+			SupportTypeCodes.Add (TypeCode.Double);
+			SupportTypeCodes.Add (TypeCode.Int16);
+			SupportTypeCodes.Add (TypeCode.Int32);
+			SupportTypeCodes.Add (TypeCode.Int64);
+			SupportTypeCodes.Add (TypeCode.SByte);
+			SupportTypeCodes.Add (TypeCode.Single);
+			SupportTypeCodes.Add (TypeCode.UInt16);
+			SupportTypeCodes.Add (TypeCode.UInt32);
+			SupportTypeCodes.Add (TypeCode.UInt64);
+		}
+
 		AggregateFunction _function = null;
 
 		QueryPredicate _predicate;
@@ -17,6 +35,10 @@ namespace Light.Data
 		public SingleParamAggregateExpression (AggregateFunction function, QueryPredicate predicate, object value, bool isReverse)
 			: base (function.TableMapping)
 		{
+			TypeCode typeCode = Type.GetTypeCode (value.GetType ());
+			if (!SupportTypeCodes.Contains (typeCode)) {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
 			_function = function;
 			_predicate = predicate;
 			_value = value;
@@ -26,11 +48,13 @@ namespace Light.Data
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _value, null);
+			DataParameter dataParameter = new DataParameter (pn, _value);
 			List<DataParameter> list = new List<DataParameter> ();
-			DataParameter[] ps = null;
+			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-			list.AddRange (ps);
+			if (ps != null && ps.Length > 0) {
+				list.AddRange (ps);
+			}
 			list.Add (dataParameter);
 			dataParameters = list.ToArray ();
 			return factory.CreateSingleParamSql (functionSql, _predicate, _isReverse, dataParameter);
@@ -45,7 +69,7 @@ namespace Light.Data
 			string name = factory.CreateDataFieldSql (alise);
 
 			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _value, null);
+			DataParameter dataParameter = new DataParameter (pn, _value);
 			dataParameters = new DataParameter[] { dataParameter };
 			return factory.CreateSingleParamSql (name, _predicate, _isReverse, dataParameter);
 		}

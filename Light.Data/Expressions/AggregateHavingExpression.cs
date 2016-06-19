@@ -1,36 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	/// <summary>
-	/// 统计后查询表达式
+	/// Aggregate having expression.
 	/// </summary>
 	public class AggregateHavingExpression : Expression
 	{
-		AggregateHavingExpression _expression1 = null;
+		AggregateHavingExpression _expression1;
 
-		AggregateHavingExpression _expression2 = null;
+		AggregateHavingExpression _expression2;
 
 		CatchOperatorsType _operatorType = CatchOperatorsType.AND;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Light.Data.AggregateHavingExpression"/> class.
+		/// </summary>
+		/// <param name="tableMapping">Table mapping.</param>
 		internal AggregateHavingExpression (DataEntityMapping tableMapping)
 		{
-//			if (tableMapping == null) {
-//				IgnoreConsistency = true;
-//			}
-//			else {
 			TableMapping = tableMapping;
-//			}
 		}
 
+		/// <summary>
+		/// Creates the sql string.
+		/// </summary>
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			DataParameter[] dp1 = null;
+			DataParameter[] dp1;
 			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1);
 
-			DataParameter[] dp2 = null;
+			DataParameter[] dp2;
 			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
 
 			dataParameters = new DataParameter[dp1.Length + dp2.Length];
@@ -39,12 +43,20 @@ namespace Light.Data
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
+		/// <summary>
+		/// Creates the sql string.
+		/// </summary>
+		/// <returns>The sql string.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
+		/// <param name="handler">Handler.</param>
 		internal virtual string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
 		{
-			DataParameter[] dp1 = null;
+			DataParameter[] dp1;
 			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1, handler);
 
-			DataParameter[] dp2 = null;
+			DataParameter[] dp2;
 			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2, handler);
 
 			dataParameters = new DataParameter[dp1.Length + dp2.Length];
@@ -53,7 +65,7 @@ namespace Light.Data
 
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
-
+			
 		private static AggregateHavingExpression Catch (AggregateHavingExpression expression1, CatchOperatorsType operatorType, AggregateHavingExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
@@ -76,43 +88,46 @@ namespace Light.Data
 			return newExpression;
 		}
 
+		/// <summary>
+		/// And the specified expression1 and expression2.
+		/// </summary>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		internal static AggregateHavingExpression And (AggregateHavingExpression expression1, AggregateHavingExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.AND, expression2);
 		}
 
+		/// <summary>
+		/// Or the specified expression1 and expression2.
+		/// </summary>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		internal static AggregateHavingExpression Or (AggregateHavingExpression expression1, AggregateHavingExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.OR, expression2);
 		}
 
-		/// <summary>
-		/// And结合
-		/// </summary>
-		/// <param name="expression1">表达式1</param>
-		/// <param name="expression2">表达式2</param>
-		/// <returns>新表达式</returns>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		public static AggregateHavingExpression operator & (AggregateHavingExpression expression1, AggregateHavingExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.AND, expression2);
 		}
 
-		/// <summary>
-		/// Or结合
-		/// </summary>
-		/// <param name="expression1">表达式1</param>
-		/// <param name="expression2">表达式2</param>
-		/// <returns>新表达式</returns>
+		/// <param name="expression1">Expression1.</param>
+		/// <param name="expression2">Expression2.</param>
 		public static AggregateHavingExpression operator | (AggregateHavingExpression expression1, AggregateHavingExpression expression2)
 		{
 			return Catch (expression1, CatchOperatorsType.OR, expression2);
 		}
 
 		/// <summary>
-		/// 匹配内容是否相等
+		/// Determines whether the specified <see cref="Light.Data.AggregateHavingExpression"/> is equal to the current <see cref="Light.Data.AggregateHavingExpression"/>.
 		/// </summary>
-		/// <param name="target">匹配对象</param>
-		/// <returns></returns>
+		/// <param name="target">The <see cref="Light.Data.AggregateHavingExpression"/> to compare with the current <see cref="Light.Data.AggregateHavingExpression"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="Light.Data.AggregateHavingExpression"/> is equal to the current
+		/// <see cref="Light.Data.AggregateHavingExpression"/>; otherwise, <c>false</c>.</returns>
 		public virtual bool Equals (AggregateHavingExpression target)
 		{
 			if (Object.Equals (target, null)) {
@@ -132,10 +147,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 匹配内容细节是否相等
+		/// Equalses the detail.
 		/// </summary>
-		/// <param name="expression">匹配对象</param>
-		/// <returns></returns>
+		/// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
+		/// <param name="expression">Expression.</param>
 		protected virtual bool EqualsDetail (AggregateHavingExpression expression)
 		{
 			if (this._expression1 != null) {

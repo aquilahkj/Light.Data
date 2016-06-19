@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Light.Data
@@ -19,9 +17,9 @@ namespace Light.Data
 
 		public static bool ParseDbType (string dbType, out DbType type)
 		{
-			type = DbType.String;
+			type = DbType.Object;
 			int index = dbType.IndexOf ('(');
-			string typeString = string.Empty;
+			string typeString;
 			if (index < 0) {
 				typeString = dbType;
 			}
@@ -32,46 +30,43 @@ namespace Light.Data
 				typeString = dbType.Substring (0, index);
 			}
 			bool result = false;
-			try {
-				type = (DbType)Enum.Parse (typeof(DbType), typeString, true);
+			if (Enum.TryParse<DbType> (typeString, true, out type)) {
 				result = true;
 			}
-			catch {
-				result = false;
+			else {
+				if (typeString.Equals ("int", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.Int32;
+					result = true;
+				}
+				else if (typeString.Equals ("short", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.Int16;
+					result = true;
+				}
+				else if (typeString.Equals ("long", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.Int64;
+					result = true;
+				}
+				else if (typeString.Equals ("uint", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.UInt32;
+					result = true;
+				}
+				else if (typeString.Equals ("ushort", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.UInt16;
+					result = true;
+				}
+				else if (typeString.Equals ("ulong", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.UInt64;
+					result = true;
+				}
+				else if (typeString.Equals ("float", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.Double;
+					result = true;
+				}
+				else if (typeString.Equals ("bool", StringComparison.OrdinalIgnoreCase)) {
+					type = DbType.Boolean;
+					result = true;
+				}
 			}
-			if (typeString.Equals ("int", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.Int32;
-				return true;
-			}
-			else if (typeString.Equals ("short", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.Int16;
-				return true;
-			}
-			else if (typeString.Equals ("long", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.Int64;
-				return true;
-			}
-			else if (typeString.Equals ("uint", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.UInt32;
-				return true;
-			}
-			else if (typeString.Equals ("ushort", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.UInt16;
-				return true;
-			}
-			else if (typeString.Equals ("ulong", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.UInt64;
-				return true;
-			}
-			else if (typeString.Equals ("float", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.Double;
-				return true;
-			}
-			else if (typeString.Equals ("bool", StringComparison.OrdinalIgnoreCase)) {
-				type = DbType.Boolean;
-				return true;
-			}
-
 			return result;
 		}
 
@@ -100,11 +95,12 @@ namespace Light.Data
 				return false;
 			}
 			if (objType1 == typeof(string)) {
-				return string.Equals (value1, value2);
+				return (value1 as string) == (value2 as string);
 			}
-			if (value1 is IEnumerable) {
-				System.Collections.IEnumerator e1 = (value1 as IEnumerable).GetEnumerator ();
-				System.Collections.IEnumerator e2 = (value2 as IEnumerable).GetEnumerator ();
+			var enumerable = value1 as IEnumerable;
+			if (enumerable != null) {
+				IEnumerator e1 = enumerable.GetEnumerator ();
+				IEnumerator e2 = (value2 as IEnumerable).GetEnumerator ();
 
 				while (true) {
 					bool b1 = e1.MoveNext ();
@@ -140,60 +136,60 @@ namespace Light.Data
 		{
 			object obj;
 			switch (typeCode) {
-				case TypeCode.String:
-					obj = string.Empty;
-					break;
-				case TypeCode.Boolean:
-					obj = false;
-					break;
-				case TypeCode.Char:
-					obj = Char.MinValue;
-					break;
-				case TypeCode.SByte:
-					obj = MIN_SBYTE;
-					break;
-				case TypeCode.Byte:
-					obj = MIN_BYTE;
-					break;
-				case TypeCode.Int16:
-					obj = MIN_SHORT;
-					break;
-				case TypeCode.UInt16:
-					obj = MIN_USHORT;
-					break;
-				case TypeCode.Int32:
-					obj = 0;
-					break;
-				case TypeCode.UInt32:
-					obj = 0u;
-					break;
-				case TypeCode.Int64:
-					obj = 0L;
-					break;
-				case TypeCode.UInt64:
-					obj = 0uL;
-					break;
-				case TypeCode.Single:
-					obj = 0f;
-					break;
-				case TypeCode.Double:
-					obj = 0d;
-					break;
-				case TypeCode.Decimal:
-					obj = 0m;
-					break;
-				case TypeCode.DateTime:
-					obj = DateTime.MinValue;
-					break;
-				case TypeCode.Object:
-					obj = null;
-					break;
-				case TypeCode.DBNull:
-					obj = DBNull.Value;
-					break;
-				default:
-					obj = null;
-					break;
+			case TypeCode.String:
+				obj = string.Empty;
+				break;
+			case TypeCode.Boolean:
+				obj = false;
+				break;
+			case TypeCode.Char:
+				obj = Char.MinValue;
+				break;
+			case TypeCode.SByte:
+				obj = MIN_SBYTE;
+				break;
+			case TypeCode.Byte:
+				obj = MIN_BYTE;
+				break;
+			case TypeCode.Int16:
+				obj = MIN_SHORT;
+				break;
+			case TypeCode.UInt16:
+				obj = MIN_USHORT;
+				break;
+			case TypeCode.Int32:
+				obj = 0;
+				break;
+			case TypeCode.UInt32:
+				obj = 0u;
+				break;
+			case TypeCode.Int64:
+				obj = 0L;
+				break;
+			case TypeCode.UInt64:
+				obj = 0uL;
+				break;
+			case TypeCode.Single:
+				obj = 0f;
+				break;
+			case TypeCode.Double:
+				obj = 0d;
+				break;
+			case TypeCode.Decimal:
+				obj = 0m;
+				break;
+			case TypeCode.DateTime:
+				obj = DateTime.MinValue;
+				break;
+			case TypeCode.Object:
+				obj = null;
+				break;
+			case TypeCode.DBNull:
+				obj = DBNull.Value;
+				break;
+			default:
+				obj = null;
+				break;
 			}
 			return obj;
 		}

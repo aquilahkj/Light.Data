@@ -20,6 +20,17 @@ namespace Light.Data
 
 		string commandText;
 
+		object state;
+
+		public object State {
+			get {
+				return state;
+			}
+			set {
+				state = value;
+			}
+		}
+
 		public string CommandText {
 			get {
 				return commandText;
@@ -56,7 +67,7 @@ namespace Light.Data
 			}
 		}
 
-		bool transParamName = false;
+		bool transParamName;
 
 		public bool TransParamName {
 			get {

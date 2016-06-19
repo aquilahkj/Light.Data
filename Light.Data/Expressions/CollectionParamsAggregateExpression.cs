@@ -1,21 +1,55 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class CollectionParamsAggregateExpression : AggregateHavingExpression
 	{
-		AggregateFunction _function = null;
+		readonly static HashSet<TypeCode> SupportTypeCodes = new HashSet<TypeCode> ();
+
+		static CollectionParamsAggregateExpression ()
+		{
+			SupportTypeCodes.Add (TypeCode.Byte);
+			SupportTypeCodes.Add (TypeCode.Char);
+			SupportTypeCodes.Add (TypeCode.DateTime);
+			SupportTypeCodes.Add (TypeCode.Decimal);
+			SupportTypeCodes.Add (TypeCode.Double);
+			SupportTypeCodes.Add (TypeCode.Int16);
+			SupportTypeCodes.Add (TypeCode.Int32);
+			SupportTypeCodes.Add (TypeCode.Int64);
+			SupportTypeCodes.Add (TypeCode.SByte);
+			SupportTypeCodes.Add (TypeCode.Single);
+			SupportTypeCodes.Add (TypeCode.UInt16);
+			SupportTypeCodes.Add (TypeCode.UInt32);
+			SupportTypeCodes.Add (TypeCode.UInt64);
+		}
+
+		AggregateFunction _function;
 
 		QueryCollectionPredicate _predicate;
 
-		IEnumerable _values = null;
+		IEnumerable _values;
 
 		public CollectionParamsAggregateExpression (AggregateFunction function, QueryCollectionPredicate predicate, IEnumerable values)
 			: base (function.TableMapping)
 		{
+			Type type = values.GetType ();
+			Type elementType;
+			if (type.IsArray) {
+				elementType = type.GetElementType ();
+			}
+			else if (type.IsGenericType) {
+				Type[] arguments = type.GetGenericArguments ();
+				elementType = arguments [0];
+			}
+			else {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
+			TypeCode typeCode = Type.GetTypeCode (elementType);
+			if (!SupportTypeCodes.Contains (typeCode)) {
+				throw new LightDataException (RE.UnsupportValueType);
+			}
 			_function = function;
 			_predicate = predicate;
 			_values = values;
@@ -25,13 +59,15 @@ namespace Light.Data
 		{
 			List<DataParameter> list = new List<DataParameter> ();
 
-			DataParameter[] ps = null;
+			DataParameter[] ps;
 			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-			list.AddRange (ps);
+			if (ps != null && ps.Length > 0) {
+				list.AddRange (ps);
+			}
 
 			foreach (object value in _values) {
 				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, value, null));
+				list.Add (new DataParameter (pn, value));
 			}
 
 			dataParameters = list.ToArray ();
@@ -49,7 +85,7 @@ namespace Light.Data
 			List<DataParameter> list = new List<DataParameter> ();
 			foreach (object value in _values) {
 				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, value, null));
+				list.Add (new DataParameter (pn, value));
 			}
 			dataParameters = list.ToArray ();
 			return factory.CreateCollectionParamsQuerySql (name, _predicate, list);

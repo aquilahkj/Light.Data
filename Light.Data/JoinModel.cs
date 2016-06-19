@@ -1,55 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace Light.Data
 {
 	class JoinModel
 	{
-		//		bool isSingle;
-
-//		JoinType _type = JoinType.Default;
-//
-//		public JoinType Type {
-//			get {
-//				return _type;
-//			}
-//		}
-
-		JoinConnect _connect;
+		readonly JoinConnect _connect;
 
 		public JoinConnect Connect {
 			get {
 				return _connect;
 			}
-			set {
-				_connect = value;
-			}
 		}
 
-//		bool selectAllField;
-//
-//		public bool SelectAllField {
-//			get {
-//				return selectAllField;
-//			}
-//			set {
-//				selectAllField = value;
-//			}
-//		}
-
-//		List<DataFieldInfo> fields = new List<DataFieldInfo> ();
-//
-//		public DataFieldInfo[] GetFields ()
-//		{
-//			return fields.ToArray ();
-//		}
-//
-//		public void SetField (DataFieldInfo field)
-//		{
-//			this.fields.Add (field);
-//		}
-
-		DataEntityMapping _mapping = null;
+		readonly DataEntityMapping _mapping = null;
 
 		public DataEntityMapping Mapping {
 			get {
@@ -57,7 +19,7 @@ namespace Light.Data
 			}
 		}
 
-		QueryExpression _query = null;
+		readonly QueryExpression _query = null;
 
 		public QueryExpression Query {
 			get {
@@ -65,11 +27,24 @@ namespace Light.Data
 			}
 		}
 
-		OrderExpression _order = null;
+		readonly OrderExpression _order = null;
 
 		public OrderExpression Order {
 			get {
 				return _order;
+			}
+		}
+
+		string aliasTableName;
+
+		public string AliasTableName {
+			get {
+				return aliasTableName;
+			}
+			set {
+				if (!string.IsNullOrEmpty (value)) {
+					aliasTableName = value;
+				}
 			}
 		}
 
@@ -80,7 +55,6 @@ namespace Light.Data
 			this._query = query;
 			this._order = order;
 		}
-
 
 	}
 }

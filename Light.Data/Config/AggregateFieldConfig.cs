@@ -1,29 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
     /// <summary>
-    /// 统计字段属性
+    /// Aggregate field config.
     /// </summary>
     class AggregateFieldConfig : IAggregateFieldConfig, IConfiguratorFieldConfig
     {
         /// <summary>
-        /// 构造函数
+        /// Initializes a new instance of the <see cref="Light.Data.AggregateFieldConfig"/> class.
         /// </summary>
-        /// <param name="fieldName">字段名称</param>
+        /// <param name="fieldName">Field name.</param>
         public AggregateFieldConfig(string fieldName)
         {
             if (string.IsNullOrEmpty(fieldName))
             {
-                throw new ArgumentNullException("FieldName");
+                throw new ArgumentNullException ("fieldName");
             }
             FieldName = fieldName;
         }
 
         /// <summary>
-        /// 查询别名
+        /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name
@@ -33,7 +31,7 @@ namespace Light.Data
         }
 
 		/// <summary>
-		/// 配置字段名
+		/// Gets the name of the field.
 		/// </summary>
 		/// <value>The name of the field.</value>
         public string FieldName
@@ -41,5 +39,24 @@ namespace Light.Data
             get;
             private set;
         }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this instance is nullable.
+		/// </summary>
+		/// <value>true</value>
+		/// <c>false</c>
+		public bool IsNullable {
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets or sets the default value.
+		/// </summary>
+		/// <value>The default value.</value>
+		public object DefaultValue {
+			get;
+			set;
+		}
     }
 }

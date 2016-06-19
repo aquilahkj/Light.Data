@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace Light.Data
 {
 	class BooleanQueryExpression : QueryExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
-		bool _isTrue = false;
+		bool _isTrue;
 
 		public BooleanQueryExpression (DataFieldInfo fieldInfo, bool isTrue)
 			: base (fieldInfo.TableMapping)
@@ -19,7 +16,7 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			dataParameters = new DataParameter[0];
+			dataParameters = null;
 			return factory.CreateBooleanQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isTrue);
 		}
 

@@ -5,7 +5,7 @@ using System.Text;
 namespace Light.Data
 {
 	/// <summary>
-	/// 模糊匹配字段
+	/// Match data field info.
 	/// </summary>
 	public class MatchDataFieldInfo : ExtendDataFieldInfo
 	{
@@ -27,10 +27,11 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// 匹配细节内容是否相等
+		/// Equalses the detail.
 		/// </summary>
-		/// <param name="info">匹配对象</param>
-		/// <returns></returns>
+		/// <returns>true</returns>
+		/// <c>false</c>
+		/// <param name="info">Info.</param>
 		protected override bool EqualsDetail (DataFieldInfo info)
 		{
 			if (base.EqualsDetail (info)) {
@@ -47,20 +48,26 @@ namespace Light.Data
 			}
 		}
 
+		internal override string DBType {
+			get {
+				return "string";
+			}
+		}
+
 		/// <summary>
-		/// like匹配(倒转)
+		/// Reverses like the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression ReverseLike (string value)
 		{
 			return ReverseMatchValue (value, false);
 		}
 
 		/// <summary>
-		/// Reverses the like.
+		/// Reverses like the specified values.
 		/// </summary>
-		/// <returns>The like.</returns>
+		/// <returns>The expression.</returns>
 		/// <param name="values">Values.</param>
 		public QueryExpression ReverseLike (params string[] values)
 		{
@@ -68,9 +75,9 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Reverses the like.
+		/// Reverses like the specified values.
 		/// </summary>
-		/// <returns>The like.</returns>
+		/// <returns>The expression.</returns>
 		/// <param name="values">Values.</param>
 		public QueryExpression ReverseLike (IEnumerable<string> values)
 		{
@@ -78,19 +85,19 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// not like匹配(倒转)
+		/// Reverses not like the specified value.
 		/// </summary>
-		/// <param name="value">匹配值</param>
-		/// <returns>查询表达式</returns>
+		/// <returns>The expression.</returns>
+		/// <param name="value">Value.</param>
 		public QueryExpression ReverseNotLike (string value)
 		{
 			return ReverseMatchValue (value, true);
 		}
 
 		/// <summary>
-		/// Reverses the not like.
+		/// Reverses not like the specified values.
 		/// </summary>
-		/// <returns>The not like.</returns>
+		/// <returns>The expression.</returns>
 		/// <param name="values">Values.</param>
 		public QueryExpression ReverseNotLike (params string[] values)
 		{
@@ -98,10 +105,10 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Reverses the not like.
+		/// Reverses not like the specified values.
 		/// </summary>
-		/// <returns>The not like.</returns>
-		/// <param name="values">Values.</param>
+		/// <returns>The expression.</returns>
+		/// <param name="values">Value.</param>
 		public QueryExpression ReverseNotLike (IEnumerable<string> values)
 		{
 			return ReverseMatchValue (values, true);

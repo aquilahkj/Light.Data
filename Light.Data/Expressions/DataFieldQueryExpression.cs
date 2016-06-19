@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Light.Data
 {
 	class DataFieldQueryExpression : QueryExpression
 	{
-		DataFieldInfo _fieldInfo = null;
+		DataFieldInfo _fieldInfo;
 
 		QueryPredicate _predicate;
 
-		DataFieldInfo _relateFieldInfo = null;
+		DataFieldInfo _relateFieldInfo;
 
-		bool _isReverse = false;
+		bool _isReverse;
 
-		bool _isSameTable = false;
+		bool _isSameTable;
 
 		public DataFieldQueryExpression (DataFieldInfo fieldInfo, QueryPredicate predicate, DataFieldInfo relateFieldInfo, bool isReverse)
 			: base (fieldInfo.TableMapping)
@@ -28,7 +26,7 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		{
-			dataParameters = new DataParameter[0];
+			dataParameters = null;
 			return factory.CreateRelationTableSql (_fieldInfo.CreateDataFieldSql (factory), _predicate, _isReverse, _relateFieldInfo.CreateDataFieldSql (factory, !_isSameTable));
 		}
 
