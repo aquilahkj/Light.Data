@@ -131,7 +131,7 @@ namespace Light.Data
 				return;
 			}
 
-			//if (disposing) {
+			if (disposing) {
 				if (_connection != null) {
 					_connection.Dispose ();
 					_connection = null;
@@ -140,7 +140,7 @@ namespace Light.Data
 					_transaction.Dispose ();
 					_transaction = null;
 				}
-			//}
+			}
 			_isDisposed = true;
 		}
 

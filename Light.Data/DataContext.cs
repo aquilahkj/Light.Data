@@ -46,7 +46,8 @@ namespace Light.Data
 		{
 			if (DefaultContextSetting == null) {
 				throw new LightDataException (RE.DefaultConnectionNotExists);
-			} else {
+			}
+			else {
 				DataContext context = new DataContext (DefaultContextSetting.Connection, DefaultContextSetting.Name, DefaultContextSetting.DataBase);
 				return context;
 			}
@@ -66,10 +67,12 @@ namespace Light.Data
 				if (setting != null) {
 					DataContext context = new DataContext (setting.Connection, setting.Name, setting.DataBase);
 					return context;
-				} else {
+				}
+				else {
 					throw new LightDataException (RE.SpecifiedConfigNameConnectionStringError);
 				}
-			} else {
+			}
+			else {
 				throw new LightDataException (RE.SpecifiedConfigNameConnectionStringNotExists);
 			}
 		}
@@ -200,7 +203,8 @@ namespace Light.Data
 			DataEntityMapping mapping = DataMapping.GetEntityMapping (type);
 			if (mapping != null) {
 				return mapping.TableName;
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -236,7 +240,8 @@ namespace Light.Data
 			int result;
 			if (exists) {
 				result = Update (mapping, data);
-			} else {
+			}
+			else {
 				result = Insert (mapping, data);
 			}
 			return result;
@@ -291,7 +296,8 @@ namespace Light.Data
 			DataTableEntity entity = data as DataTableEntity;
 			if (entity != null) {
 				return Update (mapping, data, entity.GetUpdateFields ());
-			} else {
+			}
+			else {
 				return Update (mapping, data, null);
 			}
 		}
@@ -313,7 +319,8 @@ namespace Light.Data
 			DataTableEntity entity = data as DataTableEntity;
 			if (entity != null) {
 				return Update (mapping, data, entity.GetUpdateFields ());
-			} else {
+			}
+			else {
 				return Update (mapping, data, null);
 			}
 		}
@@ -420,7 +427,7 @@ namespace Light.Data
 		/// <param name="updates">Updates.</param>
 		/// <param name="query">Query.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int UpdateMass<T> (UpdateSetValue [] updates, QueryExpression query)
+		public int UpdateMass<T> (QueryExpression query, params UpdateSetValue [] updates)
 			where T : class, new()
 		{
 			return UpdateMass (typeof (T), updates, query);
@@ -432,10 +439,10 @@ namespace Light.Data
 		/// <typeparam name="T">更新对象类型</typeparam>
 		/// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
 		/// <returns>受影响行数</returns>
-		public int UpdateMass<T> (UpdateSetValue [] updates)
+		public int UpdateMass<T> (params UpdateSetValue [] updates)
 			where T : class, new()
 		{
-			return UpdateMass<T> (updates, null);
+			return UpdateMass<T> (null, updates);
 		}
 
 		internal int UpdateMass (Type type, UpdateSetValue [] updates, QueryExpression query)
@@ -505,7 +512,8 @@ namespace Light.Data
 			}
 			if (result >= 0) {
 				return result;
-			} else {
+			}
+			else {
 				return datas.Length;
 			}
 		}
@@ -519,27 +527,32 @@ namespace Light.Data
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			} else if (code == TypeCode.Int32) {
+			}
+			else if (code == TypeCode.Int32) {
 				int id = (int)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			} else if (code == TypeCode.Int64) {
+			}
+			else if (code == TypeCode.Int64) {
 				long id = (long)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			} else if (code == TypeCode.UInt16) {
+			}
+			else if (code == TypeCode.UInt16) {
 				ushort id = (ushort)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			} else if (code == TypeCode.UInt32) {
+			}
+			else if (code == TypeCode.UInt32) {
 				uint id = (uint)lastId;
 				for (int i = len - 1; i >= 0; i--) {
 					results [i] = id--;
 				}
-			} else if (code == TypeCode.UInt64) {
+			}
+			else if (code == TypeCode.UInt64) {
 				ulong id = (ulong)lastId;
 				id++;
 				for (int i = len - 1; i >= 0; i--) {
@@ -806,7 +819,8 @@ namespace Light.Data
 				object obj = ExecuteScalar (command, level);
 				if (Object.Equals (obj, DBNull.Value)) {
 					return null;
-				} else {
+				}
+				else {
 					return obj;
 				}
 			}
@@ -831,7 +845,8 @@ namespace Light.Data
 			DataTable dt = QueryDataSet (dbcommand, level).Tables [0];
 			if (region == null) {
 				return dt;
-			} else {
+			}
+			else {
 				DataTable dt1 = new DataTable ();
 				DataRowCollection drs = dt.Rows;
 				int start = region.Start;
@@ -908,12 +923,14 @@ namespace Light.Data
 						transaction.SetupCommand (indentityCommand);
 						OutputCommand ("ExecuteInsertCommand_Indentity", indentityCommand, level);
 						lastId = indentityCommand.ExecuteScalar ();
-					} else {
+					}
+					else {
 						lastId = null;
 					}
 					transaction.Commit ();
 
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					lastId = null;
 					transaction.Rollback ();
 					throw ex;
@@ -939,7 +956,8 @@ namespace Light.Data
 						index++;
 					}
 					transaction.Commit ();
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					transaction.Rollback ();
 					throw ex;
 				}
@@ -965,7 +983,8 @@ namespace Light.Data
 						}
 					}
 					transaction.Commit ();
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					transaction.Rollback ();
 					throw ex;
 				}
@@ -983,7 +1002,8 @@ namespace Light.Data
 					OutputCommand ("ExecuteNonQuery", dbcommand, level);
 					rInt = dbcommand.ExecuteNonQuery ();
 					transaction.Commit ();
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					transaction.Rollback ();
 					throw ex;
 				}
@@ -1001,7 +1021,8 @@ namespace Light.Data
 					OutputCommand ("ExecuteScalar", dbcommand, level);
 					result = dbcommand.ExecuteScalar ();
 					transaction.Commit ();
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					transaction.Rollback ();
 					throw ex;
 				}
@@ -1020,7 +1041,8 @@ namespace Light.Data
 					OutputCommand ("QueryDataSet", dbcommand, level);
 					adapter.Fill (ds);
 					transaction.Commit ();
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					transaction.Rollback ();
 					throw ex;
 				}
@@ -1035,7 +1057,8 @@ namespace Light.Data
 			if (region != null) {
 				start = region.Start;
 				size = region.Size;
-			} else {
+			}
+			else {
 				start = 0;
 				size = int.MaxValue;
 			}
@@ -1075,7 +1098,8 @@ namespace Light.Data
 			if (region != null) {
 				start = region.Start;
 				size = region.Size;
-			} else {
+			}
+			else {
 				start = 0;
 				size = int.MaxValue;
 			}

@@ -172,7 +172,7 @@ namespace Light.Data.MysqlTest
 
 			updates = new List<UpdateSetValue> ();
 			updates.Add (new UpdateSetValue (TeUser.StatusField, 3));
-			result = context.UpdateMass<TeUser> (updates.ToArray (), TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1));
+			result = context.UpdateMass<TeUser> (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1), updates.ToArray ());
 
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser> ().ToList ();

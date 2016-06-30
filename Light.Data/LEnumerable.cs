@@ -64,7 +64,7 @@ namespace Light.Data
 		internal LEnumerable (DataContext dataContext)
 		{
 			_context = dataContext;
-			_mapping = DataMapping.GetEntityMapping (typeof(T));
+			_mapping = DataMapping.GetEntityMapping (typeof (T));
 		}
 
 		#region LEnumerable<T> 成员
@@ -150,7 +150,7 @@ namespace Light.Data
 		/// <returns>LEnumerable.</returns>
 		public LEnumerable<T> OrderByRandom ()
 		{
-			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof(T)));
+			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof (T)));
 			return this;
 		}
 
@@ -407,7 +407,7 @@ namespace Light.Data
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			return _context.QueryColumeEnumerable (fieldInfo, typeof(K), _query, _order, _region, isDistinct, _level);
+			return _context.QueryColumeEnumerable (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level);
 		}
 
 		/// <summary>
@@ -442,7 +442,7 @@ namespace Light.Data
 		/// <returns>The single field array.</returns>
 		/// <param name="fieldInfo">Field info.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public K[] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo)
+		public K [] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo)
 		{
 			return QuerySingleFieldList<K> (fieldInfo, false).ToArray ();
 		}
@@ -454,7 +454,7 @@ namespace Light.Data
 		/// <param name="fieldInfo">Field info.</param>
 		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public K[] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo, bool isDistinct)
+		public K [] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			return QuerySingleFieldList<K> (fieldInfo, isDistinct).ToArray ();
 		}
@@ -472,7 +472,7 @@ namespace Light.Data
 		/// To the array.
 		/// </summary>
 		/// <returns>The array.</returns>
-		public T[] ToArray ()
+		public T [] ToArray ()
 		{
 			return ToList ().ToArray ();
 		}
@@ -497,7 +497,7 @@ namespace Light.Data
 				throw new ArgumentNullException ("le");
 			if (on == null)
 				throw new ArgumentNullException ("on");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -514,7 +514,7 @@ namespace Light.Data
 			if (on == null)
 				throw new ArgumentNullException ("on");
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -528,7 +528,7 @@ namespace Light.Data
 			if (query == null)
 				throw new ArgumentNullException ("query");
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, null);
 		}
 
 		/// <summary>
@@ -541,7 +541,7 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, le, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, null);
 		}
 
 		/// <summary>
@@ -554,7 +554,7 @@ namespace Light.Data
 		{
 			if (on == null)
 				throw new ArgumentNullException ("on");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, null, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, null, on);
 		}
 
 		/// <summary>
@@ -564,7 +564,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable Join<K> () where K : class, new()
 		{
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.InnerJoin, this, null, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, null, null);
 		}
 
 		/// <summary>
@@ -580,7 +580,7 @@ namespace Light.Data
 				throw new ArgumentNullException ("le");
 			if (on == null)
 				throw new ArgumentNullException ("on");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -597,7 +597,7 @@ namespace Light.Data
 			if (on == null)
 				throw new ArgumentNullException ("on");
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -611,7 +611,7 @@ namespace Light.Data
 			if (query == null)
 				throw new ArgumentNullException ("query");
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, null);
 		}
 
 		/// <summary>
@@ -624,7 +624,7 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, le, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, null);
 		}
 
 		/// <summary>
@@ -636,7 +636,7 @@ namespace Light.Data
 		{
 			if (on == null)
 				throw new ArgumentNullException ("on");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, null, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, null, on);
 		}
 
 		/// <summary>
@@ -646,7 +646,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable LeftJoin<K> () where K : class, new()
 		{
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.LeftJoin, this, null, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, null, null);
 		}
 
 		/// <summary>
@@ -662,7 +662,7 @@ namespace Light.Data
 				throw new ArgumentNullException ("le");
 			if (on == null)
 				throw new ArgumentNullException ("on");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -679,7 +679,7 @@ namespace Light.Data
 			if (on == null)
 				throw new ArgumentNullException ("on");
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, on);
 		}
 
 		/// <summary>
@@ -692,7 +692,7 @@ namespace Light.Data
 		{
 			if (le == null)
 				throw new ArgumentNullException ("le");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, null);
 		}
 
 		/// <summary>
@@ -706,7 +706,7 @@ namespace Light.Data
 			if (query == null)
 				throw new ArgumentNullException ("query");
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, le, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, null);
 		}
 
 		/// <summary>
@@ -718,7 +718,7 @@ namespace Light.Data
 		{
 			if (on == null)
 				throw new ArgumentNullException ("on");
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, null, on);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, null, on);
 		}
 
 		/// <summary>
@@ -728,7 +728,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable RightJoin<K> () where K : class, new()
 		{
-			return JoinTable.CreateJoinTable<T,K> (this._context, JoinType.RightJoin, this, null, null);
+			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, null, null);
 		}
 
 		/// <summary>
@@ -738,7 +738,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public SelectInsertor CreateInsertor<K> ()
 		{
-			return new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+			return new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
 		}
 
 		/// <summary>
@@ -746,9 +746,9 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="selectInfos">Select infos.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public int Insert<K> (params SelectFieldInfo[] selectInfos)
+		public int Insert<K> (params SelectFieldInfo [] selectInfos)
 		{
-			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+			SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
 			if (selectInfos != null && selectInfos.Length > 0) {
 				insertor.SetSelectField (selectInfos);
 			}
@@ -761,7 +761,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public int Insert<K> ()
 		{
-			SelectInsertor insertor = new SelectInsertor (this._context, typeof(K), typeof(T), this._query, this._order);
+			SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
 			return insertor.Execute ();
 		}
 
@@ -769,9 +769,9 @@ namespace Light.Data
 		/// Update the values on specified query expression..
 		/// </summary>
 		/// <param name="updates">Updates.</param>
-		public int Update (UpdateSetValue[] updates)
+		public int Update (params UpdateSetValue [] updates)
 		{
-			return _context.UpdateMass<T> (updates, this._query);
+			return _context.UpdateMass<T> (this._query, updates);
 		}
 
 		/// <summary>

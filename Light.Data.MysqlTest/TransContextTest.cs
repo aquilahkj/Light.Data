@@ -6,7 +6,7 @@ using Light.Data.UnitTest;
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class TransContextTest:BaseTest
+	public class TransContextTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_TransInsert ()
@@ -312,6 +312,52 @@ namespace Light.Data.MysqlTest
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (0, listAc.Count);
+		}
+
+
+		[Test ()]
+		public void TestCase_TransBulkInsert_Exception ()
+		{
+
+			List<TeUser> list = InitialUserTable (23, false);
+
+			context.TruncateTable<TeUser> ();
+			TeUser user = context.CreateNew<TeUser> ();
+			user.Account = "test";
+			user.Birthday = new DateTime (2001, 10, 20);
+			user.Email = "test@test.com";
+			user.Gender = GenderType.Female;
+			user.LevelId = 1;
+			user.NickName = "nicktest";
+			user.Password = "imtest";
+			user.RegTime = new DateTime (2015, 12, 30, 18, 0, 0);
+			user.Status = 1;
+			user.Telephone = "12345678";
+			user.HotRate = 1.0d;
+			user.Save ();
+			try {
+				TransDataContext trans = context.CreateTransDataContext ();
+				try {
+
+					trans.BeginTrans ();
+					trans.BulkInsert (list.ToArray ());
+					trans.LQuery<TeUser> ().Where (TeUser.IdField == 2).Update (new UpdateSetValue [] { new UpdateSetValue (TeUser.IdField, 3) });
+					trans.CommitTrans ();
+				}
+				catch (Exception e) {
+					trans.RollbackTrans ();
+					throw e;
+				}
+				finally {
+					trans.Dispose ();
+				}
+			}
+			catch (Exception ex) {
+				user.Account = "";
+				int ret = context.Update (user);
+				Assert.AreEqual (1, ret);
+			}
+
 		}
 	}
 }

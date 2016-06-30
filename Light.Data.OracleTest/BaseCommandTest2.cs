@@ -122,7 +122,7 @@ namespace Light.Data.OracleTest
 
 			updates = new List<UpdateSetValue> ();
 			updates.Add (new UpdateSetValue (TeUser2.StatusField, 3));
-			result = context.UpdateMass<TeUser2> (updates.ToArray (), TeUser2.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1));
+			result = context.UpdateMass<TeUser2> (TeUser2.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1), updates.ToArray ());
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser2> ().ToList ();
 			Assert.AreEqual (count, listAc.Count);
