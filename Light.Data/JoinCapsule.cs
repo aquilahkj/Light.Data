@@ -32,11 +32,11 @@ namespace Light.Data
 		public JoinCapsule (JoinSelector slector, List<JoinModel> models, RelationMap relationMap)
 		{
 			if (slector == null)
-				throw new ArgumentNullException ("slector");
+				throw new ArgumentNullException (nameof (slector));
 			if (models == null)
-				throw new ArgumentNullException ("models");
+				throw new ArgumentNullException (nameof (models));
 			if (relationMap == null)
-				throw new ArgumentNullException ("relationMap");
+				throw new ArgumentNullException (nameof (relationMap));
 			this.slector = slector;
 			this.models = models;
 			this.relationMap = relationMap;

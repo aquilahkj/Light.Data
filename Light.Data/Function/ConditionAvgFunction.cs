@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace Light.Data
 {
 	class ConditionAvgFunction : AggregateFunction
@@ -17,10 +18,20 @@ namespace Light.Data
 			_isDistinct = isDistinct;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//{
+		//	string sql = _expression.CreateSqlString (factory, fullFieldName, out dataParameters);
+		//	return factory.CreateConditionAvgSql (sql, _fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
-			string sql = _expression.CreateSqlString (factory, fullFieldName, out dataParameters);
-			return factory.CreateConditionAvgSql (sql, _fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
+			DataParameter [] dataParameters1 = null;
+			DataParameter [] dataParameters2 = null;
+			string expressionString = _expression.CreateSqlString (factory, fullFieldName, out dataParameters1);
+			string sql = factory.CreateConditionAvgSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2) : null, _isDistinct);
+			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+			return sql;
 		}
 
 //		internal override AggregateFunction CreateAliasTableFunction (string aliasTableName)

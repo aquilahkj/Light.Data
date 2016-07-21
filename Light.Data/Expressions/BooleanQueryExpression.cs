@@ -1,7 +1,9 @@
 ﻿
+using System;
+
 namespace Light.Data
 {
-	class BooleanQueryExpression : QueryExpression
+	class BooleanQueryExpression : QueryExpression, ISupportNotDefine
 	{
 		DataFieldInfo _fieldInfo;
 
@@ -14,10 +16,15 @@ namespace Light.Data
 			_isTrue = isTrue;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//{
+		//	dataParameters = null;
+		//	return factory.CreateBooleanQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isTrue);
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
-			dataParameters = null;
-			return factory.CreateBooleanQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isTrue);
+			return factory.CreateBooleanQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isTrue);
 		}
 
 		protected override bool EqualsDetail (QueryExpression expression)
@@ -30,6 +37,11 @@ namespace Light.Data
 			else {
 				return false;
 			}
+		}
+
+		public void SetNot ()
+		{
+			_isTrue = !_isTrue;
 		}
 	}
 }

@@ -14,19 +14,25 @@ namespace Light.Data
 			_isDistinct = isDistinct;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//{
+		//	dataParameters = null;
+		//	return factory.CreateAvgSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
 			dataParameters = null;
-			return factory.CreateAvgSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
+			return factory.CreateAvgSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isDistinct);
 		}
 
-//		internal override AggregateFunction CreateAliasTableFunction (string aliasTableName)
-//		{
-//			DataFieldInfo info = this._fieldinfo.Clone () as DataFieldInfo;
-//			info.AliasTableName = aliasTableName;
-//			AvgFunction function = new AvgFunction (this.TableMapping, info, this._isDistinct);
-//			return function;
-//		}
+		//		internal override AggregateFunction CreateAliasTableFunction (string aliasTableName)
+		//		{
+		//			DataFieldInfo info = this._fieldinfo.Clone () as DataFieldInfo;
+		//			info.AliasTableName = aliasTableName;
+		//			AvgFunction function = new AvgFunction (this.TableMapping, info, this._isDistinct);
+		//			return function;
+		//		}
 
 		protected override bool EqualsDetail (AggregateFunction function)
 		{

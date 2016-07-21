@@ -11,10 +11,15 @@ namespace Light.Data
 			_fieldinfo = fieldInfo;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//{
+		//	dataParameters = null;
+		//	return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName));
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
-			dataParameters = null;
-			return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName));
+			return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters));
 		}
 
 		protected override bool EqualsDetail (AggregateFunction function)

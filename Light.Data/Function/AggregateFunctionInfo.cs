@@ -23,9 +23,9 @@ namespace Light.Data
 		public AggregateFunctionInfo (AggregateFunction function, string name)
 		{
 			if (Object.Equals (function, null))
-				throw new ArgumentNullException ("function");
+				throw new ArgumentNullException (nameof (function));
 			if (string.IsNullOrEmpty (name))
-				throw new ArgumentNullException ("name");
+				throw new ArgumentNullException (nameof (name));
 			this.name = name;
 			this.function = function;
 		}

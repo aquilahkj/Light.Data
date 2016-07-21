@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data field match expression.
 	/// </summary>
-	public class DataFieldMatchExpression:DataFieldExpression
+	public class DataFieldMatchExpression : DataFieldExpression
 	{
 		readonly DataFieldInfo leftField;
 
@@ -33,12 +33,23 @@ namespace Light.Data
 		/// <param name="factory">Factory.</param>
 		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//{
+		//	dataParameters = null;
+		//	string leftFieldSql = leftField.CreateDataFieldSql (factory, true);
+		//	string rightFieldSql = rightField.CreateDataFieldSql (factory, true);
+		//	return factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
-			dataParameters = null;
-			string leftFieldSql = leftField.CreateDataFieldSql (factory, true);
-			string rightFieldSql = rightField.CreateDataFieldSql (factory, true);
-			return factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
+			DataParameter [] dataParameters1 = null;
+			DataParameter [] dataParameters2 = null;
+			string leftFieldSql = leftField.CreateDataFieldSql (factory, true, out dataParameters1);
+			string rightFieldSql = rightField.CreateDataFieldSql (factory, true, out dataParameters2);
+			string sql = factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
+			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+			return sql;
 		}
 
 		/// <summary>

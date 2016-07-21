@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Light.Data
 {
@@ -76,6 +77,13 @@ namespace Light.Data
 		public LEnumerable<T> WhereReset ()
 		{
 			_query = null;
+			return this;
+		}
+
+
+		public LEnumerable<T> Where (Expression<Func<T, bool>> func)
+		{
+
 			return this;
 		}
 
@@ -226,10 +234,10 @@ namespace Light.Data
 		public LEnumerable<T> PageSize (int page, int size)
 		{
 			if (page < 1) {
-				throw new ArgumentOutOfRangeException ("page");
+				throw new ArgumentOutOfRangeException (nameof (page));
 			}
 			if (size < 1) {
-				throw new ArgumentOutOfRangeException ("size");
+				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			page--;
 			int start = page * size;
@@ -494,9 +502,9 @@ namespace Light.Data
 		public JoinTable Join<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
-				throw new ArgumentNullException ("le");
+				throw new ArgumentNullException (nameof (le));
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, on);
 		}
 
@@ -510,9 +518,9 @@ namespace Light.Data
 		public JoinTable Join<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
 		{
 			if (query == null)
-				throw new ArgumentNullException ("query");
+				throw new ArgumentNullException (nameof (query));
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, on);
 		}
@@ -526,7 +534,7 @@ namespace Light.Data
 		public JoinTable Join<K> (QueryExpression query) where K : class, new()
 		{
 			if (query == null)
-				throw new ArgumentNullException ("query");
+				throw new ArgumentNullException (nameof (query));
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, null);
 		}
@@ -540,7 +548,7 @@ namespace Light.Data
 		public JoinTable Join<K> (LEnumerable<K> le) where K : class, new()
 		{
 			if (le == null)
-				throw new ArgumentNullException ("le");
+				throw new ArgumentNullException (nameof (le));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, null);
 		}
 
@@ -553,7 +561,7 @@ namespace Light.Data
 		public JoinTable Join<K> (DataFieldExpression on) where K : class, new()
 		{
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, null, on);
 		}
 
@@ -577,9 +585,9 @@ namespace Light.Data
 		public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
-				throw new ArgumentNullException ("le");
+				throw new ArgumentNullException (nameof (le));
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, on);
 		}
 
@@ -593,9 +601,9 @@ namespace Light.Data
 		public JoinTable LeftJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
 		{
 			if (query == null)
-				throw new ArgumentNullException ("query");
+				throw new ArgumentNullException (nameof (query));
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, on);
 		}
@@ -609,7 +617,7 @@ namespace Light.Data
 		public JoinTable LeftJoin<K> (QueryExpression query) where K : class, new()
 		{
 			if (query == null)
-				throw new ArgumentNullException ("query");
+				throw new ArgumentNullException (nameof (query));
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, null);
 		}
@@ -623,7 +631,7 @@ namespace Light.Data
 		public JoinTable LeftJoin<K> (LEnumerable<K> le) where K : class, new()
 		{
 			if (le == null)
-				throw new ArgumentNullException ("le");
+				throw new ArgumentNullException (nameof (le));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, null);
 		}
 
@@ -635,7 +643,7 @@ namespace Light.Data
 		public JoinTable LeftJoin<K> (DataFieldExpression on) where K : class, new()
 		{
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, null, on);
 		}
 
@@ -659,9 +667,9 @@ namespace Light.Data
 		public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
-				throw new ArgumentNullException ("le");
+				throw new ArgumentNullException (nameof (le));
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, on);
 		}
 
@@ -675,9 +683,9 @@ namespace Light.Data
 		public JoinTable RightJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
 		{
 			if (query == null)
-				throw new ArgumentNullException ("query");
+				throw new ArgumentNullException (nameof (query));
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, on);
 		}
@@ -691,7 +699,7 @@ namespace Light.Data
 		public JoinTable RightJoin<K> (LEnumerable<K> le) where K : class, new()
 		{
 			if (le == null)
-				throw new ArgumentNullException ("le");
+				throw new ArgumentNullException (nameof (le));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, null);
 		}
 
@@ -704,7 +712,7 @@ namespace Light.Data
 		public JoinTable RightJoin<K> (QueryExpression query) where K : class, new()
 		{
 			if (query == null)
-				throw new ArgumentNullException ("query");
+				throw new ArgumentNullException (nameof (query));
 			LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, null);
 		}
@@ -717,7 +725,7 @@ namespace Light.Data
 		public JoinTable RightJoin<K> (DataFieldExpression on) where K : class, new()
 		{
 			if (on == null)
-				throw new ArgumentNullException ("on");
+				throw new ArgumentNullException (nameof (on));
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, null, on);
 		}
 

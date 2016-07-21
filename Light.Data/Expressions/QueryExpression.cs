@@ -133,6 +133,16 @@ namespace Light.Data
 		{
 			return new ExistsQueryExpression (expression, true);
 		}
+
+		/// <summary>
+		/// Not the specified expression.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		public static QueryExpression Not (QueryExpression expression)
+		{
+			return new NotQueryExpression (expression);
+		}
+
 		/// <summary>
 		/// Determines whether the specified <see cref="Light.Data.QueryExpression"/> is equal to the current <see cref="Light.Data.QueryExpression"/>.
 		/// </summary>

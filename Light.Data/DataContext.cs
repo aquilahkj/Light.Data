@@ -61,7 +61,7 @@ namespace Light.Data
 		public static DataContext Create (string configName)
 		{
 			if (configName == null)
-				throw new ArgumentNullException ("configName");
+				throw new ArgumentNullException (nameof (configName));
 			DataContextSetting setting;
 			if (Settings.TryGetValue (configName, out setting)) {
 				if (setting != null) {
@@ -98,7 +98,7 @@ namespace Light.Data
 		public static DataContext CreateFromSetting (ConnectionStringSettings setting)
 		{
 			if (setting == null)
-				throw new ArgumentNullException ("setting");
+				throw new ArgumentNullException (nameof (setting));
 			DataContextSetting contextSetting = DataContextSetting.CreateSetting (setting, true);
 			DataContext context = new DataContext (contextSetting.Connection, contextSetting.Name, contextSetting.DataBase);
 			return context;
@@ -470,7 +470,7 @@ namespace Light.Data
 		public int BulkInsert (Array datas, int batchCount = 10)
 		{
 			if (datas == null) {
-				throw new ArgumentNullException ("datas");
+				throw new ArgumentNullException (nameof (datas));
 			}
 			if (datas.Length == 0) {
 				return 0;
@@ -585,7 +585,7 @@ namespace Light.Data
 			where T : class, new()
 		{
 			if (primaryKeys == null || primaryKeys.Length == 0)
-				throw new ArgumentNullException ("primaryKeys");
+				throw new ArgumentNullException (nameof (primaryKeys));
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof (T));
 			if (primaryKeys.Length != mapping.PrimaryKeyCount) {
 				throw new LightDataException (RE.TheNumberOfPrimaryKeysIsNotMatch);

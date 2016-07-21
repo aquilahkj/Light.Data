@@ -11,12 +11,12 @@ namespace Light.Data
 
 		readonly List<DataParameter> dataParameters = new List<DataParameter> ();
 
-		public void AddParameters (IEnumerable<DataParameter> datas)
-		{
-			if (datas == null)
-				throw new ArgumentNullException ("datas");
-			this.dataParameters.AddRange (datas);
-		}
+		//public void AddParameters (IEnumerable<DataParameter> datas)
+		//{
+		//	if (datas == null)
+		//		throw new ArgumentNullException (nameof (datas));
+		//	this.dataParameters.AddRange (datas);
+		//}
 
 		string commandText;
 
@@ -37,7 +37,7 @@ namespace Light.Data
 			}
 			set {
 				if (string.IsNullOrEmpty (value)) {
-					throw new ArgumentNullException ("value");
+					throw new ArgumentNullException (nameof (value));
 				}
 				commandText = value;
 			}
@@ -81,7 +81,7 @@ namespace Light.Data
 		public IDbCommand CreateCommand (Database database)
 		{
 			if (database == null)
-				throw new ArgumentNullException ("database");
+				throw new ArgumentNullException (nameof (database));
 			IDataParameter[] idataParameters = null;
 			string sql = this.commandText;
 			int length = dataParameters.Count;

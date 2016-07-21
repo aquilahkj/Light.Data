@@ -327,7 +327,7 @@ namespace Light.Data
 		private AggregateHavingExpression SingleParam (QueryPredicate predicate, object value, bool isReverse)
 		{
 			if (Object.Equals (value, null)) {
-				throw new ArgumentNullException ("value");
+				throw new ArgumentNullException (nameof (value));
 			}
 			AggregateHavingExpression exp = new SingleParamAggregateExpression (this, predicate, value, isReverse);
 			return exp;
@@ -336,7 +336,7 @@ namespace Light.Data
 		private AggregateHavingExpression CollectionParams (QueryCollectionPredicate predicate, System.Collections.IEnumerable values)
 		{
 			if (Object.Equals (values, null)) {
-				throw new ArgumentNullException ("values");
+				throw new ArgumentNullException (nameof (values));
 			}
 			AggregateHavingExpression exp = new CollectionParamsAggregateExpression (this, predicate, values);
 			return exp;
@@ -345,10 +345,10 @@ namespace Light.Data
 		private AggregateHavingExpression CollectionParams (QueryCollectionPredicate predicate, DataFieldInfo field, QueryExpression expression)
 		{
 			if (Object.Equals (field, null)) {
-				throw new ArgumentNullException ("field");
+				throw new ArgumentNullException (nameof (field));
 			}
 			if (expression == null) {
-				throw new ArgumentNullException ("expression");
+				throw new ArgumentNullException (nameof (expression));
 			}
 			AggregateHavingExpression exp = new SubAggregateExpression (this, predicate, field, expression);
 			return exp;
@@ -357,10 +357,10 @@ namespace Light.Data
 		private AggregateHavingExpression BetweenParams (bool isNot, object fromValue, object toValue)
 		{
 			if (Object.Equals (fromValue, null)) {
-				throw new ArgumentNullException ("fromValue");
+				throw new ArgumentNullException (nameof (fromValue));
 			}
 			if (Object.Equals (toValue, null)) {
-				throw new ArgumentNullException ("toValue");
+				throw new ArgumentNullException (nameof (toValue));
 			}
 			AggregateHavingExpression exp = new BetweenParamsAggregateExpression (this, isNot, fromValue, toValue);
 			return exp;
@@ -471,7 +471,7 @@ namespace Light.Data
 		public static AggregateFunction Count (QueryExpression expression)
 		{
 			if (expression == null) {
-				throw new ArgumentNullException ("expression");
+				throw new ArgumentNullException (nameof (expression));
 			}
 			return new ConditionCountFunction (expression.TableMapping, expression, null, false);
 		}
@@ -486,10 +486,10 @@ namespace Light.Data
 		public static AggregateFunction Count (QueryExpression expression, DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (expression == null) {
-				throw new ArgumentNullException ("expression");
+				throw new ArgumentNullException (nameof (expression));
 			}
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new ConditionCountFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
@@ -524,7 +524,7 @@ namespace Light.Data
 		public static AggregateFunction Count (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new CountFunction (fieldInfo.TableMapping, fieldInfo, isDistinct);
 		}
@@ -548,7 +548,7 @@ namespace Light.Data
 		public static AggregateFunction Sum (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new SumFunction (fieldInfo.TableMapping, fieldInfo, isDistinct);
 		}
@@ -574,10 +574,10 @@ namespace Light.Data
 		public static AggregateFunction Sum (QueryExpression expression, DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (expression == null) {
-				throw new ArgumentNullException ("expression");
+				throw new ArgumentNullException (nameof (expression));
 			}
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new ConditionSumFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
@@ -601,7 +601,7 @@ namespace Light.Data
 		public static AggregateFunction Avg (DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new AvgFunction (fieldInfo.TableMapping, fieldInfo, isDistinct);
 		}
@@ -627,10 +627,10 @@ namespace Light.Data
 		public static AggregateFunction Avg (QueryExpression expression, DataFieldInfo fieldInfo, bool isDistinct)
 		{
 			if (expression == null) {
-				throw new ArgumentNullException ("expression");
+				throw new ArgumentNullException (nameof (expression));
 			}
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new ConditionAvgFunction (fieldInfo.TableMapping, expression, fieldInfo, isDistinct);
 		}
@@ -642,7 +642,7 @@ namespace Light.Data
 		public static AggregateFunction Max (DataFieldInfo fieldInfo)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new MaxFunction (fieldInfo.TableMapping, fieldInfo);
 		}
@@ -655,7 +655,7 @@ namespace Light.Data
 		public static AggregateFunction Max (QueryExpression expression, DataFieldInfo fieldInfo)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new ConditionMaxFunction (fieldInfo.TableMapping, expression, fieldInfo);
 		}
@@ -667,7 +667,7 @@ namespace Light.Data
 		public static AggregateFunction Min (DataFieldInfo fieldInfo)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new MinFunction (fieldInfo.TableMapping, fieldInfo);
 		}
@@ -680,7 +680,7 @@ namespace Light.Data
 		public static AggregateFunction Min (QueryExpression expression, DataFieldInfo fieldInfo)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			return new ConditionMinFunction (fieldInfo.TableMapping, expression, fieldInfo);
 		}

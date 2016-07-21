@@ -20,9 +20,15 @@ namespace Light.Data
 
 		bool _ends;
 
-		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//{
+		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+		//	return factory.CreateMatchSql (field, _starts, _ends);
+		//}
+
+		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
 			return factory.CreateMatchSql (field, _starts, _ends);
 		}
 
@@ -69,7 +75,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression.</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression ReverseLike (params string[] values)
+		public QueryExpression ReverseLike (params string [] values)
 		{
 			return ReverseMatchValue (values, false);
 		}
@@ -99,7 +105,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression.</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression ReverseNotLike (params string[] values)
+		public QueryExpression ReverseNotLike (params string [] values)
 		{
 			return ReverseMatchValue (values, true);
 		}

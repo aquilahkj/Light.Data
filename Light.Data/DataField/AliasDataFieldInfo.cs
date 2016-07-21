@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Alias data field info.
 	/// </summary>
-	class AliasDataFieldInfo:DataFieldInfo
+	class AliasDataFieldInfo : DataFieldInfo
 	{
 		DataFieldInfo _baseFieldInfo;
 
@@ -43,15 +43,20 @@ namespace Light.Data
 			_alias = alias;
 		}
 
+		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//{
+		//	return _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
+		//}
+
 		/// <summary>
 		/// Creates the data field sql.
 		/// </summary>
 		/// <returns>The data field sql.</returns>
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
-		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			return _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
+			return _baseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
 		}
 
 		/// <summary>
@@ -60,18 +65,22 @@ namespace Light.Data
 		/// <returns>The alias data field sql.</returns>
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
-		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName)
+		//{
+		//	string field = _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
+		//	return factory.CreateAliasSql (field, this._alias);
+		//}
+
+		/// <summary>
+		/// Creates the alias data field sql.
+		/// </summary>
+		/// <returns>The alias data field sql.</returns>
+		/// <param name="factory">Factory.</param>
+		/// <param name="isFullName">Is full name.</param>
+		/// <param name="dataParameters">Data parameters.</param>
+		internal string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-//			if (isFullName) {
-//				string tableName = this._aliasTableName ?? TableMapping.TableName;
-//				string field = _baseFieldInfo.CreateDataFieldSql( (factory);factory.CreateFullDataFieldSql (tableName, FieldName);
-//				return factory.CreateAliasSql (field, this._alias);
-//			}
-//			else {
-//				string field = _baseFieldInfo.CreateDataFieldSql (factory);
-//				return factory.CreateAliasSql (field, this._alias);
-//			}
-			string field = _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
+			string field = _baseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
 			return factory.CreateAliasSql (field, this._alias);
 		}
 

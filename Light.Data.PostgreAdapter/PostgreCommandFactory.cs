@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Light.Data.PostgreAdapter
 {
-	class PostgreCommandFactory: CommandFactory
+	class PostgreCommandFactory : CommandFactory
 	{
 		public PostgreCommandFactory ()
 		{
@@ -29,7 +29,7 @@ namespace Light.Data.PostgreAdapter
 			return data;
 		}
 
-		public override string CreateBooleanQuerySql (string fieldName, bool isTrue)
+		public override string CreateBooleanQuerySql (object fieldName, bool isTrue)
 		{
 			return string.Format ("{0}={1}", fieldName, isTrue ? "true" : "false");
 		}
@@ -54,7 +54,7 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		public override string CreateDividedSql (string field, object value, bool forward)
+		public override string CreateDividedSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}::float/{1})", field, value);
@@ -64,14 +64,14 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		public override string CreateLogSql (string field)
+		public override string CreateLogSql (object field)
 		{
 			return string.Format ("ln({0})", field);
 		}
 
-		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
-			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, query, order, region);
+			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, region);
 			if (region != null) {
 				if (region.Start == 0) {
 					command.CommandText = string.Format ("{0} limit {1}", command.CommandText, region.Size);
@@ -83,10 +83,10 @@ namespace Light.Data.PostgreAdapter
 			return command;
 		}
 
-		public override CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
-				throw new ArgumentNullException ("entitys");
+				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
 				batchCount = 10;
@@ -109,7 +109,7 @@ namespace Light.Data.PostgreAdapter
 			List<CommandData> commands = new List<CommandData> ();
 			foreach (object entity in entitys) {
 				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string[] valueList = new string[entityParams.Count];
+				string [] valueList = new string [entityParams.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
 					string paramName = CreateParamName ("P" + paramIndex);
@@ -194,20 +194,30 @@ namespace Light.Data.PostgreAdapter
 			return seq;
 		}
 
-		public override string CreateMatchSql (string field, bool left, bool right)
+		public override string CreateMatchSql (object field, bool starts, bool ends)
 		{
 			StringBuilder sb = new StringBuilder ();
-			if (left) {
+			if (starts) {
 				sb.AppendFormat ("'{0}'||", _wildcards);
 			}
 			sb.Append (field);
-			if (right) {
+			if (ends) {
 				sb.AppendFormat ("||'{0}'", _wildcards);
 			}
 			return sb.ToString ();
 		}
 
-		public override string CreateDateSql (string field, string format)
+		public override string CreateConcatSql (object field, object value, bool forward)
+		{
+			if (forward) {
+				return string.Format ("({0}||{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}||{1})", value, field);
+			}
+		}
+
+		public override string CreateDateSql (object field, string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
 				return string.Format ("date_trunc('day',{0})", field);
@@ -253,67 +263,79 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		public override string CreateYearSql (string field)
+		public override string CreateYearSql (object field)
 		{
-//			return string.Format ("date_part('year',{0})", field);
+			//			return string.Format ("date_part('year',{0})", field);
 			return string.Format ("extract(year from {0})::int4", field);
 		}
 
-		public override string CreateMonthSql (string field)
+		public override string CreateMonthSql (object field)
 		{
-//			return string.Format ("date_part('month',{0})", field);
+			//			return string.Format ("date_part('month',{0})", field);
 			return string.Format ("extract(month from {0})::int4", field);
 		}
 
-		public override string CreateDaySql (string field)
+		public override string CreateDaySql (object field)
 		{
-//			return string.Format ("date_part('day',{0})", field);
+			//			return string.Format ("date_part('day',{0})", field);
 			return string.Format ("extract(day from {0})::int4", field);
 		}
 
-		public override string CreateHourSql (string field)
+		public override string CreateHourSql (object field)
 		{
-//			return string.Format ("date_part('hour',{0})", field);
+			//			return string.Format ("date_part('hour',{0})", field);
 			return string.Format ("extract(hour from {0})::int4", field);
 		}
 
-		public override string CreateMinuteSql (string field)
+		public override string CreateMinuteSql (object field)
 		{
-//			return string.Format ("date_part('minute',{0})", field);
+			//			return string.Format ("date_part('minute',{0})", field);
 			return string.Format ("extract(minute from {0})::int4", field);
 		}
 
-		public override string CreateSecondSql (string field)
+		public override string CreateSecondSql (object field)
 		{
-//			return string.Format ("date_part('second',{0})", field);
+			//			return string.Format ("date_part('second',{0})", field);
 			return string.Format ("extract(second from {0})::int4", field);
 		}
 
-		public override string CreateWeekSql (string field)
+		public override string CreateWeekSql (object field)
 		{
-//			return string.Format ("date_part('week',{0})", field);
+			//			return string.Format ("date_part('week',{0})", field);
 			return string.Format ("extract(week from {0})::int4", field);
 		}
 
-		public override string CreateWeekDaySql (string field)
+		public override string CreateWeekDaySql (object field)
 		{
-//			return string.Format ("dayofweek({0})-1", field);
+			//			return string.Format ("dayofweek({0})-1", field);
 			return string.Format ("extract(dow from {0})::int4", field);
 		}
 
-		public override string CreateLengthSql (string field)
+		public override string CreateYearDaySql (object field)
+		{
+			return string.Format ("extract(doy from {0})::int4", field);
+		}
+
+		public override string CreateLengthSql (object field)
 		{
 			return string.Format ("length({0})", field);
 		}
 
-		public override string CreateSubStringSql (string field, int start, int size)
+		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			start++;
-			if (size == 0) {
-				return string.Format ("substring({0} from {1})", field, start);
+			//start++;
+			//if (size == 0) {
+			//	return string.Format ("substring({0} from {1})", field, start);
+			//}
+			//else {
+			//	return string.Format ("substring({0} from {1} for {2})", field, start, size);
+			//}
+
+			if (object.Equals (size, null)) {
+				return string.Format ("substring({0} from {1}+1)", field, start);
 			}
 			else {
-				return string.Format ("substring({0} from {1} for {2})", field, start, size);
+				return string.Format ("substring({0} from {1}+1 for {2})", field, start, size);
 			}
 		}
 
@@ -325,8 +347,8 @@ namespace Light.Data.PostgreAdapter
 		public override string CreateParamName (string name)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
-			if (!name.StartsWith (":")) {
+				throw new ArgumentNullException (nameof (name));
+			if (!name.StartsWith (":", StringComparison.Ordinal)) {
 				return ":" + name;
 			}
 			else {
@@ -334,12 +356,12 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
+		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
+				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					return null;
 				})));
 			}

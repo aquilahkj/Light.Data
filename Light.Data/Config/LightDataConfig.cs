@@ -21,7 +21,7 @@ namespace Light.Data
 		public void LoadConfig (XmlNode configNode)
 		{
 			if (configNode == null) {
-				throw new ArgumentNullException ("configNode");
+				throw new ArgumentNullException (nameof (configNode));
 			}
 			foreach (XmlNode typeNode in configNode.ChildNodes) {
 				if (typeNode.Name == "dataType") {
@@ -38,7 +38,7 @@ namespace Light.Data
 		static DataTableConfig LoadDataTableConfig (XmlNode typeNode)
 		{
 			if (typeNode == null) {
-				throw new ArgumentNullException ("typeNode");
+				throw new ArgumentNullException (nameof (typeNode));
 			}
 			string typeName = GetAttributeValue (typeNode, "type");
 			if (typeName == null) {
@@ -96,7 +96,7 @@ namespace Light.Data
 		static AggregateTableConfig LoadAggregateTableConfig (XmlNode typeNode)
 		{
 			if (typeNode == null) {
-				throw new ArgumentNullException ("typeNode");
+				throw new ArgumentNullException (nameof (typeNode));
 			}
 			string typeName = GetAttributeValue (typeNode, "type");
 			if (typeName == null) {
@@ -132,10 +132,10 @@ namespace Light.Data
 		static DataFieldConfig LoadDataFieldConfig (XmlNode fieldNode, Type dataType)
 		{
 			if (fieldNode == null) {
-				throw new ArgumentNullException ("fieldNode");
+				throw new ArgumentNullException (nameof (fieldNode));
 			}
 			if (dataType == null) {
-				throw new ArgumentNullException ("dataType");
+				throw new ArgumentNullException (nameof (dataType));
 			}
 			if (fieldNode.Name != "dataField") {
 				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "dataField"));
@@ -250,10 +250,10 @@ namespace Light.Data
 		static RelationFieldConfig LoadRelationFieldConfig (XmlNode fieldNode, Type dataType)
 		{
 			if (fieldNode == null) {
-				throw new ArgumentNullException ("fieldNode");
+				throw new ArgumentNullException (nameof (fieldNode));
 			}
 			if (dataType == null) {
-				throw new ArgumentNullException ("dataType");
+				throw new ArgumentNullException (nameof (dataType));
 			}
 			if (fieldNode.Name != "relationField") {
 				throw new LightDataException (string.Format (RE.ConfigDataLoadError, "relationField"));
@@ -302,10 +302,10 @@ namespace Light.Data
 		static AggregateFieldConfig LoadAggregateFieldConfig (XmlNode fieldNode, Type aggregateType)
 		{
 			if (fieldNode == null) {
-				throw new ArgumentNullException ("fieldNode");
+				throw new ArgumentNullException (nameof (fieldNode));
 			}
 			if (aggregateType == null) {
-				throw new ArgumentNullException ("aggregateType");
+				throw new ArgumentNullException (nameof (aggregateType));
 			}
 			AggregateFieldConfig config;
 			string fieldName = GetAttributeValue (fieldNode, "fieldName");

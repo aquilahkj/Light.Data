@@ -32,11 +32,11 @@ namespace Light.Data
 		internal SelectInsertor (DataContext context, Type insertType, Type selectType, QueryExpression query, OrderExpression order)
 		{
 			if (context == null)
-				throw new ArgumentNullException ("context");
+				throw new ArgumentNullException (nameof (context));
 			if (insertType == null)
-				throw new ArgumentNullException ("insertType");
+				throw new ArgumentNullException (nameof (insertType));
 			if (selectType == null)
-				throw new ArgumentNullException ("selectType");
+				throw new ArgumentNullException (nameof (selectType));
 			this._context = context;
 			this._insertType = insertType;
 			this._selectType = selectType;

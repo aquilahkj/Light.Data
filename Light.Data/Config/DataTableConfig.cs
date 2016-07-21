@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data table config.
 	/// </summary>
-	class DataTableConfig : TableConfig,IDataTableConfig
+	class DataTableConfig : TableConfig, IDataTableConfig
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Light.Data.DataTableConfig"/> class.
@@ -14,7 +14,7 @@ namespace Light.Data
 		public DataTableConfig (Type dataType)
 		{
 			if (dataType == null) {
-				throw new ArgumentNullException ("dataType");
+				throw new ArgumentNullException (nameof (dataType));
 			}
 			DataType = dataType;
 			IsEntityTable = true;
@@ -42,10 +42,10 @@ namespace Light.Data
 		/// Gets or sets the extend parameters.
 		/// </summary>
 		/// <value>The extend parameters.</value>
-//		public string ExtendParams {
-//			get;
-//			set;
-//		}
+		//		public string ExtendParams {
+		//			get;
+		//			set;
+		//		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is entity table.

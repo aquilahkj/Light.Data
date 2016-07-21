@@ -49,7 +49,7 @@ namespace Light.Data
 		public override IDataParameter CreateParameter (string name, object value, string dbType, ParameterDirection direction)
 		{
 			string parameterName = name;
-			if (!parameterName.StartsWith (":")) {
+			if (!parameterName.StartsWith (":", StringComparison.Ordinal)) {
 				parameterName = ":" + parameterName;
 			}
 			OracleParameter sp = new OracleParameter (parameterName, value);
@@ -75,7 +75,7 @@ namespace Light.Data
 
 		public override void FormatStoredProcedureParameter (IDataParameter dataParmeter)
 		{
-			if (dataParmeter.ParameterName.StartsWith (":")) {
+			if (dataParmeter.ParameterName.StartsWith (":", StringComparison.Ordinal)) {
 				dataParmeter.ParameterName = dataParmeter.ParameterName.Substring (1);
 			}
 		}

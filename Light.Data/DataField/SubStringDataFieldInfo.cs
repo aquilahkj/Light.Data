@@ -4,27 +4,44 @@ namespace Light.Data
 {
 	class SubStringDataFieldInfo : ExtendDataFieldInfo
 	{
-		int _start;
+		object _start;
 
-		int _size;
+		object _size;
 
-		internal SubStringDataFieldInfo (DataFieldInfo info, int start, int size)
+		internal SubStringDataFieldInfo (DataFieldInfo info, object start, object size)
 			: base (info)
 		{
-			if (start < 0) {
-				throw new ArgumentOutOfRangeException ("start");
-			}
-			if (size < 0) {
-				throw new ArgumentOutOfRangeException ("size");
-			}
+			//if (start < 0) {
+			//	throw new ArgumentOutOfRangeException ("start");
+			//}
+			//if (size < 0) {
+			//	throw new ArgumentOutOfRangeException ("size");
+			//}
 			_start = start;
 			_size = size;
 		}
 
-		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//{
+		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+		//	//object start = _start;
+		//	//object size = _size;
+		//	object start = LambdaExpressionExtend.ConvertObject (_start, factory, isFullName, false);
+		//	object size = LambdaExpressionExtend.ConvertObject (_size, factory, isFullName, false);
+		//	return factory.CreateSubStringSql (field, start, size);
+		//}
+
+		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
-			return factory.CreateSubStringSql (field, _start, _size);
+			DataParameter [] dataParameters1 = null;
+			DataParameter [] dataParameters2 = null;
+			DataParameter [] dataParameters3 = null;
+			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
+			object start = LambdaExpressionExtend.ConvertLambdaObject (_start, factory, isFullName, false, out dataParameters2);
+			object size = LambdaExpressionExtend.ConvertLambdaObject (_size, factory, isFullName, false, out dataParameters3);
+			string sql = factory.CreateSubStringSql (field, start, size);
+			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2, dataParameters3);
+			return sql;
 		}
 
 		internal override string DBType {

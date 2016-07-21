@@ -20,16 +20,33 @@ namespace Light.Data
 			_queryExpression = queryExpression;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		//{
+		//	string queryString = null;
+		//	if (_queryExpression == null) {
+		//		dataParameters = new DataParameter [0];
+		//	}
+		//	else {
+		//		queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
+		//	}
+		//	return factory.CreateSubQuerySql (_fieldInfo.CreateDataFieldSql (factory, false), _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
 			string queryString = null;
+			DataParameter [] dataParameters1 = null;
+			DataParameter [] dataParameters2 = null;
+			DataParameter [] dataParameters3 = null;
 			if (_queryExpression == null) {
-				dataParameters = new DataParameter[0];
+				dataParameters1 = new DataParameter [0];
 			}
 			else {
-				queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
+				queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters1);
 			}
-			return factory.CreateSubQuerySql (_fieldInfo.CreateDataFieldSql (factory), _predicate, _queryFieldInfo.CreateDataFieldSql (factory), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
+			string sql = factory.CreateSubQuerySql (_fieldInfo.CreateDataFieldSql (factory, false, out dataParameters2), _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false, out dataParameters3), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
+			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2, dataParameters3);
+			return sql;
 		}
 
 		protected override bool EqualsDetail (QueryExpression expression)

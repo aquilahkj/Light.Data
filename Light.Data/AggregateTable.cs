@@ -75,7 +75,7 @@ namespace Light.Data
 		public AggregateTable<T> GroupBy (DataFieldInfo fieldInfo, string alias)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new ArgumentNullException ("fieldInfo");
+				throw new ArgumentNullException (nameof (fieldInfo));
 			}
 			if (string.IsNullOrEmpty (alias)) {
 				alias = fieldInfo.FieldName;
@@ -106,10 +106,10 @@ namespace Light.Data
 		public AggregateTable<T> Aggregate (AggregateFunction function, string alias)
 		{
 			if (Object.Equals (function, null)) {
-				throw new ArgumentNullException ("function");
+				throw new ArgumentNullException (nameof (function));
 			}
 			if (string.IsNullOrEmpty (alias)) {
-				throw new ArgumentNullException ("alias");
+				throw new ArgumentNullException (nameof (alias));
 			}
 			if (_aggregateFunctionDictionary.ContainsKey (alias)) {
 				throw new LightDataException (string.Format (RE.AggregateFunctionFieldIsExists, alias));

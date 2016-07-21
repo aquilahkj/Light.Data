@@ -48,7 +48,7 @@ namespace Light.Data.SQLiteAdapter
 		public override IDataParameter CreateParameter (string name, object value, string dbType, ParameterDirection direction)
 		{
 			string parameterName = name;
-			if (!parameterName.StartsWith ("@")) {
+			if (!parameterName.StartsWith ("@", StringComparison.Ordinal)) {
 				parameterName = "@" + parameterName;
 			}
 			SqliteParameter sp = new SqliteParameter (parameterName, value);
@@ -70,7 +70,7 @@ namespace Light.Data.SQLiteAdapter
 
 		public override void FormatStoredProcedureParameter (IDataParameter dataParmeter)
 		{
-			if (dataParmeter.ParameterName.StartsWith ("@")) {
+			if (dataParmeter.ParameterName.StartsWith ("@", StringComparison.Ordinal)) {
 				dataParmeter.ParameterName = dataParmeter.ParameterName.TrimStart ('@');
 			}
 		}

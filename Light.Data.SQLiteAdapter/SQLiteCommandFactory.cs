@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Light.Data.SQLiteAdapter
 {
-	class SQLiteCommandFactory:CommandFactory
+	class SQLiteCommandFactory : CommandFactory
 	{
 		public SQLiteCommandFactory ()
 		{
@@ -18,10 +18,10 @@ namespace Light.Data.SQLiteAdapter
 			return command;
 		}
 
-//		public string CreateDateTimeDataFieldSql (string fieldName)
-//		{
-//			return string.Format ("datetime(\"{0}\")", fieldName);
-//		}
+		//		public string CreateDateTimeDataFieldSql (string fieldName)
+		//		{
+		//			return string.Format ("datetime(\"{0}\")", fieldName);
+		//		}
 
 		public override string CreateDataFieldSql (string fieldName)
 		{
@@ -33,10 +33,10 @@ namespace Light.Data.SQLiteAdapter
 			return string.Format ("\"{0}\"", tableName);
 		}
 
-		public override CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
-				throw new ArgumentNullException ("entitys");
+				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
 				batchCount = 10;
@@ -59,7 +59,7 @@ namespace Light.Data.SQLiteAdapter
 			List<CommandData> commands = new List<CommandData> ();
 			foreach (object entity in entitys) {
 				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string[] valueList = new string[entityParams.Count];
+				string [] valueList = new string [entityParams.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
 					string paramName = CreateParamName ("P" + paramIndex);
@@ -92,9 +92,9 @@ namespace Light.Data.SQLiteAdapter
 		}
 
 
-		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
-			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, query, order, region);
+			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, region);
 			if (region != null) {
 				if (region.Start == 0) {
 					command.CommandText = string.Format ("{0} limit {1}", command.CommandText, region.Size);
@@ -106,7 +106,7 @@ namespace Light.Data.SQLiteAdapter
 			return command;
 		}
 
-		public override string CreateDividedSql (string field, object value, bool forward)
+		public override string CreateDividedSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("(cast({0} as real)/{1})", field, value);
@@ -142,20 +142,30 @@ namespace Light.Data.SQLiteAdapter
 			}
 		}
 
-		public override string CreateMatchSql (string field, bool left, bool right)
+		public override string CreateMatchSql (object field, bool starts, bool ends)
 		{
 			StringBuilder sb = new StringBuilder ();
-			if (left) {
+			if (starts) {
 				sb.AppendFormat ("'{0}'||", _wildcards);
 			}
 			sb.Append (field);
-			if (right) {
+			if (ends) {
 				sb.AppendFormat ("||'{0}'", _wildcards);
 			}
 			return sb.ToString ();
 		}
 
-		public override string CreateDateSql (string field, string format)
+		public override string CreateConcatSql (object field, object value, bool forward)
+		{
+			if (forward) {
+				return string.Format ("({0}||{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}||{1})", value, field);
+			}
+		}
+
+		public override string CreateDateSql (object field, string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
 				return string.Format ("date({0})", field);
@@ -201,59 +211,71 @@ namespace Light.Data.SQLiteAdapter
 			}
 		}
 
-		public override string CreateYearSql (string field)
+		public override string CreateYearSql (object field)
 		{
 			return string.Format ("strftime('%Y',{0})", field);
 		}
 
-		public override string CreateMonthSql (string field)
+		public override string CreateMonthSql (object field)
 		{
 			return string.Format ("strftime('%m',{0})", field);
 		}
 
-		public override string CreateDaySql (string field)
+		public override string CreateDaySql (object field)
 		{
 			return string.Format ("strftime('%d',{0})", field);
 		}
 
-		public override string CreateHourSql (string field)
+		public override string CreateHourSql (object field)
 		{
 			return string.Format ("strftime('%H',{0})", field);
 		}
 
-		public override string CreateMinuteSql (string field)
+		public override string CreateMinuteSql (object field)
 		{
 			return string.Format ("strftime('%M',{0})", field);
 		}
 
-		public override string CreateSecondSql (string field)
+		public override string CreateSecondSql (object field)
 		{
 			return string.Format ("strftime('%S',{0})", field);
 		}
 
-		public override string CreateWeekSql (string field)
+		public override string CreateWeekSql (object field)
 		{
 			return string.Format ("strftime('%W',{0})", field);
 		}
 
-		public override string CreateWeekDaySql (string field)
+		public override string CreateWeekDaySql (object field)
 		{
 			return string.Format ("strftime('%w',{0})", field);
 		}
 
-		public override string CreateLengthSql (string field)
+		public override string CreateYearDaySql (object field)
+		{
+			return string.Format ("strftime('%j',{0})", field);
+		}
+
+		public override string CreateLengthSql (object field)
 		{
 			return string.Format ("length({0})", field);
 		}
 
-		public override string CreateSubStringSql (string field, int start, int size)
+		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			start++;
-			if (size == 0) {
-				return string.Format ("substr({0},{1})", field, start);
+			//start++;
+			//if (size == 0) {
+			//	return string.Format ("substr({0},{1})", field, start);
+			//}
+			//else {
+			//	return string.Format ("substr({0},{1},{2})", field, start, size);
+			//}
+
+			if (object.Equals (size, null)) {
+				return string.Format ("substr({0},{1}+1)", field, start);
 			}
 			else {
-				return string.Format ("substr({0},{1},{2})", field, start, size);
+				return string.Format ("substr({0},{1}+1,{2})", field, start, size);
 			}
 		}
 
@@ -265,8 +287,8 @@ namespace Light.Data.SQLiteAdapter
 		public override string CreateParamName (string name)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
-			if (!name.StartsWith ("@")) {
+				throw new ArgumentNullException (nameof (name));
+			if (!name.StartsWith ("@", StringComparison.Ordinal)) {
 				return "@" + name;
 			}
 			else {
@@ -274,86 +296,86 @@ namespace Light.Data.SQLiteAdapter
 			}
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
+		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
+				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					return null;
 				})));
 			}
 			return havingString;
 		}
 
-		public override string CreatePowerSql (string field, object value, bool forward)
+		public override string CreatePowerSql (object field, object value, bool forward)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public override string CreateLogSql (string field)
+		public override string CreateLogSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public override string CreateExpSql (string field)
+		public override string CreateExpSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public override string CreateSinSql (string field)
+		public override string CreateSinSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public override string CreateCosSql (string field)
+		public override string CreateCosSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public override string CreateTanSql (string field)
+		public override string CreateTanSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public override string CreateAtanSql (string field)
+		public override string CreateAtanSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-//		public override CommandData CreateSelectCommand (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region)
-//		{
-//			if (region != null && !_canInnerPage) {
-//				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
-//			}
-//			CommandData data;
-//			if (mapping.HasJoinRelateModel) {
-//				JoinCapsule capsule = mapping.LoadJoinCapsule (query, order);
-//				data = CreateSelectRelateTableCommand (capsule.Slector, capsule.Models);
-//				RelationContent rc = new RelationContent ();
-//				rc.SetRelationMap (capsule.RelationMap);
-//				data.State = rc;
-//				return data;
-//			}
-//
-//			string[] fieldNames = new string[mapping.FieldCount];
-//			int i = 0;
-//			foreach (DataFieldMapping field in mapping.DataEntityFields) {
-//				if (field.ObjectType == typeof(DateTime)) {
-//					fieldNames [i] = CreateDateTimeDataFieldSql (field.Name);
-//				}
-//				else {
-//					fieldNames [i] = CreateDataFieldSql (field.Name);
-//				}
-//				i++;
-//			}
-//			string selectString = string.Join (",", fieldNames);
-//			data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
-//			if (mapping.HasMultiRelateModel) {
-//				data.State = new RelationContent ();
-//			}
-//			return data;
-//		}
+		//		public override CommandData CreateSelectCommand (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region)
+		//		{
+		//			if (region != null && !_canInnerPage) {
+		//				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
+		//			}
+		//			CommandData data;
+		//			if (mapping.HasJoinRelateModel) {
+		//				JoinCapsule capsule = mapping.LoadJoinCapsule (query, order);
+		//				data = CreateSelectRelateTableCommand (capsule.Slector, capsule.Models);
+		//				RelationContent rc = new RelationContent ();
+		//				rc.SetRelationMap (capsule.RelationMap);
+		//				data.State = rc;
+		//				return data;
+		//			}
+		//
+		//			string[] fieldNames = new string[mapping.FieldCount];
+		//			int i = 0;
+		//			foreach (DataFieldMapping field in mapping.DataEntityFields) {
+		//				if (field.ObjectType == typeof(DateTime)) {
+		//					fieldNames [i] = CreateDateTimeDataFieldSql (field.Name);
+		//				}
+		//				else {
+		//					fieldNames [i] = CreateDataFieldSql (field.Name);
+		//				}
+		//				i++;
+		//			}
+		//			string selectString = string.Join (",", fieldNames);
+		//			data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
+		//			if (mapping.HasMultiRelateModel) {
+		//				data.State = new RelationContent ();
+		//			}
+		//			return data;
+		//		}
 	}
 }
 

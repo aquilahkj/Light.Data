@@ -311,6 +311,18 @@
     <Compile Include="Config\ConnectionExtendManager.cs" />
     <Compile Include="Attributes\ExtendParamAttribute.cs" />
     <Compile Include="Config\ExtendParamCollection.cs" />
+    <Compile Include="LambdaExpressionExtend.cs" />
+    <Compile Include="Expressions\NotQueryExpression.cs" />
+    <Compile Include="Expressions\NotAggregateExpression.cs" />
+    <Compile Include="DataField\ConcatStringDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaMatchExpression.cs" />
+    <Compile Include="DataField\LambdaMatchDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaDataFieldInfo.cs" />
+    <Compile Include="DataField\CastStringDataFielfInfo.cs" />
+    <Compile Include="ISupportNotDefine.cs" />
+    <Compile Include="LambdaParseException.cs" />
+    <Compile Include="DataField\IDataFieldInfoConvert.cs" />
+    <Compile Include="DataField\LambdaMathFunctionDataFieldInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

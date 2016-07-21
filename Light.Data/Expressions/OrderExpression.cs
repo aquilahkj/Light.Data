@@ -84,7 +84,9 @@ namespace Light.Data
 			for (int i = 0; i < len; i++) {
 				DataParameter[] dps;
 				array [i] = _orderExpressions [i].CreateSqlString (factory, fullFieldName, out dps);
-				list.AddRange (dps);
+				if (dps != null && dps.Length > 0) {
+					list.AddRange (dps);
+				}
 			}
 			dataParameters = list.ToArray ();
 

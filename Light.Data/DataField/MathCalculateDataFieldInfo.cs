@@ -18,41 +18,76 @@ namespace Light.Data
 			_value = value;
 		}
 
-		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//{
+		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+		//	//object value = _value;
+		//	object value = LambdaExpressionExtend.ConvertObject (_value, factory, isFullName, false);
+
+		//	string sql = null;
+		//	switch (_opera) {
+		//	case MathOperator.Puls:
+		//		sql = factory.CreatePlusSql (field, value, _forward);
+		//		break;
+		//	case MathOperator.Minus:
+		//		sql = factory.CreateMinusSql (field, value, _forward);
+		//		break;
+		//	case MathOperator.Multiply:
+		//		sql = factory.CreateMultiplySql (field, value, _forward);
+		//		break;
+		//	case MathOperator.Divided:
+		//		sql = factory.CreateDividedSql (field, value, _forward);
+		//		break;
+		//	case MathOperator.Mod:
+		//		sql = factory.CreateModSql (field, value, _forward);
+		//		break;
+		//	case MathOperator.Power:
+		//		sql = factory.CreatePowerSql (field, value, _forward);
+		//		break;
+		//	}
+		//	return sql;
+		//}
+
+		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+			DataParameter [] dataParameters1 = null;
+			DataParameter [] dataParameters2 = null;
+			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
+			object value = LambdaExpressionExtend.ConvertLambdaObject (_value, factory, isFullName, false, out dataParameters2);
+
 			string sql = null;
 			switch (_opera) {
 			case MathOperator.Puls:
-				sql = factory.CreatePlusSql (field, _value, _forward);
+				sql = factory.CreatePlusSql (field, value, _forward);
 				break;
 			case MathOperator.Minus:
-				sql = factory.CreateMinusSql (field, _value, _forward);
+				sql = factory.CreateMinusSql (field, value, _forward);
 				break;
 			case MathOperator.Multiply:
-				sql = factory.CreateMultiplySql (field, _value, _forward);
+				sql = factory.CreateMultiplySql (field, value, _forward);
 				break;
 			case MathOperator.Divided:
-				sql = factory.CreateDividedSql (field, _value, _forward);
+				sql = factory.CreateDividedSql (field, value, _forward);
 				break;
 			case MathOperator.Mod:
-				sql = factory.CreateModSql (field, _value, _forward);
+				sql = factory.CreateModSql (field, value, _forward);
 				break;
 			case MathOperator.Power:
-				sql = factory.CreatePowerSql (field, _value, _forward);
+				sql = factory.CreatePowerSql (field, value, _forward);
 				break;
 			}
+			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}
 
 		internal override string DBType {
 			get {
-//				if (_opera == MathOperator.Divided) {
-//					return "double";
-//				}
-//				else if(_value.GetType()=={
-//					return base.DBType;
-//				}
+				//				if (_opera == MathOperator.Divided) {
+				//					return "double";
+				//				}
+				//				else if(_value.GetType()=={
+				//					return base.DBType;
+				//				}
 				return string.Empty;
 			}
 		}
@@ -60,7 +95,7 @@ namespace Light.Data
 		internal override object ToParameter (object value)
 		{
 			return value;
-//			return base.ToColumn (value);
+			//			return base.ToColumn (value);
 		}
 
 		protected override bool EqualsDetail (DataFieldInfo info)

@@ -10,7 +10,7 @@ namespace Light.Data
 		public RandomOrderExpression (DataEntityMapping tableMapping)
 			: base (tableMapping)
 		{
-			
+
 		}
 
 		string _aliasTableName;
@@ -18,20 +18,20 @@ namespace Light.Data
 		public void SetTableMapping (DataEntityMapping mapping)
 		{
 			if (mapping == null) {
-				throw new ArgumentNullException ("mapping");
+				throw new ArgumentNullException (nameof (mapping));
 			}
 			TableMapping = mapping;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
-			dataParameters = new DataParameter[0];
+			dataParameters = new DataParameter [0];
 			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, fullFieldName);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
 		{
-			dataParameters = new DataParameter[0];
+			dataParameters = new DataParameter [0];
 			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, fullFieldName);
 		}
 

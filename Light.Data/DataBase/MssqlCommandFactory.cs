@@ -22,28 +22,28 @@ namespace Light.Data
 			return string.Format ("[{0}]", tableName);
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
+		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
+				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					return null;
 				})));
 			}
 			return havingString;
 		}
 
-		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)
+		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
 		{
 			if (region == null) {
-				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null);
+				return base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, null);
 			}
 
 			StringBuilder sql = new StringBuilder ();
-			List<DataParameter> parameters = new List<DataParameter> ();
-			DataParameter[] queryparameters;
-			DataParameter[] orderparameters;
+			//List<DataParameter> parameters = new List<DataParameter> ();
+			DataParameter [] queryparameters;
+			DataParameter [] orderparameters;
 			string queryString = GetQueryString (query, out queryparameters);
 			string orderString = GetOrderString (order, out orderparameters);
 			bool distinct = false;
@@ -55,15 +55,15 @@ namespace Light.Data
 				sql.AppendFormat ("select {3}top {2} {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Size, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					sql.AppendFormat (" {0}", queryString);
-					if (queryparameters != null) {
-						parameters.AddRange (queryparameters);
-					}
+					//if (queryparameters != null) {
+					//	parameters.AddRange (queryparameters);
+					//}
 				}
 				if (!string.IsNullOrEmpty (orderString)) {
 					sql.AppendFormat (" {0}", orderString);
-					if (orderparameters != null) {
-						parameters.AddRange (orderparameters);
-					}
+					//if (orderparameters != null) {
+					//	parameters.AddRange (orderparameters);
+					//}
 				}
 			}
 			else {
@@ -80,7 +80,8 @@ namespace Light.Data
 				sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
 					innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
 			}
-			CommandData command = new CommandData (sql.ToString (), queryparameters);
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
+			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
 		}
@@ -107,30 +108,30 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public override string CreateAvgSql (string fieldName, bool isDistinct)
+		public override string CreateAvgSql (object fieldName, bool isDistinct)
 		{
 			return string.Format ("avg({1}convert(float,{0}))", fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public override string CreateConditionAvgSql (string expressionSql, string fieldName, bool isDistinct)
+		public override string CreateConditionAvgSql (string expressionSql, object fieldName, bool isDistinct)
 		{
 			return string.Format ("avg({2}case when {0} then convert(float,{1}) else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public override string CreateMatchSql (string field, bool left, bool right)
+		public override string CreateMatchSql (object field, bool starts, bool ends)
 		{
 			StringBuilder sb = new StringBuilder ();
-			if (left) {
+			if (starts) {
 				sb.AppendFormat ("'{0}'+", _wildcards);
 			}
 			sb.Append (field);
-			if (right) {
+			if (ends) {
 				sb.AppendFormat ("+'{0}'", _wildcards);
 			}
 			return sb.ToString ();
 		}
 
-		public override string CreateDateSql (string field, string format)
+		public override string CreateDateSql (object field, string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
 				return string.Format ("cast({0} as date)", field);
@@ -176,68 +177,80 @@ namespace Light.Data
 			}
 		}
 
-		public override string CreateYearSql (string field)
+		public override string CreateYearSql (object field)
 		{
 			return string.Format ("datepart(year,{0})", field);
 		}
 
-		public override string CreateMonthSql (string field)
+		public override string CreateMonthSql (object field)
 		{
 			return string.Format ("datepart(month,{0})", field);
 		}
 
-		public override string CreateDaySql (string field)
+		public override string CreateDaySql (object field)
 		{
 			return string.Format ("datepart(day,{0})", field);
 		}
 
-		public override string CreateHourSql (string field)
+		public override string CreateHourSql (object field)
 		{
 			return string.Format ("datepart(hour,{0})", field);
 		}
 
-		public override string CreateMinuteSql (string field)
+		public override string CreateMinuteSql (object field)
 		{
 			return string.Format ("datepart(minute,{0})", field);
 		}
 
-		public override string CreateSecondSql (string field)
+		public override string CreateSecondSql (object field)
 		{
 			return string.Format ("datepart(second,{0})", field);
 		}
 
-		public override string CreateWeekSql (string field)
+		public override string CreateWeekSql (object field)
 		{
 			return string.Format ("datepart(week,{0})", field);
 		}
 
-		public override string CreateWeekDaySql (string field)
+		public override string CreateWeekDaySql (object field)
 		{
 			return string.Format ("datepart(weekday,{0})-1", field);
 		}
 
-		public override string CreateLengthSql (string field)
+		public override string CreateYearDaySql (object field)
+		{
+			return string.Format ("datepart(dayofyear,{0})", field);
+		}
+
+		public override string CreateLengthSql (object field)
 		{
 			return string.Format ("len({0})", field);
 		}
 
-		public override string CreateLogSql (string field)
+		public override string CreateLogSql (object field)
 		{
 			return string.Format ("log({0})", field);
 		}
 
-		public override string CreateSubStringSql (string field, int start, int size)
+		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			start++;
-			if (size == 0) {
-				return string.Format ("substring({0},{1},len({0})-{1}+1)", field, start);
+			//start++;
+			//if (size == 0) {
+			//	return string.Format ("substring({0},{1},len({0})-{1}+1)", field, start);
+			//}
+			//else {
+			//	return string.Format ("substring({0},{1},{2})", field, start, size);
+			//}
+
+			if (object.Equals (size, null)) {
+				return string.Format ("substring({0},{1}+1,len({0}))", field, start);
 			}
 			else {
-				return string.Format ("substring({0},{1},{2})", field, start, size);
+				return string.Format ("substring({0},{1}+1,{2})", field, start, size);
 			}
 		}
 
-		public override string CreateDividedSql (string field, object value, bool forward)
+		public override string CreateDividedSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("convert(float,{0})/{1}", field, value);
@@ -247,7 +260,7 @@ namespace Light.Data
 			}
 		}
 
-		public override string CreatePowerSql (string field, object value, bool forward)
+		public override string CreatePowerSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("power({0},{1})", field, value);
@@ -265,8 +278,8 @@ namespace Light.Data
 		public override string CreateParamName (string name)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
-			if (!name.StartsWith ("@")) {
+				throw new ArgumentNullException (nameof (name));
+			if (!name.StartsWith ("@", StringComparison.Ordinal)) {
 				return "@" + name;
 			}
 			else {

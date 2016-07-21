@@ -71,15 +71,15 @@ namespace Light.Data
 		protected BaseRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
 		{
 			if (fieldName == null)
-				throw new ArgumentNullException ("fieldName");
+				throw new ArgumentNullException (nameof (fieldName));
 			if (mapping == null)
-				throw new ArgumentNullException ("mapping");
+				throw new ArgumentNullException (nameof (mapping));
 			if (relateType == null)
-				throw new ArgumentNullException ("relateType");
+				throw new ArgumentNullException (nameof (relateType));
 			if (keyPairs == null || keyPairs.Length == 0)
-				throw new ArgumentNullException ("keyPairs");
+				throw new ArgumentNullException (nameof (keyPairs));
 			if (handler == null)
-				throw new ArgumentNullException ("handler");
+				throw new ArgumentNullException (nameof (handler));
 			this.fieldName = fieldName;
 			this.masterEntityMapping = mapping;
 			this.relateType = relateType;

@@ -176,6 +176,7 @@ namespace Light.Data.OracleTest
 		public void TestCase_Min ()
 		{
 			InitialUserTable (20);
+
 			int result1 = Convert.ToInt32 (context.LQuery<TeUser> ().Min (TeUser.IdField));
 			Assert.AreEqual (1, result1);
 
@@ -190,7 +191,6 @@ namespace Light.Data.OracleTest
 
 			int result5 = Convert.ToInt32 (context.LQuery<TeUser> ().Where (TeUser.IdField == 1 & TeUser.CheckPointField.IsNotNull ()).Min (TeUser.IdField));
 			Assert.AreEqual (0, result5);
-
 		}
 
 
@@ -206,7 +206,8 @@ namespace Light.Data.OracleTest
 				if (distinct) {
 					if (hash.Contains (t)) {
 						continue;
-					} else {
+					}
+					else {
 						hash.Add (t);
 					}
 				}
@@ -227,7 +228,8 @@ namespace Light.Data.OracleTest
 				if (distinct) {
 					if (hash.Contains (t)) {
 						continue;
-					} else {
+					}
+					else {
 						hash.Add (t);
 					}
 				}
@@ -235,7 +237,8 @@ namespace Light.Data.OracleTest
 			}
 			if (distinct) {
 				return (double)result / hash.Count;
-			} else {
+			}
+			else {
 				return (double)result / (end - start + 1);
 			}
 		}

@@ -14,7 +14,7 @@ namespace Light.Data
 		public AggregateTableConfig (Type dataType)
 		{
 			if (dataType == null) {
-				throw new ArgumentNullException ("dataType");
+				throw new ArgumentNullException (nameof (dataType));
 			}
 			DataType = dataType;
 		}
@@ -32,9 +32,9 @@ namespace Light.Data
 		/// Gets or sets the extend parameters.
 		/// </summary>
 		/// <value>The extend parameters.</value>
-//		public ExtendParamsCollection ExtendParams {
-//			get;
-//			set;
-//		}
+		//		public ExtendParamsCollection ExtendParams {
+		//			get;
+		//			set;
+		//		}
 	}
 }

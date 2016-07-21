@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Collections.Generic;
 
 namespace Light.Data
 {
@@ -8,6 +9,30 @@ namespace Light.Data
 	/// </summary>
 	public class DataParameter
 	{
+		public static DataParameter [] ConcatDataParameters (params IEnumerable<DataParameter>[] dataParameters)
+		{
+			if (dataParameters.Length == 0) {
+				return null;
+			}
+			List<DataParameter> list = null;
+			foreach(IEnumerable<DataParameter> item in dataParameters) {
+				if (!object.Equals (item, null)) {
+					if (list == null) {
+						list = new List<DataParameter> (item);
+					}
+					else {
+						list.AddRange (item);
+					}
+				}
+			}
+			if (list == null) {
+				return null;
+			}
+			else {
+				return list.ToArray ();
+			}
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Light.Data.DataParameter"/> class.
 		/// </summary>
@@ -18,9 +43,9 @@ namespace Light.Data
 		public DataParameter (string paramName, object paramValue, string dbType, ParameterDirection direction)
 		{
 			if (string.IsNullOrEmpty (paramName)) {
-				throw new ArgumentNullException ("paramName");
+				throw new ArgumentNullException (nameof (paramName));
 			}
-            
+
 			_parameterName = paramName;
 			_dbType = dbType;
 			_value = paramValue;
@@ -111,7 +136,7 @@ namespace Light.Data
 		/// <value>The type of the db.</value>
 		public string DbType {
 			get {
-                
+
 				return _dbType;
 			}
 			internal set {

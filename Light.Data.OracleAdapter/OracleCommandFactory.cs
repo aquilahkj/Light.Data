@@ -32,7 +32,7 @@ namespace Light.Data.OracleAdapter
 			_identityAuto = true;
 			_canInnerPage = true;
 			_strictMode = true;
-//			base._supportJoinTableInnerQuery = false;
+			//			base._supportJoinTableInnerQuery = false;
 			LoadRoundRegex ();
 		}
 
@@ -84,15 +84,15 @@ namespace Light.Data.OracleAdapter
 
 			CommandData command = new CommandData (sql);
 			return command;
-//			string sql = string.Format ("truncate table {0}", CreateDataTableSql (mapping));
-//			CommandData command = new CommandData (sql);
-//			return command;
+			//			string sql = string.Format ("truncate table {0}", CreateDataTableSql (mapping));
+			//			CommandData command = new CommandData (sql);
+			//			return command;
 		}
 
-		public override string CreateBooleanSql (bool value)
-		{
-			return value ? "1" : "0";
-		}
+		//public override string CreateBooleanSql (bool value)
+		//{
+		//	return value ? "1" : "0";
+		//}
 
 		public override CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
 		{
@@ -100,8 +100,8 @@ namespace Light.Data.OracleAdapter
 
 			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
 
-			string[] insertList = new string[paramList.Count];
-			string[] valuesList = new string[paramList.Count];
+			string [] insertList = new string [paramList.Count];
+			string [] valuesList = new string [paramList.Count];
 			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
 				string paramName = CreateParamName ("P" + index);
@@ -123,7 +123,7 @@ namespace Light.Data.OracleAdapter
 			return command;
 		}
 
-		static Dictionary<DataTableEntityMapping,bool> IdentityDict = new Dictionary<DataTableEntityMapping, bool> ();
+		static Dictionary<DataTableEntityMapping, bool> IdentityDict = new Dictionary<DataTableEntityMapping, bool> ();
 
 		private bool CheckIndentityAuto (DataTableEntityMapping mapping)
 		{
@@ -148,10 +148,10 @@ namespace Light.Data.OracleAdapter
 			return identityAuto;
 		}
 
-		public override CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
-				throw new ArgumentNullException ("entitys");
+				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
 				batchCount = 10;
@@ -184,7 +184,7 @@ namespace Light.Data.OracleAdapter
 
 			foreach (object entity in entitys) {
 				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string[] valueList = new string[entityParams.Count];
+				string [] valueList = new string [entityParams.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
 					string paramName = CreateParamName ("P" + paramIndex);
@@ -245,16 +245,16 @@ namespace Light.Data.OracleAdapter
 			return seq;
 		}
 
-		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
 			if (region == null) {
-				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null);
+				return base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, null);
 			}
 
 			StringBuilder sql = new StringBuilder ();
-			List<DataParameter> parameters = new List<DataParameter> ();
-			DataParameter[] queryparameters;
-			DataParameter[] orderparameters;
+			//List<DataParameter> parameters = new List<DataParameter> ();
+			DataParameter [] queryparameters;
+			DataParameter [] orderparameters;
 			string queryString = GetQueryString (query, out queryparameters);
 			string orderString = GetOrderString (order, out orderparameters);
 
@@ -262,9 +262,9 @@ namespace Light.Data.OracleAdapter
 				sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					sql.AppendFormat (" {0}", queryString);
-					if (queryparameters != null) {
-						parameters.AddRange (queryparameters);
-					}
+					//if (queryparameters != null) {
+					//	parameters.AddRange (queryparameters);
+					//}
 					sql.AppendFormat (" and ROWNUM<={0}", region.Size);
 				}
 				else {
@@ -285,45 +285,46 @@ namespace Light.Data.OracleAdapter
 				innerSQL.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					innerSQL.AppendFormat (" {0}", queryString);
-					if (queryparameters != null) {
-						parameters.AddRange (queryparameters);
-					}
+					//if (queryparameters != null) {
+					//	parameters.AddRange (queryparameters);
+					//}
 				}
 				if (!string.IsNullOrEmpty (orderString)) {
 					innerSQL.AppendFormat (" {0}", orderString);
-					if (orderparameters != null) {
-						parameters.AddRange (orderparameters);
-					}
+					//if (orderparameters != null) {
+					//	parameters.AddRange (orderparameters);
+					//}
 				}
 				string tempRowNumber = CreateCustomFiledName ();
 				sql.AppendFormat ("select {4} from (select a.*,ROWNUM {3} from ({0})a where ROWNUM<={2})b where {3}>{1}",
 					innerSQL, region.Start, region.Start + region.Size, tempRowNumber, customSelect);
 			}
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
 
 		}
 
-		public override CommandData CreateSelectJoinTableCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
+		public override CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
 		{
-			List<DataParameter> parameters = new List<DataParameter> ();
+			//List<DataParameter> parameters = new List<DataParameter> ();
 			StringBuilder tables = new StringBuilder ();
 			OrderExpression totalOrder = null;
 			QueryExpression totalQuery = null;
+			List<DataParameter> innerParameters = new List<DataParameter> ();
 			foreach (JoinModel model in modelList) {
 				if (model.Connect != null) {
 					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
 				}
-
 				if (model.Query != null) {
-					DataParameter[] queryparameters_sub;
+					DataParameter [] queryparameters_sub;
 					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
 					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
 					if (!string.IsNullOrEmpty (mqueryString)) {
 						tables.AppendFormat (" {0}", mqueryString);
 						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
-							parameters.AddRange (queryparameters_sub);
+							innerParameters.AddRange (queryparameters_sub);
 						}
 					}
 					string aliseName = model.AliasTableName;
@@ -347,12 +348,12 @@ namespace Light.Data.OracleAdapter
 					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
 				}
 				if (model.Connect != null && model.Connect.On != null) {
-					DataParameter[] onparameters;
+					DataParameter [] onparameters;
 					string onString = GetOnString (model.Connect.On, out onparameters);
 					if (!string.IsNullOrEmpty (onString)) {
 						tables.AppendFormat (" {0}", onString);
 						if (onparameters != null && onparameters.Length > 0) {
-							parameters.AddRange (onparameters);
+							innerParameters.AddRange (onparameters);
 						}
 					}
 				}
@@ -360,36 +361,37 @@ namespace Light.Data.OracleAdapter
 			totalQuery &= query;
 			totalOrder &= order;
 			StringBuilder sql = new StringBuilder ();
-			DataParameter[] queryparameters;
-			DataParameter[] orderparameters;
+			DataParameter [] queryparameters;
+			DataParameter [] orderparameters;
 			string queryString = GetQueryString (totalQuery, out queryparameters, true);
 			string orderString = GetOrderString (totalOrder, out orderparameters, true);
 
 			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null && queryparameters.Length > 0) {
-					parameters.AddRange (queryparameters);
-				}
+				//if (queryparameters != null && queryparameters.Length > 0) {
+				//	parameters.AddRange (queryparameters);
+				//}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderparameters != null && orderparameters.Length > 0) {
-					parameters.AddRange (orderparameters);
-				}
+				//if (orderparameters != null && orderparameters.Length > 0) {
+				//	parameters.AddRange (orderparameters);
+				//}
 			}
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, innerParameters, queryparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
 		}
 
-		public override string CreateAvgSql (string fieldName, bool isDistinct)
+		public override string CreateAvgSql (object fieldName, bool isDistinct)
 		{
 			string sql = base.CreateAvgSql (fieldName, isDistinct);
 			return AddRound (sql);
 		}
 
-		public override string CreateConditionAvgSql (string expressionSql, string fieldName, bool isDistinct)
+		public override string CreateConditionAvgSql (string expressionSql, object fieldName, bool isDistinct)
 		{
 			string sql = base.CreateConditionAvgSql (expressionSql, fieldName, isDistinct);
 			return AddRound (sql);
@@ -400,20 +402,30 @@ namespace Light.Data.OracleAdapter
 			return "dbms_random.value";
 		}
 
-		public override string CreateMatchSql (string field, bool left, bool right)
+		public override string CreateMatchSql (object field, bool starts, bool ends)
 		{
 			StringBuilder sb = new StringBuilder ();
-			if (left) {
+			if (starts) {
 				sb.AppendFormat ("'{0}'||", _wildcards);
 			}
 			sb.Append (field);
-			if (right) {
+			if (ends) {
 				sb.AppendFormat ("||'{0}'", _wildcards);
 			}
 			return sb.ToString ();
 		}
 
-		public override string CreateDateSql (string field, string format)
+		public override string CreateConcatSql (object field, object value, bool forward)
+		{
+			if (forward) {
+				return string.Format ("({0}||{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}||{1})", value, field);
+			}
+		}
+
+		public override string CreateDateSql (object field, string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
 				return string.Format ("trunc({0})", field);
@@ -459,59 +471,71 @@ namespace Light.Data.OracleAdapter
 			}
 		}
 
-		public override string CreateYearSql (string field)
+		public override string CreateYearSql (object field)
 		{
 			return string.Format ("extract(year from {0})", field);
 		}
 
-		public override string CreateMonthSql (string field)
+		public override string CreateMonthSql (object field)
 		{
 			return string.Format ("extract(month from {0})", field);
 		}
 
-		public override string CreateDaySql (string field)
+		public override string CreateDaySql (object field)
 		{
 			return string.Format ("extract(day from {0})", field);
 		}
 
-		public override string CreateHourSql (string field)
+		public override string CreateHourSql (object field)
 		{
 			return string.Format ("to_number(to_char({0}, 'hh24'))", field);
 		}
 
-		public override string CreateMinuteSql (string field)
+		public override string CreateMinuteSql (object field)
 		{
 			return string.Format ("to_number(to_char({0}, 'mi'))", field);
 		}
 
-		public override string CreateSecondSql (string field)
+		public override string CreateSecondSql (object field)
 		{
 			return string.Format ("to_number(to_char({0}, 'ss'))", field);
 		}
 
-		public override string CreateWeekSql (string field)
+		public override string CreateWeekSql (object field)
 		{
 			return string.Format ("to_number(to_char({0}, 'ww'))", field);
 		}
 
-		public override string CreateWeekDaySql (string field)
+		public override string CreateWeekDaySql (object field)
 		{
 			return string.Format ("to_number(to_char({0}, 'd'))-1", field);
 		}
 
-		public override string CreateLengthSql (string field)
+		public override string CreateYearDaySql (object field)
+		{
+			return string.Format ("to_number(to_char({0}, 'ddd'))", field);
+		}
+
+		public override string CreateLengthSql (object field)
 		{
 			return string.Format ("length({0})", field);
 		}
 
-		public override string CreateSubStringSql (string field, int start, int size)
+		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			start++;
-			if (size == 0) {
-				return string.Format ("substr({0},{1})", field, start);
+			//start++;
+			//if (size == 0) {
+			//	return string.Format ("substr({0},{1})", field, start);
+			//}
+			//else {
+			//	return string.Format ("substr({0},{1},{2})", field, start, size);
+			//}
+
+			if (object.Equals (size, null)) {
+				return string.Format ("substr({0},{1}+1)", field, start);
 			}
 			else {
-				return string.Format ("substr({0},{1},{2})", field, start, size);
+				return string.Format ("substr({0},{1}+1,{2})", field, start, size);
 			}
 		}
 
@@ -530,86 +554,99 @@ namespace Light.Data.OracleAdapter
 			return string.Format ("round({0},{1})", field, _roundScale);
 		}
 
-		public override string CreateDividedSql (string field, object value, bool forward)
-		{
-			field = ClearRound (field);
-			field = base.CreateDividedSql (field, value, forward);
-			return AddRound (field);
-		}
+		//public override string CreateDividedSql (string field, object value, bool forward)
+		//{
+		//	field = ClearRound (field);
+		//	field = base.CreateDividedSql (field, value, forward);
+		//	return AddRound (field);
+		//}
 
-		public override string CreateModSql (string field, object value, bool forward)
+		public override string CreateModSql (object field, object value, bool forward)
 		{
-			field = ClearRound (field);
+			//field = ClearRound (field);
+			//if (forward) {
+			//	field = string.Format ("mod({0},{1})", field, value);
+			//}
+			//else {
+			//	field = string.Format ("mod({0},{1})", value, field);
+			//}
+			//return AddRound (field);
 			if (forward) {
-				field = string.Format ("mod({0},{1})", field, value);
+				return string.Format ("mod({0},{1})", field, value);
 			}
 			else {
-				field = string.Format ("mod({0},{1})", value, field);
+				return string.Format ("mod({0},{1})", value, field);
 			}
-			return AddRound (field);
 		}
 
-		public override string CreatePowerSql (string field, object value, bool forward)
+		public override string CreatePowerSql (object field, object value, bool forward)
 		{
-			field = ClearRound (field);
+			//field = ClearRound (field);
+			//if (forward) {
+			//	field = string.Format ("power({0},{1})", field, value);
+			//}
+			//else {
+			//	field = string.Format ("power({0},{1})", value, field);
+			//}
+			//return AddRound (field);
 			if (forward) {
-				field = string.Format ("power({0},{1})", field, value);
+				return string.Format ("power({0},{1})", field, value);
 			}
 			else {
-				field = string.Format ("power({0},{1})", value, field);
+				return string.Format ("power({0},{1})", value, field);
 			}
-			return AddRound (field);
 		}
 
 
-		public override string CreateAbsSql (string field)
+		//public override string CreateAbsSql (object field)
+		//{
+		//	field = ClearRound (field);
+		//	field = base.CreateAbsSql (field);
+		//	return AddRound (field);
+		//}
+
+		public override string CreateLogSql (object field)
 		{
-			field = ClearRound (field);
-			field = base.CreateAbsSql (field);
-			return AddRound (field);
+			//field = ClearRound (field);
+			//field = string.Format ("ln({0})", field);
+			//return AddRound (field);
+			return string.Format ("ln({0})", field);
 		}
 
-		public override string CreateLogSql (string field)
-		{
-			field = ClearRound (field);
-			field = string.Format ("ln({0})", field);
-			return AddRound (field);
-		}
+		//public override string CreateExpSql (object field)
+		//{
+		//	field = ClearRound (field);
+		//	field = base.CreateExpSql (field);
+		//	return AddRound (field);
+		//}
 
-		public override string CreateExpSql (string field)
-		{
-			field = ClearRound (field);
-			field = base.CreateExpSql (field);
-			return AddRound (field);
-		}
+		//public override string CreateSinSql (object field)
+		//{
+		//	field = ClearRound (field);
+		//	field = base.CreateSinSql (field);
+		//	return AddRound (field);
+		//}
 
-		public override string CreateSinSql (string field)
-		{
-			field = ClearRound (field);
-			field = base.CreateSinSql (field);
-			return AddRound (field);
-		}
+		//public override string CreateCosSql (object field)
+		//{
+		//	field = ClearRound (field);
+		//	field = base.CreateCosSql (field);
+		//	return AddRound (field);
+		//}
 
-		public override string CreateCosSql (string field)
-		{
-			field = ClearRound (field);
-			field = base.CreateCosSql (field);
-			return AddRound (field);
-		}
+		//public override string CreateTanSql (object field)
+		//{
+		//	field = ClearRound (field);
+		//	field = base.CreateTanSql (field);
+		//	return AddRound (field);
+		//}
 
-		public override string CreateTanSql (string field)
-		{
-			field = ClearRound (field);
-			field = base.CreateTanSql (field);
-			return AddRound (field);
-		}
-
-		public override string CreateAtanSql (string field)
-		{
-			field = ClearRound (field);
-			field = base.CreateAtanSql (field);
-			return AddRound (field);
-		}
+		//public override string CreateAtanSql (object field)
+		//{
+		//	field = ClearRound (field);
+		//	field = base.CreateAtanSql (field);
+		//	return AddRound (field);
+		//}
 
 		public override string CreateDataBaseTimeSql ()
 		{
@@ -619,8 +656,8 @@ namespace Light.Data.OracleAdapter
 		public override string CreateParamName (string name)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
-			if (!name.StartsWith (":")) {
+				throw new ArgumentNullException (nameof (name));
+			if (!name.StartsWith (":", StringComparison.Ordinal)) {
 				return ":" + name;
 			}
 			else {
@@ -628,12 +665,12 @@ namespace Light.Data.OracleAdapter
 			}
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
+		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
+				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					return null;
 				})));
 			}

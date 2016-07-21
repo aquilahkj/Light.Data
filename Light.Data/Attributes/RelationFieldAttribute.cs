@@ -16,10 +16,10 @@ namespace Light.Data
 		public RelationFieldAttribute (string masterKey, string relateKey)
 		{
 			if (string.IsNullOrEmpty (masterKey)) {
-				throw new ArgumentNullException ("masterKey");
+				throw new ArgumentNullException (nameof (masterKey));
 			}
 			if (string.IsNullOrEmpty (relateKey)) {
-				throw new ArgumentNullException ("relateKey");
+				throw new ArgumentNullException (nameof (relateKey));
 			}
 			MasterKey = masterKey;
 			RelateKey = relateKey;

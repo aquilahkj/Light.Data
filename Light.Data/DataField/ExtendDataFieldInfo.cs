@@ -29,6 +29,8 @@ namespace Light.Data
 			_baseFieldInfo = info;
 		}
 
+
+
 		/// <summary>
 		/// Equalses the detail.
 		/// </summary>

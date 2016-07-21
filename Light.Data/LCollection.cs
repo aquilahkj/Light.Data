@@ -22,11 +22,11 @@ namespace Light.Data
 		internal LCollection (DataContext context, object owner, QueryExpression query, SingleRelationFieldMapping rollRelateFieldMapping)
 		{
 			if (context == null)
-				throw new ArgumentNullException ("context");
+				throw new ArgumentNullException (nameof (context));
 			if (owner == null)
-				throw new ArgumentNullException ("owner");
+				throw new ArgumentNullException (nameof (owner));
 			if (query == null)
-				throw new ArgumentNullException ("query");
+				throw new ArgumentNullException (nameof (query));
 			this.context = context;
 			this.owner = owner;
 			this.query = query;
@@ -77,7 +77,7 @@ namespace Light.Data
 		public bool Contains (T item)
 		{
 			if (item == null)
-				throw new ArgumentNullException ("item");
+				throw new ArgumentNullException (nameof (item));
 			InitialList ();
 			return list.Contains (item);
 		}

@@ -14,10 +14,16 @@ namespace Light.Data
 			_isDistinct = isDistinct;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//{
+		//	dataParameters = null;
+		//	return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
 			dataParameters = null;
-			return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
+			return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isDistinct);
 		}
 
 		protected override bool EqualsDetail (AggregateFunction function)

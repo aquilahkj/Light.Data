@@ -2,7 +2,7 @@
 
 namespace Light.Data
 {
-	class EnumSelectFieldInfo:SelectFieldInfo
+	class EnumSelectFieldInfo : SelectFieldInfo
 	{
 		readonly Enum _value;
 
@@ -26,10 +26,11 @@ namespace Light.Data
 
 		#region implemented abstract members of SelectFieldInfo
 
-		internal override string CreateDataFieldSql (CommandFactory factory, out DataParameter dataParameter)
+		internal override string CreateDataFieldSql (CommandFactory factory, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
-			dataParameter = new DataParameter (pn, _value);
+			DataParameter dataParameter = new DataParameter (pn, _value);
+			dataParameters = new [] { dataParameter };
 			return pn;
 		}
 
@@ -41,14 +42,16 @@ namespace Light.Data
 
 		#endregion
 
-		internal string CreateDataFieldSql (CommandFactory factory, EnumFieldType fieldType, out DataParameter dataParameter)
+		internal string CreateDataFieldSql (CommandFactory factory, EnumFieldType fieldType, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			if (fieldType == EnumFieldType.EnumToString) {
-				dataParameter = new DataParameter (pn, _value.ToString (), "string");
+				DataParameter dataParameter = new DataParameter (pn, _value.ToString (), "string");
+				dataParameters = new [] { dataParameter };
 			}
 			else {
-				dataParameter = new DataParameter (pn, Convert.ChangeType (_value, _typeCode));
+				DataParameter dataParameter = new DataParameter (pn, Convert.ChangeType (_value, _typeCode));
+				dataParameters = new [] { dataParameter };
 			}
 			return pn;
 		}

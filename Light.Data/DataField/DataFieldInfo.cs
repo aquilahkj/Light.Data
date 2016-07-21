@@ -15,25 +15,27 @@ namespace Light.Data
 		public static DataFieldInfo<T> Create (string name)
 		{
 			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
+				throw new ArgumentNullException (nameof (name));
 			}
 			return new DataFieldInfo<T> (name);
 		}
 
 		private DataFieldInfo (string name)
-			: base (typeof(T), name)
+			: base (typeof (T), name)
 		{
-			
+
 		}
 	}
 
 	/// <summary>
 	/// Data field info.
 	/// </summary>
-	public class DataFieldInfo : BasicFieldInfo,ICloneable
+	public class DataFieldInfo : BasicFieldInfo, ICloneable
 	{
 		#region ICloneable implementation
-
+		/// <summary>
+		/// Clone this instance.
+		/// </summary>
 		public object Clone ()
 		{
 			return this.MemberwiseClone ();
@@ -60,6 +62,11 @@ namespace Light.Data
 		{
 			TableMapping = fieldMapping.EntityMapping;
 			DataField = fieldMapping;
+		}
+
+		internal DataFieldInfo ()
+		{
+			
 		}
 
 		/// <summary>
@@ -385,7 +392,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression Like (params string[] values)
+		public QueryExpression Like (params string [] values)
 		{
 			return MatchValue (values, false, false, false);
 		}
@@ -415,7 +422,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression NotLike (params string[] values)
+		public QueryExpression NotLike (params string [] values)
 		{
 			return MatchValue (values, false, false, true);
 		}
@@ -445,7 +452,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression Contains (params string[] values)
+		public QueryExpression Contains (params string [] values)
 		{
 			return MatchValue (values, true, true, false);
 		}
@@ -475,7 +482,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression NotContains (params string[] values)
+		public QueryExpression NotContains (params string [] values)
 		{
 			return MatchValue (values, true, true, true);
 		}
@@ -505,7 +512,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression EndsWith (params string[] values)
+		public QueryExpression EndsWith (params string [] values)
 		{
 			return MatchValue (values, true, false, false);
 		}
@@ -535,7 +542,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression NotEndsWith (params string[] values)
+		public QueryExpression NotEndsWith (params string [] values)
 		{
 			return MatchValue (values, true, false, true);
 		}
@@ -565,7 +572,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression StartsWith (params string[] values)
+		public QueryExpression StartsWith (params string [] values)
 		{
 			return MatchValue (values, false, true, false);
 		}
@@ -595,7 +602,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The expression</returns>
 		/// <param name="values">Values.</param>
-		public QueryExpression NotStartsWith (params string[] values)
+		public QueryExpression NotStartsWith (params string [] values)
 		{
 			return MatchValue (values, false, true, true);
 		}
@@ -646,15 +653,15 @@ namespace Light.Data
 			return Boolean (false);
 		}
 
-		private QueryExpression SingleParam (QueryPredicate predicate, object value)
+		internal QueryExpression SingleParam (QueryPredicate predicate, object value)
 		{
 			return SingleParam (predicate, value, false);
 		}
 
-		private QueryExpression SingleParam (QueryPredicate predicate, object value, bool isReverse)
+		internal QueryExpression SingleParam (QueryPredicate predicate, object value, bool isReverse)
 		{
 			if (Object.Equals (value, null)) {
-				throw new ArgumentNullException ("value");
+				throw new ArgumentNullException (nameof (value));
 			}
 			QueryExpression exp;
 			DataFieldInfo dataFieldInfo = value as DataFieldInfo;
@@ -670,7 +677,7 @@ namespace Light.Data
 		private QueryExpression CollectionParams (QueryCollectionPredicate predicate, System.Collections.IEnumerable values)
 		{
 			if (Object.Equals (values, null)) {
-				throw new ArgumentNullException ("values");
+				throw new ArgumentNullException (nameof (values));
 			}
 			QueryExpression exp = new CollectionParamsQueryExpression (this, predicate, values);
 			return exp;
@@ -679,7 +686,7 @@ namespace Light.Data
 		private QueryExpression CollectionParams (QueryCollectionPredicate predicate, DataFieldInfo field, QueryExpression expression)
 		{
 			if (Object.Equals (field, null)) {
-				throw new ArgumentNullException ("field");
+				throw new ArgumentNullException (nameof (field));
 			}
 			QueryExpression exp = new SubQueryExpression (this, predicate, field, expression);
 			return exp;
@@ -688,10 +695,10 @@ namespace Light.Data
 		private QueryExpression BetweenParams (bool isNot, object fromValue, object toValue)
 		{
 			if (Object.Equals (fromValue, null)) {
-				throw new ArgumentNullException ("fromValue");
+				throw new ArgumentNullException (nameof (fromValue));
 			}
 			if (Object.Equals (toValue, null)) {
-				throw new ArgumentNullException ("toValue");
+				throw new ArgumentNullException (nameof (toValue));
 			}
 			QueryExpression exp = new BetweenParamsQueryExpression (this, isNot, fromValue, toValue);
 			return exp;
@@ -803,15 +810,15 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// Creates the data field sql.
-		/// </summary>
-		/// <returns>The data field sql.</returns>
-		/// <param name="factory">Factory.</param>
-		internal virtual string CreateDataFieldSql (CommandFactory factory)
-		{
-			return CreateDataFieldSql (factory, false);
-		}
+		///// <summary>
+		///// Creates the data field sql.
+		///// </summary>
+		///// <returns>The data field sql.</returns>
+		///// <param name="factory">Factory.</param>
+		//internal virtual string CreateDataFieldSql (CommandFactory factory)
+		//{
+		//	return CreateDataFieldSql (factory, false);
+		//}
 
 		string _aliasTableName;
 
@@ -830,8 +837,21 @@ namespace Light.Data
 		/// <returns>The data field sql.</returns>
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
-		internal virtual string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal virtual string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//{
+		//	if (isFullName) {
+		//		string tableName = this._aliasTableName ?? TableMapping.TableName;
+		//		return factory.CreateFullDataFieldSql (tableName, FieldName);
+		//	}
+		//	else {
+		//		return factory.CreateDataFieldSql (FieldName);
+		//	}
+		//}
+
+		internal virtual string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
+			dataParameters = null;
+			//return CreateDataFieldSql (factory, isFullName);
 			if (isFullName) {
 				string tableName = this._aliasTableName ?? TableMapping.TableName;
 				return factory.CreateFullDataFieldSql (tableName, FieldName);
@@ -841,16 +861,16 @@ namespace Light.Data
 			}
 		}
 
-//		/// <summary>
-//		/// Creates the data field sql.
-//		/// </summary>
-//		/// <returns>The data field sql.</returns>
-//		/// <param name="factory">Factory.</param>
-//		/// <param name="aliasTableName">Alias table name.</param>
-//		internal virtual string CreateDataFieldSql (CommandFactory factory, string aliasTableName)
-//		{
-//			return factory.CreateFullDataFieldSql (aliasTableName, FieldName);
-//		}
+		//		/// <summary>
+		//		/// Creates the data field sql.
+		//		/// </summary>
+		//		/// <returns>The data field sql.</returns>
+		//		/// <param name="factory">Factory.</param>
+		//		/// <param name="aliasTableName">Alias table name.</param>
+		//		internal virtual string CreateDataFieldSql (CommandFactory factory, string aliasTableName)
+		//		{
+		//			return factory.CreateFullDataFieldSql (aliasTableName, FieldName);
+		//		}
 
 
 		/// <summary>
@@ -987,7 +1007,7 @@ namespace Light.Data
 		/// <returns>The week day.</returns>
 		public DataFieldInfo TransformWeekDay ()
 		{
-			return new DatePartDataFieldInfo (this, DatePart.WeekDay);
+			return new DatePartDataFieldInfo (this, DatePart.DayOfWeek);
 		}
 
 		/// <summary>
@@ -1008,7 +1028,7 @@ namespace Light.Data
 		public DataFieldInfo TransformSubString (int start, int size)
 		{
 			if (size <= 0) {
-				throw new ArgumentOutOfRangeException ("size");
+				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			return new SubStringDataFieldInfo (this, start, size);
 		}
@@ -1020,7 +1040,7 @@ namespace Light.Data
 		/// <param name="start">Start.</param>
 		public DataFieldInfo TransformSubString (int start)
 		{
-			return new SubStringDataFieldInfo (this, start, 0);
+			return new SubStringDataFieldInfo (this, start, null);
 		}
 
 		#region math operate int
@@ -1706,10 +1726,31 @@ namespace Light.Data
 		}
 
 		#endregion
+		/// <summary>
+		/// Adds a <see cref="Light.Data.DataFieldInfo"/> to a <see cref="string"/>, yielding a new <see cref="T:Light.Data.DataFieldInfo"/>.
+		/// </summary>
+		/// <param name="field">The first <see cref="Light.Data.DataFieldInfo"/> to add.</param>
+		/// <param name="value">The second <see cref="string"/> to add.</param>
+		/// <returns>The <see cref="T:Light.Data.DataFieldInfo"/> that is the sum of the values of <c>field</c> and <c>value</c>.</returns>
+		public static DataFieldInfo operator + (DataFieldInfo field, string value)
+		{
+			return field.TransformConcatString (value, true);
+		}
+		/// <param name="value">Value.</param>
+		/// <param name="field">Field.</param>
+		public static DataFieldInfo operator + (string value, DataFieldInfo field)
+		{
+			return field.TransformConcatString (value, false);
+		}
 
 		private DataFieldInfo TransformMathCalculate (MathOperator opera, object value, bool forward)
 		{
 			return new MathCalculateDataFieldInfo (this, opera, value, forward);
+		}
+
+		private DataFieldInfo TransformConcatString (string value, bool forward)
+		{
+			return new ConcatStringDataFieldInfo (this, value, forward);
 		}
 
 		/// <summary>
@@ -1941,10 +1982,10 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="predicate">Predicate.</param>
 		/// <param name="field">Field.</param>
-		private DataFieldExpression OnDataFieldMatch (QueryPredicate predicate, DataFieldInfo field)
+		internal DataFieldExpression OnDataFieldMatch (QueryPredicate predicate, DataFieldInfo field)
 		{
 			if (Object.Equals (field, null) && predicate != QueryPredicate.Eq && predicate != QueryPredicate.NotEq) {
-				throw new ArgumentNullException ("field");
+				throw new ArgumentNullException (nameof (field));
 			}
 			DataFieldMatchExpression exp = new DataFieldMatchExpression (this, field, predicate);
 			return exp;
@@ -1959,5 +2000,8 @@ namespace Light.Data
 		{
 			return base.DataField.ToParameter (value);
 		}
+
+
+
 	}
 }

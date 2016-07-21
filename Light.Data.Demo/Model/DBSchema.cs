@@ -14,5 +14,7 @@ namespace Light.Data.Demo
 		Normal,
 		High
 	}
+
+
 }
 

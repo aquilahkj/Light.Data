@@ -109,7 +109,7 @@ namespace Light.Data
 			}
 		}
 
-		internal abstract string CreateDataFieldSql (CommandFactory factory, out DataParameter dataParameter);
+		internal abstract string CreateDataFieldSql (CommandFactory factory, out DataParameter[] dataParameters);
 
 		internal abstract DataEntityMapping TableMapping {
 			get;

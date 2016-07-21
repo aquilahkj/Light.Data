@@ -42,7 +42,7 @@ namespace Light.Data
 				elementType = type.GetElementType ();
 			}
 			else if (type.IsGenericType) {
-				Type[] arguments = type.GetGenericArguments ();
+				Type [] arguments = type.GetGenericArguments ();
 				elementType = arguments [0];
 			}
 			else {
@@ -57,15 +57,29 @@ namespace Light.Data
 			_values = values;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//{
+		//	List<DataParameter> list = new List<DataParameter> ();
+		//	foreach (object value in _values) {
+		//		string pn = factory.CreateTempParamName ();
+		//		list.Add (new DataParameter (pn, _fieldInfo.ToParameter (value)));
+		//	}
+		//	dataParameters = list.ToArray ();
+		//	return factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, list);
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
 			List<DataParameter> list = new List<DataParameter> ();
 			foreach (object value in _values) {
 				string pn = factory.CreateTempParamName ();
 				list.Add (new DataParameter (pn, _fieldInfo.ToParameter (value)));
 			}
-			dataParameters = list.ToArray ();
-			return factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, list);
+			DataParameter [] dataParameters1 = list.ToArray ();
+			DataParameter [] dataParameters2 = null;
+			string sql = factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2), _predicate, list);
+			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+			return sql;
 		}
 
 		protected override bool EqualsDetail (QueryExpression expression)

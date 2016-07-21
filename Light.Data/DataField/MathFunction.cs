@@ -1,35 +1,49 @@
 ﻿
 namespace Light.Data
 {
+	/// <summary>
+	/// Math function.
+	/// </summary>
 	enum MathFunction
 	{
-		/// <summary>
-		/// The abs.
-		/// </summary>
 		Abs,
-		/// <summary>
-		/// The log.
-		/// </summary>
-		Log,
-		/// <summary>
-		/// The exp.
-		/// </summary>
-		Exp,
-		/// <summary>
-		/// The sin.
-		/// </summary>
+
+		Sign,
+
 		Sin,
-		/// <summary>
-		/// The cos.
-		/// </summary>
+
 		Cos,
-		/// <summary>
-		/// The tan.
-		/// </summary>
+
 		Tan,
-		/// <summary>
-		/// The atan.
-		/// </summary>
-		Atan
+
+		Atan,
+
+		ASin,
+
+		ACos,
+
+		Atan2,
+
+		Ceiling,
+
+		Floor,
+
+		Round,
+
+		Truncate,
+
+		Log,
+
+		Log10,
+
+		Exp,
+
+		Pow,
+
+		Sqrt,
+
+		Max,
+
+		Min
 	}
 }

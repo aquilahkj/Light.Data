@@ -48,7 +48,7 @@ namespace Light.Data
 		public override IDataParameter CreateParameter (string name, object value, string dbType, ParameterDirection direction)
 		{
 			string parameterName = name;
-			if (!parameterName.StartsWith ("@")) {
+			if (!parameterName.StartsWith ("@", StringComparison.Ordinal)) {
 				parameterName = "@" + parameterName;
 			}
 			SqlParameter sp = new SqlParameter (parameterName, value);
@@ -94,7 +94,7 @@ namespace Light.Data
 				typeString = dbType.Substring (0, index);
 			}
 			try {
-				type = (SqlDbType)Enum.Parse (typeof(SqlDbType), typeString, true);
+				type = (SqlDbType)Enum.Parse (typeof (SqlDbType), typeString, true);
 				return true;
 			}
 			catch {
@@ -104,7 +104,7 @@ namespace Light.Data
 
 		public override void SetExtendParams (ExtendParamCollection extendParams)
 		{
-//			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
+			//			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
 
 			if (extendParams ["Version"] != null) {
 				int version;

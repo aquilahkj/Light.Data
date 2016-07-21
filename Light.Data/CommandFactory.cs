@@ -110,8 +110,8 @@ namespace Light.Data
 		public virtual CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
 		{
 			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
-			string[] insertList = new string[paramList.Count];
-			string[] valuesList = new string[paramList.Count];
+			string [] insertList = new string [paramList.Count];
+			string [] valuesList = new string [paramList.Count];
 			int index = 0;
 			foreach (DataParameter dataParameter in paramList) {
 				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
@@ -127,7 +127,7 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateUpdateCommand (DataTableEntityMapping mapping, object entity, string[] updatefieldNames)
+		public virtual CommandData CreateUpdateCommand (DataTableEntityMapping mapping, object entity, string [] updatefieldNames)
 		{
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
@@ -162,8 +162,8 @@ namespace Light.Data
 				throw new LightDataException (RE.UpdateFieldIsNotExists);
 			}
 
-			string[] updateList = new string[columnList.Count];
-			string[] whereList = new string[primaryList.Count];
+			string [] updateList = new string [columnList.Count];
+			string [] whereList = new string [primaryList.Count];
 			int paramIndex = 0;
 			int index = 0;
 			foreach (DataParameter dataParameter in columnList) {
@@ -184,8 +184,9 @@ namespace Light.Data
 			string update = string.Join (",", updateList);
 			string where = string.Join (" and ", whereList);
 			string sql = string.Format ("update {0} set {1} where {2}", CreateDataTableSql (mapping.TableName), update, where);
-			CommandData command = new CommandData (sql, columnList);
-			command.AddParameters (primaryList);
+
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (columnList, primaryList);
+			CommandData command = new CommandData (sql, parameters);
 			return command;
 		}
 
@@ -195,7 +196,7 @@ namespace Light.Data
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
 			List<DataParameter> primaryList = CreateExpressionParameter (mapping.PrimaryKeyFields, entity);
-			string[] whereList = new string[primaryList.Count];
+			string [] whereList = new string [primaryList.Count];
 			int index = 0;
 			foreach (DataParameter dataParameter in primaryList) {
 				string paramName = CreateParamName ("P" + index);
@@ -215,7 +216,7 @@ namespace Light.Data
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
 			List<DataParameter> primaryList = CreateColumnParameter (mapping.PrimaryKeyFields, entity);
-			string[] whereList = new string[primaryList.Count];
+			string [] whereList = new string [primaryList.Count];
 			int index = 0;
 			foreach (DataParameter dataParameter in primaryList) {
 				string paramName = CreateParamName ("P" + index);
@@ -240,7 +241,7 @@ namespace Light.Data
 
 		#region 主命令语句块
 
-		public virtual string GetQueryString (QueryExpression query, out DataParameter[] parameters, bool fullFieldName = false)
+		public virtual string GetQueryString (QueryExpression query, out DataParameter [] parameters, bool fullFieldName = false)
 		{
 			string queryString = null;
 			parameters = null;
@@ -250,12 +251,12 @@ namespace Light.Data
 			return queryString;
 		}
 
-		public virtual string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
+		public virtual string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
+				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					string alias = null;
 					AggregateFunction aggregateFunction = obj as AggregateFunction;
 					if (!Object.Equals (aggregateFunction, null)) {
@@ -275,7 +276,7 @@ namespace Light.Data
 			return havingString;
 		}
 
-		public virtual string GetOrderString (OrderExpression order, out DataParameter[] parameters, bool fullFieldName = false)
+		public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, bool fullFieldName = false)
 		{
 			string orderString = null;
 			parameters = null;
@@ -285,12 +286,12 @@ namespace Light.Data
 			return orderString;
 		}
 
-		public virtual string GetOrderString (OrderExpression order, out DataParameter[] parameters, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions)
+		public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions)
 		{
 			string orderString = null;
 			parameters = null;
 			if (order != null) {
-				orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate(object obj) {
+				orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					string alias = null;
 					if (obj is DataFieldInfo) {
 						foreach (DataFieldInfo info in fields) {
@@ -323,7 +324,7 @@ namespace Light.Data
 			return orderString;
 		}
 
-		public virtual string GetOnString (DataFieldExpression on, out DataParameter[] parameters, bool fullFieldName = true)
+		public virtual string GetOnString (DataFieldExpression on, out DataParameter [] parameters, bool fullFieldName = true)
 		{
 			string onString = null;
 			parameters = null;
@@ -348,14 +349,14 @@ namespace Light.Data
 				return data;
 			}
 
-			string[] fieldNames = new string[mapping.FieldCount];
+			string [] fieldNames = new string [mapping.FieldCount];
 			int i = 0;
 			foreach (DataFieldMapping field in mapping.DataEntityFields) {
 				fieldNames [i] = CreateDataFieldSql (field.Name);
 				i++;
 			}
 			string selectString = string.Join (",", fieldNames);
-			data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
+			data = this.CreateSelectBaseCommand (mapping, selectString, null, query, order, region);
 			if (mapping.HasMultiRelateModel) {
 				data.State = new RelationContent ();
 			}
@@ -375,7 +376,7 @@ namespace Light.Data
 				if (rc != null) {
 					if (rc.CollectionRelateReferFieldMapping != null) {
 						DataEntityMapping exceptMapping = rc.CollectionRelateReferFieldMapping.RelateMapping;
-						selector = selector.CloneWithExcept (new []{ exceptMapping });
+						selector = selector.CloneWithExcept (new [] { exceptMapping });
 					}
 				}
 				else {
@@ -387,14 +388,14 @@ namespace Light.Data
 				return data;
 			}
 
-			string[] fieldNames = new string[mapping.FieldCount];
+			string [] fieldNames = new string [mapping.FieldCount];
 			int i = 0;
 			foreach (DataFieldMapping field in mapping.DataEntityFields) {
 				fieldNames [i] = CreateDataFieldSql (field.Name);
 				i++;
 			}
 			string selectString = string.Join (",", fieldNames);
-			data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region);
+			data = this.CreateSelectBaseCommand (mapping, selectString, null, query, order, region);
 			if (mapping.HasMultiRelateModel) {
 				RelationContent rc = extendState as RelationContent;
 				if (rc != null) {
@@ -416,39 +417,41 @@ namespace Light.Data
 			DataFieldMapping fieldMapping = fieldinfo.DataField;
 			if (fieldMapping is PrimitiveFieldMapping || fieldMapping is EnumFieldMapping || fieldMapping is CustomFieldMapping) {
 				DataEntityMapping mapping = fieldMapping.EntityMapping;
-				string select = fieldinfo.CreateDataFieldSql (this);
+				DataParameter [] dataParameters;
+				string select = fieldinfo.CreateDataFieldSql (this, false, out dataParameters);
 				if (distinct) {
 					select = "distinct " + select;
 				}
-				return CreateSelectBaseCommand (mapping, select, query, order, region);
+				return CreateSelectBaseCommand (mapping, select, dataParameters, query, order, region);
 			}
 			else {
 				throw new LightDataException (RE.OnlyPrimitiveFieldCanSelectSingle);
 			}
 		}
 
-		protected virtual CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region)
+		protected virtual CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
 		{
 			StringBuilder sql = new StringBuilder ();
-			List<DataParameter> parameters = new List<DataParameter> ();
-			DataParameter[] queryparameters;
-			DataParameter[] orderparameters;
+			//List<DataParameter> parameters = new List<DataParameter> ();
+			DataParameter [] queryparameters;
+			DataParameter [] orderparameters;
 			string queryString = GetQueryString (query, out queryparameters);
 			string orderString = GetOrderString (order, out orderparameters);
 			sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null && queryparameters.Length > 0) {
-					parameters.AddRange (queryparameters);
-				}
+				//if (queryparameters != null && queryparameters.Length > 0) {
+				//	parameters.AddRange (queryparameters);
+				//}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderparameters != null && orderparameters.Length > 0) {
-					parameters.AddRange (orderparameters);
-				}
+				//if (orderparameters != null && orderparameters.Length > 0) {
+				//	parameters.AddRange (orderparameters);
+				//}
 			}
-			CommandData command = new CommandData (sql.ToString (), queryparameters);
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
+			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
 		}
@@ -456,76 +459,82 @@ namespace Light.Data
 		public virtual CommandData CreateSelectJoinTableCommand (JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
 		{
 			List<DataFieldInfo> fields = selector.GetFieldInfos ();
-			string[] selectList = new string[fields.Count];
+			string [] selectList = new string [fields.Count];
 			int index = 0;
+			List<DataParameter> innerParameters = new List<DataParameter> ();
 			foreach (DataFieldInfo fieldInfo in fields) {
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
+				DataParameter [] dataParameters = null;
 				if (!Object.Equals (aliasInfo, null)) {
-					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, true);
+					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, true, out dataParameters);
 				}
 				else {
-					selectList [index] = fieldInfo.CreateDataFieldSql (this, true);
+					selectList [index] = fieldInfo.CreateDataFieldSql (this, true, out dataParameters);
+				}
+				if (dataParameters != null && dataParameters.Length > 0) {
+					innerParameters.AddRange (dataParameters);
 				}
 				index++;
 			}
 			string customSelect = string.Join (",", selectList);
-			return CreateSelectJoinTableCommand (customSelect, modelList, query, order);
+			return CreateSelectJoinTableCommand (customSelect, innerParameters.ToArray (), modelList, query, order);
 		}
 
-		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
+		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
 		{
-			List<DataParameter> parameters = new List<DataParameter> ();
+			//List<DataParameter> parameters = new List<DataParameter> ();
 			StringBuilder tables = new StringBuilder ();
 			OrderExpression totalOrder = null;
 			QueryExpression totalQuery = null;
+			List<DataParameter> innerParameters = new List<DataParameter> ();
 			foreach (JoinModel model in modelList) {
 				if (model.Connect != null) {
 					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
 				}
-//				if (model.Query != null || model.Order != null) {
-//					DataParameter[] queryparameters_sub;
-//					DataParameter[] orderparameters_sub;
-//					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
-//					string morderString = GetOrderString (model.Order, out orderparameters_sub);
-//					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
-//					if (!string.IsNullOrEmpty (mqueryString)) {
-//						tables.AppendFormat (" {0}", mqueryString);
-//						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
-//							parameters.AddRange (queryparameters_sub);
-//						}
-//					}
-//					if (!string.IsNullOrEmpty (morderString)) {
-//						tables.AppendFormat (" {0}", morderString);
-//						if (orderparameters_sub != null && orderparameters_sub.Length > 0) {
-//							parameters.AddRange (orderparameters_sub);
-//						}
-//					}
-//					string aliseName = model.AliasTableName;
-//					if (aliseName != null) {
-//						tables.AppendFormat (") as {0}", CreateDataTableSql (aliseName));
-//					}
-//					else {
-//						tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
-//					}
-//				}
-//				else {
-//					string aliseName = model.AliasTableName;
-//					if (aliseName != null) {
-//						tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
-//					}
-//					else {
-//						tables.Append (CreateDataTableSql (model.Mapping.TableName));
-//					}
-//				}
+				//				if (model.Query != null || model.Order != null) {
+				//					DataParameter[] queryparameters_sub;
+				//					DataParameter[] orderparameters_sub;
+				//					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
+				//					string morderString = GetOrderString (model.Order, out orderparameters_sub);
+				//					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
+				//					if (!string.IsNullOrEmpty (mqueryString)) {
+				//						tables.AppendFormat (" {0}", mqueryString);
+				//						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
+				//							parameters.AddRange (queryparameters_sub);
+				//						}
+				//					}
+				//					if (!string.IsNullOrEmpty (morderString)) {
+				//						tables.AppendFormat (" {0}", morderString);
+				//						if (orderparameters_sub != null && orderparameters_sub.Length > 0) {
+				//							parameters.AddRange (orderparameters_sub);
+				//						}
+				//					}
+				//					string aliseName = model.AliasTableName;
+				//					if (aliseName != null) {
+				//						tables.AppendFormat (") as {0}", CreateDataTableSql (aliseName));
+				//					}
+				//					else {
+				//						tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
+				//					}
+				//				}
+				//				else {
+				//					string aliseName = model.AliasTableName;
+				//					if (aliseName != null) {
+				//						tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
+				//					}
+				//					else {
+				//						tables.Append (CreateDataTableSql (model.Mapping.TableName));
+				//					}
+				//				}
 
 				if (model.Query != null) {
-					DataParameter[] queryparameters_sub;
+					DataParameter [] queryparameters_sub;
 					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
 					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
 					if (!string.IsNullOrEmpty (mqueryString)) {
 						tables.AppendFormat (" {0}", mqueryString);
 						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
-							parameters.AddRange (queryparameters_sub);
+							innerParameters.AddRange (queryparameters_sub);
 						}
 					}
 					string aliseName = model.AliasTableName;
@@ -549,12 +558,12 @@ namespace Light.Data
 					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
 				}
 				if (model.Connect != null && model.Connect.On != null) {
-					DataParameter[] onparameters;
+					DataParameter [] onparameters;
 					string onString = GetOnString (model.Connect.On, out onparameters);
 					if (!string.IsNullOrEmpty (onString)) {
 						tables.AppendFormat (" {0}", onString);
 						if (onparameters != null && onparameters.Length > 0) {
-							parameters.AddRange (onparameters);
+							innerParameters.AddRange (onparameters);
 						}
 					}
 				}
@@ -562,24 +571,25 @@ namespace Light.Data
 			totalQuery &= query;
 			totalOrder &= order;
 			StringBuilder sql = new StringBuilder ();
-			DataParameter[] queryparameters;
-			DataParameter[] orderparameters;
+			DataParameter [] queryparameters;
+			DataParameter [] orderparameters;
 			string queryString = GetQueryString (totalQuery, out queryparameters, true);
 			string orderString = GetOrderString (totalOrder, out orderparameters, true);
 
 			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null && queryparameters.Length > 0) {
-					parameters.AddRange (queryparameters);
-				}
+				//if (queryparameters != null && queryparameters.Length > 0) {
+				//	parameters.AddRange (queryparameters);
+				//}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderparameters != null && orderparameters.Length > 0) {
-					parameters.AddRange (orderparameters);
-				}
+				//if (orderparameters != null && orderparameters.Length > 0) {
+				//	parameters.AddRange (orderparameters);
+				//}
 			}
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, innerParameters, queryparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
@@ -588,20 +598,25 @@ namespace Light.Data
 		public virtual CommandData CreateSelectRelateTableCommand (JoinSelector selector, List<JoinModel> modelList)
 		{
 			List<DataFieldInfo> fields = selector.GetFieldInfos ();
-			string[] selectList = new string[fields.Count];
+			string [] selectList = new string [fields.Count];
 			int index = 0;
+			List<DataParameter> innerParameters = new List<DataParameter> ();
 			foreach (DataFieldInfo fieldInfo in fields) {
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
+				DataParameter [] dataParameters = null;
 				if (!Object.Equals (aliasInfo, null)) {
-					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, true);
+					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, true, out dataParameters);
 				}
 				else {
-					selectList [index] = fieldInfo.CreateDataFieldSql (this, true);
+					selectList [index] = fieldInfo.CreateDataFieldSql (this, true, out dataParameters);
+				}
+				if (dataParameters != null && dataParameters.Length > 0) {
+					innerParameters.AddRange (dataParameters);
 				}
 				index++;
 			}
 			string customSelect = string.Join (",", selectList);
-			return CreateSelectJoinTableCommand (customSelect, modelList, null, null);
+			return CreateSelectJoinTableCommand (customSelect, innerParameters.ToArray (), modelList, null, null);
 		}
 
 		/*
@@ -673,7 +688,7 @@ namespace Light.Data
 			if (_canInnerPage) {
 				region = new Region (0, 1);
 			}
-			return this.CreateSelectBaseCommand (mapping, "1", query, null, region);
+			return this.CreateSelectBaseCommand (mapping, "1", null, query, null, region);
 		}
 
 		public virtual CommandData CreateAggregateCommand (DataFieldMapping fieldMapping, AggregateType aggregateType, QueryExpression query, bool distinct)
@@ -711,25 +726,25 @@ namespace Light.Data
 				function = CreateMinSql (CreateDataFieldSql (fieldMapping.Name));
 				break;
 			}
-			return CreateSelectBaseCommand (mapping, function, query, null, null);
+			return CreateSelectBaseCommand (mapping, function, null, query, null, null);
 		}
 
 		public virtual CommandData CreateAggregateCountCommand (DataEntityMapping mapping, QueryExpression query)
 		{
 			string select = CreateCountAllSql ();
-			return CreateSelectBaseCommand (mapping, select, query, null, null);//, false);
+			return CreateSelectBaseCommand (mapping, select, null, query, null, null);//, false);
 		}
 
 		public virtual CommandData CreateAggregateJoinCountCommand (List<JoinModel> modelList, QueryExpression query)
 		{
 			string select = CreateCountAllSql ();
-			return CreateSelectJoinTableCommand (select, modelList, query, null);
+			return CreateSelectJoinTableCommand (select, null, modelList, query, null);
 		}
 
 		public virtual CommandData CreateDeleteMassCommand (DataTableEntityMapping mapping, QueryExpression query)
 		{
 			StringBuilder sql = new StringBuilder ();
-			DataParameter[] parameters;
+			DataParameter [] parameters;
 			string queryString = GetQueryString (query, out parameters);
 
 			sql.AppendFormat ("delete from {0}", CreateDataTableSql (mapping.TableName));
@@ -741,31 +756,36 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertMapping, DataFieldInfo[] insertFields, DataTableEntityMapping selectMapping, SelectFieldInfo[] selectFields, QueryExpression query, OrderExpression order)
+		public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertMapping, DataFieldInfo [] insertFields, DataTableEntityMapping selectMapping, SelectFieldInfo [] selectFields, QueryExpression query, OrderExpression order)
 		{
 			StringBuilder sql = new StringBuilder ();
 			string insertString;
 			string selectString;
 			int insertCount;
 			bool noidentity = false;
-			DataFieldMapping[] insertFieldMappings;
+			DataFieldMapping [] insertFieldMappings;
+			List<DataParameter> isnertparameters = new List<DataParameter> ();
 			if (insertFields != null && insertFields.Length > 0) {
-				insertFieldMappings = new DataFieldMapping[insertFields.Length];
-				string[] fieldNames = new string[insertFields.Length];
+				insertFieldMappings = new DataFieldMapping [insertFields.Length];
+				string [] fieldNames = new string [insertFields.Length];
 				for (int i = 0; i < insertFields.Length; i++) {
 					DataFieldInfo info = insertFields [i];
+					DataParameter [] dataParameters = null;
 					if (!insertMapping.Equals (info.TableMapping)) {
 						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 					}
 					insertFieldMappings [i] = info.DataField;
-					fieldNames [i] = info.CreateDataFieldSql (this);
+					fieldNames [i] = info.CreateDataFieldSql (this, false, out dataParameters);
+					if (dataParameters != null && dataParameters.Length > 0) {
+						isnertparameters.AddRange (dataParameters);
+					}
 				}
 				insertCount = fieldNames.Length;
 				insertString = string.Join (",", fieldNames);
 			}
 			else if (insertMapping.HasIdentity && selectMapping.HasIdentity && insertMapping.IdentityField.PositionOrder == selectMapping.IdentityField.PositionOrder) {
-				insertFieldMappings = new DataFieldMapping[insertMapping.FieldCount - 1];
-				string[] fieldNames = new string[insertMapping.FieldCount - 1];
+				insertFieldMappings = new DataFieldMapping [insertMapping.FieldCount - 1];
+				string [] fieldNames = new string [insertMapping.FieldCount - 1];
 				int i = 0;
 				foreach (DataFieldMapping field in insertMapping.NoIdentityFields) {
 					insertFieldMappings [i] = field;
@@ -777,8 +797,8 @@ namespace Light.Data
 				noidentity = true;
 			}
 			else {
-				insertFieldMappings = new DataFieldMapping[insertMapping.FieldCount];
-				string[] fieldNames = new string[insertMapping.FieldCount];
+				insertFieldMappings = new DataFieldMapping [insertMapping.FieldCount];
+				string [] fieldNames = new string [insertMapping.FieldCount];
 				int i = 0;
 				foreach (DataFieldMapping field in insertMapping.DataEntityFields) {
 					insertFieldMappings [i] = field;
@@ -789,30 +809,30 @@ namespace Light.Data
 				insertString = string.Join (",", fieldNames);
 			}
 
-			List<DataParameter> parameters = new List<DataParameter> ();
+			List<DataParameter> selectparameters = new List<DataParameter> ();
 			if (selectFields != null && selectFields.Length > 0) {
 				if (selectFields.Length != insertCount) {
 					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
 				}
-				string[] selectFieldNames = new string[selectFields.Length];
-				
+				string [] selectFieldNames = new string [selectFields.Length];
+
 				for (int i = 0; i < selectFields.Length; i++) {
 					SelectFieldInfo info = selectFields [i];
 					if (info.TableMapping != null && !selectMapping.Equals (info.TableMapping)) {
 						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 					}
-					DataParameter dp;
+					DataParameter [] dps;
 					EnumSelectFieldInfo enuminfo = info as EnumSelectFieldInfo;
 					if (enuminfo != null && enuminfo.EnumType == insertFieldMappings [i].ObjectType) {
 						EnumFieldMapping enumMapping = insertFieldMappings [i] as EnumFieldMapping;
-						selectFieldNames [i] = enuminfo.CreateDataFieldSql (this, enumMapping.EnumType, out dp);
+						selectFieldNames [i] = enuminfo.CreateDataFieldSql (this, enumMapping.EnumType, out dps);
 					}
 					else {
-						selectFieldNames [i] = info.CreateDataFieldSql (this, out dp);
+						selectFieldNames [i] = info.CreateDataFieldSql (this, out dps);
 					}
 
-					if (dp != null) {
-						parameters.Add (dp);
+					if (dps != null && dps.Length > 0) {
+						selectparameters.AddRange (dps);
 					}
 				}
 				selectString = string.Join (",", selectFieldNames);
@@ -821,7 +841,7 @@ namespace Light.Data
 				if (selectMapping.FieldCount - 1 != insertCount) {
 					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
 				}
-				string[] fieldNames = new string[selectMapping.FieldCount - 1];
+				string [] fieldNames = new string [selectMapping.FieldCount - 1];
 				int i = 0;
 				foreach (DataFieldMapping field in selectMapping.NoIdentityFields) {
 					fieldNames [i] = CreateDataFieldSql (field.Name);
@@ -833,7 +853,7 @@ namespace Light.Data
 				if (selectMapping.FieldCount != insertCount) {
 					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
 				}
-				string[] fieldNames = new string[insertCount];
+				string [] fieldNames = new string [insertCount];
 				int i = 0;
 				foreach (DataFieldMapping field in selectMapping.DataEntityFields) {
 					fieldNames [i] = CreateDataFieldSql (field.Name);
@@ -841,39 +861,40 @@ namespace Light.Data
 				}
 				selectString = string.Join (",", fieldNames);
 			}
-			DataParameter[] queryparameters;
-			DataParameter[] orderparameters;
+			DataParameter [] queryparameters;
+			DataParameter [] orderparameters;
 			string queryString = GetQueryString (query, out queryparameters);
 			string orderString = GetOrderString (order, out orderparameters);
 			sql.AppendFormat ("insert into {0}({1})", CreateDataTableSql (insertMapping.TableName), insertString);
 			sql.AppendFormat ("select {0} from {1}", selectString, CreateDataTableSql (selectMapping.TableName));
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null && queryparameters.Length > 0) {
-					parameters.AddRange (queryparameters);
-				}
+				//if (queryparameters != null && queryparameters.Length > 0) {
+				//	selectparameters.AddRange (queryparameters);
+				//}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderparameters != null && orderparameters.Length > 0) {
-					parameters.AddRange (orderparameters);
-				}
+				//if (orderparameters != null && orderparameters.Length > 0) {
+				//	selectparameters.AddRange (orderparameters);
+				//}
 			}
-
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (isnertparameters, selectparameters, queryparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
 		}
 
-		public virtual CommandData CreateUpdateMassCommand (DataTableEntityMapping mapping, UpdateSetValue[] updateSetValues, QueryExpression query)
+		public virtual CommandData CreateUpdateMassCommand (DataTableEntityMapping mapping, UpdateSetValue [] updateSetValues, QueryExpression query)
 		{
 			StringBuilder sql = new StringBuilder ();
-			DataParameter[] parameters;
-			string queryString = GetQueryString (query, out parameters);
+			DataParameter [] queryparameters;
+			string queryString = GetQueryString (query, out queryparameters);
 
 			int length = updateSetValues.Length;
-			DataParameter[] setparameters = new DataParameter[length];
-			string[] setList = new string[length];
+			DataParameter [] setparameters = new DataParameter [length];
+			List<DataParameter> fieldParameters = new List<DataParameter> ();
+			string [] setList = new string [length];
 
 			for (int i = 0; i < length; i++) {
 				if (!mapping.Equals (updateSetValues [i].DataField.DataField.EntityMapping)) {
@@ -885,15 +906,19 @@ namespace Light.Data
 				DataParameter dataParameter = new DataParameter (pn, fieldInfo.DataField.ToColumn (ups.Value), fieldInfo.DBType);
 
 				setparameters [i] = dataParameter;
-				setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateDataFieldSql (this), setparameters [i].ParameterName);
+				DataParameter [] dataParameters = null;
+				setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateDataFieldSql (this, false, out dataParameters), setparameters [i].ParameterName);
+				if (dataParameters != null && dataParameters.Length > 0) {
+					fieldParameters.AddRange (dataParameters);
+				}
 			}
 			string setString = string.Join (",", setList);
 			sql.AppendFormat ("update {0} set {1}", CreateDataTableSql (mapping.TableName), setString);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
 			}
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (fieldParameters, setparameters, queryparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.AddParameters (setparameters);
 			command.TransParamName = true;
 			return command;
 		}
@@ -905,38 +930,39 @@ namespace Light.Data
 			}
 			StringBuilder sql = new StringBuilder ();
 
-			List<DataParameter> parameterlist = new List<DataParameter> ();
-			string[] selectList = new string[fields.Count + functions.Count];
-			string[] groupbyList = new string[fields.Count];
+			//List<DataParameter> parameterlist = new List<DataParameter> ();
+			string [] selectList = new string [fields.Count + functions.Count];
+			string [] groupbyList = new string [fields.Count];
 			int index = 0;
-
+			List<DataParameter> innerParameters = new List<DataParameter> ();
 			foreach (DataFieldInfo fieldInfo in fields) {
 				if (!mapping.Equals (fieldInfo.TableMapping)) {
 					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
 				}
-				string groupbyField = fieldInfo.CreateDataFieldSql (this);
+				DataParameter [] dataParameters = null;
+				string groupbyField = fieldInfo.CreateDataFieldSql (this, false, out dataParameters);
 				groupbyList [index] = groupbyField;
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
 				if (!Object.Equals (aliasInfo, null)) {
-					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false);
+					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false, out dataParameters);
 				}
 				else {
 					selectList [index] = groupbyField;
 				}
 				index++;
 			}
-
+			List<DataParameter> functionParameters = new List<DataParameter> ();
 			foreach (AggregateFunctionInfo functionInfo in functions) {
 				AggregateFunction function = functionInfo.Function;
 				if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
 					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
 				}
-				DataParameter[] aggparameters;
+				DataParameter [] aggparameters;
 				string aggField = function.CreateSqlString (this, false, out aggparameters);
 				string selectField = CreateAliasSql (aggField, functionInfo.Name);
 				selectList [index] = selectField;
 				if (aggparameters != null && aggparameters.Length > 0) {
-					parameterlist.AddRange (aggparameters);
+					functionParameters.AddRange (aggparameters);
 				}
 				index++;
 			}
@@ -944,45 +970,45 @@ namespace Light.Data
 			string groupby = string.Join (",", groupbyList);
 			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
 
-			DataParameter[] queryparameters;
+			DataParameter [] queryparameters;
 			string queryString = GetQueryString (query, out queryparameters);
-			DataParameter[] havingparameters;
+			DataParameter [] havingparameters;
 			string havingString = GetHavingString (having, out havingparameters, functions);
-			DataParameter[] orderbyparameters;
-			string orderString = GetOrderString (order, out orderbyparameters, fields, functions);
+			DataParameter [] orderparameters;
+			string orderString = GetOrderString (order, out orderparameters, fields, functions);
 
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				if (queryparameters != null && queryparameters.Length > 0) {
-					parameterlist.AddRange (queryparameters);
-				}
+				//if (queryparameters != null && queryparameters.Length > 0) {
+				//	parameterlist.AddRange (queryparameters);
+				//}
 			}
 
 			sql.AppendFormat (" group by {0}", groupby);
 
 			if (!string.IsNullOrEmpty (havingString)) {
 				sql.AppendFormat (" {0}", havingString);
-				if (havingparameters != null && havingparameters.Length > 0) {
-					parameterlist.AddRange (havingparameters);
-				}
+				//if (havingparameters != null && havingparameters.Length > 0) {
+				//	parameterlist.AddRange (havingparameters);
+				//}
 			}
 
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				if (orderbyparameters != null && orderbyparameters.Length > 0) {
-					parameterlist.AddRange (orderbyparameters);
-				}
+				//if (orderbyparameters != null && orderbyparameters.Length > 0) {
+				//	parameterlist.AddRange (orderbyparameters);
+				//}
 			}
-
-			CommandData command = new CommandData (sql.ToString (), parameterlist);
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (innerParameters, functionParameters, queryparameters, havingparameters, orderparameters);
+			CommandData command = new CommandData (sql.ToString (), parameters);
 			command.TransParamName = true;
 			return command;
 		}
 
-		public virtual CommandData[] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public virtual CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
-				throw new ArgumentNullException ("entitys");
+				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
 				batchCount = 10;
@@ -1005,7 +1031,7 @@ namespace Light.Data
 			int i = 0;
 			foreach (object entity in entitys) {
 				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string[] valueList = new string[entityParams.Count];
+				string [] valueList = new string [entityParams.Count];
 				int index = 0;
 				foreach (DataParameter dataParameter in entityParams) {
 					string paramName = CreateParamName ("P" + paramIndex);
@@ -1057,7 +1083,7 @@ namespace Light.Data
 			return string.Format ("({0} {2} {1})", expressionString1, expressionString2, operatorType.ToString ().ToLower ());
 		}
 
-		public virtual string CreateCatchExpressionSql (string[] expressionStrings)
+		public virtual string CreateCatchExpressionSql (string [] expressionStrings)
 		{
 			return string.Join (",", expressionStrings);
 		}
@@ -1112,6 +1138,11 @@ namespace Light.Data
 			return string.Format ("{2}exists (select 1 from {0} where {1})", queryTableName, whereString, isNot ? "not " : string.Empty);
 		}
 
+		public virtual string CreateNotQuerySql (string whereString)
+		{
+			return string.Format ("not ({0})", whereString);
+		}
+
 		public virtual string CreateSubQuerySql (string fieldName, QueryCollectionPredicate predicate, string queryfieldName, string queryTableName, string whereString)
 		{
 			StringBuilder sb = new StringBuilder ();
@@ -1131,7 +1162,36 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public virtual string CreateCollectionMatchQuerySql (string fieldName, bool isReverse, bool starts, bool ends, bool isNot, List<DataParameter> dataParameters)
+		//public virtual string CreateLambdaMatchQuerySql (string fieldName, bool isReverse, bool starts, bool ends, bool isNot, DataParameter dataParameter)
+		//{
+		//	StringBuilder sb = new StringBuilder ();
+		//	sb.AppendFormat ("{0} {2}like {1}", fieldName, dataParameter.ParameterName, isNot ? "not " : string.Empty);
+		//	string value = dataParameter.Value.ToString ();
+		//	if (starts && !value.StartsWith (_wildcards, StringComparison.Ordinal)) {
+		//		value = _wildcards + value;
+		//	}
+		//	if (ends && !value.EndsWith (_wildcards, StringComparison.Ordinal)) {
+		//		value = value + _wildcards;
+		//	}
+		//	dataParameter.Value = value;
+		//	return sb.ToString ();
+		//}
+
+
+		public virtual string CreateLambdaMatchQuerySql (object fieldName, bool isReverse, bool starts, bool ends, bool isNot, object value)
+		{
+			string value1 = CreateMatchSql (value.ToString (), starts, ends);
+			string sql;
+			if (!isReverse) {
+				sql = string.Format ("{0} {2}like {1}", fieldName, value1, isNot ? "not " : string.Empty);
+			}
+			else {
+				sql = string.Format ("{1} {2}like {0}", fieldName, value1, isNot ? "not " : string.Empty);
+			}
+			return sql;
+		}
+
+		public virtual string CreateCollectionMatchQuerySql (object fieldName, bool isReverse, bool starts, bool ends, bool isNot, List<DataParameter> dataParameters)
 		{
 			if (dataParameters.Count == 0) {
 				throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
@@ -1154,10 +1214,10 @@ namespace Light.Data
 				if (!isReverse) {
 					sb.AppendFormat ("{0} {2}like {1}", fieldName, item.ParameterName, isNot ? "not " : string.Empty);
 					string value = item.Value.ToString ();
-					if (starts && !value.StartsWith (_wildcards)) {
+					if (starts && !value.StartsWith (_wildcards, StringComparison.Ordinal)) {
 						value = _wildcards + value;
 					}
-					if (ends && !value.EndsWith (_wildcards)) {
+					if (ends && !value.EndsWith (_wildcards, StringComparison.Ordinal)) {
 						value = value + _wildcards;
 					}
 					item.Value = value;
@@ -1173,17 +1233,17 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public virtual string CreateNullQuerySql (string fieldName, bool isNull)
+		public virtual string CreateNullQuerySql (object fieldName, bool isNull)
 		{
 			return string.Format ("{0} is{1} null", fieldName, isNull ? string.Empty : " not");
 		}
 
-		public virtual string CreateBooleanQuerySql (string fieldName, bool isTrue)
+		public virtual string CreateBooleanQuerySql (object fieldName, bool isTrue)
 		{
 			return string.Format ("{0}={1}", fieldName, isTrue ? "1" : "0");
 		}
 
-		public virtual string CreateOrderBySql (string fieldName, OrderType orderType)
+		public virtual string CreateOrderBySql (object fieldName, OrderType orderType)
 		{
 			return string.Format ("{0} {1}", fieldName, orderType.ToString ().ToLower ());
 		}
@@ -1208,52 +1268,52 @@ namespace Light.Data
 			return "count(1)";
 		}
 
-		public virtual string CreateConditionCountSql (string expressionSql, string fieldName, bool isDistinct)
+		public virtual string CreateConditionCountSql (string expressionSql, object fieldName, bool isDistinct)
 		{
-			return string.Format ("count({2}case when {0} then {1} else null end)", expressionSql, !string.IsNullOrEmpty (fieldName) ? fieldName : "1", isDistinct ? "distinct " : "");
+			return string.Format ("count({2}case when {0} then {1} else null end)", expressionSql, !Object.Equals (fieldName, null) ? fieldName : "1", isDistinct ? "distinct " : "");
 		}
 
-		public virtual string CreateCountSql (string fieldName, bool isDistinct)
+		public virtual string CreateCountSql (object fieldName, bool isDistinct)
 		{
 			return string.Format ("count({1}{0})", fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public virtual string CreateSumSql (string fieldName, bool isDistinct)
+		public virtual string CreateSumSql (object fieldName, bool isDistinct)
 		{
 			return string.Format ("sum({1}{0})", fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public virtual string CreateConditionSumSql (string expressionSql, string fieldName, bool isDistinct)
+		public virtual string CreateConditionSumSql (string expressionSql, object fieldName, bool isDistinct)
 		{
 			return string.Format ("sum({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public virtual string CreateAvgSql (string fieldName, bool isDistinct)
+		public virtual string CreateAvgSql (object fieldName, bool isDistinct)
 		{
 			return string.Format ("avg({1}{0})", fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public virtual string CreateConditionAvgSql (string expressionSql, string fieldName, bool isDistinct)
+		public virtual string CreateConditionAvgSql (string expressionSql, object fieldName, bool isDistinct)
 		{
 			return string.Format ("avg({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public virtual string CreateMaxSql (string fieldName)
+		public virtual string CreateMaxSql (object fieldName)
 		{
 			return string.Format ("max({0})", fieldName);
 		}
 
-		public virtual string CreateConditionMaxSql (string expressionSql, string fieldName)
+		public virtual string CreateConditionMaxSql (string expressionSql, object fieldName)
 		{
 			return string.Format ("max(case when {0} then {1} else null end)", expressionSql, fieldName);
 		}
 
-		public virtual string CreateMinSql (string fieldName)
+		public virtual string CreateMinSql (object fieldName)
 		{
 			return string.Format ("min({0})", fieldName);
 		}
 
-		public virtual string CreateConditionMinSql (string expressionSql, string fieldName)
+		public virtual string CreateConditionMinSql (string expressionSql, object fieldName)
 		{
 			return string.Format ("min(case when {0} then {1} else null end)", expressionSql, fieldName);
 		}
@@ -1283,62 +1343,67 @@ namespace Light.Data
 			return string.Format ("{0}.{1}", CreateDataTableSql (tableName), CreateDataFieldSql (fieldName));
 		}
 
-		public virtual string CreateMatchSql (string field, bool left, bool right)
+		public virtual string CreateMatchSql (object field, bool starts, bool ends)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateDateSql (string field, string format)
+		public virtual string CreateDateSql (object field, string format)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateYearSql (string field)
+		public virtual string CreateYearSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateMonthSql (string field)
+		public virtual string CreateMonthSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateDaySql (string field)
+		public virtual string CreateDaySql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateHourSql (string field)
+		public virtual string CreateHourSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateMinuteSql (string field)
+		public virtual string CreateMinuteSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateSecondSql (string field)
+		public virtual string CreateSecondSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateWeekSql (string field)
+		public virtual string CreateWeekSql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateWeekDaySql (string field)
+		public virtual string CreateWeekDaySql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateLengthSql (string field)
+		public virtual string CreateYearDaySql (object field)
 		{
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateSubStringSql (string field, int start, int size)
+		public virtual string CreateLengthSql (object field)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateSubStringSql (object field, object start, object size)
 		{
 			throw new NotSupportedException ();
 		}
@@ -1348,16 +1413,16 @@ namespace Light.Data
 			throw new NotSupportedException ();
 		}
 
-		public virtual string CreateStringSql (string value)
-		{
-			if (value.IndexOf ('\\') >= 0) {
-				value = value.Replace ("\\", "\\\\");
-			}
-			if (value.IndexOf ('\'') >= 0) {
-				value = value.Replace ("\'", "\\'");
-			}
-			return string.Format ("'{0}'", value);
-		}
+		//public virtual string CreateStringSql (string value)
+		//{
+		//	if (value.IndexOf ('\\') >= 0) {
+		//		value = value.Replace ("\\", "\\\\");
+		//	}
+		//	if (value.IndexOf ('\'') >= 0) {
+		//		value = value.Replace ("\'", "\\'");
+		//	}
+		//	return string.Format ("'{0}'", value);
+		//}
 
 		public virtual string CreateNullSql ()
 		{
@@ -1369,12 +1434,12 @@ namespace Light.Data
 			return value.ToString ();
 		}
 
-		public virtual string CreateBooleanSql (bool value)
-		{
-			return value ? "true" : "false";
-		}
+		//public virtual string CreateBooleanSql (bool value)
+		//{
+		//	return value ? "true" : "false";
+		//}
 
-		public virtual string CreatePlusSql (string field, object value, bool forward)
+		public virtual string CreateConcatSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}+{1})", field, value);
@@ -1384,7 +1449,17 @@ namespace Light.Data
 			}
 		}
 
-		public virtual string CreateMinusSql (string field, object value, bool forward)
+		public virtual string CreatePlusSql (object field, object value, bool forward)
+		{
+			if (forward) {
+				return string.Format ("({0}+{1})", field, value);
+			}
+			else {
+				return string.Format ("({0}+{1})", value, field);
+			}
+		}
+
+		public virtual string CreateMinusSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}-{1})", field, value);
@@ -1394,7 +1469,7 @@ namespace Light.Data
 			}
 		}
 
-		public virtual string CreateMultiplySql (string field, object value, bool forward)
+		public virtual string CreateMultiplySql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}*{1})", field, value);
@@ -1404,7 +1479,7 @@ namespace Light.Data
 			}
 		}
 
-		public virtual string CreateDividedSql (string field, object value, bool forward)
+		public virtual string CreateDividedSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}/{1})", field, value);
@@ -1414,7 +1489,7 @@ namespace Light.Data
 			}
 		}
 
-		public virtual string CreateModSql (string field, object value, bool forward)
+		public virtual string CreateModSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}%{1})", field, value);
@@ -1424,7 +1499,7 @@ namespace Light.Data
 			}
 		}
 
-		public virtual string CreatePowerSql (string field, object value, bool forward)
+		public virtual string CreatePowerSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}^{1})", field, value);
@@ -1434,37 +1509,42 @@ namespace Light.Data
 			}
 		}
 
-		public virtual string CreateAbsSql (string field)
+		public virtual string CreateCastStringSql (object field, string format)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateAbsSql (object field)
 		{
 			return string.Format ("abs({0})", field);
 		}
 
-		public virtual string CreateLogSql (string field)
+		public virtual string CreateLogSql (object field)
 		{
 			return string.Format ("log({0})", field);
 		}
 
-		public virtual string CreateExpSql (string field)
+		public virtual string CreateExpSql (object field)
 		{
 			return string.Format ("exp({0})", field);
 		}
 
-		public virtual string CreateSinSql (string field)
+		public virtual string CreateSinSql (object field)
 		{
 			return string.Format ("sin({0})", field);
 		}
 
-		public virtual string CreateCosSql (string field)
+		public virtual string CreateCosSql (object field)
 		{
 			return string.Format ("cos({0})", field);
 		}
 
-		public virtual string CreateTanSql (string field)
+		public virtual string CreateTanSql (object field)
 		{
 			return string.Format ("tan({0})", field);
 		}
 
-		public virtual string CreateAtanSql (string field)
+		public virtual string CreateAtanSql (object field)
 		{
 			return string.Format ("atan({0})", field);
 		}
@@ -1482,12 +1562,17 @@ namespace Light.Data
 
 		public virtual string CreateParamName (string name)
 		{
-			if (!name.StartsWith ("@")) {
+			if (!name.StartsWith ("@", StringComparison.Ordinal)) {
 				return "@" + name;
 			}
 			else {
 				return name;
 			}
+		}
+
+		public virtual string CreateStringWrap (object value)
+		{
+			return string.Format ("'{0}'", value);
 		}
 	}
 }

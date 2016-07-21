@@ -16,7 +16,7 @@ namespace Light.Data
 			_wildcards = "*";
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter[] parameters, List<AggregateFunctionInfo> functions)
+		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
@@ -28,7 +28,7 @@ namespace Light.Data
 			return havingString;
 		}
 
-		public override string GetOrderString (OrderExpression order, out DataParameter[] parameters, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions)
+		public override string GetOrderString (OrderExpression order, out DataParameter [] parameters, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions)
 		{
 			string orderString = null;
 			parameters = null;
@@ -40,19 +40,19 @@ namespace Light.Data
 			return orderString;
 		}
 
-		public override string CreateConditionCountSql (string expressionSql, string fieldName, bool isDistinct)
+		public override string CreateConditionCountSql (string expressionSql, object fieldName, bool isDistinct)
 		{
-			return string.Format ("count({2}iif({0},{1},null))", expressionSql, !string.IsNullOrEmpty (fieldName) ? CreateDataFieldSql (fieldName) : "1", isDistinct ? "distinct " : "");
+			return string.Format ("count({2}iif({0},{1},null))", expressionSql, !Object.Equals (fieldName, null) ? fieldName : "1", isDistinct ? "distinct " : "");
 		}
 
-		public override string CreateConditionSumSql (string expressionSql, string fieldName, bool isDistinct)
+		public override string CreateConditionSumSql (string expressionSql, object fieldName, bool isDistinct)
 		{
-			return string.Format ("sum({2}iif({0},{1},0))", expressionSql, CreateDataFieldSql (fieldName), isDistinct ? "distinct " : "");
+			return string.Format ("sum({2}iif({0},{1},0))", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
-		public override string CreateConditionAvgSql (string expressionSql, string fieldName, bool isDistinct)
+		public override string CreateConditionAvgSql (string expressionSql, object fieldName, bool isDistinct)
 		{
-			return string.Format ("avg({2}iif({0},cdbl({1}),0,)", expressionSql, CreateDataFieldSql (fieldName), isDistinct ? "distinct " : "");
+			return string.Format ("avg({2}iif({0},cdbl({1}),0,)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace Light.Data
 		/// <returns></returns>
 		public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
 		{
-			return this.CreateSelectBaseCommand (mapping, "top 1", query, null, null);
+			return this.CreateSelectBaseCommand (mapping, "top 1", null, query, null, null);
 		}
 
 		public override string CreateDataTableSql (string tableName)
@@ -140,20 +140,20 @@ namespace Light.Data
 			return field;
 		}
 
-		public override string CreateMatchSql (string field, bool left, bool right)
+		public override string CreateMatchSql (object field, bool starts, bool ends)
 		{
 			StringBuilder sb = new StringBuilder ();
-			if (left) {
+			if (starts) {
 				sb.AppendFormat ("'{0}'+", _wildcards);
 			}
 			sb.Append (field);
-			if (right) {
+			if (ends) {
 				sb.AppendFormat ("+'{0}'", _wildcards);
 			}
 			return sb.ToString ();
 		}
 
-		public override string CreateDateSql (string field, string format)
+		public override string CreateDateSql (object field, string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
 				return string.Format ("cdate(format({0}),'yyyy-mm-dd')", field);
@@ -199,47 +199,52 @@ namespace Light.Data
 			}
 		}
 
-		public override string CreateYearSql (string field)
+		public override string CreateYearSql (object field)
 		{
 			return string.Format ("year({0})", field);
 		}
 
-		public override string CreateMonthSql (string field)
+		public override string CreateMonthSql (object field)
 		{
 			return string.Format ("month({0})", field);
 		}
 
-		public override string CreateDaySql (string field)
+		public override string CreateDaySql (object field)
 		{
 			return string.Format ("day({0})", field);
 		}
 
-		public override string CreateHourSql (string field)
+		public override string CreateHourSql (object field)
 		{
 			return string.Format ("hour({0})", field);
 		}
 
-		public override string CreateMinuteSql (string field)
+		public override string CreateMinuteSql (object field)
 		{
 			return string.Format ("minute({0})", field);
 		}
 
-		public override string CreateSecondSql (string field)
+		public override string CreateSecondSql (object field)
 		{
 			return string.Format ("second({0})", field);
 		}
 
-		public override string CreateWeekSql (string field)
+		public override string CreateWeekSql (object field)
 		{
 			return string.Format ("val(format({0},'ww'))", field);
 		}
 
-		public override string CreateWeekDaySql (string field)
+		public override string CreateWeekDaySql (object field)
 		{
 			return string.Format ("weekday({0})", field);
 		}
 
-		public override string CreateLengthSql (string field)
+		public override string CreateYearDaySql (object field)
+		{
+			return string.Format ("val(format({0},'y'))", field);
+		}
+
+		public override string CreateLengthSql (object field)
 		{
 			return string.Format ("len({0})", field);
 		}
@@ -249,18 +254,26 @@ namespace Light.Data
 			return "now()";
 		}
 
-		public override string CreateSubStringSql (string field, int start, int size)
+		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			start++;
-			if (size == 0) {
-				return string.Format ("mid({0},{1})", field, start);
+			//start++;
+			//if (size == 0) {
+			//	return string.Format ("mid({0},{1})", field, start);
+			//}
+			//else {
+			//	return string.Format ("mid({0},{1},{2})", field, start, size);
+			//}
+
+			//start++;
+			if (object.Equals (size, null)) {
+				return string.Format ("mid({0},{1}+1)", field, start);
 			}
 			else {
-				return string.Format ("mid({0},{1},{2})", field, start, size);
+				return string.Format ("mid({0},{1}+1,{2})", field, start, size);
 			}
 		}
 
-		public override string CreateModSql (string field, object value, bool forward)
+		public override string CreateModSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0} mod {1})", field, value);
@@ -270,7 +283,7 @@ namespace Light.Data
 			}
 		}
 
-		public override string CreateAtanSql (string field)
+		public override string CreateAtanSql (object field)
 		{
 			return string.Format ("atn({0})", field);
 		}

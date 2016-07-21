@@ -10,7 +10,7 @@ namespace Light.Data
 		public void SetDataEntity (DataEntityMapping entityMapping)
 		{
 			if (entityMapping == null)
-				throw new ArgumentNullException ("entityMapping");
+				throw new ArgumentNullException (nameof (entityMapping));
 			foreach (DataFieldMapping fieldMapping in entityMapping.DataEntityFields) {
 				if (fieldMapping != null) {
 					DataFieldInfo field = new DataFieldInfo (fieldMapping);
@@ -24,7 +24,7 @@ namespace Light.Data
 		public void SetDataField (DataFieldInfo field)
 		{
 			if (Object.Equals (field, null))
-				throw new ArgumentNullException ("field");
+				throw new ArgumentNullException (nameof (field));
 //			this.infoList [field.FieldName] = field;
 			AliasDataFieldInfo aliasField = new AliasDataFieldInfo (field, field.FieldName);
 			this.infoList [aliasField.Alias] = aliasField;
@@ -33,7 +33,7 @@ namespace Light.Data
 		public void SetAliasDataField (AliasDataFieldInfo aliasField)
 		{
 			if (Object.Equals (aliasField, null))
-				throw new ArgumentNullException ("aliasField");
+				throw new ArgumentNullException (nameof (aliasField));
 			this.infoList [aliasField.Alias] = aliasField;
 		}
 

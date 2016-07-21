@@ -104,7 +104,7 @@ namespace Light.Data
 		public static Configurator [] LoadConfiguratorFromConfigFileDir (string directory)
 		{
 			if (string.IsNullOrEmpty (directory)) {
-				throw new ArgumentNullException ("directory");
+				throw new ArgumentNullException (nameof (directory));
 			}
 			List<Configurator> list = new List<Configurator> ();
 			string fullPathConfigDirectory;
@@ -145,7 +145,7 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromFile (string fileName)
 		{
 			if (string.IsNullOrEmpty (fileName)) {
-				throw new ArgumentNullException ("fileName");
+				throw new ArgumentNullException (nameof (fileName));
 			}
 			Configurator configFile;
 			string fullPathConfigFile;
@@ -172,7 +172,7 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromFile (FileInfo fileInfo)
 		{
 			if (fileInfo == null) {
-				throw new ArgumentNullException ("fileInfo");
+				throw new ArgumentNullException (nameof (fileInfo));
 			}
 			Configurator configFile = null;
 			if (fileInfo.Exists) {
@@ -201,7 +201,7 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromStream (Stream configStream)
 		{
 			if (configStream == null) {
-				throw new ArgumentNullException ("configStream");
+				throw new ArgumentNullException (nameof (configStream));
 			}
 			Configurator configFile = null;
 			XmlDocument doc = new XmlDocument ();
@@ -227,7 +227,7 @@ namespace Light.Data
 		public static Configurator LoadConfiguratorFromXml (XmlNode configNode)
 		{
 			if (configNode == null) {
-				throw new ArgumentNullException ("configNode");
+				throw new ArgumentNullException (nameof (configNode));
 			}
 			Configurator configFile = new Configurator (configNode);
 			return configFile;

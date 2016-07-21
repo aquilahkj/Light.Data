@@ -14,7 +14,7 @@ namespace Light.Data
 		public DataFieldConfig (string fieldName)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("fieldName");
+				throw new ArgumentNullException (nameof (fieldName));
 			}
 			FieldName = fieldName;
 		}

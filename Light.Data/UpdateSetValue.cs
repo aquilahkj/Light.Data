@@ -19,7 +19,7 @@ namespace Light.Data
 		public UpdateSetValue (DataFieldInfo dataField, object value)
 		{
 			if (Object.Equals (dataField, null)) {
-				throw new ArgumentNullException ("dataField");
+				throw new ArgumentNullException (nameof (dataField));
 			}
 			_dataField = dataField;
 			_value = value;

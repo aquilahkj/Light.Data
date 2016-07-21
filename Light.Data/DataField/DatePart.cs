@@ -34,6 +34,10 @@ namespace Light.Data
 		/// <summary>
 		/// The week day.
 		/// </summary>
-		WeekDay
+		DayOfWeek,
+		/// <summary>
+		/// Date part.
+		/// </summary>
+		DayOfYear
 	}
 }

@@ -38,10 +38,10 @@ namespace Light.Data
 		public void SetField (string fieldName, IConfiguratorFieldConfig config)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("fieldName");
+				throw new ArgumentNullException (nameof (fieldName));
 			}
 			if (config == null) {
-				throw new ArgumentNullException ("config");
+				throw new ArgumentNullException (nameof (config));
 			}
 			_fieldConfigDictionary.Add (fieldName, config);
 		}
@@ -54,7 +54,7 @@ namespace Light.Data
 		public IConfiguratorFieldConfig GetField (string fieldName)
 		{
 			if (string.IsNullOrEmpty (fieldName)) {
-				throw new ArgumentNullException ("fieldName");
+				throw new ArgumentNullException (nameof (fieldName));
 			}
 			IConfiguratorFieldConfig config;
 			_fieldConfigDictionary.TryGetValue (fieldName, out config);

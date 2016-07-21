@@ -29,7 +29,7 @@ namespace Light.Data
 		public TransactionConnection (IDbConnection connection, SafeLevel level)
 		{
 			if (connection == null) {
-				throw new ArgumentNullException ("connection");
+				throw new ArgumentNullException (nameof (connection));
 			}
 			_connection = connection;
 			_level = level;
@@ -80,7 +80,7 @@ namespace Light.Data
 		public void SetupCommand (IDbCommand command)
 		{
 			if (command == null) {
-				throw new ArgumentNullException ("command");
+				throw new ArgumentNullException (nameof (command));
 			}
 			if (_transaction != null) {
 				command.Transaction = _transaction;

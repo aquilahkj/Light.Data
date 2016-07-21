@@ -17,21 +17,21 @@ namespace Light.Data
 
 		List<SingleRelationFieldMapping> hitMappings = new List<SingleRelationFieldMapping> ();
 
-		Dictionary<DataEntityMapping,string[]> entityMappingDict = new Dictionary<DataEntityMapping, string[]> ();
+		Dictionary<DataEntityMapping, string []> entityMappingDict = new Dictionary<DataEntityMapping, string []> ();
 
 		int keyCount;
 
 		public RelationCycle (SingleRelationFieldMapping rootRelationMapping)
 		{
 			if (rootRelationMapping == null)
-				throw new ArgumentNullException ("rootRelationMapping");
+				throw new ArgumentNullException (nameof (rootRelationMapping));
 			this.rootRelationMapping = rootRelationMapping;
 			this.mappings.Add (rootRelationMapping);
 			this.hitMappings.Add (rootRelationMapping);
-			RelationKey[] keys = rootRelationMapping.GetKeyPairs ();
+			RelationKey [] keys = rootRelationMapping.GetKeyPairs ();
 			this.keyCount = keys.Length;
-			string[] masters = new string[this.keyCount];
-			string[] relates = new string[this.keyCount];
+			string [] masters = new string [this.keyCount];
+			string [] relates = new string [this.keyCount];
 			for (int i = 0; i < this.keyCount; i++) {
 				masters [i] = keys [i].MasterKey;
 				relates [i] = keys [i].RelateKey;
@@ -46,15 +46,15 @@ namespace Light.Data
 				throw new LightDataException (string.Format (RE.TheRelationFieldIsExists, relateMapping.FieldName));
 			}
 
-			string[] masterkeys;
+			string [] masterkeys;
 			if (!entityMappingDict.TryGetValue (relateMapping.MasterMapping, out masterkeys)) {
 				return false;
 			}
-			RelationKey[] pairs = relateMapping.GetKeyPairs ();
+			RelationKey [] pairs = relateMapping.GetKeyPairs ();
 			if (pairs.Length != masterkeys.Length) {
 				return false;
 			}
-			string[] relatePairkeys = new string[pairs.Length];
+			string [] relatePairkeys = new string [pairs.Length];
 			for (int i = 0; i < masterkeys.Length; i++) {
 				for (int j = 0; j < pairs.Length; j++) {
 					if (pairs [j].MasterKey == masterkeys [i]) {
@@ -66,7 +66,7 @@ namespace Light.Data
 					return false;
 				}
 			}
-			string[] relatekeys;
+			string [] relatekeys;
 			if (!entityMappingDict.TryGetValue (relateMapping.RelateMapping, out relatekeys)) {
 				if (exist) {
 					return false;
@@ -89,7 +89,7 @@ namespace Light.Data
 			}
 		}
 
-		public SingleRelationFieldMapping[] GetSingleRelationFieldMapping ()
+		public SingleRelationFieldMapping [] GetSingleRelationFieldMapping ()
 		{
 			return this.hitMappings.ToArray ();
 		}
