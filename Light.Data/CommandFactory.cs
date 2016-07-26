@@ -230,7 +230,7 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
+		public virtual CommandData CreateTruncateTableCommand (DataTableEntityMapping mapping)
 		{
 			string sql = string.Format ("truncate table {0};", CreateDataTableSql (mapping));
 			CommandData command = new CommandData (sql);
@@ -247,6 +247,16 @@ namespace Light.Data
 			parameters = null;
 			if (query != null) {
 				queryString = string.Format ("where {0}", query.CreateSqlString (this, fullFieldName, out parameters));
+			}
+			return queryString;
+		}
+
+		public virtual string GetHavingString (AggregateHavingExpression query, out DataParameter [] parameters)
+		{
+			string queryString = null;
+			parameters = null;
+			if (query != null) {
+				queryString = string.Format ("having {0}", query.CreateSqlString (this, false, out parameters));
 			}
 			return queryString;
 		}
@@ -299,9 +309,6 @@ namespace Light.Data
 								AliasDataFieldInfo aliasInfo = info as AliasDataFieldInfo;
 								if (!Object.Equals (aliasInfo, null)) {
 									alias = aliasInfo.Alias;
-								}
-								else {
-									alias = info.FieldName;
 								}
 								break;
 							}
@@ -973,7 +980,7 @@ namespace Light.Data
 			DataParameter [] queryparameters;
 			string queryString = GetQueryString (query, out queryparameters);
 			DataParameter [] havingparameters;
-			string havingString = GetHavingString (having, out havingparameters, functions);
+			string havingString = GetHavingString (having, out havingparameters);
 			DataParameter [] orderparameters;
 			string orderString = GetOrderString (order, out orderparameters, fields, functions);
 
@@ -1088,7 +1095,7 @@ namespace Light.Data
 			return string.Join (",", expressionStrings);
 		}
 
-		public virtual string CreateSingleParamSql (string fieldName, QueryPredicate predicate, bool isReverse, DataParameter dataParameter)
+		public virtual string CreateSingleParamSql (object fieldName, QueryPredicate predicate, bool isReverse, DataParameter dataParameter)
 		{
 			StringBuilder sb = new StringBuilder ();
 			string op = GetQueryPredicate (predicate);
@@ -1101,7 +1108,7 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public virtual string CreateRelationTableSql (string fieldName, QueryPredicate predicate, bool isReverse, string relationFieldName)
+		public virtual string CreateRelationTableSql (object fieldName, QueryPredicate predicate, bool isReverse, string relationFieldName)
 		{
 			StringBuilder sb = new StringBuilder ();
 			string op = GetQueryPredicate (predicate);
@@ -1114,7 +1121,7 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public virtual string CreateCollectionParamsQuerySql (string fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		public virtual string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
 		{
 			string op = GetQueryCollectionPredicate (predicate);
 			if (dataParameters.Count == 0) {
@@ -1140,10 +1147,10 @@ namespace Light.Data
 
 		public virtual string CreateNotQuerySql (string whereString)
 		{
-			return string.Format ("not ({0})", whereString);
+			return string.Format ("not({0})", whereString);
 		}
 
-		public virtual string CreateSubQuerySql (string fieldName, QueryCollectionPredicate predicate, string queryfieldName, string queryTableName, string whereString)
+		public virtual string CreateSubQuerySql (object fieldName, QueryCollectionPredicate predicate, string queryfieldName, string queryTableName, string whereString)
 		{
 			StringBuilder sb = new StringBuilder ();
 			string op = GetQueryCollectionPredicate (predicate);
@@ -1155,7 +1162,7 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public virtual string CreateBetweenParamsQuerySql (string fieldName, bool isNot, DataParameter fromParam, DataParameter toParam)
+		public virtual string CreateBetweenParamsQuerySql (object fieldName, bool isNot, DataParameter fromParam, DataParameter toParam)
 		{
 			StringBuilder sb = new StringBuilder ();
 			sb.AppendFormat ("{0} {3}between {1} and {2}", fieldName, fromParam.ParameterName, toParam.ParameterName, isNot ? string.Empty : "not ");
@@ -1177,17 +1184,40 @@ namespace Light.Data
 		//	return sb.ToString ();
 		//}
 
-
-		public virtual string CreateLambdaMatchQuerySql (object fieldName, bool isReverse, bool starts, bool ends, bool isNot, object value)
+		public virtual string CreateLambdaSingleParamSql (object left, QueryPredicate predicate, object right)
 		{
-			string value1 = CreateMatchSql (value.ToString (), starts, ends);
-			string sql;
+			string op = GetQueryPredicate (predicate);
+			string sql = string.Format ("{0}{2}{1}", left, right, op);
+			return sql;
+		}
+
+		public virtual string CreateLambdaBooleanQuerySql (object field, bool isTrue, bool isEqual, bool isReverse)
+		{
 			if (!isReverse) {
-				sql = string.Format ("{0} {2}like {1}", fieldName, value1, isNot ? "not " : string.Empty);
+				return string.Format ("{0}{2}{1}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
 			}
 			else {
-				sql = string.Format ("{1} {2}like {0}", fieldName, value1, isNot ? "not " : string.Empty);
+				return string.Format ("{1}{2}{0}", field, isTrue ? "1" : "0", isEqual ? "=" : "!=");
 			}
+		}
+
+		public virtual string CreateLambdaNotSql (object value)
+		{
+			string sql = string.Format ("not({0})", value);
+			return sql;
+		}
+
+		public virtual string CreateLambdaConcatSql (params object [] values)
+		{
+			string value1 = string.Join ("+", values);
+			string sql = string.Format ("({0})", value1);
+			return sql;
+		}
+
+		public virtual string CreateLambdaMatchQuerySql (object fieldName, object value, bool starts, bool ends, bool isNot)
+		{
+			string value1 = CreateMatchSql (value.ToString (), starts, ends);
+			string sql = string.Format ("{0} {2}like {1}", fieldName, value1, isNot ? "not " : string.Empty);
 			return sql;
 		}
 
@@ -1408,6 +1438,31 @@ namespace Light.Data
 			throw new NotSupportedException ();
 		}
 
+		public virtual string CreateIndexOfSql (object field, object value, object startIndex)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateReplaceSql (object field, object oldValue, object newValue)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateToLowerSql (object field)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateToUpperSql (object field)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateTrimSql (object field)
+		{
+			throw new NotSupportedException ();
+		}
+
 		public virtual string CreateDataBaseTimeSql ()
 		{
 			throw new NotSupportedException ();
@@ -1509,6 +1564,42 @@ namespace Light.Data
 			}
 		}
 
+
+		//public virtual string CreateConcatSql (object left, object right)
+		//{
+		//	return string.Format ("({0}+{1})", field, value);
+		//}
+
+		public virtual string CreatePlusSql (object left, object right)
+		{
+			return string.Format ("({0}+{1})", left, right);
+		}
+
+		public virtual string CreateMinusSql (object left, object right)
+		{
+			return string.Format ("({0}-{1})", left, right);
+		}
+
+		public virtual string CreateMultiplySql (object left, object right)
+		{
+			return string.Format ("({0}*{1})", left, right);
+		}
+
+		public virtual string CreateDividedSql (object left, object right)
+		{
+			return string.Format ("({0}/{1})", left, right);
+		}
+
+		public virtual string CreateModSql (object left, object right)
+		{
+			return string.Format ("({0}%{1})", left, right);
+		}
+
+		public virtual string CreatePowerSql (object left, object right)
+		{
+			return string.Format ("({0}^{1})", left, right);
+		}
+
 		public virtual string CreateCastStringSql (object field, string format)
 		{
 			throw new NotSupportedException ();
@@ -1519,14 +1610,34 @@ namespace Light.Data
 			return string.Format ("abs({0})", field);
 		}
 
+		public virtual string CreateSignSql (object field)
+		{
+			return string.Format ("sign({0})", field);
+		}
+
 		public virtual string CreateLogSql (object field)
 		{
 			return string.Format ("log({0})", field);
 		}
 
+		public virtual string CreateLogSql (object field, object value)
+		{
+			return string.Format ("log({0},{1})", field, value);
+		}
+
+		public virtual string CreateLog10Sql (object field)
+		{
+			return string.Format ("log10({0})", field);
+		}
+
 		public virtual string CreateExpSql (object field)
 		{
 			return string.Format ("exp({0})", field);
+		}
+
+		public virtual string CreatePowSql (object field, object value)
+		{
+			return string.Format ("power({0},{1})", field, value);
 		}
 
 		public virtual string CreateSinSql (object field)
@@ -1539,6 +1650,16 @@ namespace Light.Data
 			return string.Format ("cos({0})", field);
 		}
 
+		public virtual string CreateASinSql (object field)
+		{
+			return string.Format ("asin({0})", field);
+		}
+
+		public virtual string CreateACosSql (object field)
+		{
+			return string.Format ("acos({0})", field);
+		}
+
 		public virtual string CreateTanSql (object field)
 		{
 			return string.Format ("tan({0})", field);
@@ -1547,6 +1668,46 @@ namespace Light.Data
 		public virtual string CreateAtanSql (object field)
 		{
 			return string.Format ("atan({0})", field);
+		}
+
+		public virtual string CreateAtan2Sql (object field, object value)
+		{
+			return string.Format ("atan2({0},{1})", field, value);
+		}
+
+		public virtual string CreateCeilingSql (object field)
+		{
+			return string.Format ("ceiling({0})", field);
+		}
+
+		public virtual string CreateFloorSql (object field)
+		{
+			return string.Format ("floor({0})", field);
+		}
+
+		public virtual string CreateRoundSql (object field, object value)
+		{
+			return string.Format ("round({0},{1})", field, value);
+		}
+
+		public virtual string CreateTruncateSql (object field)
+		{
+			return string.Format ("truncate({0})", field);
+		}
+
+		public virtual string CreateSqrtSql (object field)
+		{
+			return string.Format ("Sqrt({0})", field);
+		}
+
+		public virtual string CreateMaxSql (object left, object right)
+		{
+			return string.Format ("(case when {0}>{1} then {0} else {1} end)", left, right);
+		}
+
+		public virtual string CreateMinSql (object left, object right)
+		{
+			return string.Format ("(case when {0}<{1} then {0} else {1} end)", left, right);
 		}
 
 		#endregion

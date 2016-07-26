@@ -19,9 +19,9 @@ namespace Light.Data.PostgreAdapter
 			_strictMode = strictMode;
 		}
 
-		public override CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
+		public override CommandData CreateTruncateTableCommand (DataTableEntityMapping mapping)
 		{
-			CommandData data = base.CreateTruncateCommand (mapping);
+			CommandData data = base.CreateTruncateTableCommand (mapping);
 			if (mapping.IdentityField != null) {
 				string restartSeq = string.Format ("alter sequence \"{0}\" restart;", GetIndentitySeq (mapping));
 				data.CommandText += restartSeq;
@@ -64,10 +64,6 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		public override string CreateLogSql (object field)
-		{
-			return string.Format ("ln({0})", field);
-		}
 
 		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
@@ -207,6 +203,23 @@ namespace Light.Data.PostgreAdapter
 			return sb.ToString ();
 		}
 
+		public override string CreateLambdaBooleanQuerySql (object field, bool isTrue, bool isEqual, bool isReverse)
+		{
+			if (!isReverse) {
+				return string.Format ("{0}{2}{1}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
+			}
+			else {
+				return string.Format ("{1}{2}{0}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
+			}
+		}
+
+		public override string CreateLambdaConcatSql (params object [] values)
+		{
+			string value1 = string.Join ("||", values);
+			string sql = string.Format ("({0})", value1);
+			return sql;
+		}
+
 		public override string CreateConcatSql (object field, object value, bool forward)
 		{
 			if (forward) {
@@ -220,7 +233,7 @@ namespace Light.Data.PostgreAdapter
 		public override string CreateDateSql (object field, string format)
 		{
 			if (string.IsNullOrEmpty (format)) {
-				return string.Format ("date_trunc('day',{0})", field);
+				return string.Format ("date({0})", field);
 			}
 			else {
 				string format1 = format.ToUpper ();
@@ -261,6 +274,26 @@ namespace Light.Data.PostgreAdapter
 				}
 				return string.Format ("to_char({0},'{1}')", field, sqlformat);
 			}
+		}
+
+		public override string CreateTruncateSql (object field)
+		{
+			return string.Format ("trunc({0})", field);
+		}
+
+		public override string CreateLogSql (object field)
+		{
+			return string.Format ("ln({0})", field);
+		}
+
+		public override string CreateLogSql (object field, object value)
+		{
+			return string.Format ("log({0},{1})", field, value);
+		}
+
+		public override string CreateLog10Sql (object field)
+		{
+			return string.Format ("log({0},10)", field);
 		}
 
 		public override string CreateYearSql (object field)
@@ -323,20 +356,43 @@ namespace Light.Data.PostgreAdapter
 
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			//start++;
-			//if (size == 0) {
-			//	return string.Format ("substring({0} from {1})", field, start);
-			//}
-			//else {
-			//	return string.Format ("substring({0} from {1} for {2})", field, start, size);
-			//}
-
 			if (object.Equals (size, null)) {
-				return string.Format ("substring({0} from {1}+1)", field, start);
+				return string.Format ("substr({0},{1})", field, start);
 			}
 			else {
-				return string.Format ("substring({0} from {1}+1 for {2})", field, start, size);
+				return string.Format ("substr({0},{1},{2})", field, start, size);
 			}
+		}
+
+		public override string CreateIndexOfSql (object field, object value, object startIndex)
+		{
+			if (object.Equals (startIndex, null)) {
+				return string.Format ("strpos({0},{1})", field, value);
+			}
+			else {
+				//return string.Format ("instr({0},{1},{2})", field, value, startIndex);
+				throw new NotSupportedException ();
+			}
+		}
+
+		public override string CreateReplaceSql (object field, object oldValue, object newValue)
+		{
+			return string.Format ("replace({0},{1},{2})", field, oldValue, newValue);
+		}
+
+		public override string CreateToLowerSql (object field)
+		{
+			return string.Format ("lower({0})", field);
+		}
+
+		public override string CreateToUpperSql (object field)
+		{
+			return string.Format ("upper({0})", field);
+		}
+
+		public override string CreateTrimSql (object field)
+		{
+			return string.Format ("trim({0})", field);
 		}
 
 		public override string CreateDataBaseTimeSql ()
@@ -356,17 +412,17 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
-		{
-			string havingString = null;
-			parameters = null;
-			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
-					return null;
-				})));
-			}
-			return havingString;
-		}
+		//public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
+		//{
+		//	string havingString = null;
+		//	parameters = null;
+		//	if (having != null) {
+		//		havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
+		//			return null;
+		//		})));
+		//	}
+		//	return havingString;
+		//}
 	}
 }
 

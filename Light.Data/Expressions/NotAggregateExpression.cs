@@ -23,16 +23,16 @@ namespace Light.Data
 			return factory.CreateNotQuerySql (queryString);
 		}
 
-		protected override bool EqualsDetail (AggregateHavingExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				NotAggregateExpression target = expression as NotAggregateExpression;
-				return this._aggregateExpression.Equals (target._aggregateExpression);
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateHavingExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		NotAggregateExpression target = expression as NotAggregateExpression;
+		//		return this._aggregateExpression.Equals (target._aggregateExpression);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }
 

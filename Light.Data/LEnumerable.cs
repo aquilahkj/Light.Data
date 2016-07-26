@@ -83,7 +83,7 @@ namespace Light.Data
 
 		public LEnumerable<T> Where (Expression<Func<T, bool>> func)
 		{
-
+			_query = LambdaExpressionExtend.ResolveLambda (func);
 			return this;
 		}
 

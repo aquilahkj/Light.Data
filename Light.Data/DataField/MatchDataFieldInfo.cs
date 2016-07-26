@@ -32,27 +32,27 @@ namespace Light.Data
 			return factory.CreateMatchSql (field, _starts, _ends);
 		}
 
-		/// <summary>
-		/// Equalses the detail.
-		/// </summary>
-		/// <returns>true</returns>
-		/// <c>false</c>
-		/// <param name="info">Info.</param>
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			if (base.EqualsDetail (info)) {
-				MatchDataFieldInfo target = info as MatchDataFieldInfo;
-				if (!Object.Equals (target, null)) {
-					return this._starts == target._starts && this._ends == target._ends;
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				return false;
-			}
-		}
+		///// <summary>
+		///// Equalses the detail.
+		///// </summary>
+		///// <returns>true</returns>
+		///// <c>false</c>
+		///// <param name="info">Info.</param>
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	if (base.EqualsDetail (info)) {
+		//		MatchDataFieldInfo target = info as MatchDataFieldInfo;
+		//		if (!Object.Equals (target, null)) {
+		//			return this._starts == target._starts && this._ends == target._ends;
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 
 		internal override string DBType {
 			get {

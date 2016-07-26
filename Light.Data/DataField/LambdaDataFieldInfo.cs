@@ -8,6 +8,17 @@ namespace Light.Data
 		{
 		}
 
+		internal override string DBType {
+			get {
+				return string.Empty;
+			}
+		}
+
+		internal override object ToParameter (object value)
+		{
+			return value;
+		}
+
 	}
 }
 

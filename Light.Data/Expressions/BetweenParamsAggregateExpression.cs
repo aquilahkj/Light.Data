@@ -87,18 +87,18 @@ namespace Light.Data
 
 		}
 
-		protected override bool EqualsDetail (AggregateHavingExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				BetweenParamsAggregateExpression target = expression as BetweenParamsAggregateExpression;
-				return this._function.Equals (target._function)
-				&& Object.Equals (this._fromValue, target._fromValue)
-				&& Object.Equals (this._toValue, target._toValue)
-				&& this._isNot == target._isNot;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateHavingExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		BetweenParamsAggregateExpression target = expression as BetweenParamsAggregateExpression;
+		//		return this._function.Equals (target._function)
+		//		&& Object.Equals (this._fromValue, target._fromValue)
+		//		&& Object.Equals (this._toValue, target._toValue)
+		//		&& this._isNot == target._isNot;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

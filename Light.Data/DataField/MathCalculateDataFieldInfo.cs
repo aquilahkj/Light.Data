@@ -53,8 +53,8 @@ namespace Light.Data
 			DataParameter [] dataParameters1 = null;
 			DataParameter [] dataParameters2 = null;
 			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
-			object value = LambdaExpressionExtend.ConvertLambdaObject (_value, factory, isFullName, false, out dataParameters2);
-
+			//object value = LambdaExpressionExtend.ConvertLambdaObject (_value, factory, isFullName, false, out dataParameters2);
+			object value = _value;
 			string sql = null;
 			switch (_opera) {
 			case MathOperator.Puls:
@@ -98,20 +98,20 @@ namespace Light.Data
 			//			return base.ToColumn (value);
 		}
 
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			if (base.EqualsDetail (info)) {
-				MathCalculateDataFieldInfo target = info as MathCalculateDataFieldInfo;
-				if (!Object.Equals (target, null)) {
-					return this._opera == target._opera && this._forward == target._forward && Object.Equals (this._value, target._value);
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	if (base.EqualsDetail (info)) {
+		//		MathCalculateDataFieldInfo target = info as MathCalculateDataFieldInfo;
+		//		if (!Object.Equals (target, null)) {
+		//			return this._opera == target._opera && this._forward == target._forward && Object.Equals (this._value, target._value);
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

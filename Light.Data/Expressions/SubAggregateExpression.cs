@@ -82,18 +82,18 @@ namespace Light.Data
 			return sql;
 		}
 
-		protected override bool EqualsDetail (AggregateHavingExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				SubAggregateExpression target = expression as SubAggregateExpression;
-				return this._function.Equals (target._function)
-				&& this._predicate == target._predicate
-				&& this._queryExpression.Equals (target._queryExpression)
-				&& this._queryFieldInfo.Equals (target._queryFieldInfo);
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateHavingExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		SubAggregateExpression target = expression as SubAggregateExpression;
+		//		return this._function.Equals (target._function)
+		//		&& this._predicate == target._predicate
+		//		&& this._queryExpression.Equals (target._queryExpression)
+		//		&& this._queryFieldInfo.Equals (target._queryFieldInfo);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

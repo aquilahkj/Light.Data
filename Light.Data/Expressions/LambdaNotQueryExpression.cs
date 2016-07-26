@@ -1,12 +1,11 @@
 ﻿using System;
 namespace Light.Data
 {
-	class NotQueryExpression : QueryExpression
+	class LambdaNotQueryExpression : QueryExpression
 	{
 		QueryExpression _queryExpression;
 
-
-		public NotQueryExpression (QueryExpression expression)
+		public LambdaNotQueryExpression (QueryExpression expression)
 			: base (expression.TableMapping)
 		{
 			_queryExpression = expression;
@@ -19,16 +18,16 @@ namespace Light.Data
 			return factory.CreateNotQuerySql (queryString);
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				NotQueryExpression target = expression as NotQueryExpression;
-				return this._queryExpression.Equals (target._queryExpression);
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		NotQueryExpression target = expression as NotQueryExpression;
+		//		return this._queryExpression.Equals (target._queryExpression);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }
 

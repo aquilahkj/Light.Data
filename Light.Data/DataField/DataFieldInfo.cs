@@ -1821,45 +1821,45 @@ namespace Light.Data
 			return new MathFunctionDataFieldInfo (this, function);
 		}
 
-		/// <summary>
-		/// Determines whether the specified <see cref="Light.Data.DataFieldInfo"/> is equal to the current <see cref="Light.Data.DataFieldInfo"/>.
-		/// </summary>
-		/// <param name="target">The <see cref="Light.Data.DataFieldInfo"/> to compare with the current <see cref="Light.Data.DataFieldInfo"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="Light.Data.DataFieldInfo"/> is equal to the current
-		/// <see cref="Light.Data.DataFieldInfo"/>; otherwise, <c>false</c>.</returns>
-		public virtual bool Equals (DataFieldInfo target)
-		{
-			if (Object.Equals (target, null)) {
-				return false;
-			}
-			if (Object.ReferenceEquals (this, target)) {
-				return true;
-			}
-			else {
-				if (this.GetType () == target.GetType ()) {
-					return EqualsDetail (target);
-				}
-				else {
-					return false;
-				}
-			}
-		}
+		///// <summary>
+		///// Determines whether the specified <see cref="Light.Data.DataFieldInfo"/> is equal to the current <see cref="Light.Data.DataFieldInfo"/>.
+		///// </summary>
+		///// <param name="target">The <see cref="Light.Data.DataFieldInfo"/> to compare with the current <see cref="Light.Data.DataFieldInfo"/>.</param>
+		///// <returns><c>true</c> if the specified <see cref="Light.Data.DataFieldInfo"/> is equal to the current
+		///// <see cref="Light.Data.DataFieldInfo"/>; otherwise, <c>false</c>.</returns>
+		//public virtual bool Equals (DataFieldInfo target)
+		//{
+		//	if (Object.Equals (target, null)) {
+		//		return false;
+		//	}
+		//	if (Object.ReferenceEquals (this, target)) {
+		//		return true;
+		//	}
+		//	else {
+		//		if (this.GetType () == target.GetType ()) {
+		//			return EqualsDetail (target);
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//}
 
-		/// <summary>
-		/// Equalses the detail.
-		/// </summary>
-		/// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
-		/// <param name="info">Info.</param>
-		protected virtual bool EqualsDetail (DataFieldInfo info)
-		{
-			bool result = Object.Equals (this.DataField, info.DataField);
-			if (!result) {
-				if (this.DataField is CustomFieldMapping && info.DataField is CustomFieldMapping) {
-					return this.DataField.Name == info.DataField.Name && Object.Equals (this.DataField.EntityMapping, info.DataField.EntityMapping);
-				}
-			}
-			return result;
-		}
+		///// <summary>
+		///// Equalses the detail.
+		///// </summary>
+		///// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
+		///// <param name="info">Info.</param>
+		//protected virtual bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	bool result = Object.Equals (this.DataField, info.DataField);
+		//	if (!result) {
+		//		if (this.DataField is CustomFieldMapping && info.DataField is CustomFieldMapping) {
+		//			return this.DataField.Name == info.DataField.Name && Object.Equals (this.DataField.EntityMapping, info.DataField.EntityMapping);
+		//		}
+		//	}
+		//	return result;
+		//}
 
 		/// <summary>
 		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Light.Data.DataFieldInfo"/>.

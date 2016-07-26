@@ -33,20 +33,20 @@ namespace Light.Data
 			return Convert.ToInt32 (value);
 		}
 
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			if (base.EqualsDetail (info)) {
-				LengthDataFieldInfo target = info as LengthDataFieldInfo;
-				if (!Object.Equals (target, null)) {
-					return true;
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	if (base.EqualsDetail (info)) {
+		//		LengthDataFieldInfo target = info as LengthDataFieldInfo;
+		//		if (!Object.Equals (target, null)) {
+		//			return true;
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

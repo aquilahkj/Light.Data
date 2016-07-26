@@ -82,17 +82,17 @@ namespace Light.Data
 			return sql;
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				CollectionParamsQueryExpression target = expression as CollectionParamsQueryExpression;
-				return this._fieldInfo.Equals (target._fieldInfo)
-				&& this._predicate == target._predicate
-				&& Utility.EnumableObjectEquals (this._values, target._values);
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		CollectionParamsQueryExpression target = expression as CollectionParamsQueryExpression;
+		//		return this._fieldInfo.Equals (target._fieldInfo)
+		//		&& this._predicate == target._predicate
+		//		&& Utility.EnumableObjectEquals (this._values, target._values);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

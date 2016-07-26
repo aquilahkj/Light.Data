@@ -74,18 +74,18 @@ namespace Light.Data
 			return sql;
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				BetweenParamsQueryExpression target = expression as BetweenParamsQueryExpression;
-				return this._fieldInfo.Equals (target._fieldInfo)
-				&& Object.Equals (this._fromValue, target._fromValue)
-				&& Object.Equals (this._toValue, target._toValue)
-				&& this._isNot == target._isNot;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		BetweenParamsQueryExpression target = expression as BetweenParamsQueryExpression;
+		//		return this._fieldInfo.Equals (target._fieldInfo)
+		//		&& Object.Equals (this._fromValue, target._fromValue)
+		//		&& Object.Equals (this._toValue, target._toValue)
+		//		&& this._isNot == target._isNot;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

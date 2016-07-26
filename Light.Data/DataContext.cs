@@ -694,7 +694,7 @@ namespace Light.Data
 			where T : class, new()
 		{
 			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof (T));
-			CommandData commandData = _dataBase.Factory.CreateTruncateCommand (mapping);
+			CommandData commandData = _dataBase.Factory.CreateTruncateTableCommand (mapping);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
@@ -733,8 +733,6 @@ namespace Light.Data
 			}
 			return list;
 		}
-
-
 
 		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
 		{

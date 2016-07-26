@@ -25,16 +25,16 @@ namespace Light.Data
 			return factory.CreateNullQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isNull);
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				NullQueryExpression target = expression as NullQueryExpression;
-				return this._fieldInfo.Equals (target._fieldInfo)
-				&& this._isNull == target._isNull;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		NullQueryExpression target = expression as NullQueryExpression;
+		//		return this._fieldInfo.Equals (target._fieldInfo)
+		//		&& this._isNull == target._isNull;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

@@ -43,7 +43,7 @@ namespace Light.Data
 		//}
 
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{ 
+		{
 			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
 			string sql = null;
 			switch (_function) {
@@ -83,20 +83,20 @@ namespace Light.Data
 			return value;
 		}
 
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			if (base.EqualsDetail (info)) {
-				MathFunctionDataFieldInfo target = info as MathFunctionDataFieldInfo;
-				if (!Object.Equals (target, null)) {
-					return this._function == target._function;
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	if (base.EqualsDetail (info)) {
+		//		MathFunctionDataFieldInfo target = info as MathFunctionDataFieldInfo;
+		//		if (!Object.Equals (target, null)) {
+		//			return this._function == target._function;
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

@@ -22,17 +22,17 @@ namespace Light.Data
 			return string.Format ("[{0}]", tableName);
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
-		{
-			string havingString = null;
-			parameters = null;
-			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
-					return null;
-				})));
-			}
-			return havingString;
-		}
+		//public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
+		//{
+		//	string havingString = null;
+		//	parameters = null;
+		//	if (having != null) {
+		//		havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
+		//			return null;
+		//		})));
+		//	}
+		//	return havingString;
+		//}
 
 		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
 		{
@@ -86,7 +86,7 @@ namespace Light.Data
 			return command;
 		}
 
-		public override string CreateCollectionParamsQuerySql (string fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
 		{
 			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
 				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
@@ -177,6 +177,16 @@ namespace Light.Data
 			}
 		}
 
+		public override string CreateTruncateSql (object field)
+		{
+			return string.Format ("cast({0} as int)", field);
+		}
+
+		public override string CreateAtan2Sql (object field, object value)
+		{
+			return string.Format ("atn2({0},{1})", field, value);
+		}
+
 		public override string CreateYearSql (object field)
 		{
 			return string.Format ("datepart(year,{0})", field);
@@ -234,20 +244,42 @@ namespace Light.Data
 
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			//start++;
-			//if (size == 0) {
-			//	return string.Format ("substring({0},{1},len({0})-{1}+1)", field, start);
-			//}
-			//else {
-			//	return string.Format ("substring({0},{1},{2})", field, start, size);
-			//}
-
 			if (object.Equals (size, null)) {
-				return string.Format ("substring({0},{1}+1,len({0}))", field, start);
+				return string.Format ("substring({0},{1},len({0}))", field, start);
 			}
 			else {
-				return string.Format ("substring({0},{1}+1,{2})", field, start, size);
+				return string.Format ("substring({0},{1},{2})", field, start, size);
 			}
+		}
+
+		public override string CreateIndexOfSql (object field, object value, object startIndex)
+		{
+			if (object.Equals (startIndex, null)) {
+				return string.Format ("charindex({0},{1})", value, field);
+			}
+			else {
+				return string.Format ("charindex({0},{1},{2})", value, field, startIndex);
+			}
+		}
+
+		public override string CreateReplaceSql (object field, object oldValue, object newValue)
+		{
+			return string.Format ("replace({0},{1},{2})", field, oldValue, newValue);
+		}
+
+		public override string CreateToLowerSql (object field)
+		{
+			return string.Format ("lower({0})", field);
+		}
+
+		public override string CreateToUpperSql (object field)
+		{
+			return string.Format ("upper({0})", field);
+		}
+
+		public override string CreateTrimSql (object field)
+		{
+			return string.Format ("rtrim(ltrim({0}))", field);
 		}
 
 		public override string CreateDividedSql (object field, object value, bool forward)
@@ -268,6 +300,11 @@ namespace Light.Data
 			else {
 				return string.Format ("power({0},{1})", value, field);
 			}
+		}
+
+		public override string CreatePowerSql (object left, object right)
+		{
+			return string.Format ("power({0},{1})", left, right);
 		}
 
 		public override string CreateDataBaseTimeSql ()

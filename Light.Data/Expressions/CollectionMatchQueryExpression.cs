@@ -90,20 +90,20 @@ namespace Light.Data
 			return sql;
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				CollectionMatchQueryExpression target = expression as CollectionMatchQueryExpression;
-				return this._fieldInfo.Equals (target._fieldInfo)
-				&& this._isReverse == target._isReverse
-				&& this._starts == target._starts
-				&& this._ends == target._ends
-				&& this._isNot == target._isNot
-				&& Utility.EnumableObjectEquals (this._value, target._value);
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		CollectionMatchQueryExpression target = expression as CollectionMatchQueryExpression;
+		//		return this._fieldInfo.Equals (target._fieldInfo)
+		//		&& this._isReverse == target._isReverse
+		//		&& this._starts == target._starts
+		//		&& this._ends == target._ends
+		//		&& this._isNot == target._isNot
+		//		&& Utility.EnumableObjectEquals (this._value, target._value);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

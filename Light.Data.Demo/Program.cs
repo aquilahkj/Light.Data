@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace Light.Data.Demo
 {
@@ -13,11 +14,12 @@ namespace Light.Data.Demo
 		{
 			Test ();
 
-			//DataContext context = DataContext.Create ("sqlite");
-			//CommandOutput output = new CommandOutput ();
-			//output.OutputFullCommand = true;
+			DataContext context = DataContext.Create ("sqlite");
+			CommandOutput output = new CommandOutput ();
+			output.UseConsoleOutput = true;
+			output.OutputFullCommand = true;
 
-			//context.SetCommanfOutput (output);
+			context.SetCommanfOutput (output);
 
 
 			//			MqDeviceInfo info = context.CreateNew<MqDeviceInfo> ();
@@ -27,10 +29,25 @@ namespace Light.Data.Demo
 			//			info.Status = 0;
 			//			info.Valid = 1;
 			//			info.Save ();
-			//List<TeRelateA_BE> relateList = context.LQuery<TeRelateA_BE> ().Where (x => x.Id == 2).ToList ();
+
+			//List<TeUser> users = context.LQuery<TeUser> ().Where (x => x.Address + 1 == "dd").ToList ();
+
+			//string d = string.Concat (null);
+
+			//List<TeUser> users = context.LQuery<TeUser> ().Where (x => x.Gender == GenderType.Female && Math.Abs (x.Id) * 2 + TestInt () + 2 + x.Id + 1 >= x.Id + 2 && x.CheckPoint < 8 && x.Address + 1 == "dd" && x.DeleteFlag && x.Email.StartsWith ("aaa") && x.NickName.Substring (1, 3) == "rr").ToList ();
+			string [] arr = new [] { "1", "2", "3" };
+			List<string> dd = new List<string> ();
+			dd.AddRange (arr);
+			List<TeUser> users2 = context.LQuery<TeUser> ()
+ 			 .Where (x => dd.Contains (x.Account) && !dd.Contains (x.Address) && string.Concat (x.RegTime.Year, x.Account, "00", 11) == "" && x.Address.IndexOf ('a') == 2).ToList ();
+
 			Console.ReadLine ();
 		}
 
+		public static int TestInt ()
+		{
+			return 10;
+		}
 
 		public static void Test ()
 		{
@@ -41,16 +58,7 @@ namespace Light.Data.Demo
 			//Console.WriteLine (_unaryLam.Compile () ());
 
 
-			Expression<Func<TeUser, bool>> filter = n => !n.DeleteFlag;
-			BinaryExpression lt = (BinaryExpression)filter.Body;
-			BinaryExpression mult = (BinaryExpression)lt.Left;
-			ParameterExpression en = (ParameterExpression)mult.Left;
-			ConstantExpression three = (ConstantExpression)mult.Right;
-			ConstantExpression five = (ConstantExpression)lt.Right;
-			var One = filter.Compile ();
-			//Console.WriteLine ("Result: {0},{1}", One (5), One (1));
-			Console.WriteLine ("({0} ({1} {2} {3}) {4})", lt.NodeType,
-					 mult.NodeType, en.Name, three.Value, five.Value);
+
 		}
 	}
 }

@@ -91,17 +91,17 @@ namespace Light.Data
 			return factory.CreateCollectionParamsQuerySql (name, _predicate, list);
 		}
 
-		protected override bool EqualsDetail (AggregateHavingExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				CollectionParamsAggregateExpression target = expression as CollectionParamsAggregateExpression;
-				return this._function.Equals (target._function)
-				&& this._predicate == target._predicate
-				&& Utility.EnumableObjectEquals (this._values, target._values);
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateHavingExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		CollectionParamsAggregateExpression target = expression as CollectionParamsAggregateExpression;
+		//		return this._function.Equals (target._function)
+		//		&& this._predicate == target._predicate
+		//		&& Utility.EnumableObjectEquals (this._values, target._values);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

@@ -15,9 +15,9 @@ namespace Light.Data
 			return factory.CreateCountAllSql ();
 		}
 
-		protected override bool EqualsDetail (AggregateFunction function)
-		{
-			return true;
-		}
+		//protected override bool EqualsDetail (AggregateFunction function)
+		//{
+		//	return true;
+		//}
 	}
 }

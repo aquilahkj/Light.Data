@@ -16,17 +16,99 @@ namespace Light.Data
 			_wildcards = "*";
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
+		public override CommandData CreateDynamicAggregateCommand (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order)
 		{
-			string havingString = null;
-			parameters = null;
-			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate {
-					return null;
-				})));
+			if (fields == null || fields.Count == 0) {
+				throw new LightDataException (RE.DynamicAggregateFieldIsNotExists);
 			}
-			return havingString;
+			StringBuilder sql = new StringBuilder ();
+
+			//List<DataParameter> parameterlist = new List<DataParameter> ();
+			string [] selectList = new string [fields.Count + functions.Count];
+			string [] groupbyList = new string [fields.Count];
+			int index = 0;
+			List<DataParameter> innerParameters = new List<DataParameter> ();
+			foreach (DataFieldInfo fieldInfo in fields) {
+				if (!mapping.Equals (fieldInfo.TableMapping)) {
+					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+				}
+				DataParameter [] dataParameters = null;
+				string groupbyField = fieldInfo.CreateDataFieldSql (this, false, out dataParameters);
+				groupbyList [index] = groupbyField;
+				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
+				if (!Object.Equals (aliasInfo, null)) {
+					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false, out dataParameters);
+				}
+				else {
+					selectList [index] = groupbyField;
+				}
+				index++;
+			}
+			List<DataParameter> functionParameters = new List<DataParameter> ();
+			foreach (AggregateFunctionInfo functionInfo in functions) {
+				AggregateFunction function = functionInfo.Function;
+				if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
+					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+				}
+				DataParameter [] aggparameters;
+				string aggField = function.CreateSqlString (this, false, out aggparameters);
+				string selectField = CreateAliasSql (aggField, functionInfo.Name);
+				selectList [index] = selectField;
+				if (aggparameters != null && aggparameters.Length > 0) {
+					functionParameters.AddRange (aggparameters);
+				}
+				index++;
+			}
+			string select = string.Join (",", selectList);
+			string groupby = string.Join (",", groupbyList);
+			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
+
+			DataParameter [] queryparameters;
+			string queryString = GetQueryString (query, out queryparameters);
+			DataParameter [] havingparameters;
+			string havingString = GetHavingString (having, out havingparameters);
+			DataParameter [] orderparameters;
+			string orderString = GetOrderString (order, out orderparameters);
+
+			if (!string.IsNullOrEmpty (queryString)) {
+				sql.AppendFormat (" {0}", queryString);
+				//if (queryparameters != null && queryparameters.Length > 0) {
+				//	parameterlist.AddRange (queryparameters);
+				//}
+			}
+
+			sql.AppendFormat (" group by {0}", groupby);
+
+			if (!string.IsNullOrEmpty (havingString)) {
+				sql.AppendFormat (" {0}", havingString);
+				//if (havingparameters != null && havingparameters.Length > 0) {
+				//	parameterlist.AddRange (havingparameters);
+				//}
+			}
+
+			if (!string.IsNullOrEmpty (orderString)) {
+				sql.AppendFormat (" {0}", orderString);
+				//if (orderbyparameters != null && orderbyparameters.Length > 0) {
+				//	parameterlist.AddRange (orderbyparameters);
+				//}
+			}
+			DataParameter [] parameters = DataParameter.ConcatDataParameters (innerParameters, functionParameters, queryparameters, havingparameters, orderparameters);
+			CommandData command = new CommandData (sql.ToString (), parameters);
+			command.TransParamName = true;
+			return command;
 		}
+
+		//public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
+		//{
+		//	string havingString = null;
+		//	parameters = null;
+		//	if (having != null) {
+		//		havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate {
+		//			return null;
+		//		})));
+		//	}
+		//	return havingString;
+		//}
 
 		public override string GetOrderString (OrderExpression order, out DataParameter [] parameters, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions)
 		{
@@ -256,21 +338,42 @@ namespace Light.Data
 
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			//start++;
-			//if (size == 0) {
-			//	return string.Format ("mid({0},{1})", field, start);
-			//}
-			//else {
-			//	return string.Format ("mid({0},{1},{2})", field, start, size);
-			//}
-
-			//start++;
 			if (object.Equals (size, null)) {
-				return string.Format ("mid({0},{1}+1)", field, start);
+				return string.Format ("mid({0},{1})", field, start);
 			}
 			else {
-				return string.Format ("mid({0},{1}+1,{2})", field, start, size);
+				return string.Format ("mid({0},{1},{2})", field, start, size);
 			}
+		}
+
+		public override string CreateIndexOfSql (object field, object value, object startIndex)
+		{
+			if (object.Equals (startIndex, null)) {
+				return string.Format ("InStr({0},{1})", field, value);
+			}
+			else {
+				return string.Format ("InStr({0},{1},{2})", startIndex, field, value);
+			}
+		}
+
+		public override string CreateReplaceSql (object field, object oldValue, object newValue)
+		{
+			return string.Format ("replace({0},{1},{2})", field, oldValue, newValue);
+		}
+
+		public override string CreateToLowerSql (object field)
+		{
+			return string.Format ("lcase({0})", field);
+		}
+
+		public override string CreateToUpperSql (object field)
+		{
+			return string.Format ("ucase({0})", field);
+		}
+
+		public override string CreateTrimSql (object field)
+		{
+			return string.Format ("trim({0})", field);
 		}
 
 		public override string CreateModSql (object field, object value, bool forward)

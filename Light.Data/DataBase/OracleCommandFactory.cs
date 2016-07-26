@@ -39,9 +39,9 @@ namespace Light.Data
 			_roundReplaceRegex = new Regex (string.Format (@"round\(.*,{0}\)", _roundScale), RegexOptions.Compiled);
 		}
 
-		public override CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
+		public override CommandData CreateTruncateTableCommand (DataTableEntityMapping mapping)
 		{
-			CommandData data = base.CreateTruncateCommand (mapping);
+			CommandData data = base.CreateTruncateTableCommand (mapping);
 			if (mapping.IdentityField != null) {
 				string restartSeq = string.Format ("alter sequence \"{0}\" increment by 1;", GetIndentitySeq (mapping));
 				data.CommandText += restartSeq;
@@ -301,6 +301,13 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
+		public override string CreateLambdaConcatSql (params object [] values)
+		{
+			string value1 = string.Join ("||", values);
+			string sql = string.Format ("({0})", value1);
+			return sql;
+		}
+
 		public override string CreateConcatSql (object field, object value, bool forward)
 		{
 			if (forward) {
@@ -409,20 +416,42 @@ namespace Light.Data
 
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			//start++;
-			//if (size == 0) {
-			//	return string.Format ("substr({0},{1})", field, start);
-			//}
-			//else {
-			//	return string.Format ("substr({0},{1},{2})", field, start, size);
-			//}
-
 			if (object.Equals (size, null)) {
-				return string.Format ("substr({0},{1}+1)", field, start);
+				return string.Format ("substr({0},{1})", field, start);
 			}
 			else {
-				return string.Format ("substr({0},{1}+1,{2})", field, start, size);
+				return string.Format ("substr({0},{1},{2})", field, start, size);
 			}
+		}
+
+		public override string CreateIndexOfSql (object field, object value, object startIndex)
+		{
+			if (object.Equals (startIndex, null)) {
+				return string.Format ("instr({0},{1})", field, value);
+			}
+			else {
+				return string.Format ("instr({0},{1},{2})", field, value, startIndex);
+			}
+		}
+
+		public override string CreateReplaceSql (object field, object oldValue, object newValue)
+		{
+			return string.Format ("replace({0},{1},{2})", field, oldValue, newValue);
+		}
+
+		public override string CreateToLowerSql (object field)
+		{
+			return string.Format ("lower({0})", field);
+		}
+
+		public override string CreateToUpperSql (object field)
+		{
+			return string.Format ("upper({0})", field);
+		}
+
+		public override string CreateTrimSql (object field)
+		{
+			return string.Format ("trim({0})", field);
 		}
 
 		private string ClearRound (string field)
@@ -483,6 +512,15 @@ namespace Light.Data
 			}
 		}
 
+		public override string CreateModSql (object left, object right)
+		{
+			return string.Format ("mod({0},{1})", left, right);
+		}
+
+		public override string CreatePowerSql (object left, object right)
+		{
+			return string.Format ("power({0},{1})", left, right);
+		}
 
 		//public override string CreateAbsSql (object field)
 		//{

@@ -26,15 +26,15 @@ namespace Light.Data
 			return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isDistinct);
 		}
 
-		protected override bool EqualsDetail (AggregateFunction function)
-		{
-			if (base.EqualsDetail (function)) {
-				CountFunction target = function as CountFunction;
-				return this._fieldinfo.Equals (target._fieldinfo) && this._isDistinct == target._isDistinct;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateFunction function)
+		//{
+		//	if (base.EqualsDetail (function)) {
+		//		CountFunction target = function as CountFunction;
+		//		return this._fieldinfo.Equals (target._fieldinfo) && this._isDistinct == target._isDistinct;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

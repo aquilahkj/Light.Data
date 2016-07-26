@@ -9,9 +9,9 @@ namespace Light.Data.OracleAdapter
 	{
 		byte _roundScale = 8;
 
-		Regex _roundCaptureRegex;
+		//Regex _roundCaptureRegex;
 
-		Regex _roundReplaceRegex;
+		//Regex _roundReplaceRegex;
 
 		bool _identityAuto;
 
@@ -33,20 +33,20 @@ namespace Light.Data.OracleAdapter
 			_canInnerPage = true;
 			_strictMode = true;
 			//			base._supportJoinTableInnerQuery = false;
-			LoadRoundRegex ();
+			//LoadRoundRegex ();
 		}
 
 		public void SetRoundScale (byte scale)
 		{
 			_roundScale = scale;
-			LoadRoundRegex ();
+			//LoadRoundRegex ();
 		}
 
-		private void LoadRoundRegex ()
-		{
-			_roundCaptureRegex = new Regex (string.Format (@"(?<=round\().*(?=,{0}\))", _roundScale), RegexOptions.Compiled);
-			_roundReplaceRegex = new Regex (string.Format (@"round\(.*,{0}\)", _roundScale), RegexOptions.Compiled);
-		}
+		//private void LoadRoundRegex ()
+		//{
+		//	_roundCaptureRegex = new Regex (string.Format (@"(?<=round\().*(?=,{0}\))", _roundScale), RegexOptions.Compiled);
+		//	_roundReplaceRegex = new Regex (string.Format (@"round\(.*,{0}\)", _roundScale), RegexOptions.Compiled);
+		//}
 
 		public override string CreateDataFieldSql (string fieldName)
 		{
@@ -69,7 +69,7 @@ namespace Light.Data.OracleAdapter
 		}
 
 
-		public override CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
+		public override CommandData CreateTruncateTableCommand (DataTableEntityMapping mapping)
 		{
 			const string TRUNCATE_SQL = "declare\ntmp NUMBER;\ncmd_str VARCHAR(256);\nbegin\ncmd_str := 'truncate table {0} ';\nexecute immediate cmd_str;\ncmd_str := 'alter sequence {1} minvalue 0';\nexecute immediate cmd_str;\ncmd_str := 'select {1}.nextval from dual';\nexecute immediate cmd_str into tmp;\ntmp:=(-1*tmp);\ncmd_str := 'alter sequence {1} increment by '|| tmp;\nexecute immediate cmd_str;\ncmd_str := 'select {1}.nextval from dual';\nexecute immediate cmd_str into tmp;\ncmd_str := 'alter sequence {1} increment by 1';\nexecute immediate cmd_str;\nend;\n";
 
@@ -415,6 +415,13 @@ namespace Light.Data.OracleAdapter
 			return sb.ToString ();
 		}
 
+		public override string CreateLambdaConcatSql (params object [] values)
+		{
+			string value1 = string.Join ("||", values);
+			string sql = string.Format ("({0})", value1);
+			return sql;
+		}
+
 		public override string CreateConcatSql (object field, object value, bool forward)
 		{
 			if (forward) {
@@ -471,6 +478,31 @@ namespace Light.Data.OracleAdapter
 			}
 		}
 
+		public override string CreateTruncateSql (object field)
+		{
+			return string.Format ("trunc({0})", field);
+		}
+
+		public override string CreateCeilingSql (object field)
+		{
+			return string.Format ("ceil({0})", field);
+		}
+
+		public override string CreateLogSql (object field)
+		{
+			return string.Format ("ln({0})", field);
+		}
+
+		public override string CreateLogSql (object field, object value)
+		{
+			return string.Format ("log({0},{1})", field, value);
+		}
+
+		public override string CreateLog10Sql (object field)
+		{
+			return string.Format ("log({0},10)", field);
+		}
+
 		public override string CreateYearSql (object field)
 		{
 			return string.Format ("extract(year from {0})", field);
@@ -523,31 +555,53 @@ namespace Light.Data.OracleAdapter
 
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			//start++;
-			//if (size == 0) {
-			//	return string.Format ("substr({0},{1})", field, start);
-			//}
-			//else {
-			//	return string.Format ("substr({0},{1},{2})", field, start, size);
-			//}
-
 			if (object.Equals (size, null)) {
-				return string.Format ("substr({0},{1}+1)", field, start);
+				return string.Format ("substr({0},{1})", field, start);
 			}
 			else {
-				return string.Format ("substr({0},{1}+1,{2})", field, start, size);
+				return string.Format ("substr({0},{1},{2})", field, start, size);
 			}
 		}
 
-		private string ClearRound (string field)
+		public override string CreateIndexOfSql (object field, object value, object startIndex)
 		{
-			Match match = _roundCaptureRegex.Match (field);
-			while (match.Success) {
-				field = _roundReplaceRegex.Replace (field, match.Value);
-				match = _roundCaptureRegex.Match (field);
+			if (object.Equals (startIndex, null)) {
+				return string.Format ("instr({0},{1})", field, value);
 			}
-			return field;
+			else {
+				return string.Format ("instr({0},{1},{2})", field, value, startIndex);
+			}
 		}
+
+		public override string CreateReplaceSql (object field, object oldValue, object newValue)
+		{
+			return string.Format ("replace({0},{1},{2})", field, oldValue, newValue);
+		}
+
+		public override string CreateToLowerSql (object field)
+		{
+			return string.Format ("lower({0})", field);
+		}
+
+		public override string CreateToUpperSql (object field)
+		{
+			return string.Format ("upper({0})", field);
+		}
+
+		public override string CreateTrimSql (object field)
+		{
+			return string.Format ("trim({0})", field);
+		}
+
+		//private string ClearRound (string field)
+		//{
+		//	Match match = _roundCaptureRegex.Match (field);
+		//	while (match.Success) {
+		//		field = _roundReplaceRegex.Replace (field, match.Value);
+		//		match = _roundCaptureRegex.Match (field);
+		//	}
+		//	return field;
+		//}
 
 		private string AddRound (string field)
 		{
@@ -579,6 +633,7 @@ namespace Light.Data.OracleAdapter
 			}
 		}
 
+
 		public override string CreatePowerSql (object field, object value, bool forward)
 		{
 			//field = ClearRound (field);
@@ -598,6 +653,16 @@ namespace Light.Data.OracleAdapter
 		}
 
 
+		public override string CreateModSql (object left, object right)
+		{
+			return string.Format ("mod({0},{1})", left, right);
+		}
+
+		public override string CreatePowerSql (object left, object right)
+		{
+			return string.Format ("power({0},{1})", left, right);
+		}
+
 		//public override string CreateAbsSql (object field)
 		//{
 		//	field = ClearRound (field);
@@ -605,13 +670,13 @@ namespace Light.Data.OracleAdapter
 		//	return AddRound (field);
 		//}
 
-		public override string CreateLogSql (object field)
-		{
-			//field = ClearRound (field);
-			//field = string.Format ("ln({0})", field);
-			//return AddRound (field);
-			return string.Format ("ln({0})", field);
-		}
+		//public override string CreateLogSql (object field)
+		//{
+		//	//field = ClearRound (field);
+		//	//field = string.Format ("ln({0})", field);
+		//	//return AddRound (field);
+		//	return string.Format ("ln({0})", field);
+		//}
 
 		//public override string CreateExpSql (object field)
 		//{
@@ -665,16 +730,16 @@ namespace Light.Data.OracleAdapter
 			}
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
-		{
-			string havingString = null;
-			parameters = null;
-			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
-					return null;
-				})));
-			}
-			return havingString;
-		}
+		//public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
+		//{
+		//	string havingString = null;
+		//	parameters = null;
+		//	if (having != null) {
+		//		havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
+		//			return null;
+		//		})));
+		//	}
+		//	return havingString;
+		//}
 	}
 }

@@ -28,7 +28,8 @@ namespace Light.Data
 			DataParameter [] dataParameters2 = null;
 			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
 			//string sql =  factory.CreateConcatSql (field, _value, _forward);
-			object value = LambdaExpressionExtend.ConvertLambdaObject (_value, factory, isFullName, true, out dataParameters2);
+			//object value = LambdaExpressionExtend.ConvertLambdaObject (_value, factory, isFullName, true, out dataParameters2);
+			object value = factory.CreateStringWrap (_value);
 			string sql = factory.CreateConcatSql (field, value, _forward);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
@@ -46,21 +47,21 @@ namespace Light.Data
 			return value;
 		}
 
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			if (base.EqualsDetail (info)) {
-				ConcatStringDataFieldInfo target = info as ConcatStringDataFieldInfo;
-				if (!Object.Equals (target, null)) {
-					return this._forward == target._forward && Object.Equals (this._value, target._value);
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	if (base.EqualsDetail (info)) {
+		//		ConcatStringDataFieldInfo target = info as ConcatStringDataFieldInfo;
+		//		if (!Object.Equals (target, null)) {
+		//			return this._forward == target._forward && Object.Equals (this._value, target._value);
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }
 

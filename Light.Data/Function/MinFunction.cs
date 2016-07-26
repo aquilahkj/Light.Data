@@ -22,15 +22,15 @@ namespace Light.Data
 			return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters));
 		}
 
-		protected override bool EqualsDetail (AggregateFunction function)
-		{
-			if (base.EqualsDetail (function)) {
-				MinFunction target = function as MinFunction;
-				return this._fieldinfo.Equals (target._fieldinfo);
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateFunction function)
+		//{
+		//	if (base.EqualsDetail (function)) {
+		//		MinFunction target = function as MinFunction;
+		//		return this._fieldinfo.Equals (target._fieldinfo);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

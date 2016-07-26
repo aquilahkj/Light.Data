@@ -37,15 +37,15 @@ namespace Light.Data
 			}
 		}
 
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			if (base.EqualsDetail (info)) {
-				DateDataFieldInfo target = info as DateDataFieldInfo;
-				return this._format == target._format;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	if (base.EqualsDetail (info)) {
+		//		DateDataFieldInfo target = info as DateDataFieldInfo;
+		//		return this._format == target._format;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

@@ -25,15 +25,15 @@ namespace Light.Data
 			return factory.CreateSumSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isDistinct);
 		}
 
-		protected override bool EqualsDetail (AggregateFunction function)
-		{
-			if (base.EqualsDetail (function)) {
-				SumFunction target = function as SumFunction;
-				return this._fieldinfo.Equals (target._fieldinfo) && this._isDistinct == target._isDistinct;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateFunction function)
+		//{
+		//	if (base.EqualsDetail (function)) {
+		//		SumFunction target = function as SumFunction;
+		//		return this._fieldinfo.Equals (target._fieldinfo) && this._isDistinct == target._isDistinct;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

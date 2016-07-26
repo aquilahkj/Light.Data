@@ -11,7 +11,7 @@ namespace Light.Data.SQLiteAdapter
 			_canInnerPage = true;
 		}
 
-		public override CommandData CreateTruncateCommand (DataTableEntityMapping mapping)
+		public override CommandData CreateTruncateTableCommand (DataTableEntityMapping mapping)
 		{
 			string sql = string.Format ("delete from {0};update sqlite_sequence set seq=0 where name='{1}';", CreateDataTableSql (mapping), mapping.TableName);
 			CommandData command = new CommandData (sql);
@@ -117,7 +117,7 @@ namespace Light.Data.SQLiteAdapter
 		}
 
 
-		public override string CreateCollectionParamsQuerySql (string fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
 		{
 			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
 				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
@@ -153,6 +153,13 @@ namespace Light.Data.SQLiteAdapter
 				sb.AppendFormat ("||'{0}'", _wildcards);
 			}
 			return sb.ToString ();
+		}
+
+		public override string CreateLambdaConcatSql (params object [] values)
+		{
+			string value1 = string.Join ("||", values);
+			string sql = string.Format ("({0})", value1);
+			return sql;
 		}
 
 		public override string CreateConcatSql (object field, object value, bool forward)
@@ -263,20 +270,43 @@ namespace Light.Data.SQLiteAdapter
 
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
-			//start++;
-			//if (size == 0) {
-			//	return string.Format ("substr({0},{1})", field, start);
-			//}
-			//else {
-			//	return string.Format ("substr({0},{1},{2})", field, start, size);
-			//}
-
 			if (object.Equals (size, null)) {
-				return string.Format ("substr({0},{1}+1)", field, start);
+				return string.Format ("substr({0},{1})", field, start);
 			}
 			else {
-				return string.Format ("substr({0},{1}+1,{2})", field, start, size);
+				return string.Format ("substr({0},{1},{2})", field, start, size);
 			}
+		}
+
+		public override string CreateIndexOfSql (object field, object value, object startIndex)
+		{
+			if (object.Equals (startIndex, null)) {
+				return string.Format ("instr({0},{1})", field, value);
+			}
+			else {
+				throw new NotSupportedException ();
+				//return string.Format ("instr({0},{1},{2})", field, value, startIndex);
+			}
+		}
+
+		public override string CreateReplaceSql (object field, object oldValue, object newValue)
+		{
+			return string.Format ("replace({0},{1},{2})", field, oldValue, newValue);
+		}
+
+		public override string CreateToLowerSql (object field)
+		{
+			return string.Format ("lower({0})", field);
+		}
+
+		public override string CreateToUpperSql (object field)
+		{
+			return string.Format ("upper({0})", field);
+		}
+
+		public override string CreateTrimSql (object field)
+		{
+			return string.Format ("trim({0})", field);
 		}
 
 		public override string CreateDataBaseTimeSql ()
@@ -296,17 +326,17 @@ namespace Light.Data.SQLiteAdapter
 			}
 		}
 
-		public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
-		{
-			string havingString = null;
-			parameters = null;
-			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
-					return null;
-				})));
-			}
-			return havingString;
-		}
+		//public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
+		//{
+		//	string havingString = null;
+		//	parameters = null;
+		//	if (having != null) {
+		//		havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
+		//			return null;
+		//		})));
+		//	}
+		//	return havingString;
+		//}
 
 		public override string CreatePowerSql (object field, object value, bool forward)
 		{

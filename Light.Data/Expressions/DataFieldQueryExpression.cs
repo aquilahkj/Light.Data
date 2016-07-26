@@ -40,18 +40,18 @@ namespace Light.Data
 			return sql;
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				DataFieldQueryExpression target = expression as DataFieldQueryExpression;
-				return this._fieldInfo.Equals (target._fieldInfo)
-				&& this._relateFieldInfo.Equals (target._relateFieldInfo)
-				&& this._predicate == target._predicate
-				&& this._isReverse == target._isReverse;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		DataFieldQueryExpression target = expression as DataFieldQueryExpression;
+		//		return this._fieldInfo.Equals (target._fieldInfo)
+		//		&& this._relateFieldInfo.Equals (target._relateFieldInfo)
+		//		&& this._predicate == target._predicate
+		//		&& this._isReverse == target._isReverse;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

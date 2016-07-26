@@ -34,15 +34,15 @@ namespace Light.Data
 		//			return function;
 		//		}
 
-		protected override bool EqualsDetail (AggregateFunction function)
-		{
-			if (base.EqualsDetail (function)) {
-				AvgFunction target = function as AvgFunction;
-				return this._fieldinfo.Equals (target._fieldinfo) && this._isDistinct == target._isDistinct;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateFunction function)
+		//{
+		//	if (base.EqualsDetail (function)) {
+		//		AvgFunction target = function as AvgFunction;
+		//		return this._fieldinfo.Equals (target._fieldinfo) && this._isDistinct == target._isDistinct;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

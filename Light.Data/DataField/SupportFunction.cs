@@ -46,4 +46,23 @@ namespace Light.Data
 
 		Min
 	}
+
+
+	enum StringFunction
+	{
+		Substring,
+
+		IndexOf,
+
+		Replace,
+
+		ToLower,
+
+		ToUpper,
+
+		Trim,
+
+		Lenght
+
+	}
 }

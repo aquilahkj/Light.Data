@@ -21,16 +21,16 @@ namespace Light.Data
 			return factory.CreateExistsQuerySql (factory.CreateDataTableSql (_queryExpression.TableMapping), queryString, _isNot);
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				ExistsQueryExpression target = expression as ExistsQueryExpression;
-				return this._queryExpression.Equals (target._queryExpression)
-				&& this._isNot == target._isNot;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		ExistsQueryExpression target = expression as ExistsQueryExpression;
+		//		return this._queryExpression.Equals (target._queryExpression)
+		//		&& this._isNot == target._isNot;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

@@ -170,7 +170,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataField\MathCalculateDataFieldInfo.cs" />
-    <Compile Include="DataField\MathFunction.cs" />
+    <Compile Include="DataField\SupportFunction.cs" />
     <Compile Include="DataField\MathOperator.cs" />
     <Compile Include="DataField\ExtendDataFieldInfo.cs" />
     <Compile Include="DataTableAlias.cs" />
@@ -312,17 +312,25 @@
     <Compile Include="Attributes\ExtendParamAttribute.cs" />
     <Compile Include="Config\ExtendParamCollection.cs" />
     <Compile Include="LambdaExpressionExtend.cs" />
-    <Compile Include="Expressions\NotQueryExpression.cs" />
+    <Compile Include="Expressions\LambdaNotQueryExpression.cs" />
     <Compile Include="Expressions\NotAggregateExpression.cs" />
     <Compile Include="DataField\ConcatStringDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaMatchExpression.cs" />
-    <Compile Include="DataField\LambdaMatchDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaMatchQuerryExpression.cs" />
+    <Compile Include="DataField\LambdaStringMatchDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaDataFieldInfo.cs" />
     <Compile Include="DataField\CastStringDataFielfInfo.cs" />
     <Compile Include="ISupportNotDefine.cs" />
     <Compile Include="LambdaParseException.cs" />
     <Compile Include="DataField\IDataFieldInfoConvert.cs" />
     <Compile Include="DataField\LambdaMathFunctionDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaStringConcatDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaMathCalculateDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaNotDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaBinaryQueryExpression.cs" />
+    <Compile Include="DataField\LambdaStringFunctionDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaNewArrayDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaContainsDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaContainsQueryExpression.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

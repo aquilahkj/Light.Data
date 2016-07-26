@@ -37,8 +37,10 @@ namespace Light.Data
 			DataParameter [] dataParameters2 = null;
 			DataParameter [] dataParameters3 = null;
 			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
-			object start = LambdaExpressionExtend.ConvertLambdaObject (_start, factory, isFullName, false, out dataParameters2);
-			object size = LambdaExpressionExtend.ConvertLambdaObject (_size, factory, isFullName, false, out dataParameters3);
+			//object start = LambdaExpressionExtend.ConvertLambdaObject (_start, factory, isFullName, false, out dataParameters2);
+			//object size = LambdaExpressionExtend.ConvertLambdaObject (_size, factory, isFullName, false, out dataParameters3);
+			object start = _start;
+			object size = _size;
 			string sql = factory.CreateSubStringSql (field, start, size);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2, dataParameters3);
 			return sql;
@@ -60,20 +62,20 @@ namespace Light.Data
 			}
 		}
 
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			if (base.EqualsDetail (info)) {
-				SubStringDataFieldInfo target = info as SubStringDataFieldInfo;
-				if (!Object.Equals (target, null)) {
-					return this._start == target._start && this._size == target._size;
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	if (base.EqualsDetail (info)) {
+		//		SubStringDataFieldInfo target = info as SubStringDataFieldInfo;
+		//		if (!Object.Equals (target, null)) {
+		//			return this._start == target._start && this._size == target._size;
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

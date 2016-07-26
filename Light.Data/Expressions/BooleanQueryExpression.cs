@@ -3,7 +3,7 @@ using System;
 
 namespace Light.Data
 {
-	class BooleanQueryExpression : QueryExpression, ISupportNotDefine
+	class BooleanQueryExpression : QueryExpression
 	{
 		DataFieldInfo _fieldInfo;
 
@@ -27,21 +27,21 @@ namespace Light.Data
 			return factory.CreateBooleanQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isTrue);
 		}
 
-		protected override bool EqualsDetail (QueryExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				BooleanQueryExpression target = expression as BooleanQueryExpression;
-				return this._fieldInfo.Equals (target._fieldInfo)
-				&& this._isTrue == target._isTrue;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (QueryExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		BooleanQueryExpression target = expression as BooleanQueryExpression;
+		//		return this._fieldInfo.Equals (target._fieldInfo)
+		//		&& this._isTrue == target._isTrue;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 
-		public void SetNot ()
-		{
-			_isTrue = !_isTrue;
-		}
+		//public void SetNot ()
+		//{
+		//	_isTrue = !_isTrue;
+		//}
 	}
 }

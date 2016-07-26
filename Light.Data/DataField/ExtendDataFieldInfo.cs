@@ -31,21 +31,21 @@ namespace Light.Data
 
 
 
-		/// <summary>
-		/// Equalses the detail.
-		/// </summary>
-		/// <returns>true</returns>
-		/// <c>false</c>
-		/// <param name="info">Info.</param>
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			ExtendDataFieldInfo target = info as ExtendDataFieldInfo;
-			if (!Object.Equals (target, null)) {
-				return this._baseFieldInfo.Equals (target._baseFieldInfo);
-			}
-			else {
-				return false;
-			}
-		}
+		///// <summary>
+		///// Equalses the detail.
+		///// </summary>
+		///// <returns>true</returns>
+		///// <c>false</c>
+		///// <param name="info">Info.</param>
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	ExtendDataFieldInfo target = info as ExtendDataFieldInfo;
+		//	if (!Object.Equals (target, null)) {
+		//		return this._baseFieldInfo.Equals (target._baseFieldInfo);
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

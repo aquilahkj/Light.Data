@@ -31,16 +31,16 @@ namespace Light.Data
 			return factory.CreateNullQuerySql (name, _isNull);
 		}
 
-		protected override bool EqualsDetail (AggregateHavingExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				NullAggregateExpression target = expression as NullAggregateExpression;
-				return this._function.Equals (target._function)
-				&& this._isNull == target._isNull;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateHavingExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		NullAggregateExpression target = expression as NullAggregateExpression;
+		//		return this._function.Equals (target._function)
+		//		&& this._isNull == target._isNull;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }

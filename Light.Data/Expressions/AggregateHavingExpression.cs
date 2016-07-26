@@ -128,37 +128,37 @@ namespace Light.Data
 		/// <param name="target">The <see cref="Light.Data.AggregateHavingExpression"/> to compare with the current <see cref="Light.Data.AggregateHavingExpression"/>.</param>
 		/// <returns><c>true</c> if the specified <see cref="Light.Data.AggregateHavingExpression"/> is equal to the current
 		/// <see cref="Light.Data.AggregateHavingExpression"/>; otherwise, <c>false</c>.</returns>
-		public virtual bool Equals (AggregateHavingExpression target)
-		{
-			if (Object.Equals (target, null)) {
-				return false;
-			}
-			if (Object.ReferenceEquals (this, target)) {
-				return true;
-			}
-			else {
-				if (this.GetType () == target.GetType ()) {
-					return EqualsDetail (target);
-				}
-				else {
-					return false;
-				}
-			}
-		}
+		//public virtual bool Equals (AggregateHavingExpression target)
+		//{
+		//	if (Object.Equals (target, null)) {
+		//		return false;
+		//	}
+		//	if (Object.ReferenceEquals (this, target)) {
+		//		return true;
+		//	}
+		//	else {
+		//		if (this.GetType () == target.GetType ()) {
+		//			return EqualsDetail (target);
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//}
 
-		/// <summary>
-		/// Equalses the detail.
-		/// </summary>
-		/// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
-		/// <param name="expression">Expression.</param>
-		protected virtual bool EqualsDetail (AggregateHavingExpression expression)
-		{
-			if (this._expression1 != null) {
-				return this._expression1.Equals (expression._expression1) && this._expression2.Equals (expression._expression2) && this._operatorType == expression._operatorType;
-			}
-			else {
-				return Object.Equals (this.TableMapping, expression.TableMapping);
-			}
-		}
+		///// <summary>
+		///// Equalses the detail.
+		///// </summary>
+		///// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
+		///// <param name="expression">Expression.</param>
+		//protected virtual bool EqualsDetail (AggregateHavingExpression expression)
+		//{
+		//	if (this._expression1 != null) {
+		//		return this._expression1.Equals (expression._expression1) && this._expression2.Equals (expression._expression2) && this._operatorType == expression._operatorType;
+		//	}
+		//	else {
+		//		return Object.Equals (this.TableMapping, expression.TableMapping);
+		//	}
+		//}
 	}
 }

@@ -696,52 +696,52 @@ namespace Light.Data
 		/// <param name="target">The <see cref="Light.Data.AggregateFunction"/> to compare with the current <see cref="Light.Data.AggregateFunction"/>.</param>
 		/// <returns><c>true</c> if the specified <see cref="Light.Data.AggregateFunction"/> is equal to the current
 		/// <see cref="Light.Data.AggregateFunction"/>; otherwise, <c>false</c>.</returns>
-		public virtual bool Equals (AggregateFunction target)
-		{
-			if (Object.Equals (target, null)) {
-				return false;
-			}
-			if (Object.ReferenceEquals (this, target)) {
-				return true;
-			}
-			else {
-				if (this.GetType () == target.GetType ()) {
-					return EqualsDetail (target);
-				}
-				else {
-					return false;
-				}
-			}
-		}
+		//public virtual bool Equals (AggregateFunction target)
+		//{
+		//	if (Object.Equals (target, null)) {
+		//		return false;
+		//	}
+		//	if (Object.ReferenceEquals (this, target)) {
+		//		return true;
+		//	}
+		//	else {
+		//		if (this.GetType () == target.GetType ()) {
+		//			return EqualsDetail (target);
+		//		}
+		//		else {
+		//			return false;
+		//		}
+		//	}
+		//}
 
-		/// <summary>
-		/// Equalses the detail.
-		/// </summary>
-		/// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
-		/// <param name="function">Function.</param>
-		protected virtual bool EqualsDetail (AggregateFunction function)
-		{
-			return Object.Equals (this.TableMapping, function.TableMapping);
-		}
+		///// <summary>
+		///// Equalses the detail.
+		///// </summary>
+		///// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
+		///// <param name="function">Function.</param>
+		//protected virtual bool EqualsDetail (AggregateFunction function)
+		//{
+		//	return Object.Equals (this.TableMapping, function.TableMapping);
+		//}
 
-		/// <summary>
-		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Light.Data.AggregateFunction"/>.
-		/// </summary>
-		/// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Light.Data.AggregateFunction"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
-		/// <see cref="Light.Data.AggregateFunction"/>; otherwise, <c>false</c>.</returns>
-		public override bool Equals (object obj)
-		{
-			return object.ReferenceEquals (this, obj);
-		}
+		///// <summary>
+		///// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Light.Data.AggregateFunction"/>.
+		///// </summary>
+		///// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Light.Data.AggregateFunction"/>.</param>
+		///// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+		///// <see cref="Light.Data.AggregateFunction"/>; otherwise, <c>false</c>.</returns>
+		//public override bool Equals (object obj)
+		//{
+		//	return object.ReferenceEquals (this, obj);
+		//}
 
-		/// <summary>
-		/// Serves as a hash function for a <see cref="Light.Data.AggregateFunction"/> object.
-		/// </summary>
-		/// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
-		public override int GetHashCode ()
-		{
-			return base.GetHashCode ();
-		}
+		///// <summary>
+		///// Serves as a hash function for a <see cref="Light.Data.AggregateFunction"/> object.
+		///// </summary>
+		///// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+		//public override int GetHashCode ()
+		//{
+		//	return base.GetHashCode ();
+		//}
 	}
 }

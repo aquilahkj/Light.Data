@@ -84,21 +84,21 @@ namespace Light.Data
 			return factory.CreateAliasSql (field, this._alias);
 		}
 
-		/// <summary>
-		/// 匹配细节内容是否相等
-		/// </summary>
-		/// <param name="info">匹配对象</param>
-		/// <returns></returns>
-		protected override bool EqualsDetail (DataFieldInfo info)
-		{
-			AliasDataFieldInfo target = info as AliasDataFieldInfo;
-			if (!Object.Equals (target, null)) {
-				return this._baseFieldInfo.Equals (target._baseFieldInfo) && this.Alias == target.Alias;
-			}
-			else {
-				return false;
-			}
-		}
+		///// <summary>
+		///// 匹配细节内容是否相等
+		///// </summary>
+		///// <param name="info">匹配对象</param>
+		///// <returns></returns>
+		//protected override bool EqualsDetail (DataFieldInfo info)
+		//{
+		//	AliasDataFieldInfo target = info as AliasDataFieldInfo;
+		//	if (!Object.Equals (target, null)) {
+		//		return this._baseFieldInfo.Equals (target._baseFieldInfo) && this.Alias == target.Alias;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 
 		internal override string AliasTableName {
 			get {

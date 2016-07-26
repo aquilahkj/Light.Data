@@ -74,18 +74,18 @@ namespace Light.Data
 			return factory.CreateSingleParamSql (name, _predicate, _isReverse, dataParameter);
 		}
 
-		protected override bool EqualsDetail (AggregateHavingExpression expression)
-		{
-			if (base.EqualsDetail (expression)) {
-				SingleParamAggregateExpression target = expression as SingleParamAggregateExpression;
-				return this._function.Equals (target._function)
-				&& Object.Equals (this._value, target._value)
-				&& this._predicate == target._predicate
-				&& this._isReverse == target._isReverse;
-			}
-			else {
-				return false;
-			}
-		}
+		//protected override bool EqualsDetail (AggregateHavingExpression expression)
+		//{
+		//	if (base.EqualsDetail (expression)) {
+		//		SingleParamAggregateExpression target = expression as SingleParamAggregateExpression;
+		//		return this._function.Equals (target._function)
+		//		&& Object.Equals (this._value, target._value)
+		//		&& this._predicate == target._predicate
+		//		&& this._isReverse == target._isReverse;
+		//	}
+		//	else {
+		//		return false;
+		//	}
+		//}
 	}
 }
