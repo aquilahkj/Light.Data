@@ -62,7 +62,7 @@ namespace Light.Data
 
 		Trim,
 
-		Lenght
+		//Lenght
 
 	}
 }

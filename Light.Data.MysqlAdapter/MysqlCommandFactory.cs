@@ -7,9 +7,20 @@ namespace Light.Data.MysqlAdapter
 {
 	class MysqlCommandFactory : CommandFactory
 	{
+
+		DateTimeFormater dateTimeFormater = new DateTimeFormater ();
+
+		readonly string defaultDateTime = "%Y-%m-%d %H:%M:%S";
+
 		public MysqlCommandFactory ()
 		{
 			_canInnerPage = true;
+			dateTimeFormater.YearFormat = "%Y";
+			dateTimeFormater.MonthFormat = "%m";
+			dateTimeFormater.DayFormat = "%d";
+			dateTimeFormater.HourFormat = "%H";
+			dateTimeFormater.MinuteFormat = "%M";
+			dateTimeFormater.SecondFormat = "%S";
 		}
 
 		public override string CreateDataFieldSql (string fieldName)
@@ -290,6 +301,18 @@ namespace Light.Data.MysqlAdapter
 				}
 				return string.Format ("date_format({0},'{1}')", field, sqlformat);
 			}
+		}
+
+		public override string CreateDateTimeFormatSql (string field, string format)
+		{
+			string sqlformat;
+			if (string.IsNullOrEmpty (format)) {
+				sqlformat = defaultDateTime;
+			}
+			else {
+				sqlformat = dateTimeFormater.FormatData (format);
+			}
+			return string.Format ("date_format({0},'{1}')", field, sqlformat);
 		}
 
 		public override string CreateYearSql (object field)

@@ -9,69 +9,9 @@ namespace Light.Data
 {
 	static class LambdaExpressionExtend
 	{
-		//public static bool In<T> (this T obj, T [] array)
-		//{
-		//	return true;
-		//}
-		//public static bool NotIn<T> (this T obj, T [] array)
-		//{
-		//	return true;
-		//}
-		//public static bool Like (this string str, string likeStr)
-		//{
-		//	return true;
-		//}
-		//public static bool NotLike (this string str, string likeStr)
-		//{
-		//	return true;
-		//}
-
-		//internal static object ConvertLambdaObject (object value, CommandFactory factory, bool fullName, bool stringWarp, out DataParameter [] dataParameters)
-		//{
-		//	DataFieldInfo fieldInfo = value as DataFieldInfo;
-		//	if (!object.Equals (fieldInfo, null)) {
-		//		return fieldInfo.CreateDataFieldSql (factory, fullName, out dataParameters);
-		//	}
-		//	dataParameters = null;
-		//	object obj;
-		//	Delegate dele = value as Delegate;
-		//	if (dele != null) {
-		//		obj = dele.DynamicInvoke (null);
-		//	}
-		//	else {
-		//		obj = value;
-		//	}
-		//	if (stringWarp) {
-		//		obj = factory.CreateStringWrap (obj);
-		//	}
-		//	return obj;
-		//}
-
-		static HashSet<MethodInfo> Method_IndexOf = new HashSet<MethodInfo> ();
-
-		static HashSet<MethodInfo> Method_Trim = new HashSet<MethodInfo> ();
-
 		static LambdaExpressionExtend ()
 		{
-			Type stringType = typeof (string);
-			MethodInfo [] stringMethods = stringType.GetMethods ();
-			foreach (MethodInfo method in stringMethods) {
-				if (method.Name == "IndexOf") {
-					ParameterInfo [] parameters = method.GetParameters ();
-					if (parameters.Length == 1) {
-						Method_IndexOf.Add (method);
-					}
-					else if (parameters.Length == 2 && parameters [1].ParameterType == typeof (int)) {
-						Method_IndexOf.Add (method);
-					}
-				}
-				else if (method.Name == "Trim") {
-					ParameterInfo [] parameters = method.GetParameters ();
-					if (parameters.Length == 0) {
-						Method_Trim.Add (method);
-					}
-				}
-			}
+
 		}
 
 		internal static object ConvertLambdaObject (object value)
@@ -102,60 +42,6 @@ namespace Light.Data
 				return false;
 			}
 		}
-
-		//static QueryExpression CreateDataFieldQueryExpression (QueryPredicate predicate, DataFieldInfo leftFieldInfo, DataFieldInfo rightFieldInfo)
-		//{
-		//	return new DataFieldQueryExpression (leftFieldInfo, predicate, rightFieldInfo, false);
-		//}
-
-		//static QueryExpression CreateQueryPredicateExpression (QueryPredicate predicate, DataFieldInfo fieldInfo, object value, bool isReverse)
-		//{
-		//	QueryExpression queryExpression = null;
-		//	if (object.Equals (value, null)) {
-		//		if (predicate == QueryPredicate.Eq) {
-		//			queryExpression = new NullQueryExpression (fieldInfo, true);
-		//		}
-		//		else if (predicate == QueryPredicate.NotEq) {
-		//			queryExpression = new NullQueryExpression (fieldInfo, false);
-		//		}
-		//	}
-		//	else if (value is Boolean) {
-		//		bool b = (bool)value;
-		//		if (predicate == QueryPredicate.Eq) {
-		//			queryExpression = new BooleanQueryExpression (fieldInfo, b);
-		//		}
-		//		else if (predicate == QueryPredicate.NotEq) {
-		//			queryExpression = new BooleanQueryExpression (fieldInfo, !b);
-		//		}
-		//	}
-		//	else {
-		//		queryExpression = new LambdaBinaryQueryExpression (fieldInfo, predicate, value, isReverse);
-		//	}
-		//	if (queryExpression == null) {
-		//		throw new LambdaParseException ("");
-		//	}
-
-		//	return queryExpression;
-		//}
-
-		//private static QueryPredicate ReverseQueryPredicate (QueryPredicate queryPredicate)
-		//{
-		//	switch (queryPredicate) {
-		//	case QueryPredicate.Eq:
-		//	case QueryPredicate.NotEq:
-		//		return queryPredicate;
-		//	case QueryPredicate.Gt:
-		//		return QueryPredicate.Lt;
-		//	case QueryPredicate.GtEq:
-		//		return QueryPredicate.LtEq;
-		//	case QueryPredicate.Lt:
-		//		return QueryPredicate.Gt;
-		//	case QueryPredicate.LtEq:
-		//		return QueryPredicate.GtEq;
-		//	default:
-		//		return QueryPredicate.Eq;
-		//	}
-		//}
 
 		private static bool CheckQueryPredicate (ExpressionType expressionType, out QueryPredicate queryPredicate)
 		{
@@ -230,52 +116,67 @@ namespace Light.Data
 				ret = false;
 				break;
 			}
-
-
 			return ret;
 		}
 
-		public static QueryExpression ResolveLambda (LambdaExpression expression)
+		public static OrderExpression ResolveLambdaOrderByExpression (LambdaExpression expression, OrderType orderType)
 		{
-			ParameterExpression parameter = expression.Parameters [0];
-			string name = parameter.Name;
-			Type type = parameter.Type;
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (type);
-			//try {
-			return Resolve (expression.Body, name, mapping);
-			//}
-			//catch (Exception ex) {
-			//	throw ex;
-			//}
+			LambdaParameterGroup parameters = new LambdaParameterGroup (expression);
+			DataFieldInfo dataFieldInfo;
+			bool ret;
+			try {
+				ret = ParseDataFieldInfo (expression.Body, parameters, out dataFieldInfo);
+			}
+			catch (Exception ex) {
+				throw new LightDataException (string.Format ("parse order expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+			}
+			if (ret) {
+				OrderExpression exp = new FieldOrderExpression (dataFieldInfo, orderType);
+				return exp;
+			}
+			else {
+				throw new LightDataException (string.Format ("not valid field in order expression \"{0}\"", expression));
+			}
 		}
 
-		private static DataFieldInfo CreateDateDataFieldInfo (DataFieldInfo fieldInfo, MemberInfo member)
+		public static QueryExpression ResolveLambdaQueryExpression (LambdaExpression expression)
+		{
+			LambdaParameterGroup parameters = new LambdaParameterGroup (expression);
+			try {
+				return ResolveQueryExpression (expression.Body, parameters);
+			}
+			catch (Exception ex) {
+				throw new LightDataException (string.Format ("parse query expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+			}
+		}
+
+		private static DataFieldInfo CreateDateDataFieldInfo (MemberInfo member, DataFieldInfo fieldInfo)
 		{
 			if (member.Name == "Date") {
-				return fieldInfo = new DateDataFieldInfo (fieldInfo, null);
+				return fieldInfo = new LambdaDateDataFieldInfo (fieldInfo);
 			}
 			else {
 				DatePart datePart;
-				if (!Enum.TryParse<DatePart> (member.Name, out datePart)) {
-					throw new LambdaParseException ("");
+				if (Enum.TryParse<DatePart> (member.Name, out datePart)) {
+					return new LambdaDatePartDataFieldInfo (fieldInfo, datePart);
 				}
-				return new DatePartDataFieldInfo (fieldInfo, datePart);
 			}
+			throw new LambdaParseException (string.Format ("DateTime.{0} member not support", member.Name));
 		}
 
-		private static DataFieldInfo CreateStringMemberDataFieldInfo (DataFieldInfo fieldInfo, MemberInfo member)
+		private static DataFieldInfo CreateStringMemberDataFieldInfo (MemberInfo member, DataFieldInfo fieldInfo)
 		{
 			switch (member.Name) {
 			case "Length":
-				fieldInfo = new LambdaStringFunctionDataFieldInfo (fieldInfo, StringFunction.Lenght, fieldInfo);
+				fieldInfo = new LambdaStringLengthDataFieldInfo (fieldInfo);
 				break;
 			default:
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (string.Format ("String.{0} member not support", member.Name));
 			}
 			return fieldInfo;
 		}
 
-		private static bool ParseArguments (ReadOnlyCollection<System.Linq.Expressions.Expression> arguments, string name, DataEntityMapping mapping, out object [] argObjects, out DataFieldInfo fieldInfo)
+		private static bool ParseArguments (ReadOnlyCollection<System.Linq.Expressions.Expression> arguments, LambdaParameterGroup parameters, out object [] argObjects, out DataFieldInfo fieldInfo)
 		{
 			fieldInfo = null;
 			argObjects = null;
@@ -287,7 +188,7 @@ namespace Light.Data
 			for (int i = 0; i < arguments.Count; i++) {
 				System.Linq.Expressions.Expression arg = arguments [i];
 				DataFieldInfo argFieldInfo;
-				if (CheckDataFieldInfo (arg, name, mapping, out argFieldInfo)) {
+				if (ParseDataFieldInfo (arg, parameters, out argFieldInfo)) {
 					hasFieldInfo = true;
 					if (Object.Equals (fieldInfo, null)) {
 						fieldInfo = argFieldInfo;
@@ -308,18 +209,30 @@ namespace Light.Data
 			}
 		}
 
-		private static DataFieldInfo ParseMathFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, string name, DataEntityMapping mapping)
+		private static DataFieldInfo ParseMathFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, LambdaParameterGroup parameters)
 		{
+			ParameterInfo [] parameterInfos = method.GetParameters ();
 			MathFunction mathFunction;
-			if (!Enum.TryParse<MathFunction> (method.Name, out mathFunction)) {
-				throw new LambdaParseException ("");
+			if (Enum.TryParse<MathFunction> (method.Name, out mathFunction)) {
+				if (parameterInfos == null || parameterInfos.Length == 0) {
+					throw new LambdaParseException (string.Format ("Math.{0} method args error", method.Name));
+				}
+				else if (mathFunction == MathFunction.Atan2 || mathFunction == MathFunction.Max || mathFunction == MathFunction.Min || mathFunction == MathFunction.Pow) {
+					if (parameterInfos.Length != 2) {
+						throw new LambdaParseException (string.Format ("Math.{0} method args error", method.Name));
+					}
+				}
+				else if (mathFunction == MathFunction.Log || mathFunction == MathFunction.Round) {
+					if (parameterInfos.Length > 2) {
+						throw new LambdaParseException (string.Format ("Math.{0} method args error", method.Name));
+					}
+				}
+				return new LambdaMathFunctionDataFieldInfo (mainFieldInfo, mathFunction, argObjects);
 			}
-			DataFieldInfo fieldInfo = new LambdaMathFunctionDataFieldInfo (mainFieldInfo, mathFunction, argObjects);
-			return fieldInfo;
+			throw new LambdaParseException (string.Format ("Math.{0} method not support", method.Name));
 		}
 
-
-		private static DataFieldInfo ParseStaticeStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, string name, DataEntityMapping mapping)
+		private static DataFieldInfo ParseStaticeStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, LambdaParameterGroup parameters)
 		{
 			if (method.Name == "Concat") {
 				if (argObjects.Length == 1) {
@@ -335,48 +248,74 @@ namespace Light.Data
 					return new LambdaStringConcatDataFieldInfo (mainFieldInfo, argObjects);
 				}
 			}
-			throw new LambdaParseException ("");
+			throw new LambdaParseException (string.Format ("String.{0} method not support", method.Name));
 		}
 
-		private static DataFieldInfo ParseInstanceStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object callObject, object [] argObjects, string name, DataEntityMapping mapping)
+		private static DataFieldInfo ParseInstanceStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object callObject, object [] argObjects, LambdaParameterGroup parameters)
 		{
 			ParameterInfo [] parameterInfos = method.GetParameters ();
-			if (method.Name == "StartsWith" && parameterInfos.Length == 1) {
+			if (method.Name == "StartsWith") {
+				if (parameterInfos.Length != 1) {
+					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+				}
 				return new LambdaStringMatchDataFieldInfo (mainFieldInfo, true, false, callObject, argObjects [0]);
 			}
-			else if (method.Name == "EndsWith" && parameterInfos.Length == 1) {
+			else if (method.Name == "EndsWith") {
+				if (parameterInfos.Length != 1) {
+					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+				}
 				return new LambdaStringMatchDataFieldInfo (mainFieldInfo, false, true, callObject, argObjects [0]);
 			}
-			else if (method.Name == "Contains" && parameterInfos.Length == 1) {
+			else if (method.Name == "Contains") {
+				if (parameterInfos.Length != 1) {
+					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+				}
 				return new LambdaStringMatchDataFieldInfo (mainFieldInfo, true, true, callObject, argObjects [0]);
 			}
 			else {
 				StringFunction stringFunction;
-				if (!Enum.TryParse<StringFunction> (method.Name, out stringFunction)) {
-					throw new LambdaParseException ("");
+				if (Enum.TryParse<StringFunction> (method.Name, out stringFunction)) {
+					if (stringFunction == StringFunction.IndexOf && !(parameterInfos.Length == 1 || (parameterInfos.Length == 2 && parameterInfos [1].ParameterType == typeof (int)))) {
+						throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+					}
+					else if (stringFunction == StringFunction.Trim && parameterInfos.Length > 0) {
+						throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+					}
+					return new LambdaStringFunctionDataFieldInfo (mainFieldInfo, stringFunction, callObject, argObjects);
 				}
-				if (stringFunction == StringFunction.IndexOf && !Method_IndexOf.Contains (method)) {
-					throw new LambdaParseException ("");
-				}
-				if (stringFunction == StringFunction.Trim && !Method_Trim.Contains (method)) {
-					throw new LambdaParseException ("");
-				}
-				DataFieldInfo fieldInfo = new LambdaStringFunctionDataFieldInfo (mainFieldInfo, stringFunction, callObject, argObjects);
-				return fieldInfo;
 			}
+			throw new LambdaParseException (string.Format ("String.{0} method not support", method.Name));
 		}
 
-		private static DataFieldInfo ParseInstanceDateTimeFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object callObject, object [] argObjects, string name, DataEntityMapping mapping)
+		private static DataFieldInfo ParseInstanceDateTimeFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object callObject, object [] argObjects, LambdaParameterGroup parameters)
 		{
-			throw new NotImplementedException ();
+			ParameterInfo [] parameterInfos = method.GetParameters ();
+			if (method.Name == "ToString") {
+				if (parameterInfos.Length == 0) {
+					return new LambdaDateFormatDataFieldInfo (mainFieldInfo, null);
+				}
+				else if (parameterInfos.Length == 1) {
+					if (parameterInfos [0].ParameterType == typeof (string)) {
+						object o = ConvertLambdaObject (argObjects [0]);
+						return new LambdaDateFormatDataFieldInfo (mainFieldInfo, o as string);
+					}
+					else {
+						throw new LambdaParseException (string.Format ("DateTime.{0} method args error", method.Name));
+					}
+				}
+				else {
+					throw new LambdaParseException (string.Format ("DateTime.{0} method args error", method.Name));
+				}
+			}
+			throw new LambdaParseException (string.Format ("DateTime.{0} method not support", method.Name));
 		}
 
-		static DataFieldInfo ParseContainsDataFieldInfo (MethodInfo methodInfo, DataFieldInfo mainFieldInfo, object collections, string name, DataEntityMapping mapping)
+		static DataFieldInfo ParseContainsDataFieldInfo (MethodInfo methodInfo, DataFieldInfo mainFieldInfo, object collections, LambdaParameterGroup parameters)
 		{
 			return new LambdaContainsDataFieldInfo (mainFieldInfo, collections);
 		}
 
-		private static bool CheckDataFieldInfo (System.Linq.Expressions.Expression expression, string name, DataEntityMapping mapping, out DataFieldInfo fieldInfo)
+		private static bool ParseDataFieldInfo (System.Linq.Expressions.Expression expression, LambdaParameterGroup parameters, out DataFieldInfo fieldInfo)
 		{
 			fieldInfo = null;
 			if (expression.NodeType == ExpressionType.Constant) {
@@ -387,12 +326,12 @@ namespace Light.Data
 				if (binary.Method != null && binary.NodeType == ExpressionType.Add && binary.Method.DeclaringType == typeof (string) && binary.Method.Name == "Concat") {
 					DataFieldInfo leftFieldInfo;
 					object leftValue = null;
-					if (!CheckDataFieldInfo (binary.Left, name, mapping, out leftFieldInfo)) {
+					if (!ParseDataFieldInfo (binary.Left, parameters, out leftFieldInfo)) {
 						leftValue = ConvertObject (binary.Left);
 					}
 					DataFieldInfo rightFieldInfo;
 					object rightValue = null;
-					if (!CheckDataFieldInfo (binary.Right, name, mapping, out rightFieldInfo)) {
+					if (!ParseDataFieldInfo (binary.Right, parameters, out rightFieldInfo)) {
 						rightValue = ConvertObject (binary.Right);
 					}
 					if (!Object.Equals (leftFieldInfo, null) && !Object.Equals (rightFieldInfo, null)) {
@@ -416,12 +355,12 @@ namespace Light.Data
 					if (CheckMathOperator (binary.NodeType, out mathOperator)) {
 						DataFieldInfo leftFieldInfo;
 						object leftValue = null;
-						if (!CheckDataFieldInfo (binary.Left, name, mapping, out leftFieldInfo)) {
+						if (!ParseDataFieldInfo (binary.Left, parameters, out leftFieldInfo)) {
 							leftValue = ConvertObject (binary.Left);
 						}
 						DataFieldInfo rightFieldInfo;
 						object rightValue = null;
-						if (!CheckDataFieldInfo (binary.Right, name, mapping, out rightFieldInfo)) {
+						if (!ParseDataFieldInfo (binary.Right, parameters, out rightFieldInfo)) {
 							rightValue = ConvertObject (binary.Right);
 						}
 
@@ -442,7 +381,7 @@ namespace Light.Data
 						}
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (string.Format ("not support node type {0}", binary.NodeType));
 					}
 				}
 			}
@@ -450,7 +389,7 @@ namespace Light.Data
 			if (unary != null) {
 				if (unary.NodeType == ExpressionType.Not) {
 					DataFieldInfo notfieldInfo;
-					if (!CheckDataFieldInfo (unary.Operand, name, mapping, out notfieldInfo)) {
+					if (!ParseDataFieldInfo (unary.Operand, parameters, out notfieldInfo)) {
 						return false;
 					}
 					ISupportNotDefine notDefine = notfieldInfo as ISupportNotDefine;
@@ -465,7 +404,7 @@ namespace Light.Data
 				}
 				else if (unary.NodeType == ExpressionType.Convert) {
 					DataFieldInfo convertfieldInfo;
-					if (!CheckDataFieldInfo (unary.Operand, name, mapping, out convertfieldInfo)) {
+					if (!ParseDataFieldInfo (unary.Operand, parameters, out convertfieldInfo)) {
 						return false;
 					}
 					else {
@@ -479,25 +418,26 @@ namespace Light.Data
 				if (member.Expression != null) {
 					ParameterExpression param = member.Expression as ParameterExpression;
 					if (param != null) {
-						if (param.Name == name && param.Type == mapping.ObjectType) {
+						DataEntityMapping mapping;
+						if (parameters.TryGet (param.Name, out mapping) && param.Type == mapping.ObjectType) {
 							fieldInfo = new DataFieldInfo (param.Type, member.Member.Name);
 							return true;
 						}
 						else {
-							throw new LambdaParseException ("");
+							throw new LambdaParseException (string.Format ("parameter not correct,name:{0},type:{1}", param.Name, param.Type));
 						}
 					}
-					if (CheckDataFieldInfo (member.Expression, name, mapping, out fieldInfo)) {
+					if (ParseDataFieldInfo (member.Expression, parameters, out fieldInfo)) {
 						if (member.Expression.Type == typeof (DateTime)) {
-							fieldInfo = CreateDateDataFieldInfo (fieldInfo, member.Member);
+							fieldInfo = CreateDateDataFieldInfo (member.Member, fieldInfo);
 							return true;
 						}
 						else if (member.Expression.Type == typeof (string)) {
-							fieldInfo = CreateStringMemberDataFieldInfo (fieldInfo, member.Member);
+							fieldInfo = CreateStringMemberDataFieldInfo (member.Member, fieldInfo);
 							return true;
 						}
 						else {
-							throw new LambdaParseException ("");
+							throw new LambdaParseException (string.Format ("{0} type not support", member.Expression.Type));
 						}
 					}
 					else {
@@ -514,17 +454,17 @@ namespace Light.Data
 				if ((methodInfo.Attributes & MethodAttributes.Static) == MethodAttributes.Static) {
 					object [] argObjects;
 					DataFieldInfo mainFieldInfo;
-					if (ParseArguments (methodcall.Arguments, name, mapping, out argObjects, out mainFieldInfo)) {
+					if (ParseArguments (methodcall.Arguments, parameters, out argObjects, out mainFieldInfo)) {
 						if (methodInfo.DeclaringType == typeof (Math)) {
-							fieldInfo = ParseMathFunctionDataFieldInfo (methodInfo, mainFieldInfo, argObjects, name, mapping);
+							fieldInfo = ParseMathFunctionDataFieldInfo (methodInfo, mainFieldInfo, argObjects, parameters);
 							return true;
 						}
 						if (methodInfo.DeclaringType == typeof (string)) {
-							fieldInfo = ParseStaticeStringFunctionDataFieldInfo (methodInfo, mainFieldInfo, argObjects, name, mapping);
+							fieldInfo = ParseStaticeStringFunctionDataFieldInfo (methodInfo, mainFieldInfo, argObjects, parameters);
 							return true;
 						}
 						else {
-							throw new LambdaParseException ("");
+							throw new LambdaParseException (string.Format ("{0} type not support", member.Expression.Type));
 						}
 					}
 					else {
@@ -535,7 +475,7 @@ namespace Light.Data
 					DataFieldInfo mainFieldInfo = null;
 					DataFieldInfo callFieldInfo;
 					object callObject = null;
-					if (CheckDataFieldInfo (methodcall.Object, name, mapping, out callFieldInfo)) {
+					if (ParseDataFieldInfo (methodcall.Object, parameters, out callFieldInfo)) {
 						mainFieldInfo = callFieldInfo;
 						callObject = callFieldInfo;
 					}
@@ -545,7 +485,7 @@ namespace Light.Data
 
 					object [] argObjects;
 					DataFieldInfo mainArgFieldInfo;
-					if (ParseArguments (methodcall.Arguments, name, mapping, out argObjects, out mainArgFieldInfo)) {
+					if (ParseArguments (methodcall.Arguments, parameters, out argObjects, out mainArgFieldInfo)) {
 						if (Object.Equals (mainFieldInfo, null)) {
 							mainFieldInfo = mainArgFieldInfo;
 						}
@@ -554,16 +494,16 @@ namespace Light.Data
 						return false;
 					}
 
-					if (methodInfo.DeclaringType == typeof (string)) {
-						fieldInfo = ParseInstanceStringFunctionDataFieldInfo (methodInfo, mainFieldInfo, callObject, argObjects, name, mapping);
+					if (methodcall.Object.Type == typeof (string)) {
+						fieldInfo = ParseInstanceStringFunctionDataFieldInfo (methodInfo, mainFieldInfo, callObject, argObjects, parameters);
 						return true;
 					}
-					if (methodInfo.DeclaringType == typeof (DateTime)) {
-						fieldInfo = ParseInstanceDateTimeFunctionDataFieldInfo (methodInfo, mainFieldInfo, callObject, argObjects, name, mapping);
+					if (methodcall.Object.Type == typeof (DateTime)) {
+						fieldInfo = ParseInstanceDateTimeFunctionDataFieldInfo (methodInfo, mainFieldInfo, callObject, argObjects, parameters);
 						return true;
 					}
 					if (Object.Equals (callFieldInfo, null) && argObjects != null && argObjects.Length == 1 && methodInfo.Name == "Contains" && typeof (IEnumerable).IsAssignableFrom (methodInfo.DeclaringType)) {
-						fieldInfo = ParseContainsDataFieldInfo (methodInfo, mainFieldInfo, callObject, name, mapping);
+						fieldInfo = ParseContainsDataFieldInfo (methodInfo, mainFieldInfo, callObject, parameters);
 						return true;
 					}
 				}
@@ -572,7 +512,7 @@ namespace Light.Data
 			if (newarray != null) {
 				object [] argsObjects;
 				DataFieldInfo arrayFieldInfo;
-				if (ParseArguments (newarray.Expressions, name, mapping, out argsObjects, out arrayFieldInfo)) {
+				if (ParseArguments (newarray.Expressions, parameters, out argsObjects, out arrayFieldInfo)) {
 					fieldInfo = new LambdaNewArrayDataFieldInfo (arrayFieldInfo, argsObjects);
 					return true;
 				}
@@ -580,7 +520,7 @@ namespace Light.Data
 					return false;
 				}
 			}
-			throw new NotImplementedException ();
+			throw new LambdaParseException (string.Format ("lambda expression [{0}] not support", expression));
 		}
 
 		public static object ConvertObject (System.Linq.Expressions.Expression expression)
@@ -593,22 +533,21 @@ namespace Light.Data
 				LambdaExpression lambda = System.Linq.Expressions.Expression.Lambda (expression);
 				Delegate fn = lambda.Compile ();
 				return fn;
-				//return fn.DynamicInvoke (null);
 			}
 		}
 
-		private static QueryExpression Resolve (System.Linq.Expressions.Expression expression, string name, DataEntityMapping mapping)
+		private static QueryExpression ResolveQueryExpression (System.Linq.Expressions.Expression expression, LambdaParameterGroup parameters)
 		{
-			LambdaExpression lambda = expression as LambdaExpression;
-			if (lambda != null) {
-				return ResolveLambda (lambda);
-			}
+			//LambdaExpression lambda = expression as LambdaExpression;
+			//if (lambda != null) {
+			//	return ResolveLambdaQueryExpression (lambda);
+			//}
 			BinaryExpression binary = expression as BinaryExpression;
 			if (binary != null) {
 				CatchOperatorsType catchType;
 				if (CheckCatchOperatorsType (binary.NodeType, out catchType)) {
-					var left = Resolve (binary.Left, name, mapping);
-					var right = Resolve (binary.Right, name, mapping);
+					var left = ResolveQueryExpression (binary.Left, parameters);
+					var right = ResolveQueryExpression (binary.Right, parameters);
 					return QueryExpression.Catch (left, catchType, right);
 				}
 				else {
@@ -616,25 +555,25 @@ namespace Light.Data
 					if (CheckQueryPredicate (binary.NodeType, out queryPredicate)) {
 						DataFieldInfo leftFieldInfo;
 						object leftValue = null;
-						if (!CheckDataFieldInfo (binary.Left, name, mapping, out leftFieldInfo)) {
+						if (!ParseDataFieldInfo (binary.Left, parameters, out leftFieldInfo)) {
 							leftValue = ConvertObject (binary.Left);
 						}
 						DataFieldInfo rightFieldInfo;
 						object rightValue = null;
-						if (!CheckDataFieldInfo (binary.Right, name, mapping, out rightFieldInfo)) {
+						if (!ParseDataFieldInfo (binary.Right, parameters, out rightFieldInfo)) {
 							rightValue = ConvertObject (binary.Right);
 						}
 						if (!Object.Equals (leftFieldInfo, null) && !Object.Equals (rightFieldInfo, null)) {
-							return new LambdaBinaryQueryExpression (mapping, queryPredicate, leftFieldInfo, rightFieldInfo);
+							return new LambdaBinaryQueryExpression (leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightFieldInfo);
 						}
 						else if (!Object.Equals (leftFieldInfo, null) && Object.Equals (rightFieldInfo, null)) {
-							return new LambdaBinaryQueryExpression (mapping, queryPredicate, leftFieldInfo, rightValue);
+							return new LambdaBinaryQueryExpression (leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightValue);
 						}
 						else if (Object.Equals (leftFieldInfo, null) && !Object.Equals (rightFieldInfo, null)) {
-							return new LambdaBinaryQueryExpression (mapping, queryPredicate, rightFieldInfo, leftValue);
+							return new LambdaBinaryQueryExpression (rightFieldInfo.TableMapping, queryPredicate, rightFieldInfo, leftValue);
 						}
 						else {
-							throw new LambdaParseException ("");
+							throw new LambdaParseException (string.Format ("not allow two constant value in BinaryExpression \"{0}\"", binary));
 						}
 					}
 				}
@@ -642,7 +581,7 @@ namespace Light.Data
 			UnaryExpression unary = expression as UnaryExpression;
 			if (unary != null) {
 				if (unary.NodeType == ExpressionType.Not) {
-					QueryExpression queryExpression = Resolve (unary.Operand, name, mapping);
+					QueryExpression queryExpression = ResolveQueryExpression (unary.Operand, parameters);
 					ISupportNotDefine notDefine = queryExpression as ISupportNotDefine;
 					if (notDefine != null) {
 						notDefine.SetNot ();
@@ -656,190 +595,28 @@ namespace Light.Data
 			MemberExpression member = expression as MemberExpression;
 			if (member != null) {
 				DataFieldInfo fieldInfo;
-				if (!CheckDataFieldInfo (expression, name, mapping, out fieldInfo)) {
-					throw new LambdaParseException ("");
+				if (!ParseDataFieldInfo (expression, parameters, out fieldInfo)) {
+					throw new LambdaParseException (string.Format ("not allow constant member in MemberExpression \"{0}\"", member));
 				}
-				return new LambdaBinaryQueryExpression (mapping, QueryPredicate.Eq, fieldInfo, true);
-				//return CreateQueryPredicateExpression (QueryPredicate.Eq, fieldInfo, true, false);
-				//ConstantExpression constant = System.Linq.Expressions.Expression.Constant (true);
-				//return ResolveFunc (member, constant, ExpressionType.Equal);
+				return new LambdaBinaryQueryExpression (fieldInfo.TableMapping, QueryPredicate.Eq, fieldInfo, true);
 			}
 			MethodCallExpression methodcall = expression as MethodCallExpression;
-			if (methodcall != null)//x=>x.Name.Contains("xxx")或array.Contains(x.Name)这类
-			{
+			if (methodcall != null) {
 				DataFieldInfo fieldInfo;
-				if (!CheckDataFieldInfo (expression, name, mapping, out fieldInfo)) {
-					throw new LambdaParseException ("");
+				if (!ParseDataFieldInfo (expression, parameters, out fieldInfo)) {
+					throw new LambdaParseException (string.Format ("not allow constant method in MethodCallExpression \"{0}\"", methodcall));
 				}
 				IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
 				if (Object.Equals (convertFieldInfo, null)) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (string.Format ("not allow method in MethodCallExpression \"{0}\"", methodcall));
 				}
 				else {
 					return convertFieldInfo.ConvertToExpression ();
 				}
 			}
 
-			throw new LambdaParseException ("");
-			//LambdaParseException ("")sion as BinaryExpression;
-			//if (body == null)
-			//	throw new Exception ("无法解析" + expression);
-			//var Operator = GetOperator (body.NodeType);
-			//var Left = Resolve (body.Left);
-			//var Right = Resolve (body.Right);
-			//string Result = string.Format ("({0} {1} {2})", Left, Operator, Right);
-			//return Result;
+			throw new LambdaParseException (string.Format ("lambda expression [{0}] not support", expression));
 		}
-
-		//private static QueryExpression ResolveFunc (MemberExpression left, ConstantExpression right, ExpressionType expressiontype)
-		//{
-		//	var Name = left.Member.Name;
-		//	var Value = right.Value;
-		//	var Operator = GetOperator (expressiontype);
-		//	string CompName = SetArgument (Name, Value.ToString ());
-
-		//}
-
-		//private static QueryExpression ResolveLinqToObject (System.Linq.Expressions.Expression expression, object value, ExpressionType? expressiontype = null)
-		//{
-		//	var MethodCall = expression as MethodCallExpression;
-		//	var MethodName = MethodCall.Method.Name;
-		//	switch (MethodName)//这里其实还可以改成反射调用，不用写switch
-		//	{
-		//	case "Contains":
-		//		if (MethodCall.Object != null)
-		//			return Like (MethodCall);
-		//		return In (MethodCall, value);
-		//	case "Count":
-		//		return Len (MethodCall, value, expressiontype.Value);
-		//	case "LongCount":
-		//		return Len (MethodCall, value, expressiontype.Value);
-		//	default:
-		//		throw new Exception (string.Format ("不支持{0}方法的查找！", MethodName));
-		//	}
-		//}
-
-
-		//public static QueryExpression Where<T> (T entity, Expression<Func<T, bool>> func) where T : class, new()
-		//{
-
-		//	//if (func.Body is BinaryExpression) {
-		//	//	BinaryExpression be = ((BinaryExpression)func.Body);
-		//	//	entity.whereStr = BinarExpressionProvider (be.Left, be.Right, be.NodeType);
-		//	//}
-		//	//else
-		//	//	entity.whereStr = string.Empty;
-		//}
-
-		//static QueryExpression BinarExpressionProvider (System.Linq.Expressions.Expression left, System.Linq.Expressions.Expression right, System.Linq.Expressions.ExpressionType type)
-		//{
-		//	QueryExpression expression;
-
-
-
-		//	string sb = "(";
-		//	//先处理左边
-		//	sb += ExpressionRouter (left);
-
-		//	sb += ExpressionTypeCast (type);
-
-		//	//再处理右边
-		//	string tmpStr = ExpressionRouter (right);
-		//	if (tmpStr == "null") {
-		//		if (sb.EndsWith (" ="))
-		//			sb = sb.Substring (0, sb.Length - 2) + " is null";
-		//		else if (sb.EndsWith ("<>"))
-		//			sb = sb.Substring (0, sb.Length - 2) + " is not null";
-		//	}
-		//	else
-		//		sb += tmpStr;
-		//	return sb += ")";
-		//}
-
-		//static QueryExpression ExpressionRouter (System.Linq.Expressions.Expression exp)
-		//{
-		//	string sb = string.Empty;
-		//	if (exp is BinaryExpression) {
-		//		BinaryExpression be = ((BinaryExpression)exp);
-		//		return BinarExpressionProvider (be.Left, be.Right, be.NodeType);
-		//	}
-		//	else if (exp is MemberExpression) {
-		//		MemberExpression me = ((MemberExpression)exp);
-		//		return me.Member.Name;
-		//	}
-		//	else if (exp is NewArrayExpression) {
-		//		NewArrayExpression ae = ((NewArrayExpression)exp);
-		//		StringBuilder tmpstr = new StringBuilder ();
-		//		foreach (Expression ex in ae.Expressions) {
-		//			tmpstr.Append (ExpressionRouter (ex));
-		//			tmpstr.Append (",");
-		//		}
-		//		return tmpstr.ToString (0, tmpstr.Length - 1);
-		//	}
-		//	else if (exp is MethodCallExpression) {
-		//		MethodCallExpression mce = (MethodCallExpression)exp;
-		//		if (mce.Method.Name == "Like")
-		//			return string.Format ("({0} like {1})", ExpressionRouter (mce.Arguments [0]), ExpressionRouter (mce.Arguments [1]));
-		//		else if (mce.Method.Name == "NotLike")
-		//			return string.Format ("({0} Not like {1})", ExpressionRouter (mce.Arguments [0]), ExpressionRouter (mce.Arguments [1]));
-		//		else if (mce.Method.Name == "In")
-		//			return string.Format ("{0} In ({1})", ExpressionRouter (mce.Arguments [0]), ExpressionRouter (mce.Arguments [1]));
-		//		else if (mce.Method.Name == "NotIn")
-		//			return string.Format ("{0} Not In ({1})", ExpressionRouter (mce.Arguments [0]), ExpressionRouter (mce.Arguments [1]));
-
-		//	}
-		//	else if (exp is ConstantExpression) {
-		//		ConstantExpression ce = ((ConstantExpression)exp);
-		//		if (ce.Value == null)
-		//			return "null";
-		//		else if (ce.Value is ValueType)
-		//			return ce.Value.ToString ();
-		//		else if (ce.Value is string || ce.Value is DateTime || ce.Value is char)
-		//			return string.Format ("'{0}'", ce.Value.ToString ());
-		//	}
-		//	else if (exp is UnaryExpression) {
-		//		UnaryExpression ue = ((UnaryExpression)exp);
-		//		return ExpressionRouter (ue.Operand);
-		//	}
-		//	return null;
-		//}
-
-		//static CatchOperatorsType ExpressionTypeCast (ExpressionType type)
-		//{
-		//	switch (type) {
-		//	case ExpressionType.And:
-		//	case ExpressionType.AndAlso:
-		//		return CatchOperatorsType.AND;
-		//	case ExpressionType.Equal:
-		//		return " =";
-		//	case ExpressionType.GreaterThan:
-		//		return " >";
-		//	case ExpressionType.GreaterThanOrEqual:
-		//		return ">=";
-		//	case ExpressionType.LessThan:
-		//		return "<";
-		//	case ExpressionType.LessThanOrEqual:
-		//		return "<=";
-		//	case ExpressionType.NotEqual:
-		//		return "<>";
-		//	case ExpressionType.Or:
-		//	case ExpressionType.OrElse:
-		//		return " Or ";
-		//	case ExpressionType.Add:
-		//	case ExpressionType.AddChecked:
-		//		return "+";
-		//	case ExpressionType.Subtract:
-		//	case ExpressionType.SubtractChecked:
-		//		return "-";
-		//	case ExpressionType.Divide:
-		//		return "/";
-		//	case ExpressionType.Multiply:
-		//	case ExpressionType.MultiplyChecked:
-		//		return "*";
-		//	default:
-		//		return null;
-		//	}
-		//}
 	}
 }
 

@@ -19,8 +19,6 @@ namespace Light.Data
 			return string.Format ("_param_{0}_", Guid.NewGuid ().ToString ("N"));
 		}
 
-		//		protected bool _supportJoinTableInnerQuery = true;
-
 		protected string _wildcards = "%";
 
 		protected Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string> ();
@@ -1381,6 +1379,11 @@ namespace Light.Data
 		public virtual string CreateDateSql (object field, string format)
 		{
 			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateDateTimeFormatSql (string field, string format)
+		{
+			throw new NotImplementedException ();
 		}
 
 		public virtual string CreateYearSql (object field)

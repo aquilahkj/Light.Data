@@ -331,6 +331,12 @@
     <Compile Include="DataField\LambdaNewArrayDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaContainsDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaContainsQueryExpression.cs" />
+    <Compile Include="DataField\LambdaDatePartDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaDateFormatDataFieldInfo.cs" />
+    <Compile Include="DateTimeFormater.cs" />
+    <Compile Include="DataField\LambdaDateDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaStringLengthDataFieldInfo.cs" />
+    <Compile Include="LambdaParameterGroup.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -6,10 +6,22 @@ namespace Light.Data.PostgreAdapter
 {
 	class PostgreCommandFactory : CommandFactory
 	{
+
+		DateTimeFormater dateTimeFormater = new DateTimeFormater ();
+
+		readonly string defaultDateTime = "YYYY-MM-DD HH:MI:SS";
+
+
 		public PostgreCommandFactory ()
 		{
 			_canInnerPage = true;
 			_strictMode = true;
+			dateTimeFormater.YearFormat = "YYYY";
+			dateTimeFormater.MonthFormat = "MM";
+			dateTimeFormater.DayFormat = "DD";
+			dateTimeFormater.HourFormat = "HH";
+			dateTimeFormater.MinuteFormat = "MI";
+			dateTimeFormater.SecondFormat = "SS";
 		}
 
 		bool _strictMode;
@@ -137,7 +149,7 @@ namespace Light.Data.PostgreAdapter
 			return commands.ToArray ();
 		}
 
-		public override string CreateCollectionParamsQuerySql (string fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
 		{
 			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
 				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
@@ -276,6 +288,18 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
+		public override string CreateDateTimeFormatSql (string field, string format)
+		{
+			string sqlformat;
+			if (string.IsNullOrEmpty (format)) {
+				sqlformat = defaultDateTime;
+			}
+			else {
+				sqlformat = dateTimeFormater.FormatData (format);
+			}
+			return string.Format ("to_char({0},'{1}')", field, sqlformat);
+		}
+
 		public override string CreateTruncateSql (object field)
 		{
 			return string.Format ("trunc({0})", field);
@@ -298,49 +322,41 @@ namespace Light.Data.PostgreAdapter
 
 		public override string CreateYearSql (object field)
 		{
-			//			return string.Format ("date_part('year',{0})", field);
 			return string.Format ("extract(year from {0})::int4", field);
 		}
 
 		public override string CreateMonthSql (object field)
 		{
-			//			return string.Format ("date_part('month',{0})", field);
 			return string.Format ("extract(month from {0})::int4", field);
 		}
 
 		public override string CreateDaySql (object field)
 		{
-			//			return string.Format ("date_part('day',{0})", field);
 			return string.Format ("extract(day from {0})::int4", field);
 		}
 
 		public override string CreateHourSql (object field)
 		{
-			//			return string.Format ("date_part('hour',{0})", field);
 			return string.Format ("extract(hour from {0})::int4", field);
 		}
 
 		public override string CreateMinuteSql (object field)
 		{
-			//			return string.Format ("date_part('minute',{0})", field);
 			return string.Format ("extract(minute from {0})::int4", field);
 		}
 
 		public override string CreateSecondSql (object field)
 		{
-			//			return string.Format ("date_part('second',{0})", field);
 			return string.Format ("extract(second from {0})::int4", field);
 		}
 
 		public override string CreateWeekSql (object field)
 		{
-			//			return string.Format ("date_part('week',{0})", field);
 			return string.Format ("extract(week from {0})::int4", field);
 		}
 
 		public override string CreateWeekDaySql (object field)
 		{
-			//			return string.Format ("dayofweek({0})-1", field);
 			return string.Format ("extract(dow from {0})::int4", field);
 		}
 
@@ -370,7 +386,6 @@ namespace Light.Data.PostgreAdapter
 				return string.Format ("strpos({0},{1})", field, value);
 			}
 			else {
-				//return string.Format ("instr({0},{1},{2})", field, value, startIndex);
 				throw new NotSupportedException ();
 			}
 		}

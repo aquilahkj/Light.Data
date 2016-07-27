@@ -27,13 +27,22 @@ namespace Light.Data.OracleAdapter
 			_strictMode = strictMode;
 		}
 
+		DateTimeFormater dateTimeFormater = new DateTimeFormater ();
+
+		readonly string defaultDateTime = "YYYY-MM-DD HH:MI:SS";
+
 		public OracleCommandFactory ()
 		{
 			_identityAuto = true;
 			_canInnerPage = true;
 			_strictMode = true;
-			//			base._supportJoinTableInnerQuery = false;
-			//LoadRoundRegex ();
+
+			dateTimeFormater.YearFormat = "YYYY";
+			dateTimeFormater.MonthFormat = "MM";
+			dateTimeFormater.DayFormat = "DD";
+			dateTimeFormater.HourFormat = "HH";
+			dateTimeFormater.MinuteFormat = "MI";
+			dateTimeFormater.SecondFormat = "SS";
 		}
 
 		public void SetRoundScale (byte scale)
@@ -476,6 +485,18 @@ namespace Light.Data.OracleAdapter
 				}
 				return string.Format ("to_char({0},'{1}')", field, sqlformat);
 			}
+		}
+
+		public override string CreateDateTimeFormatSql (string field, string format)
+		{
+			string sqlformat;
+			if (string.IsNullOrEmpty (format)) {
+				sqlformat = defaultDateTime;
+			}
+			else {
+				sqlformat = dateTimeFormater.FormatData (format);
+			}
+			return string.Format ("to_char({0},'{1}')", field, sqlformat);
 		}
 
 		public override string CreateTruncateSql (object field)

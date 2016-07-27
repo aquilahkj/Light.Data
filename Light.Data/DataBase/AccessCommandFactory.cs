@@ -6,6 +6,21 @@ namespace Light.Data
 {
 	class AccessCommandFactory : CommandFactory
 	{
+
+		DateTimeFormater dateTimeFormater = new DateTimeFormater ();
+
+		readonly string defaultDateTime = "yyyy-mm-dd Hh:Nn:Ss";
+
+		public AccessCommandFactory ()
+		{
+			dateTimeFormater.YearFormat = "yyyy";
+			dateTimeFormater.MonthFormat = "mm";
+			dateTimeFormater.DayFormat = "dd";
+			dateTimeFormater.HourFormat = "Hh";
+			dateTimeFormater.MinuteFormat = "Nn";
+			dateTimeFormater.SecondFormat = "Ss";
+		}
+
 		public override string CreateDataFieldSql (string fieldName)
 		{
 			return string.Format ("[{0}]", fieldName);
@@ -279,6 +294,18 @@ namespace Light.Data
 				}
 				return string.Format ("format({0},'{1}')", field, sqlformat);
 			}
+		}
+
+		public override string CreateDateTimeFormatSql (string field, string format)
+		{
+			string sqlformat;
+			if (string.IsNullOrEmpty (format)) {
+				sqlformat = defaultDateTime;
+			}
+			else {
+				sqlformat = dateTimeFormater.FormatData (format);
+			}
+			return string.Format ("format({0},'{1}')", field, sqlformat);
 		}
 
 		public override string CreateYearSql (object field)

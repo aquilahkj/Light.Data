@@ -7,9 +7,45 @@ namespace Light.Data
 {
 	class MssqlCommandFactory : CommandFactory
 	{
+		Dictionary<string, string> dateTimeFormatDict = new Dictionary<string, string> ();
+
+		readonly string defaultDateTime = "CONVERT(char(19), {0}, 120)";
+
 		public MssqlCommandFactory ()
 		{
 			_canInnerPage = true;
+			dateTimeFormatDict.Add ("yyyy-MM-dd hh:mm:ss", "CONVERT(char(19), {0}, 120)");
+			dateTimeFormatDict.Add ("yyyy-MM-dd", "CONVERT(char(10), {0}, 23)");
+			dateTimeFormatDict.Add ("MM/dd/yyyy", "CONVERT(char(10), {0}, 101)");
+			dateTimeFormatDict.Add ("yyyy.MM.dd", "CONVERT(char(10), {0}, 102)");
+			dateTimeFormatDict.Add ("dd/MM/yyyy", "CONVERT(char(10), {0}, 103)");
+			dateTimeFormatDict.Add ("dd.MM.yyyy", "CONVERT(char(10), {0}, 104)");
+			dateTimeFormatDict.Add ("dd-MM-yyyy", "CONVERT(char(10), {0}, 105)");
+			dateTimeFormatDict.Add ("dd MM yyyy", "CONVERT(char(10), {0}, 106)");
+			dateTimeFormatDict.Add ("MM dd, yyyy", "CONVERT(char(11), {0}, 107)");
+			dateTimeFormatDict.Add ("hh:mm:ss", "CONVERT(char(8), {0}, 108)");
+			dateTimeFormatDict.Add ("MM-dd-yyyy", "CONVERT(char(10), {0}, 110)");
+			dateTimeFormatDict.Add ("yyyy/MM/dd", "CONVERT(char(10), {0}, 111)");
+			dateTimeFormatDict.Add ("yyyyMMdd", "CONVERT(char(8), {0}, 112)");
+			dateTimeFormatDict.Add ("yyyyMM", "CONVERT(char(6), {0}, 112)");
+			dateTimeFormatDict.Add ("yyyy", "CONVERT(char(4), {0}, 112)");
+			dateTimeFormatDict.Add ("MM", "CONVERT(char(2), {0}, 101)");
+			dateTimeFormatDict.Add ("dd", "CONVERT(char(2), {0}, 103)");
+			dateTimeFormatDict.Add ("hh:mm", "CONVERT(char(5), {0}, 108)");
+
+			dateTimeFormatDict.Add ("yyyy-MM","CONVERT(char(7), {0}, 23)");
+			dateTimeFormatDict.Add ("dd-MM", "CONVERT(char(5), {0}, 105)");
+			dateTimeFormatDict.Add ("MM-dd", "CONVERT(char(5), {0}, 110)");
+
+			dateTimeFormatDict.Add ("yyyy/MM", "CONVERT(char(7), {0}, 111)");
+			dateTimeFormatDict.Add ("dd/MM", "CONVERT(char(5), {0}, 103)");
+			dateTimeFormatDict.Add ("MM/dd", "CONVERT(char(5), {0}, 101)");
+
+			dateTimeFormatDict.Add ("yyyy.MM", "CONVERT(char(7), {0}, 102)");
+			dateTimeFormatDict.Add ("dd.MM", "CONVERT(char(5), {0}, 104)");
+
+			dateTimeFormatDict.Add ("dd MM", "CONVERT(char(5), {0}, 106)");
+			dateTimeFormatDict.Add ("MM dd", "CONVERT(char(5), {0}, 107)");
 		}
 
 		public override string CreateDataFieldSql (string fieldName)
@@ -21,7 +57,6 @@ namespace Light.Data
 		{
 			return string.Format ("[{0}]", tableName);
 		}
-
 		//public override string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
 		//{
 		//	string havingString = null;
@@ -176,6 +211,19 @@ namespace Light.Data
 				return string.Format (sqlformat, field);
 			}
 		}
+
+		public override string CreateDateTimeFormatSql (string field, string format)
+		{
+			string sqlformat;
+			if (string.IsNullOrEmpty (format)) {
+				sqlformat = defaultDateTime;
+			}
+			else if (!dateTimeFormatDict.TryGetValue (format, out sqlformat)) {
+				throw new NotSupportedException ();
+			}
+			return string.Format (sqlformat, field);
+		}
+
 
 		public override string CreateTruncateSql (object field)
 		{

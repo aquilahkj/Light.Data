@@ -80,10 +80,13 @@ namespace Light.Data
 			return this;
 		}
 
-
-		public LEnumerable<T> Where (Expression<Func<T, bool>> func)
+		/// <summary>
+		/// Where the specified expression.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		public LEnumerable<T> Where (Expression<Func<T, bool>> expression)
 		{
-			_query = LambdaExpressionExtend.ResolveLambda (func);
+			_query = LambdaExpressionExtend.ResolveLambdaQueryExpression (expression);
 			return this;
 		}
 
@@ -128,6 +131,18 @@ namespace Light.Data
 		public LEnumerable<T> OrderByCatch (OrderExpression expression)
 		{
 			_order = OrderExpression.Catch (_order, expression);
+			return this;
+		}
+
+		/// <summary>
+		/// Orders the by.
+		/// </summary>
+		/// <returns>The by.</returns>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
+		public LEnumerable<T> OrderBy<TKey> (Expression<Func<T, TKey>> expression)
+		{
+			_order = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.ASC); ;
 			return this;
 		}
 

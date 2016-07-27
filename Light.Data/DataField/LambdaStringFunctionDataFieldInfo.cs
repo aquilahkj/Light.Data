@@ -17,7 +17,7 @@ namespace Light.Data
 		{
 			if (callObject == null)
 				throw new ArgumentNullException (nameof (callObject));
-			if (function == StringFunction.Lenght || function == StringFunction.ToLower || function == StringFunction.ToUpper || function == StringFunction.Trim) {
+			if (function == StringFunction.ToLower || function == StringFunction.ToUpper || function == StringFunction.Trim) {
 				if (argsObjects != null && argsObjects.Length > 0) {
 					throw new ArgumentNullException (nameof (argsObjects));
 				}
@@ -60,9 +60,6 @@ namespace Light.Data
 			if (dataParameters0 != null) {
 				parameterList.Add (dataParameters0);
 			}
-			//objectList.Add (obj);
-
-
 			foreach (object item in _argsObjects) {
 				object obj1;
 				DataParameter [] dataParameters1 = null;
@@ -111,9 +108,9 @@ namespace Light.Data
 			case StringFunction.Trim:
 				sql = factory.CreateTrimSql (obj);
 				break;
-			case StringFunction.Lenght:
-				sql = factory.CreateLengthSql (obj);
-				break;
+			//case StringFunction.Lenght:
+			//	sql = factory.CreateLengthSql (obj);
+			//	break;
 
 			}
 			dataParameters = DataParameter.ConcatDataParameters (parameterList.ToArray ());
