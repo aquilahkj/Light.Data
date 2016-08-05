@@ -8,8 +8,8 @@ namespace Light.Data
 	/// </summary>
 	public class JoinTable
 	{
-		internal static JoinTable CreateJoinTable<T,K> (DataContext dataContext, JoinType joinType, LEnumerable<T> left, LEnumerable<K> right, DataFieldExpression on)
-			where T : class, new() 
+		internal static JoinTable CreateJoinTable<T, K> (DataContext dataContext, JoinType joinType, LEnumerable<T> left, LEnumerable<K> right, DataFieldExpression on)
+			where T : class, new()
 			where K : class, new()
 		{
 			JoinTable table = new JoinTable (dataContext);
@@ -17,17 +17,17 @@ namespace Light.Data
 
 			JoinModel model1;
 			if (left != null) {
-				model1 = new JoinModel (left.Mapping, null, left.Query, left.Order);
+				model1 = new JoinModel (left.Mapping, null, null, left.Query, left.Order);
 			}
 			else {
-				model1 = new JoinModel (DataMapping.GetEntityMapping (typeof(T)), null, null, null);
+				model1 = new JoinModel (DataEntityMapping.GetEntityMapping (typeof (T)), null, null, null, null);
 			}
 			JoinModel model2;
 			if (right != null) {
-				model2 = new JoinModel (right.Mapping, connect, right.Query, right.Order);
+				model2 = new JoinModel (right.Mapping, null, connect, right.Query, right.Order);
 			}
 			else {
-				model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), connect, null, null);
+				model2 = new JoinModel (DataEntityMapping.GetEntityMapping (typeof (K)), null, connect, null, null);
 			}
 
 			if (model1.Mapping.Equals (model2.Mapping)) {
@@ -65,7 +65,7 @@ namespace Light.Data
 		/// <param name="le">Le.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (LEnumerable<K> le, DataFieldExpression on)where K : class, new()
+		public JoinTable Join<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException (nameof (le));
@@ -81,7 +81,7 @@ namespace Light.Data
 		/// <param name="query">Query.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (QueryExpression query, DataFieldExpression on)where K : class, new()
+		public JoinTable Join<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
 		{
 			if (query == null)
 				throw new ArgumentNullException (nameof (query));
@@ -97,7 +97,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (DataFieldExpression on)where K : class, new()
+		public JoinTable Join<K> (DataFieldExpression on) where K : class, new()
 		{
 			if (on == null)
 				throw new ArgumentNullException (nameof (on));
@@ -110,7 +110,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (LEnumerable<K> le)where K : class, new()
+		public JoinTable Join<K> (LEnumerable<K> le) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException (nameof (le));
@@ -123,7 +123,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> (QueryExpression query)where K : class, new()
+		public JoinTable Join<K> (QueryExpression query) where K : class, new()
 		{
 			if (query == null)
 				throw new ArgumentNullException (nameof (query));
@@ -136,7 +136,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable Join<K> ()where K : class, new()
+		public JoinTable Join<K> () where K : class, new()
 		{
 			return InternalJoin<K> (JoinType.InnerJoin, null, null);
 		}
@@ -148,7 +148,7 @@ namespace Light.Data
 		/// <param name="le">Le.</param>
 		/// <param name = "on"></param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldExpression on)where K : class, new()
+		public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException (nameof (le));
@@ -164,7 +164,7 @@ namespace Light.Data
 		/// <param name="query">Query.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (QueryExpression query, DataFieldExpression on)where K : class, new()
+		public JoinTable LeftJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
 		{
 			if (query == null)
 				throw new ArgumentNullException (nameof (query));
@@ -180,7 +180,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (DataFieldExpression on)where K : class, new()
+		public JoinTable LeftJoin<K> (DataFieldExpression on) where K : class, new()
 		{
 			if (on == null)
 				throw new ArgumentNullException (nameof (on));
@@ -193,7 +193,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (LEnumerable<K> le)where K : class, new()
+		public JoinTable LeftJoin<K> (LEnumerable<K> le) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException (nameof (le));
@@ -206,7 +206,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> (QueryExpression query)where K : class, new()
+		public JoinTable LeftJoin<K> (QueryExpression query) where K : class, new()
 		{
 			if (query == null)
 				throw new ArgumentNullException (nameof (query));
@@ -219,7 +219,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable LeftJoin<K> ()where K : class, new()
+		public JoinTable LeftJoin<K> () where K : class, new()
 		{
 			return InternalJoin<K> (JoinType.LeftJoin, null, null);
 		}
@@ -231,7 +231,7 @@ namespace Light.Data
 		/// <param name="le">Le.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldExpression on)where K : class, new()
+		public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException (nameof (le));
@@ -247,7 +247,7 @@ namespace Light.Data
 		/// <param name="query">Query.</param>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (QueryExpression query, DataFieldExpression on)where K : class, new()
+		public JoinTable RightJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
 		{
 			if (query == null)
 				throw new ArgumentNullException (nameof (query));
@@ -263,7 +263,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="on">On.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (DataFieldExpression on)where K : class, new()
+		public JoinTable RightJoin<K> (DataFieldExpression on) where K : class, new()
 		{
 			if (on == null)
 				throw new ArgumentNullException (nameof (on));
@@ -276,7 +276,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="le">Le.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (LEnumerable<K> le)where K : class, new()
+		public JoinTable RightJoin<K> (LEnumerable<K> le) where K : class, new()
 		{
 			if (le == null)
 				throw new ArgumentNullException (nameof (le));
@@ -289,7 +289,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> (QueryExpression query)where K : class, new()
+		public JoinTable RightJoin<K> (QueryExpression query) where K : class, new()
 		{
 			if (query == null)
 				throw new ArgumentNullException (nameof (query));
@@ -302,20 +302,20 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public JoinTable RightJoin<K> ()where K : class, new()
+		public JoinTable RightJoin<K> () where K : class, new()
 		{
 			return InternalJoin<K> (JoinType.RightJoin, null, null);
 		}
 
-		private JoinTable InternalJoin<K> (JoinType joinType, LEnumerable<K> right, DataFieldExpression on)where K : class, new()
+		private JoinTable InternalJoin<K> (JoinType joinType, LEnumerable<K> right, DataFieldExpression on) where K : class, new()
 		{
 			JoinConnect connect = new JoinConnect (joinType, on);
 			JoinModel model2;
 			if (right != null) {
-				model2 = new JoinModel (right.Mapping, connect, right.Query, right.Order);
+				model2 = new JoinModel (right.Mapping, null, connect, right.Query, right.Order);
 			}
 			else {
-				model2 = new JoinModel (DataMapping.GetEntityMapping (typeof(K)), connect, null, null);
+				model2 = new JoinModel (DataEntityMapping.GetEntityMapping (typeof (K)), null, connect, null, null);
 			}
 			foreach (JoinModel model in this._modelList) {
 				if (model.Mapping.Equals (model2.Mapping)) {
@@ -387,7 +387,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The join.</returns>
 		/// <param name="fields">Fields.</param>
-		public JoinTable Select (params DataFieldInfo[] fields)
+		public JoinTable Select (params DataFieldInfo [] fields)
 		{
 			foreach (DataFieldInfo field in fields) {
 				JoinModel m = null;
@@ -444,7 +444,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public JoinTable SelectAll<K> ()
 		{
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof(K));
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (K));
 			JoinModel m = null;
 			foreach (JoinModel model in _modelList) {
 				if (model.Mapping.Equals (mapping)) {
@@ -665,7 +665,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public List<K> ToList<K> () where K : class, new()
 		{
-			DataMapping mapping = DataMapping.GetMapping (typeof(K));
+			DataMapping mapping = DataEntityMapping.GetEntityMapping (typeof (K));
 			List<K> list = _context.QueryJoinDataList<K> (mapping, _selector, _modelList, _query, _order, _region, _level);
 			return list;
 		}
@@ -675,7 +675,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The array.</returns>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public K[] ToArray<K> () where K : class, new()
+		public K [] ToArray<K> () where K : class, new()
 		{
 			return ToList<K> ().ToArray ();
 		}

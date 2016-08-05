@@ -23,7 +23,7 @@ namespace Light.Data
 
 		protected DataMapping _typeMapping;
 
-		protected PropertyHandler _handler;
+		//protected PropertyHandler _handler;
 
 		protected TypeCode _typeCode = TypeCode.Empty;
 
@@ -92,7 +92,7 @@ namespace Light.Data
 
 		public abstract object ToProperty (object value);
 
-		public abstract object ToParameter (object value);
+
 
 		#endregion
 	}

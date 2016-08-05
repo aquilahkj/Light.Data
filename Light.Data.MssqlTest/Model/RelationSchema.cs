@@ -853,7 +853,7 @@ namespace Light.Data.MssqlTest
 		private TeUserLevel userLevel;
 
 		[RelationField ("LevelId", "Id")]
-		[RelationProperty (RelationMode = RelationMode.MultiQuery)]
+		//[RelationProperty (RelationMode = RelationMode.MultiQuery)]
 		public TeUserLevel UserLevel {
 			get {
 				return userLevel;
@@ -871,7 +871,7 @@ namespace Light.Data.MssqlTest
 		private TeUserLevel userLevel;
 
 		[RelationField ("LevelId", "Id")]
-		[RelationProperty (RelationMode = RelationMode.MultiQuery)]
+		//[RelationProperty (RelationMode = RelationMode.MultiQuery)]
 		public TeUserLevel UserLevel {
 			get {
 				return userLevel;
@@ -1429,7 +1429,7 @@ namespace Light.Data.MssqlTest
 		private TeUserLevel userLevel;
 
 		[RelationField ("LevelId", "Id")]
-		[RelationProperty (RelationMode = RelationMode.MultiQuery)]
+		//[RelationProperty (RelationMode = RelationMode.MultiQuery)]
 		public TeUserLevel UserLevel {
 			get {
 				return userLevel;
@@ -1987,7 +1987,7 @@ namespace Light.Data.MssqlTest
 		private TeUserLevel userLevel;
 
 		[RelationField ("LevelId", "Id")]
-		[RelationProperty (RelationMode = RelationMode.JoinTable)]
+		//[RelationProperty (RelationMode = RelationMode.JoinTable)]
 		public TeUserLevel UserLevel {
 			get {
 				return userLevel;
@@ -2005,7 +2005,7 @@ namespace Light.Data.MssqlTest
 		private TeUserLevel userLevel;
 
 		[RelationField ("LevelId", "Id")]
-		[RelationProperty (RelationMode = RelationMode.JoinTable)]
+		//[RelationProperty (RelationMode = RelationMode.JoinTable)]
 		public TeUserLevel UserLevel {
 			get {
 				return userLevel;
@@ -2563,7 +2563,7 @@ namespace Light.Data.MssqlTest
 		private TeUserLevel userLevel;
 
 		[RelationField ("LevelId", "Id")]
-		[RelationProperty (RelationMode = RelationMode.JoinTable)]
+		//[RelationProperty (RelationMode = RelationMode.JoinTable)]
 		public TeUserLevel UserLevel {
 			get {
 				return userLevel;

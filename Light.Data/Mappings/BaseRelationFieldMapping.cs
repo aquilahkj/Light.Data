@@ -110,7 +110,7 @@ namespace Light.Data
 
 		protected virtual void InitialRelateMappingInc ()
 		{
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (this.relateType);
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (this.relateType);
 			DataFieldInfo[] infos = new DataFieldInfo[keyPairs.Length];
 			DataFieldMapping[] fields = new DataFieldMapping[keyPairs.Length];
 			for (int i = 0; i < this.keyPairs.Length; i++) {

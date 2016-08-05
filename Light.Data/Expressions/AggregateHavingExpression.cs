@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Aggregate having expression.
 	/// </summary>
-	public class AggregateHavingExpression : Expression
+	public class AggregateHavingExpression : BaseExpression
 	{
 		AggregateHavingExpression _expression1;
 

@@ -6,7 +6,7 @@ namespace Light.Data
 	/// <summary>
 	/// Order expression.
 	/// </summary>
-	public class OrderExpression : Expression
+	public class OrderExpression : BaseExpression
 	{
 		List<OrderExpression> _orderExpressions;
 
@@ -38,12 +38,6 @@ namespace Light.Data
 				return expression2;
 			}
 			DataEntityMapping demapping = null;
-//			if (expression1.TableMapping != null) {
-//				demapping = expression1.TableMapping;
-//			}
-//			else if (expression2.TableMapping != null) {
-//				demapping = expression2.TableMapping;
-//			}
 			OrderExpression newExpression = new OrderExpression (demapping);
 			List<OrderExpression> list = new List<OrderExpression> ();
 			if (expression1._orderExpressions == null) {
@@ -59,6 +53,7 @@ namespace Light.Data
 				list.AddRange (expression2._orderExpressions);
 			}
 			newExpression._orderExpressions = list;
+			newExpression.mutliOrder = expression1.mutliOrder | expression2.mutliOrder;
 			return newExpression;
 		}
 
@@ -182,6 +177,18 @@ namespace Light.Data
 				else {
 					return false;
 				}
+			}
+		}
+
+		bool mutliOrder;
+
+		internal bool MutliOrder {
+			get {
+				return mutliOrder;
+			}
+
+			set {
+				mutliOrder = value;
 			}
 		}
 	}

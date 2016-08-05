@@ -21,7 +21,7 @@ namespace Light.Data
 				batchCount = 10;
 			}
 //			object tmpEntity = entitys.GetValue (0);
-//			DataTableEntityMapping mapping = DataMapping.GetTableMapping (tmpEntity.GetType ());
+//			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (tmpEntity.GetType ());
 //			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, tmpEntity);
 //			List<string> insertList = new List<string> ();
 //			foreach (DataParameter dataParameter in paramList) {

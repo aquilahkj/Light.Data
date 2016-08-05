@@ -3,9 +3,9 @@ using System.Data;
 
 namespace Light.Data
 {
-	class ErrorDataMapping:DataMapping
+	class ErrorDataMapping : DataEntityMapping
 	{
-		public ErrorDataMapping (Exception ex) : base (null)
+		public ErrorDataMapping (Type type, Exception ex) : base (type, type.Name, false)
 		{
 			this.innerException = ex;
 		}

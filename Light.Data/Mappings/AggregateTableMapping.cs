@@ -33,18 +33,11 @@ namespace Light.Data
 
 		private static AggregateTableMapping CreateMapping (Type type)
 		{
-//			string extendParam = null;
-			AggregateTableMapping aggregateMapping;
 			IAggregateTableConfig config = ConfigManager.LoadAggregateTableConfig (type);
-//			if (config != null) {
-//				extendParam = config.ExtendParams;
-//			}
 			if (config == null) {
 				throw new LightDataException (string.Format (RE.TheTypeOfAggregateTableIsNoConfig, type.Name));
 			}
-			aggregateMapping = new AggregateTableMapping (type);
-//			aggregateMapping.ExtentParams = new ExtendParamsCollection (extendParam);
-
+			AggregateTableMapping aggregateMapping = new AggregateTableMapping (type);
 			return aggregateMapping;
 		}
 

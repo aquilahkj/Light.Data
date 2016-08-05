@@ -2,8 +2,8 @@
 
 namespace Light.Data.MssqlTest
 {
-	[Serializable]
-	[DataTable("Te_RelateA")]
+[Serializable]
+	[DataTable ("Te_RelateA")]
 	public partial class TeRelateA_BE : TeRelateA
 	{
 		private TeRelateB_CD relateB;
@@ -18,17 +18,17 @@ namespace Light.Data.MssqlTest
 			}
 		}
 
-		private TeRelateB_CD relateB1;
+		//private TeRelateB_CD relateB1;
 
-		[RelationField ("Id", "RelateCId")]
-		public TeRelateB_CD RelateB1 {
-			get {
-				return relateB1;
-			}
-			set {
-				relateB1 = value;
-			}
-		}
+		//[RelationField ("Id", "RelateCId")]
+		//public TeRelateB_CD RelateB1 {
+		//	get {
+		//		return relateB1;
+		//	}
+		//	set {
+		//		relateB1 = value;
+		//	}
+		//}
 
 		private TeRelateE_A relateE;
 
@@ -42,22 +42,22 @@ namespace Light.Data.MssqlTest
 			}
 		}
 
-		private TeRelateE_A relateE1;
+		//private TeRelateE_A relateE1;
 
-		[RelationField ("RelateCId", "RelateAId")]
-		public TeRelateE_A RelateE1 {
-			get {
-				return relateE1;
-			}
-			set {
-				relateE1 = value;
-			}
-		}
+		//[RelationField ("RelateCId", "RelateAId")]
+		//public TeRelateE_A RelateE1 {
+		//	get {
+		//		return relateE1;
+		//	}
+		//	set {
+		//		relateE1 = value;
+		//	}
+		//}
 	}
 
 
 	[Serializable]
-	[DataTable("Te_RelateB")]
+	[DataTable ("Te_RelateB")]
 	public partial class TeRelateB_CD : TeRelateB
 	{
 		private TeRelateC_A relateC;
@@ -98,7 +98,7 @@ namespace Light.Data.MssqlTest
 	}
 
 	[Serializable]
-	[DataTable("Te_RelateC")]
+	[DataTable ("Te_RelateC")]
 	public partial class TeRelateC_A : TeRelateC
 	{
 		private TeRelateA_BE relateA;
@@ -115,7 +115,7 @@ namespace Light.Data.MssqlTest
 	}
 
 	[Serializable]
-	[DataTable("Te_RelateE")]
+	[DataTable ("Te_RelateE")]
 	public partial class TeRelateE_A : TeRelateE
 	{
 		private TeRelateA_BE relateA;

@@ -12,9 +12,9 @@ namespace Light.Data
 		/// Gets or sets the relation mode.
 		/// </summary>
 		/// <value>The relation mode.</value>
-		public RelationMode RelationMode {
-			get;
-			set;
-		}
+		//public RelationMode RelationMode {
+		//	get;
+		//	set;
+		//}
 	}
 }

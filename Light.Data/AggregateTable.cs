@@ -28,7 +28,7 @@ namespace Light.Data
 		internal AggregateTable (DataContext dataContext)
 		{
 			_context = dataContext;
-			_enetityMapping = DataMapping.GetEntityMapping (typeof(T));
+			_enetityMapping = DataEntityMapping.GetEntityMapping (typeof(T));
 		}
 
 		/// <summary>
@@ -206,7 +206,7 @@ namespace Light.Data
 		/// <returns>The aggregateTable.</returns>
 		public AggregateTable<T> OrderByRandom ()
 		{
-			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof(T)));
+			_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (typeof(T)));
 			return this;
 		}
 

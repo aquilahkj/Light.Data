@@ -28,7 +28,7 @@ namespace Light.Data
 				mapping = _aliaslist [type];
 			}
 			else {
-				mapping = DataMapping.GetEntityMapping (type);
+				mapping = DataEntityMapping.GetEntityMapping (type);
 				_aliaslist [type] = mapping;
 			}
 			mapping.SetAliasName (tableName);

@@ -100,12 +100,12 @@ namespace Light.Data.MysqlTest
 					Assert.IsNull (refer.UserExtend1);
 				} else {
 					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
-					Assert.AreEqual (refer.UserExtend, refer.UserExtend1);
+					Assert.AreNotEqual (refer.UserExtend, refer.UserExtend1);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 					Assert.IsNotNull (refer.UserExtend.User1);
 					AssertExtend.AreTypeEqual<TeUser> (user, refer.UserExtend.User1);
 				}
-				Assert.IsNull (refer.UserExtend2);
+				Assert.IsNotNull (refer.UserExtend2);
 			}
 		}
 
@@ -155,11 +155,12 @@ namespace Light.Data.MysqlTest
 			InitialRelateTable (35);
 			List<TeRelateA_BE> relateList = context.LQuery<TeRelateA_BE> ().ToList ();
 			foreach (TeRelateA_BE relate in relateList) {
-				Assert.IsNull (relate.RelateB1);
-				Assert.IsNull (relate.RelateE1);
+				//Assert.IsNull (relate.RelateB1);
+				//Assert.IsNull (relate.RelateE1);
 				Assert.AreEqual (relate, relate.RelateB.RelateC.RelateA);
 				Assert.AreEqual (relate, relate.RelateE.RelateA);
-				Assert.AreEqual (relate.RelateE, relate.RelateB.RelateE);
+				Assert.AreNotEqual (relate.RelateE, relate.RelateB.RelateE);
+				AssertExtend.AreObjectsEqual (relate.RelateE, relate.RelateB.RelateE);
 			}
 		}
 	}

@@ -18,17 +18,17 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private TeRelateB_CD relateB1;
+		//private TeRelateB_CD relateB1;
 
-		[RelationField ("Id", "RelateCId")]
-		public TeRelateB_CD RelateB1 {
-			get {
-				return relateB1;
-			}
-			set {
-				relateB1 = value;
-			}
-		}
+		//[RelationField ("Id", "RelateCId")]
+		//public TeRelateB_CD RelateB1 {
+		//	get {
+		//		return relateB1;
+		//	}
+		//	set {
+		//		relateB1 = value;
+		//	}
+		//}
 
 		private TeRelateE_A relateE;
 
@@ -42,17 +42,17 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private TeRelateE_A relateE1;
+		//private TeRelateE_A relateE1;
 
-		[RelationField ("RelateCId", "RelateAId")]
-		public TeRelateE_A RelateE1 {
-			get {
-				return relateE1;
-			}
-			set {
-				relateE1 = value;
-			}
-		}
+		//[RelationField ("RelateCId", "RelateAId")]
+		//public TeRelateE_A RelateE1 {
+		//	get {
+		//		return relateE1;
+		//	}
+		//	set {
+		//		relateE1 = value;
+		//	}
+		//}
 	}
 
 

@@ -11,7 +11,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigReplace ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfig));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfig));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -73,7 +73,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigSystemConfig ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfig0));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfig0));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -107,7 +107,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigOnly ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfig1));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfig1));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -141,7 +141,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigDir1 ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfigC2));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfigC2));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -202,7 +202,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigDir2 ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfigC2));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfigC2));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -235,7 +235,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigDir3 ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfigC3));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfigC3));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -268,7 +268,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigDir4 ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfigC4));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfigC4));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -301,7 +301,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigAssembly1 ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfigA1));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfigA1));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -362,7 +362,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigDefault ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfig2));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfig2));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 
@@ -395,7 +395,7 @@ namespace Light.Data.MssqlTest
 		[Test ()]
 		public void TestCase_ConfigDefault2 ()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof(TeCheckValueConfig3));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfig3));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);
 

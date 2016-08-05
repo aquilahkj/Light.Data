@@ -65,7 +65,7 @@ namespace Light.Data
 		internal LEnumerable (DataContext dataContext)
 		{
 			_context = dataContext;
-			_mapping = DataMapping.GetEntityMapping (typeof (T));
+			_mapping = DataEntityMapping.GetEntityMapping (typeof (T));
 		}
 
 		#region LEnumerable<T> 成员
@@ -77,16 +77,6 @@ namespace Light.Data
 		public LEnumerable<T> WhereReset ()
 		{
 			_query = null;
-			return this;
-		}
-
-		/// <summary>
-		/// Where the specified expression.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		public LEnumerable<T> Where (Expression<Func<T, bool>> expression)
-		{
-			_query = LambdaExpressionExtend.ResolveLambdaQueryExpression (expression);
 			return this;
 		}
 
@@ -135,18 +125,6 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Orders the by.
-		/// </summary>
-		/// <returns>The by.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
-		public LEnumerable<T> OrderBy<TKey> (Expression<Func<T, TKey>> expression)
-		{
-			_order = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.ASC); ;
-			return this;
-		}
-
-		/// <summary>
 		/// Set the specified order by expression.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
@@ -173,7 +151,7 @@ namespace Light.Data
 		/// <returns>LEnumerable.</returns>
 		public LEnumerable<T> OrderByRandom ()
 		{
-			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (typeof (T)));
+			_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (typeof (T)));
 			return this;
 		}
 
@@ -500,10 +478,10 @@ namespace Light.Data
 			return ToList ().ToArray ();
 		}
 
-		internal List<T> ToRelateList (object extentState)
-		{
-			return _context.QueryDataRelateList<T> (_query, _order, _region, _level, extentState);
-		}
+		//internal List<T> ToRelateList (object extentState)
+		//{
+		//	return _context.QueryDataRelateList<T> (_query, _order, _region, _level, extentState);
+		//}
 
 		#endregion
 

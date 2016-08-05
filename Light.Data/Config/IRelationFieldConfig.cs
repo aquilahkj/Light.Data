@@ -17,12 +17,12 @@ namespace Light.Data
             get;
         }
 
-		/// <summary>
-		/// Gets the relation mode.
-		/// </summary>
-		/// <value>The relation mode.</value>
-		RelationMode RelationMode {
-			get;
-		}
+		///// <summary>
+		///// Gets the relation mode.
+		///// </summary>
+		///// <value>The relation mode.</value>
+		//RelationMode RelationMode {
+		//	get;
+		//}
     }
 }

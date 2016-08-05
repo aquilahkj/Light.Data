@@ -13,65 +13,117 @@ namespace Light.Data
 			}
 		}
 
-		List<RelationCycle> totalCycle = new List<RelationCycle> ();
-
-		int index;
-
-		readonly JoinSelector selector = new JoinSelector ();
+		ISelector selector;
 
 		readonly List<JoinModel> models = new List<JoinModel> ();
 
-		readonly Dictionary<DataEntityMapping,string> entityInfoDict = new Dictionary<DataEntityMapping, string> ();
+		readonly Dictionary<string, RelationItem> mapDict = new Dictionary<string, RelationItem> ();
 
-		readonly string rootAliasName;
+		readonly Dictionary<string, DataFieldInfo []> tableInfoDict = new Dictionary<string, DataFieldInfo []> ();
 
-		public string RootAliasName {
-			get {
-				return rootAliasName;
+		readonly Dictionary<string, DataFieldInfo> fieldInfoDict = new Dictionary<string, DataFieldInfo> ();
+
+		void LoadJoinRelate ()
+		{
+			LoadEntityMapping (this.rootMapping, null);
+			JoinSelector joinSelector = new JoinSelector ();
+			List<RelationItem> items = new List<RelationItem> ();
+			Dictionary<string, RelationItem> relationItemDict = new Dictionary<string, RelationItem> ();
+			int tindex = 0;
+			foreach (RelationLink link in linkList) {
+				RelationItem [] sitems = link.GetRelationItems ();
+				foreach (RelationItem item in sitems) {
+					if (!items.Contains (item)) {
+						if (item.FieldMapping == null && tindex != 0) {
+							continue;
+						}
+						item.AliasName = "T" + tindex;
+						tindex++;
+						items.Add (item);
+						relationItemDict.Add (item.CurrentFieldPath, item);
+					}
+				}
 			}
+			if (this.rootMapping != items [0].DataMapping) {
+				throw new LightDataException ("");
+			}
+
+			RelationItem rootItem = items [0];
+			mapDict.Add (items [0].CurrentFieldPath, items [0]);
+			List<DataFieldInfo> rootInfoList = new List<DataFieldInfo> ();
+			foreach (DataFieldMapping field in this.rootMapping.FieldMappings) {
+				DataFieldInfo info = new DataFieldInfo (field);
+				//info.AliasTableName = this.rootAliasName;
+				//joinSelector.SetInnerDataField (info);
+				string aliasName = string.Format ("{0}_{1}", rootItem.AliasName, info.FieldName);
+				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
+				alias.AliasTableName = rootItem.AliasName;
+				joinSelector.SetAliasDataField (alias);
+				rootInfoList.Add (alias);
+				fieldInfoDict.Add (string.Format ("{0}.{1}", items [0].CurrentFieldPath, field.Name), alias);
+			}
+			tableInfoDict.Add (items [0].CurrentFieldPath, rootInfoList.ToArray ());
+
+			for (int i = 1; i < items.Count; i++) {
+				RelationItem mitem = items [i];
+				mapDict.Add (mitem.CurrentFieldPath, mitem);
+				SingleRelationFieldMapping fieldMapping = mitem.FieldMapping;
+				DataEntityMapping mapping = fieldMapping.RelateMapping;
+				DataFieldExpression expression = null;
+				DataFieldInfoRelation [] relations = fieldMapping.GetDataFieldInfoRelations ();
+
+				RelationItem ritem = mapDict [mitem.PrevFieldPath];
+				string malias = ritem.AliasName;
+				string ralias = mitem.AliasName;
+				foreach (DataFieldInfoRelation relation in relations) {
+					DataFieldInfo minfo = relation.MasterInfo;
+					minfo.AliasTableName = malias;
+					DataFieldInfo rinfo = relation.RelateInfo;
+					rinfo.AliasTableName = ralias;
+					expression = DataFieldExpression.And (expression, minfo == rinfo);
+				}
+				List<DataFieldInfo> infoList = new List<DataFieldInfo> ();
+				foreach (DataFieldMapping field in mapping.FieldMappings) {
+					DataFieldInfo info = new DataFieldInfo (field);
+					//info.AliasTableName = ralias;
+					//joinSelector.SetInnerDataField (info);
+					string aliasName = string.Format ("{0}_{1}", ralias, info.FieldName);
+					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
+					alias.AliasTableName = ralias;
+					joinSelector.SetAliasDataField (alias);
+					infoList.Add (alias);
+					fieldInfoDict.Add (string.Format ("{0}.{1}", mitem.CurrentFieldPath, field.Name), alias);
+				}
+				tableInfoDict.Add (mitem.CurrentFieldPath, infoList.ToArray ());
+
+				JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
+				JoinModel model = new JoinModel (mapping, ralias, connect, null, null);
+				this.selector = joinSelector;
+				this.models.Add (model);
+			}
+		}
+
+		void LoadNormal ()
+		{
+			List<DataFieldInfo> rootInfoList = new List<DataFieldInfo> ();
+			foreach (DataFieldMapping fieldMapping in this.rootMapping.DataEntityFields) {
+				if (fieldMapping != null) {
+					DataFieldInfo field = new DataFieldInfo (fieldMapping);
+					fieldInfoDict.Add (string.Format ("{0}.{1}", string.Empty, fieldMapping.Name), field);
+					rootInfoList.Add (field);
+				}
+			}
+			tableInfoDict.Add (string.Empty, rootInfoList.ToArray ());
 		}
 
 		public RelationMap (DataEntityMapping rootMapping)
 		{
 			this.rootMapping = rootMapping;
-			this.rootAliasName = "T" + index;
-			this.entityInfoDict.Add (this.rootMapping, this.rootAliasName);
-			foreach (DataFieldMapping field in this.rootMapping.FieldMappings) {
-				DataFieldInfo info = new DataFieldInfo (field);
-				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", this.rootAliasName, info.FieldName));
-				alias.AliasTableName = this.rootAliasName;
-				this.selector.SetAliasDataField (alias);
+			if (rootMapping.HasJoinRelateModel) {
+				LoadJoinRelate ();
 			}
-
-			LoadEntityMapping (this.rootMapping, null);
-			foreach (RelationCycle cycle in totalCycle) {
-				SingleRelationFieldMapping[] fieldMappings = cycle.GetSingleRelationFieldMapping ();
-				foreach (SingleRelationFieldMapping fieldMapping in fieldMappings) {
-					DataEntityMapping mapping = fieldMapping.RelateMapping;
-					DataFieldExpression expression = null;
-					DataFieldInfoRelation[] relations = fieldMapping.GetDataFieldInfoRelations ();
-					string malias = this.entityInfoDict [fieldMapping.MasterMapping];
-					string ralias = this.entityInfoDict [fieldMapping.RelateMapping];
-					foreach (DataFieldInfoRelation relation in relations) {
-						DataFieldInfo minfo = relation.MasterInfo;
-						minfo.AliasTableName = malias;
-						DataFieldInfo rinfo = relation.RelateInfo;
-						rinfo.AliasTableName = ralias;
-						expression = DataFieldExpression.And (expression, minfo == rinfo);
-					}
-
-					foreach (DataFieldMapping field in mapping.FieldMappings) {
-						DataFieldInfo info = new DataFieldInfo (field);
-						AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", ralias, info.FieldName));
-						alias.AliasTableName = ralias;
-						this.selector.SetAliasDataField (alias);
-					}
-
-					JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
-					JoinModel model = new JoinModel (mapping, connect, null, null);
-					model.AliasTableName = ralias;
-					this.models.Add (model);
-				}
+			else {
+				LoadNormal ();
 			}
 		}
 
@@ -79,70 +131,123 @@ namespace Light.Data
 		{
 			List<JoinModel> models1 = new List<JoinModel> ();
 
-			JoinModel model1 = new JoinModel (rootMapping, null, query, order);
-			model1.AliasTableName = rootAliasName;
+			JoinModel model1 = new JoinModel (rootMapping, "T0", null, query, order);
+			//model1.AliasTableName = "T0";//rootAliasName;
 			models1.Add (model1);
 
 			models1.AddRange (this.models);
-			JoinCapsule clone = new JoinCapsule (this.selector, models1, this);
+			JoinCapsule clone = new JoinCapsule (this.selector, models1);
 			return clone;
 		}
 
-		Dictionary<SingleRelationFieldMapping,RelationCycle> fieldInfoDict = new Dictionary<SingleRelationFieldMapping, RelationCycle> ();
 
-		void LoadEntityMapping (DataEntityMapping mapping, RelationCycle cycle)
+		public List<JoinModel> CreateJoinModels (QueryExpression query, OrderExpression order)
 		{
-			List<RelationCycle> levelCycle = new List<RelationCycle> ();
-			SingleRelationFieldMapping[] relateFielsMappings = mapping.GetSingleJoinTableRelationFieldMappings ();
+			if (!rootMapping.HasJoinRelateModel) {
+				throw new LightDataException ("");
+			}
+
+			List<JoinModel> joinModels = new List<JoinModel> ();
+			JoinModel model1 = new JoinModel (rootMapping, "T0", null, query, order);
+			joinModels.Add (model1);
+			joinModels.AddRange (this.models);
+			return joinModels;
+		}
+
+		List<RelationLink> linkList = new List<RelationLink> ();
+
+		Dictionary<string, string> cycleDict = new Dictionary<string, string> ();
+
+		void LoadEntityMapping (DataEntityMapping mapping, RelationLink link)
+		{
+			SingleRelationFieldMapping [] relateFielsMappings = mapping.GetSingleJoinTableRelationFieldMappings ();
 			foreach (SingleRelationFieldMapping relateFieldMapping in relateFielsMappings) {
 				relateFieldMapping.InitialRelation ();
-				bool exists = this.entityInfoDict.ContainsKey (relateFieldMapping.RelateMapping);
-				RelationCycle mycycle = null;
-				if (cycle != null && cycle.TryAddCycle (relateFieldMapping, exists)) {
-					mycycle = cycle;
-				}
-				if (mycycle == null) {
-					foreach (RelationCycle cycleItem in levelCycle) {
-						if (cycleItem.TryAddCycle (relateFieldMapping, exists)) {
-							mycycle = cycleItem;
-							break;
-						}
-					}
-				}
-
-				if (mycycle == null) {
-					if (!exists) {
-						mycycle = new RelationCycle (relateFieldMapping);
-						levelCycle.Add (mycycle);
-						this.totalCycle.Add (mycycle);
-						index++;
-						this.entityInfoDict.Add (relateFieldMapping.RelateMapping, "T" + index);
-						this.fieldInfoDict.Add (relateFieldMapping, mycycle);
-						LoadEntityMapping (relateFieldMapping.RelateMapping, mycycle);
-					}
+				if (link == null) {
+					RelationLink mlink = new RelationLink (relateFieldMapping, string.Empty);
+					linkList.Add (mlink);
+					LoadEntityMapping (relateFieldMapping.RelateMapping, mlink);
 				}
 				else {
-					this.fieldInfoDict.Add (relateFieldMapping, mycycle);
-					if (!exists) {
-						index++;
-						this.entityInfoDict.Add (relateFieldMapping.RelateMapping, "T" + index);
-						LoadEntityMapping (relateFieldMapping.RelateMapping, mycycle);
+					RelationLink flink = link.Fork ();
+					RelationLinkType linkType = flink.TryAddField (relateFieldMapping);
+					if (linkType == RelationLinkType.NoMatch) {
+						RelationLink mlink = new RelationLink (relateFieldMapping, link.LastFieldPath);
+						linkList.Add (mlink);
+						LoadEntityMapping (relateFieldMapping.RelateMapping, mlink);
+					}
+					else if (linkType == RelationLinkType.AddLink) {
+						linkList.Add (flink);
+						LoadEntityMapping (relateFieldMapping.RelateMapping, flink);
+					}
+					else {
+						cycleDict.Add (flink.LastFieldPath, flink.CycleFieldPath);
 					}
 				}
 			}
 		}
 
-		public bool CheckValid (SingleRelationFieldMapping relationMapping, out string aliasName)
+		public bool CheckValid (string fieldPath, out string aliasName)
 		{
-			if (this.fieldInfoDict.ContainsKey (relationMapping)) {
-				aliasName = this.entityInfoDict [relationMapping.RelateMapping];
-				return true;
+			RelationItem item;
+			bool ret = mapDict.TryGetValue (fieldPath, out item);
+			if (ret) {
+				aliasName = item.AliasName;
 			}
 			else {
 				aliasName = null;
+			}
+			return ret;
+		}
+
+		public bool TryGetCycleFieldPath (string fieldPath, out string cycleFieldPath)
+		{
+			if (cycleDict.Count == 0) {
+				cycleFieldPath = null;
 				return false;
 			}
+			return cycleDict.TryGetValue (fieldPath, out cycleFieldPath);
 		}
+
+		public DataFieldInfo GetFieldInfoForField (string path)
+		{
+			DataFieldInfo info;
+			if (fieldInfoDict.TryGetValue (path, out info)) {
+				return info;
+			}
+			else {
+				return null;
+			}
+		}
+
+		public ISelector CetDefaultSelector ()
+		{
+			return selector;
+		}
+
+		//public DataFieldInfo[] GetFieldInfoForEntity (string path)
+		//{
+		//	DataFieldInfo[] infos;
+		//	if (tableInfoDict.TryGetValue (path, out infos)) {
+		//		return infos;
+		//	}
+		//	else {
+		//		return null;
+		//	}
+		//}
+
+
+		//public bool CheckValid (SingleRelationFieldMapping relationMapping, out string aliasName)
+		//{
+		//	if (this.fieldInfoDict.ContainsKey (relationMapping)) {
+		//		aliasName = this.entityInfoDict [relationMapping.RelateMapping];
+		//		return true;
+		//	}
+		//	else {
+		//		aliasName = null;
+		//		return false;
+		//	}
+		//}
 	}
 }
 

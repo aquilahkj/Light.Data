@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Light.Data.MysqlTest
+namespace Light.Data.Demo
 {
 	[Serializable]
 	[DataTable ("Te_User")]
@@ -107,35 +107,6 @@ namespace Light.Data.MysqlTest
 		}
 	}
 
-	[Serializable]
-	[DataTable ("Te_UserExtend")]
-	public partial class TeUserExtendWithUserReferX : TeUserExtend
-	{
-		private TeUserWithExtendRefer1 user;
-
-		[RelationField ("UserId", "LevelId")]
-		public TeUserWithExtendRefer1 User {
-			get {
-				return user;
-			}
-			set {
-				user = value;
-			}
-		}
-
-		private TeUser user1;
-
-		[RelationField ("UserId", "Id")]
-		public TeUser User1 {
-			get {
-				return user1;
-			}
-			set {
-				user1 = value;
-			}
-		}
-	}
-
 
 	[Serializable]
 	[DataTable ("Te_User")]
@@ -165,10 +136,10 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private TeUserExtendWithUserReferX userExtend2;
+		private TeUserExtendWithUserRefer1 userExtend2;
 
 		[RelationField ("LevelId", "UserId")]
-		public TeUserExtendWithUserReferX UserExtend2 {
+		public TeUserExtendWithUserRefer1 UserExtend2 {
 			get {
 				return userExtend2;
 			}

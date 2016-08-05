@@ -51,6 +51,7 @@
     </Compile>
     <Compile Include="Model\DBSchema.cs" />
     <Compile Include="Model\RelationSchema4.cs" />
+    <Compile Include="Model\RelationSchema3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

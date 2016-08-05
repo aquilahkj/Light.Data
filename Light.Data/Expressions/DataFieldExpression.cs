@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data field expression.
 	/// </summary>
-	public class DataFieldExpression:Expression
+	public class DataFieldExpression:BaseExpression
 	{
 		DataFieldExpression _expression1;
 

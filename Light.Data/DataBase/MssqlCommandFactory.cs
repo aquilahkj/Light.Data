@@ -69,7 +69,7 @@ namespace Light.Data
 		//	return havingString;
 		//}
 
-		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
+		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
 		{
 			if (region == null) {
 				return base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, null);

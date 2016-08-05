@@ -125,7 +125,7 @@ namespace Light.Data
 		/// <returns>SelectInsterExecutor.</returns>
 		public SelectInsertor OrderByRandom ()
 		{
-			_order = new RandomOrderExpression (DataMapping.GetEntityMapping (_selectType));
+			_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (_selectType));
 			return this;
 		}
 

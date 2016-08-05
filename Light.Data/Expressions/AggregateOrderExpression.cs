@@ -51,12 +51,12 @@ namespace Light.Data
 		//			return factory.CreateOrderBySql (functionSql, _orderType);
 		//		}
 
-		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
-		{
-			AggregateOrderExpression expression = new AggregateOrderExpression (this._function, this._orderType);
-			expression._aliasTableName = aliasTableName;
-			return expression;
-		}
+		//internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
+		//{
+		//	AggregateOrderExpression expression = new AggregateOrderExpression (this._function, this._orderType);
+		//	expression._aliasTableName = aliasTableName;
+		//	return expression;
+		//}
 
 		public override bool Equals (OrderExpression target)
 		{

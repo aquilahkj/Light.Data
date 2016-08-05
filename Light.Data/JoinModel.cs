@@ -35,25 +35,26 @@ namespace Light.Data
 			}
 		}
 
-		string aliasTableName;
+		string _aliasTableName;
 
 		public string AliasTableName {
 			get {
-				return aliasTableName;
+				return _aliasTableName;
 			}
-			set {
-				if (!string.IsNullOrEmpty (value)) {
-					aliasTableName = value;
-				}
-			}
+			//set {
+			//	if (!string.IsNullOrEmpty (value)) {
+			//		aliasTableName = value;
+			//	}
+			//}
 		}
 
-		public JoinModel (DataEntityMapping mapping, JoinConnect connect, QueryExpression query, OrderExpression order)
+		public JoinModel (DataEntityMapping mapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
 		{
 			this._mapping = mapping;
 			this._connect = connect;
 			this._query = query;
 			this._order = order;
+			this._aliasTableName = aliasTableName;
 		}
 
 	}

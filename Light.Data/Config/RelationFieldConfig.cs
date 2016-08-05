@@ -32,14 +32,14 @@ namespace Light.Data
 			_relationKeys.Add (new RelationKey (masterKey, relateKey));
 		}
 
-		/// <summary>
-		/// Gets the relation mode.
-		/// </summary>
-		/// <value>The relation mode.</value>
-		public RelationMode RelationMode {
-			get;
-			set;
-		}
+		///// <summary>
+		///// Gets the relation mode.
+		///// </summary>
+		///// <value>The relation mode.</value>
+		//public RelationMode RelationMode {
+		//	get;
+		//	set;
+		//}
 
 		/// <summary>
 		/// Gets the name of the field.

@@ -200,7 +200,7 @@ namespace Light.Data
 		/// <param name="type">Type.</param>
 		public string GetTableName (Type type)
 		{
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (type);
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			if (mapping != null) {
 				return mapping.TableName;
 			}
@@ -228,7 +228,7 @@ namespace Light.Data
 		public int InsertOrUpdate (object data)
 		{
 			bool exists = false;
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
 			CommandData commandData = _dataBase.Factory.CreateEntityExistsCommand (mapping, data);
 			Region region = new Region (0, 1);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
@@ -254,7 +254,7 @@ namespace Light.Data
 		/// <param name="data">Data.</param>
 		public int Insert (object data)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
 			return Insert (mapping, data);
 		}
 
@@ -292,7 +292,7 @@ namespace Light.Data
 		/// <param name="data">Data.</param>
 		public int Update (object data)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
 			DataTableEntity entity = data as DataTableEntity;
 			if (entity != null) {
 				return Update (mapping, data, entity.GetUpdateFields ());
@@ -310,7 +310,7 @@ namespace Light.Data
 		/// <param name="updateFields">Update fields.</param>
 		internal int Update (object data, string [] updateFields)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
 			return Update (mapping, data, updateFields);
 		}
 
@@ -342,7 +342,7 @@ namespace Light.Data
 		/// <param name="data">Data.</param>
 		public int Delete (object data)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
 			return Delete (mapping, data);
 		}
 
@@ -364,7 +364,7 @@ namespace Light.Data
 		public T CreateNew<T> ()
 			where T : class, new()
 		{
-			DataTableEntityMapping rawmapping = DataMapping.GetTableMapping (typeof (T));
+			DataTableEntityMapping rawmapping = DataEntityMapping.GetTableMapping (typeof (T));
 			object obj = rawmapping.InitialData ();
 			if (rawmapping.IsDataEntity) {
 				DataEntity data = obj as DataEntity;
@@ -400,7 +400,7 @@ namespace Light.Data
 
 		internal int DeleteMass (Type type, QueryExpression query)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
 			return DeleteMass (mapping, query);
 		}
 
@@ -447,7 +447,7 @@ namespace Light.Data
 
 		internal int UpdateMass (Type type, UpdateSetValue [] updates, QueryExpression query)
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
 			return UpdateMass (mapping, updates, query);
 		}
 
@@ -477,7 +477,7 @@ namespace Light.Data
 			}
 			Type arrayType = datas.GetType ();
 			Type type = arrayType.GetElementType ();
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (type);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
 			CommandData [] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (mapping, datas, batchCount);
 			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
@@ -564,8 +564,8 @@ namespace Light.Data
 
 		internal int SelectInsert (Type insertType, DataFieldInfo [] insertFields, Type selectType, SelectFieldInfo [] selectFields, QueryExpression query, OrderExpression order)
 		{
-			DataTableEntityMapping insertMapping = DataMapping.GetTableMapping (insertType);
-			DataTableEntityMapping selectMapping = DataMapping.GetTableMapping (selectType);
+			DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (insertType);
+			DataTableEntityMapping selectMapping = DataEntityMapping.GetTableMapping (selectType);
 			int rInt;
 			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, insertFields, selectMapping, selectFields, query, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
@@ -586,7 +586,7 @@ namespace Light.Data
 		{
 			if (primaryKeys == null || primaryKeys.Length == 0)
 				throw new ArgumentNullException (nameof (primaryKeys));
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof (T));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			if (primaryKeys.Length != mapping.PrimaryKeyCount) {
 				throw new LightDataException (RE.TheNumberOfPrimaryKeysIsNotMatch);
 			}
@@ -654,7 +654,7 @@ namespace Light.Data
 		private T SelectSingleFromIdObj<T> (object id)
 			where T : class, new()
 		{
-			DataTableEntityMapping dtmapping = DataMapping.GetTableMapping (typeof (T));
+			DataTableEntityMapping dtmapping = DataEntityMapping.GetTableMapping (typeof (T));
 			if (dtmapping.IdentityField == null) {
 				throw new LightDataException (RE.DataTableNotIdentityField);
 			}
@@ -672,6 +672,17 @@ namespace Light.Data
 			where T : class, new()
 		{
 			return new LEnumerable<T> (this);
+		}
+
+		/// <summary>
+		/// LQs the ueryable.
+		/// </summary>
+		/// <returns>The ueryable.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public LQueryable<T> LQueryable<T> ()
+			where T : class, new()
+		{
+			return new LQueryable<T> (this);
 		}
 
 		/// <summary>
@@ -693,7 +704,7 @@ namespace Light.Data
 		public int TruncateTable<T> ()
 			where T : class, new()
 		{
-			DataTableEntityMapping mapping = DataMapping.GetTableMapping (typeof (T));
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			CommandData commandData = _dataBase.Factory.CreateTruncateTableCommand (mapping);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			return ExecuteNonQuery (command, SafeLevel.Default);
@@ -702,7 +713,7 @@ namespace Light.Data
 		internal IEnumerable<T> QueryDataMappingEnumerable<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 			where T : class, new()
 		{
-			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			bool innerRegion = IsInnerPager && !mapping.HasJoinRelateModel;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
@@ -711,8 +722,8 @@ namespace Light.Data
 		internal List<T> QueryDataList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 			where T : class, new()
 		{
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof (T));
-			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
+			bool innerRegion = IsInnerPager && !mapping.HasJoinRelateModel;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
@@ -783,7 +794,7 @@ namespace Light.Data
 		{
 			T target = default (T);
 			Region region = new Region (index, 1);
-			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			bool innerRegion = IsInnerPager && mapping.HasJoinRelateModel;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				foreach (T obj in QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State)) {
@@ -1292,20 +1303,16 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The data relate list.</returns>
 		/// <param name="query">Query.</param>
-		/// <param name="order">Order.</param>
-		/// <param name="region">Region.</param>
-		/// <param name="level">Level.</param>
-		/// <param name="extendState">Extend state.</param>
+		/// <param name="state">State.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		internal List<T> QueryDataRelateList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level, object extendState)
+		internal List<T> QueryDataRelateList<T> (QueryExpression query, QueryState state)
 			where T : class, new()
 		{
-			DataEntityMapping mapping = DataMapping.GetEntityMapping (typeof (T));
-			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
-			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null, extendState);
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
+			CommandData commandData = _dataBase.Factory.CreateRelateSelectCommand (mapping, query, state);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
+				IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, null, SafeLevel.Default, commandData.State);
 				list.AddRange (ie);
 			}
 			return list;
@@ -1315,7 +1322,7 @@ namespace Light.Data
 		{
 			object target;
 			Region region = new Region (0, 1);
-			bool innerRegion = IsInnerPager && mapping.IsSupportInnerPage;
+			bool innerRegion = IsInnerPager && mapping.HasJoinRelateModel;
 			CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, null, innerRegion ? region : null);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				target = QueryRelateDataMappingReader (mapping, command, state);
@@ -1344,5 +1351,6 @@ namespace Light.Data
 		}
 
 		#endregion
+
 	}
 }

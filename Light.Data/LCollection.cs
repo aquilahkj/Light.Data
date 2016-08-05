@@ -38,12 +38,13 @@ namespace Light.Data
 		void InitialList ()
 		{
 			if (list == null) {
-				RelationContent rc = null;
+				QueryState rc = null;
 				if (this.relateReferFieldMapping != null) {
-					rc = new RelationContent ();
+					rc = new QueryState ();
 					rc.SetCollectionValue (this.relateReferFieldMapping, this.owner);
 				}
-				list = context.LQuery<T> ().Where (query).ToRelateList (rc);
+				//list = context.LQuery<T> ().Where (query).ToRelateList (rc);
+				list = context.QueryDataRelateList<T> (query, rc);
 			}
 		}
 

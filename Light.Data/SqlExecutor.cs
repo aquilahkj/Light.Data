@@ -139,7 +139,7 @@ namespace Light.Data
 		private List<T> QueryList<T> (Region region) where T : class, new()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable<T> ie = _context.QueryDataMappingReader<T> (DataMapping.GetMapping (typeof(T)), _command, region, _level, null);
+			IEnumerable<T> ie = _context.QueryDataMappingReader<T> (DataEntityMapping.GetEntityMapping (typeof(T)), _command, region, _level, null);
 			list.AddRange (ie);
 			return list;
 		}
@@ -199,7 +199,7 @@ namespace Light.Data
 		/// <returns>枚举数据</returns>
 		private IEnumerable<T> Query<T> (Region region) where T : class, new()
 		{
-			return _context.QueryDataMappingReader<T> (DataMapping.GetMapping (typeof(T)), _command, region, _level, null);
+			return _context.QueryDataMappingReader<T> (DataEntityMapping.GetEntityMapping (typeof(T)), _command, region, _level, null);
 		}
 
 		/// <summary>

@@ -44,7 +44,7 @@ namespace Light.Data
 		#endregion
 
 		internal DataFieldInfo (Type type, string name) :
-			this (DataMapping.GetEntityMapping (type), name)
+			this (DataEntityMapping.GetEntityMapping (type), name)
 		{
 
 		}

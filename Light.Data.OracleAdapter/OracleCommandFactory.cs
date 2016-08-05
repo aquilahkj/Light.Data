@@ -254,7 +254,7 @@ namespace Light.Data.OracleAdapter
 			return seq;
 		}
 
-		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
 			if (region == null) {
 				return base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, null);

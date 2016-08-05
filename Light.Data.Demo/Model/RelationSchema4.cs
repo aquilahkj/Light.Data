@@ -118,5 +118,34 @@ namespace Light.Data.Demo
 			}
 		}
 	}
+
+	[Serializable]
+	[DataTable ("Te_User")]
+	public partial class TeUserWithLevel2 : TeUser
+	{
+		private TeUserLevel userLevel;
+
+		[RelationField ("LevelId", "Id")]
+		public TeUserLevel UserLevel {
+			get {
+				return userLevel;
+			}
+			set {
+				userLevel = value;
+			}
+		}
+
+		private TeUserLevel userLevel2;
+
+		[RelationField ("Status", "Status")]
+		public TeUserLevel UserLevel2 {
+			get {
+				return userLevel2;
+			}
+			set {
+				userLevel2 = value;
+			}
+		}
+	}
 }
 

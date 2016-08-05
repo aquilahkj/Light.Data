@@ -19,18 +19,13 @@ namespace Light.Data
 			}
 
 			DataFieldMapping fieldMapping;
-
-//			bool isNullable = false;
-//			string dbType = config.DBType;
 			if (type.IsGenericType) {
 				Type frameType = type.GetGenericTypeDefinition ();
 				if (frameType.FullName == "System.Nullable`1") {
 					Type[] arguments = type.GetGenericArguments ();
 					type = arguments [0];
-//					isNullable = true;
 				}
 			}
-//			isNullable = isNullable || config.IsNullable;
 			if (type.IsArray && type.FullName != "System.Byte[]") {
 				throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 			}
@@ -81,6 +76,7 @@ namespace Light.Data
 					type = arguments [0];
 					isNullable = true;
 				}
+
 			}
 
 			if (type.IsArray && type.FullName != "System.Byte[]") {
@@ -118,6 +114,8 @@ namespace Light.Data
 
 		protected int _positionOrder;
 
+		protected PropertyHandler _handler;
+
 		public int? DataOrder {
 			get {
 				return _dataOrder;
@@ -149,5 +147,7 @@ namespace Light.Data
 		}
 
 		public abstract object ToColumn (object value);
+
+		public abstract object ToParameter (object value);
 	}
 }

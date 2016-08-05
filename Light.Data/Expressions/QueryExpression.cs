@@ -6,7 +6,7 @@ namespace Light.Data
 	/// <summary>
 	/// Query expression.
 	/// </summary>
-	public class QueryExpression : Expression
+	public class QueryExpression : BaseExpression
 	{
 		QueryExpression _expression1;
 
@@ -26,12 +26,12 @@ namespace Light.Data
 		/// <param name="factory">Factory.</param>
 		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		{
-			DataParameter[] dp1;
+			DataParameter [] dp1;
 			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1);
 
-			DataParameter[] dp2;
+			DataParameter [] dp2;
 			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
 
 			if (dp1 == null && dp2 == null) {
@@ -80,6 +80,7 @@ namespace Light.Data
 			newExpression._expression1 = expression1;
 			newExpression._expression2 = expression2;
 			newExpression._operatorType = operatorType;
+			newExpression.mutliQuery = expression1.mutliQuery | expression2.mutliQuery;
 			return newExpression;
 		}
 
@@ -142,6 +143,19 @@ namespace Light.Data
 		{
 			return new LambdaNotQueryExpression (expression);
 		}
+
+		bool mutliQuery;
+
+		internal bool MutliQuery {
+			get {
+				return mutliQuery;
+			}
+
+			set {
+				mutliQuery = value;
+			}
+		}
+
 
 		///// <summary>
 		///// Determines whether the specified <see cref="Light.Data.QueryExpression"/> is equal to the current <see cref="Light.Data.QueryExpression"/>.

@@ -33,7 +33,7 @@ namespace Light.Data.MysqlAdapter
 			return string.Format ("`{0}`", tableName);
 		}
 
-		protected override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
 		{
 			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, region);
 			if (region != null) {

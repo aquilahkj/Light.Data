@@ -272,10 +272,10 @@ namespace Light.Data
 			}
 			config = new RelationFieldConfig (fieldName);
 			if (fieldNode.Attributes ["property"] != null) {
-				RelationMode mode;
-				if (Enum.TryParse<RelationMode> (fieldNode.Attributes ["property"].Value, out mode)) {
-					config.RelationMode = mode;
-				}
+				//RelationMode mode;
+				//if (Enum.TryParse<RelationMode> (fieldNode.Attributes ["property"].Value, out mode)) {
+				//	config.RelationMode = mode;
+				//}
 			}
 			foreach (XmlNode keyNode in fieldNode.ChildNodes) {
 				if (keyNode.Name == "relationKey") {
