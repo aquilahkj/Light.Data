@@ -68,6 +68,7 @@ namespace Light.Data
 			return keyPairs.Clone () as RelationKey[];
 		}
 
+
 		protected BaseRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
 		{
 			if (fieldName == null)

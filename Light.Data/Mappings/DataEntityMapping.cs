@@ -126,7 +126,7 @@ namespace Light.Data
 
 		//protected List<SingleRelationFieldMapping> singleMultiQueryRelationFields = new List<SingleRelationFieldMapping> ();
 
-		protected List<SingleRelationFieldMapping> singleJoinTableRelationFields = new List<SingleRelationFieldMapping> ();
+		protected List<SingleRelationFieldMapping> singleRelationFields = new List<SingleRelationFieldMapping> ();
 
 		internal DataEntityMapping (Type type, string tableName, bool isDataEntity)
 			: base (type)
@@ -146,14 +146,14 @@ namespace Light.Data
 		internal SingleRelationFieldMapping [] GetSingleRelationFieldMappings ()
 		{
 			//int len = this.singleMultiQueryRelationFields.Count + this.singleJoinTableRelationFields.Count;
-			int len = this.singleJoinTableRelationFields.Count;
+			int len = this.singleRelationFields.Count;
 			SingleRelationFieldMapping [] array = new SingleRelationFieldMapping [len];
 			int index = 0;
 			//foreach (SingleRelationFieldMapping item in this.singleMultiQueryRelationFields) {
 			//	array [index] = item;
 			//	index++;
 			//}
-			foreach (SingleRelationFieldMapping item in this.singleJoinTableRelationFields) {
+			foreach (SingleRelationFieldMapping item in this.singleRelationFields) {
 				array [index] = item;
 				index++;
 			}
@@ -174,14 +174,20 @@ namespace Light.Data
 
 		internal SingleRelationFieldMapping [] GetSingleJoinTableRelationFieldMappings ()
 		{
-			int len = this.singleJoinTableRelationFields.Count;
-			SingleRelationFieldMapping [] array = new SingleRelationFieldMapping [len];
-			int index = 0;
-			foreach (SingleRelationFieldMapping item in this.singleJoinTableRelationFields) {
-				array [index] = item;
-				index++;
-			}
-			return array;
+			//int len = this.singleRelationFields.Count;
+			//SingleRelationFieldMapping [] array = new SingleRelationFieldMapping [len];
+			//int index = 0;
+			//foreach (SingleRelationFieldMapping item in this.singleRelationFields) {
+			//	array [index] = item;
+			//	index++;
+			//}
+			//return array;
+			return this.singleRelationFields.ToArray ();
+		}
+
+		internal CollectionRelationFieldMapping [] GetCollectionRelationFieldMappings ()
+		{
+			return this.collectionRelationFields.ToArray ();
 		}
 
 		private void InitialRelationField ()
@@ -212,7 +218,7 @@ namespace Light.Data
 						//else {
 						//	singleJoinTableRelationFields.Add (rmapping);
 						//}
-						singleJoinTableRelationFields.Add (rmapping);
+						singleRelationFields.Add (rmapping);
 					}
 				}
 			}
@@ -358,7 +364,7 @@ namespace Light.Data
 
 		public bool HasJoinRelateModel {
 			get {
-				return singleJoinTableRelationFields.Count > 0;
+				return singleRelationFields.Count > 0;
 			}
 		}
 
@@ -406,7 +412,7 @@ namespace Light.Data
 			//	}
 			//}
 
-			foreach (SingleRelationFieldMapping mapping in singleJoinTableRelationFields) {
+			foreach (SingleRelationFieldMapping mapping in singleRelationFields) {
 				string fpath = string.Format ("{0}.{1}", fieldPath, mapping.FieldName);
 				object value = mapping.ToProperty (context, datareader, datas, fpath);
 				if (!Object.Equals (value, null)) {
@@ -423,7 +429,7 @@ namespace Light.Data
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			object item = Activator.CreateInstance (ObjectType);
-			if (this.singleJoinTableRelationFields.Count > 0) {
+			if (this.singleRelationFields.Count > 0) {
 				QueryState datas = state as QueryState;
 				datas.InitialJoinData ();
 				//datas.SetRootJoinData (this, item);

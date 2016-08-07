@@ -7,7 +7,7 @@ namespace Light.Data
 	/// <summary>
 	/// L collection.
 	/// </summary>
-	public sealed class LCollection<T>:ICollection<T> where T:class, new()
+	public sealed class LCollection<T> : ICollection<T> where T : class, new()
 	{
 		List<T> list;
 
@@ -17,9 +17,11 @@ namespace Light.Data
 
 		object owner;
 
-		SingleRelationFieldMapping relateReferFieldMapping;
+		//SingleRelationFieldMapping relateReferFieldMapping;
 
-		internal LCollection (DataContext context, object owner, QueryExpression query, SingleRelationFieldMapping rollRelateFieldMapping)
+		string [] fieldPaths;
+
+		internal LCollection (DataContext context, object owner, QueryExpression query, string [] fieldPaths)
 		{
 			if (context == null)
 				throw new ArgumentNullException (nameof (context));
@@ -30,7 +32,8 @@ namespace Light.Data
 			this.context = context;
 			this.owner = owner;
 			this.query = query;
-			this.relateReferFieldMapping = rollRelateFieldMapping;
+			//this.relateReferFieldMapping = rollRelateFieldMapping;
+			this.fieldPaths = fieldPaths;
 		}
 
 		#region ICollection implementation
@@ -38,13 +41,15 @@ namespace Light.Data
 		void InitialList ()
 		{
 			if (list == null) {
-				QueryState rc = null;
-				if (this.relateReferFieldMapping != null) {
-					rc = new QueryState ();
-					rc.SetCollectionValue (this.relateReferFieldMapping, this.owner);
-				}
+				//QueryState rc = null;
+				//if (this.relateReferFieldMapping != null) {
+				//	rc = new QueryState ();
+				//	rc.SetCollectionValue (this.relateReferFieldMapping, this.owner);
+				//}
 				//list = context.LQuery<T> ().Where (query).ToRelateList (rc);
-				list = context.QueryDataRelateList<T> (query, rc);
+				IEnumerable<T> ie = context.QueryCollectionRelateEnumerable<T> (null, query, owner, fieldPaths);
+				list = new List<T> ();
+				list.AddRange (ie);
 			}
 		}
 
@@ -88,7 +93,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="array">Array.</param>
 		/// <param name="arrayIndex">Array index.</param>
-		public void CopyTo (T[] array, int arrayIndex)
+		public void CopyTo (T [] array, int arrayIndex)
 		{
 			InitialList ();
 			list.CopyTo (array, arrayIndex);

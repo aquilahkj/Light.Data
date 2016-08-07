@@ -106,14 +106,28 @@ namespace Light.Data
 		void LoadNormal ()
 		{
 			List<DataFieldInfo> rootInfoList = new List<DataFieldInfo> ();
+			Selector dataSelector = new Selector ();
 			foreach (DataFieldMapping fieldMapping in this.rootMapping.DataEntityFields) {
 				if (fieldMapping != null) {
 					DataFieldInfo field = new DataFieldInfo (fieldMapping);
 					fieldInfoDict.Add (string.Format ("{0}.{1}", string.Empty, fieldMapping.Name), field);
 					rootInfoList.Add (field);
+					dataSelector.SetDataField (field);
 				}
 			}
 			tableInfoDict.Add (string.Empty, rootInfoList.ToArray ());
+			string path = string.Empty;
+			CollectionRelationFieldMapping [] collectFieldMappings = rootMapping.GetCollectionRelationFieldMappings ();
+			foreach (CollectionRelationFieldMapping collectFieldMapping in collectFieldMappings) {
+				RelationKey [] kps = collectFieldMapping.GetKeyPairs ();
+				string [] masters = new string [kps.Length];
+				for (int i = 0; i < kps.Length; i++) {
+					masters [i] = string.Format ("{0}.{1}", path, kps [i].MasterKey);
+				}
+				string collectField = string.Format ("{0}.{1}", path, collectFieldMapping.FieldName);
+				collectionDict.Add (collectField, masters);
+			}
+			this.selector = dataSelector;
 		}
 
 		public RelationMap (DataEntityMapping rootMapping)
@@ -127,18 +141,18 @@ namespace Light.Data
 			}
 		}
 
-		public JoinCapsule CreateJoinCapsule (QueryExpression query, OrderExpression order)
-		{
-			List<JoinModel> models1 = new List<JoinModel> ();
+		//public JoinCapsule CreateJoinCapsule (QueryExpression query, OrderExpression order)
+		//{
+		//	List<JoinModel> models1 = new List<JoinModel> ();
 
-			JoinModel model1 = new JoinModel (rootMapping, "T0", null, query, order);
-			//model1.AliasTableName = "T0";//rootAliasName;
-			models1.Add (model1);
+		//	JoinModel model1 = new JoinModel (rootMapping, "T0", null, query, order);
+		//	//model1.AliasTableName = "T0";//rootAliasName;
+		//	models1.Add (model1);
 
-			models1.AddRange (this.models);
-			JoinCapsule clone = new JoinCapsule (this.selector, models1);
-			return clone;
-		}
+		//	models1.AddRange (this.models);
+		//	JoinCapsule clone = new JoinCapsule (this.selector, models1);
+		//	return clone;
+		//}
 
 
 		public List<JoinModel> CreateJoinModels (QueryExpression query, OrderExpression order)
@@ -146,7 +160,6 @@ namespace Light.Data
 			if (!rootMapping.HasJoinRelateModel) {
 				throw new LightDataException ("");
 			}
-
 			List<JoinModel> joinModels = new List<JoinModel> ();
 			JoinModel model1 = new JoinModel (rootMapping, "T0", null, query, order);
 			joinModels.Add (model1);
@@ -158,8 +171,11 @@ namespace Light.Data
 
 		Dictionary<string, string> cycleDict = new Dictionary<string, string> ();
 
+		Dictionary<string, string []> collectionDict = new Dictionary<string, string []> ();
+
 		void LoadEntityMapping (DataEntityMapping mapping, RelationLink link)
 		{
+			string path = link != null ? link.LastFieldPath : string.Empty;
 			SingleRelationFieldMapping [] relateFielsMappings = mapping.GetSingleJoinTableRelationFieldMappings ();
 			foreach (SingleRelationFieldMapping relateFieldMapping in relateFielsMappings) {
 				relateFieldMapping.InitialRelation ();
@@ -184,6 +200,16 @@ namespace Light.Data
 						cycleDict.Add (flink.LastFieldPath, flink.CycleFieldPath);
 					}
 				}
+			}
+			CollectionRelationFieldMapping [] collectFieldMappings = mapping.GetCollectionRelationFieldMappings ();
+			foreach (CollectionRelationFieldMapping collectFieldMapping in collectFieldMappings) {
+				RelationKey [] kps = collectFieldMapping.GetKeyPairs ();
+				string [] masters = new string [kps.Length];
+				for (int i = 0; i < kps.Length; i++) {
+					masters [i] = string.Format ("{0}.{1}", path, kps [i].MasterKey);
+				}
+				string collectField = string.Format ("{0}.{1}", path, collectFieldMapping.FieldName);
+				collectionDict.Add (collectField, masters);
 			}
 		}
 
@@ -216,11 +242,26 @@ namespace Light.Data
 				return info;
 			}
 			else {
-				return null;
+				throw new LightDataException ("");
 			}
 		}
 
-		public ISelector CetDefaultSelector ()
+		public DataFieldInfo[] GetFieldInfoForCollectionField (string path)
+		{
+			string [] fields;
+			if (collectionDict.TryGetValue (path, out fields)) {
+				DataFieldInfo [] infos = new DataFieldInfo [fields.Length];
+				for (int i = 0; i < fields.Length; i++) {
+					infos [i] = GetFieldInfoForField (fields [i]);
+				}
+				return infos;
+			}
+			else {
+				throw new LightDataException ("");
+			}
+		}
+
+		public ISelector GetDefaultSelector ()
 		{
 			return selector;
 		}

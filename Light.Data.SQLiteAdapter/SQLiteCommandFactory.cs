@@ -112,6 +112,7 @@ namespace Light.Data.SQLiteAdapter
 				else {
 					command.CommandText = string.Format ("{0} limit {2} offset {1}", command.CommandText, region.Start, region.Size);
 				}
+				command.InnerPage = true;
 			}
 			return command;
 		}

@@ -36,9 +36,6 @@ namespace Light.Data.MysqlTest
 		}
 	}
 
-
-
-
 	[Serializable]
 	[DataTable ("Te_User")]
 	public partial class TeUserWithExtendRefer : TeUser
@@ -56,7 +53,6 @@ namespace Light.Data.MysqlTest
 		}
 	}
 
-
 	[Serializable]
 	[DataTable ("Te_UserExtend")]
 	public partial class TeUserExtendWithUserRefer :  TeUserExtend
@@ -73,10 +69,6 @@ namespace Light.Data.MysqlTest
 			}
 		}
 	}
-
-
-
-
 
 	[Serializable]
 	[DataTable ("Te_UserExtend")]

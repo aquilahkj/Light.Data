@@ -315,7 +315,7 @@ namespace Light.Data.OracleAdapter
 
 		}
 
-		public override CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
+		public override CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region)
 		{
 			//List<DataParameter> parameters = new List<DataParameter> ();
 			StringBuilder tables = new StringBuilder ();
@@ -378,15 +378,9 @@ namespace Light.Data.OracleAdapter
 			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				//if (queryparameters != null && queryparameters.Length > 0) {
-				//	parameters.AddRange (queryparameters);
-				//}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				//if (orderparameters != null && orderparameters.Length > 0) {
-				//	parameters.AddRange (orderparameters);
-				//}
 			}
 			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, innerParameters, queryparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);

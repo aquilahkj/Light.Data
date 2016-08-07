@@ -53,9 +53,9 @@ namespace Light.Data
 
 		public object ToProperty (DataContext context, IDataReader datareader, QueryState datas, string fieldPath)
 		{
-			if (Object.ReferenceEquals (this, datas.CollectionRelateReferFieldMapping)) {
-				return datas.CollectionRelateReferFieldValue;
-			}
+			//if (Object.ReferenceEquals (this, datas.CollectionRelateReferFieldMapping)) {
+			//	return datas.CollectionRelateReferFieldValue;
+			//}
 
 
 			object value;

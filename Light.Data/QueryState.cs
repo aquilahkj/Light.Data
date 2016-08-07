@@ -5,21 +5,21 @@ namespace Light.Data
 {
 	class QueryState
 	{
-		SingleRelationFieldMapping collectionRelateReferFieldMapping;
+		//SingleRelationFieldMapping collectionRelateReferFieldMapping;
 
-		public SingleRelationFieldMapping CollectionRelateReferFieldMapping {
-			get {
-				return collectionRelateReferFieldMapping;
-			}
-		}
+		//public SingleRelationFieldMapping CollectionRelateReferFieldMapping {
+		//	get {
+		//		return collectionRelateReferFieldMapping;
+		//	}
+		//}
 
-		object collectionRelateReferFieldValue;
+		//object collectionRelateReferFieldValue;
 
-		public object CollectionRelateReferFieldValue {
-			get {
-				return collectionRelateReferFieldValue;
-			}
-		}
+		//public object CollectionRelateReferFieldValue {
+		//	get {
+		//		return collectionRelateReferFieldValue;
+		//	}
+		//}
 
 		RelationMap relationMap;
 
@@ -27,13 +27,15 @@ namespace Light.Data
 
 		readonly Dictionary<string, object> joinDatas = new Dictionary<string, object> ();
 
+		readonly Dictionary<string, object> extendDatas = new Dictionary<string, object> ();
+
 		//readonly Dictionary<DataEntityMapping, Hashtable> queryDatas = new Dictionary<DataEntityMapping, Hashtable> ();
 
-		public void SetCollectionValue (SingleRelationFieldMapping collectionFieldName, object value)
-		{
-			this.collectionRelateReferFieldMapping = collectionFieldName;
-			this.collectionRelateReferFieldValue = value;
-		}
+		//public void SetCollectionValue (SingleRelationFieldMapping collectionFieldName, object value)
+		//{
+		//	this.collectionRelateReferFieldMapping = collectionFieldName;
+		//	this.collectionRelateReferFieldValue = value;
+		//}
 
 		//public bool GetQueryData (DataEntityMapping mapping, object key, out object value)
 		//{
@@ -64,11 +66,23 @@ namespace Light.Data
 		public void InitialJoinData ()
 		{
 			this.joinDatas.Clear ();
+			if (this.extendDatas.Count > 0) {
+				foreach (KeyValuePair<string, object> kvs in this.extendDatas) {
+					joinDatas.Add (kvs.Key, kvs.Value);
+				}
+			}
 		}
 
 		public void SetRelationMap (RelationMap relationMap)
 		{
 			this.relationMap = relationMap;
+		}
+
+		ISelector selector;
+
+		public void SetSelector (ISelector selector)
+		{
+			this.selector = selector;
 		}
 
 		//public void SetRootJoinData (DataEntityMapping mapping, object value)
@@ -101,6 +115,12 @@ namespace Light.Data
 		//		return false;
 		//	}
 		//}
+
+		public void SetExtendData (string fieldPath, object value)
+		{
+			extendDatas [fieldPath] = value;
+		}
+
 
 		public void SetJoinData (string fieldPath, object value)
 		{

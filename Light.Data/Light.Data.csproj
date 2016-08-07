@@ -293,7 +293,6 @@
     <Compile Include="JoinCapsule.cs" />
     <Compile Include="QueryState.cs" />
     <Compile Include="Mappings\BaseRelationFieldMapping.cs" />
-    <Compile Include="RelationMap.cs" />
     <Compile Include="Attributes\RelationFieldAttribute.cs" />
     <Compile Include="DataBase\Access.cs" />
     <Compile Include="DataBase\AccessCommandFactory.cs" />
@@ -337,10 +336,12 @@
     <Compile Include="DataField\LambdaStringLengthDataFieldInfo.cs" />
     <Compile Include="LambdaState.cs" />
     <Compile Include="LQueryable.cs" />
-    <Compile Include="RelationLink.cs" />
-    <Compile Include="RelationItem.cs" />
-    <Compile Include="Selector\ISelector.cs" />
-    <Compile Include="Selector\JoinSelector.cs" />
+    <Compile Include="Model\ISelector.cs" />
+    <Compile Include="Model\JoinSelector.cs" />
+    <Compile Include="Model\RelationItem.cs" />
+    <Compile Include="Model\RelationLink.cs" />
+    <Compile Include="Model\RelationMap.cs" />
+    <Compile Include="Model\Selector.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -370,6 +371,6 @@
   -->
   <ItemGroup>
     <Folder Include="DataBase\" />
-    <Folder Include="Selector\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 </Project>

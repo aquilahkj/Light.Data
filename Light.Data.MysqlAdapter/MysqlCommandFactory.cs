@@ -43,6 +43,7 @@ namespace Light.Data.MysqlAdapter
 				else {
 					command.CommandText = string.Format ("{0} limit {1},{2}", command.CommandText, region.Start, region.Size);
 				}
+				command.InnerPage = true;
 			}
 			return command;
 		}
@@ -113,7 +114,6 @@ namespace Light.Data.MysqlAdapter
 			}
 			StringBuilder sql = new StringBuilder ();
 
-			//List<DataParameter> parameterlist = new List<DataParameter> ();
 			string [] selectList = new string [fields.Count + functions.Count];
 			string [] groupbyList = new string [fields.Count];
 			int index = 0;
@@ -162,25 +162,16 @@ namespace Light.Data.MysqlAdapter
 
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				//if (queryparameters != null && queryparameters.Length > 0) {
-				//	parameterlist.AddRange (queryparameters);
-				//}
 			}
 
 			sql.AppendFormat (" group by {0}", groupby);
 
 			if (!string.IsNullOrEmpty (havingString)) {
 				sql.AppendFormat (" {0}", havingString);
-				//if (havingparameters != null && havingparameters.Length > 0) {
-				//	parameterlist.AddRange (havingparameters);
-				//}
 			}
 
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				//if (orderbyparameters != null && orderbyparameters.Length > 0) {
-				//	parameterlist.AddRange (orderbyparameters);
-				//}
 			}
 			DataParameter [] parameters = DataParameter.ConcatDataParameters (innerParameters, functionParameters, queryparameters, havingparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);

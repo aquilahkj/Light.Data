@@ -249,7 +249,7 @@ namespace Light.Data
 				seq = oracleIdentity;
 			}
 			else {
-				seq = string.Format ("{0}_seq", mapping.TableName);//mapping.TableName + "_Sequence";
+				seq = string.Format ("{0}_seq", mapping.TableName);
 			}
 			return seq;
 		}
@@ -261,7 +261,6 @@ namespace Light.Data
 			}
 
 			StringBuilder sql = new StringBuilder ();
-			//List<DataParameter> parameters = new List<DataParameter> ();
 			DataParameter [] queryparameters;
 			DataParameter [] orderparameters;
 			string queryString = GetQueryString (query, out queryparameters);
@@ -271,9 +270,6 @@ namespace Light.Data
 				sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					sql.AppendFormat (" {0}", queryString);
-					//if (queryparameters != null) {
-					//	parameters.AddRange (queryparameters);
-					//}
 					sql.AppendFormat (" and ROWNUM<={0}", region.Size);
 				}
 				else {
@@ -294,15 +290,9 @@ namespace Light.Data
 				innerSQL.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					innerSQL.AppendFormat (" {0}", queryString);
-					//if (queryparameters != null) {
-					//	parameters.AddRange (queryparameters);
-					//}
 				}
 				if (!string.IsNullOrEmpty (orderString)) {
 					innerSQL.AppendFormat (" {0}", orderString);
-					//if (orderparameters != null) {
-					//	parameters.AddRange (orderparameters);
-					//}
 				}
 				string tempRowNumber = CreateCustomFiledName ();
 				sql.AppendFormat ("select {4} from (select a.*,ROWNUM {3} from ({0})a where ROWNUM<={2})b where {3}>{1}",
@@ -315,9 +305,8 @@ namespace Light.Data
 
 		}
 
-		public override CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
+		public override CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region)
 		{
-			//List<DataParameter> parameters = new List<DataParameter> ();
 			StringBuilder tables = new StringBuilder ();
 			OrderExpression totalOrder = null;
 			QueryExpression totalQuery = null;
@@ -378,15 +367,9 @@ namespace Light.Data
 			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
-				//if (queryparameters != null && queryparameters.Length > 0) {
-				//	parameters.AddRange (queryparameters);
-				//}
 			}
 			if (!string.IsNullOrEmpty (orderString)) {
 				sql.AppendFormat (" {0}", orderString);
-				//if (orderparameters != null && orderparameters.Length > 0) {
-				//	parameters.AddRange (orderparameters);
-				//}
 			}
 			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, innerParameters, queryparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString (), parameters);

@@ -665,8 +665,12 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public List<K> ToList<K> () where K : class, new()
 		{
-			DataMapping mapping = DataEntityMapping.GetEntityMapping (typeof (K));
-			List<K> list = _context.QueryJoinDataList<K> (mapping, _selector, _modelList, _query, _order, _region, _level);
+			//DataMapping mapping = DataEntityMapping.GetEntityMapping (typeof (K));
+			//List<K> list = _context.QueryJoinDataList<K> (mapping, _selector, _modelList, _query, _order, _region, _level);
+			//return list;
+
+			List<K> list = new List<K> ();
+			list.AddRange (_context.QueryJoinDataEnumerable<K> (_selector, _modelList, _query, _order, _region, _level));
 			return list;
 		}
 

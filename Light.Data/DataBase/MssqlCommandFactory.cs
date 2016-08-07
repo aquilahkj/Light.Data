@@ -90,15 +90,9 @@ namespace Light.Data
 				sql.AppendFormat ("select {3}top {2} {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Size, distinct ? "distinct " : string.Empty);
 				if (!string.IsNullOrEmpty (queryString)) {
 					sql.AppendFormat (" {0}", queryString);
-					//if (queryparameters != null) {
-					//	parameters.AddRange (queryparameters);
-					//}
 				}
 				if (!string.IsNullOrEmpty (orderString)) {
 					sql.AppendFormat (" {0}", orderString);
-					//if (orderparameters != null) {
-					//	parameters.AddRange (orderparameters);
-					//}
 				}
 			}
 			else {

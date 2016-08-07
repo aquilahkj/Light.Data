@@ -5,8 +5,17 @@ namespace Light.Data
 	/// <summary>
 	/// 取值范围对象
 	/// </summary>
-	 class Region
+	class Region
 	{
+		static Region region = new Region (0, 1);
+
+		public static Region OneTimes {
+			get {
+				return region;
+			}
+		}
+
+
 		/// <summary>
 		/// 构造函数
 		/// </summary>
@@ -15,11 +24,11 @@ namespace Light.Data
 		public Region (int start, int size)
 		{
 			if (start < 0) {
-				throw new ArgumentOutOfRangeException ("start");
+				throw new ArgumentOutOfRangeException (nameof (start));
 			}
 			_start = start;
 			if (size < 0) {
-				throw new ArgumentOutOfRangeException ("size");
+				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			_size = size;
 		}
@@ -35,7 +44,7 @@ namespace Light.Data
 			}
 			set {
 				if (value < 0) {
-					throw new ArgumentOutOfRangeException ("start");
+					throw new ArgumentOutOfRangeException (nameof (value));
 				}
 				else {
 					_start = value;
@@ -54,7 +63,7 @@ namespace Light.Data
 			}
 			set {
 				if (value <= 0) {
-					throw new ArgumentOutOfRangeException ("size");
+					throw new ArgumentOutOfRangeException (nameof (value));
 				}
 				else {
 					_size = value;

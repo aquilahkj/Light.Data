@@ -339,52 +339,53 @@ namespace Light.Data
 			return onString;
 		}
 
-		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region)
-		{
-			if (region != null && !_canInnerPage) {
-				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
-			}
-			CommandData data;
-			if (mapping.HasJoinRelateModel) {
-				RelationMap relationMap = mapping.GetRelationMap ();
-				JoinCapsule capsule;
-				QueryExpression subQuery = null;
-				QueryExpression mainQuery = null;
-				OrderExpression subOrder = null;
-				OrderExpression mainOrder = null;
-				if (query != null) {
-					if (query.MutliQuery) {
-						mainQuery = query;
-					}
-					else {
-						subQuery = query;
-					}
-				}
-				if (order != null) {
-					if (order.MutliOrder) {
-						mainOrder = order;
-					}
-					else {
-						subOrder = order;
-					}
-				}
-				capsule = relationMap.CreateJoinCapsule (subQuery, subOrder);
-				data = CreateSelectJoinTableCommand (capsule.Slector, capsule.Models, mainQuery, mainOrder);
-				QueryState rc = new QueryState ();
-				rc.SetRelationMap (relationMap);
-				data.State = rc;
-				return data;
-			}
-			string [] fieldNames = new string [mapping.FieldCount];
-			int i = 0;
-			foreach (DataFieldMapping field in mapping.DataEntityFields) {
-				fieldNames [i] = CreateDataFieldSql (field.Name);
-				i++;
-			}
-			string selectString = string.Join (",", fieldNames);
-			data = this.CreateSelectBaseCommand (mapping, selectString, null, query, order, region);
-			return data;
-		}
+		//public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region)
+		//{
+		//	if (region != null && !_canInnerPage) {
+		//		throw new LightDataException (RE.DataBaseNotSupportInnerPage);
+		//	}
+		//	CommandData data;
+		//	if (mapping.HasJoinRelateModel) {
+		//		RelationMap relationMap = mapping.GetRelationMap ();
+		//		QueryExpression subQuery = null;
+		//		QueryExpression mainQuery = null;
+		//		OrderExpression subOrder = null;
+		//		OrderExpression mainOrder = null;
+		//		if (query != null) {
+		//			if (query.MutliQuery) {
+		//				mainQuery = query;
+		//			}
+		//			else {
+		//				subQuery = query;
+		//			}
+		//		}
+		//		if (order != null) {
+		//			if (order.MutliOrder) {
+		//				mainOrder = order;
+		//			}
+		//			else {
+		//				subOrder = order;
+		//			}
+		//		}
+		//		//capsule = relationMap.CreateJoinCapsule (subQuery, subOrder);
+		//		ISelector selector = relationMap.GetDefaultSelector ();
+		//		List<JoinModel> models = relationMap.CreateJoinModels (subQuery, subOrder);
+		//		data = CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder);
+		//		QueryState rc = new QueryState ();
+		//		rc.SetRelationMap (relationMap);
+		//		data.State = rc;
+		//		return data;
+		//	}
+		//	string [] fieldNames = new string [mapping.FieldCount];
+		//	int i = 0;
+		//	foreach (DataFieldMapping field in mapping.DataEntityFields) {
+		//		fieldNames [i] = CreateDataFieldSql (field.Name);
+		//		i++;
+		//	}
+		//	string selectString = string.Join (",", fieldNames);
+		//	data = this.CreateSelectBaseCommand (mapping, selectString, null, query, order, region);
+		//	return data;
+		//}
 
 		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, Region region)
 		{
@@ -392,35 +393,6 @@ namespace Light.Data
 				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
 			}
 			CommandData data;
-			if (mapping.HasJoinRelateModel) {
-				RelationMap relationMap = mapping.GetRelationMap ();
-				QueryExpression subQuery = null;
-				QueryExpression mainQuery = null;
-				OrderExpression subOrder = null;
-				OrderExpression mainOrder = null;
-				if (query != null) {
-					if (query.MutliQuery) {
-						mainQuery = query;
-					}
-					else {
-						subQuery = query;
-					}
-				}
-				if (order != null) {
-					if (order.MutliOrder) {
-						mainOrder = order;
-					}
-					else {
-						subOrder = order;
-					}
-				}
-				JoinCapsule capsule = relationMap.CreateJoinCapsule (subQuery, subOrder);
-				data = CreateSelectJoinTableCommand (capsule.Slector, capsule.Models, mainQuery, mainOrder);
-				QueryState rc = new QueryState ();
-				rc.SetRelationMap (relationMap);
-				data.State = rc;
-				return data;
-			}
 			string selectString;
 			DataParameter [] dataParameters = null;
 			if (selector != null) {
@@ -439,39 +411,39 @@ namespace Light.Data
 			return data;
 		}
 
-		public virtual CommandData CreateRelateSelectCommand (DataEntityMapping mapping, QueryExpression query, object extendState)
-		{
-			CommandData data;
-			if (mapping.HasJoinRelateModel) {
-				RelationMap relationMap = mapping.GetRelationMap ();
-				JoinCapsule capsule = relationMap.CreateJoinCapsule (query, null);
-				JoinSelector selector = capsule.Slector;
-				QueryState rc = extendState as QueryState;
-				if (rc != null) {
-					if (rc.CollectionRelateReferFieldMapping != null) {
-						DataEntityMapping exceptMapping = rc.CollectionRelateReferFieldMapping.RelateMapping;
-						selector = selector.CloneWithExcept (new [] { exceptMapping });
-					}
-				}
-				else {
-					rc = new QueryState ();
-				}
-				rc.SetRelationMap (relationMap);
-				data = CreateSelectJoinTableCommand (selector, capsule.Models, null, null);
-				data.State = rc;
-				return data;
-			}
+		//public virtual CommandData CreateRelateSelectCommand (DataEntityMapping mapping, QueryExpression query, object extendState)
+		//{
+		//	CommandData data;
+		//	if (mapping.HasJoinRelateModel) {
+		//		RelationMap relationMap = mapping.GetRelationMap ();
+		//		JoinCapsule capsule = relationMap.CreateJoinCapsule (query, null);
+		//		JoinSelector selector = capsule.Slector;
+		//		QueryState rc = extendState as QueryState;
+		//		if (rc != null) {
+		//			if (rc.CollectionRelateReferFieldMapping != null) {
+		//				DataEntityMapping exceptMapping = rc.CollectionRelateReferFieldMapping.RelateMapping;
+		//				selector = selector.CloneWithExcept (new [] { exceptMapping });
+		//			}
+		//		}
+		//		else {
+		//			rc = new QueryState ();
+		//		}
+		//		rc.SetRelationMap (relationMap);
+		//		data = CreateSelectJoinTableCommand (selector, capsule.Models, null, null);
+		//		data.State = rc;
+		//		return data;
+		//	}
 
-			string [] fieldNames = new string [mapping.FieldCount];
-			int i = 0;
-			foreach (DataFieldMapping field in mapping.DataEntityFields) {
-				fieldNames [i] = CreateDataFieldSql (field.Name);
-				i++;
-			}
-			string selectString = string.Join (",", fieldNames);
-			data = this.CreateSelectBaseCommand (mapping, selectString, null, query, null, null);
-			return data;
-		}
+		//	string [] fieldNames = new string [mapping.FieldCount];
+		//	int i = 0;
+		//	foreach (DataFieldMapping field in mapping.DataEntityFields) {
+		//		fieldNames [i] = CreateDataFieldSql (field.Name);
+		//		i++;
+		//	}
+		//	string selectString = string.Join (",", fieldNames);
+		//	data = this.CreateSelectBaseCommand (mapping, selectString, null, query, null, null);
+		//	return data;
+		//}
 
 		public virtual CommandData CreateSelectSingleFieldCommand (DataFieldInfo fieldinfo, QueryExpression query, OrderExpression order, bool distinct, Region region)
 		{
@@ -513,14 +485,14 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateSelectJoinTableCommand (ISelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
+		public virtual CommandData CreateSelectJoinTableCommand (ISelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region)
 		{
 			DataParameter [] dataParameters;
 			string selectString = selector.CreateSelectString (this, out dataParameters);
-			return CreateSelectJoinTableCommand (selectString, dataParameters, modelList, query, order);
+			return CreateSelectJoinTableCommand (selectString, dataParameters, modelList, query, order, region);
 		}
 
-		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order)
+		public virtual CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region)
 		{
 			StringBuilder tables = new StringBuilder ();
 			OrderExpression totalOrder = null;
@@ -649,7 +621,7 @@ namespace Light.Data
 		public virtual CommandData CreateAggregateJoinCountCommand (List<JoinModel> modelList, QueryExpression query)
 		{
 			string select = CreateCountAllSql ();
-			return CreateSelectJoinTableCommand (select, null, modelList, query, null);
+			return CreateSelectJoinTableCommand (select, null, modelList, query, null, null);
 		}
 
 		public virtual CommandData CreateDeleteMassCommand (DataTableEntityMapping mapping, QueryExpression query)

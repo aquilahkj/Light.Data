@@ -22,6 +22,8 @@ namespace Light.Data
 
 		object state;
 
+		bool innerPage;
+
 		public object State {
 			get {
 				return state;
@@ -75,6 +77,16 @@ namespace Light.Data
 			}
 			set {
 				transParamName = value;
+			}
+		}
+
+		public bool InnerPage {
+			get {
+				return innerPage;
+			}
+
+			set {
+				innerPage = value;
 			}
 		}
 

@@ -446,13 +446,15 @@ namespace Light.Data
 						if (state.TryGetRelationMap (param.Name, out relationMap) && param.Type == relationMap.RootMapping.ObjectType) {
 							string path = "." + member.Member.Name;
 							DataFieldInfo myinfo = relationMap.GetFieldInfoForField (path);
-							if (!Object.Equals (myinfo, null)) {
-								fieldInfo = myinfo;
-								return true;
-							}
-							else {
-								throw new LambdaParseException ("");
-							}
+							fieldInfo = myinfo;
+							return true;
+							//if (!Object.Equals (myinfo, null)) {
+							//	fieldInfo = myinfo;
+							//	return true;
+							//}
+							//else {
+							//	throw new LambdaParseException ("");
+							//}
 						}
 						else {
 							throw new LambdaParseException (string.Format ("parameter not correct,name:{0},type:{1}", param.Name, param.Type));
@@ -478,14 +480,17 @@ namespace Light.Data
 							if (inparam != null) {
 								RelationMap relationMap = state.GetRelationMap (inparam.Name);
 								DataFieldInfo myinfo = relationMap.GetFieldInfoForField (path);
-								if (!Object.Equals (myinfo, null)) {
-									state.MutliQuery = true;
-									fieldInfo = myinfo;
-									return true;
-								}
-								else {
-									throw new LambdaParseException ("");
-								}
+								state.MutliQuery = true;
+								fieldInfo = myinfo;
+								return true;
+								//if (!Object.Equals (myinfo, null)) {
+								//	state.MutliQuery = true;
+								//	fieldInfo = myinfo;
+								//	return true;
+								//}
+								//else {
+								//	throw new LambdaParseException ("");
+								//}
 							}
 							throw new LambdaParseException ("");
 						}

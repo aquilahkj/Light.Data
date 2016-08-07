@@ -160,7 +160,7 @@ namespace Light.Data
 		/// <returns></returns>
 		public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
 		{
-			return this.CreateSelectBaseCommand (mapping, "top 1", null, query, null, null);
+			return this.CreateSelectBaseCommand (mapping, "top 1 1", null, query, null, null);
 		}
 
 		public override string CreateDataTableSql (string tableName)

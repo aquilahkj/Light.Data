@@ -36,9 +36,6 @@ namespace Light.Data.PostgreTest
 		}
 	}
 
-
-
-
 	[Serializable]
 	[DataTable ("Te_User")]
 	public partial class TeUserWithExtendRefer : TeUser
@@ -56,10 +53,9 @@ namespace Light.Data.PostgreTest
 		}
 	}
 
-
 	[Serializable]
 	[DataTable ("Te_UserExtend")]
-	public partial class TeUserExtendWithUserRefer :  TeUserExtend
+	public partial class TeUserExtendWithUserRefer : TeUserExtend
 	{
 		private TeUserWithExtendRefer user;
 
@@ -74,17 +70,42 @@ namespace Light.Data.PostgreTest
 		}
 	}
 
-
-
-
-
 	[Serializable]
 	[DataTable ("Te_UserExtend")]
-	public partial class TeUserExtendWithUserRefer1 :  TeUserExtend
+	public partial class TeUserExtendWithUserRefer1 : TeUserExtend
 	{
 		private TeUserWithExtendRefer1 user;
 
 		[RelationField ("UserId", "Id")]
+		public TeUserWithExtendRefer1 User {
+			get {
+				return user;
+			}
+			set {
+				user = value;
+			}
+		}
+
+		private TeUser user1;
+
+		[RelationField ("UserId", "Id")]
+		public TeUser User1 {
+			get {
+				return user1;
+			}
+			set {
+				user1 = value;
+			}
+		}
+	}
+
+	[Serializable]
+	[DataTable ("Te_UserExtend")]
+	public partial class TeUserExtendWithUserReferX : TeUserExtend
+	{
+		private TeUserWithExtendRefer1 user;
+
+		[RelationField ("UserId", "LevelId")]
 		public TeUserWithExtendRefer1 User {
 			get {
 				return user;
@@ -136,10 +157,10 @@ namespace Light.Data.PostgreTest
 			}
 		}
 
-		private TeUserExtendWithUserRefer1 userExtend2;
+		private TeUserExtendWithUserReferX userExtend2;
 
 		[RelationField ("LevelId", "UserId")]
-		public TeUserExtendWithUserRefer1 UserExtend2 {
+		public TeUserExtendWithUserReferX UserExtend2 {
 			get {
 				return userExtend2;
 			}
@@ -154,7 +175,7 @@ namespace Light.Data.PostgreTest
 
 	[Serializable]
 	[DataTable ("Te_UserExtend")]
-	public partial class TeUserExtendWithUserRefer2 :  TeUserExtend
+	public partial class TeUserExtendWithUserRefer2 : TeUserExtend
 	{
 		private TeUserWithExtendRefer2 user;
 
@@ -183,7 +204,7 @@ namespace Light.Data.PostgreTest
 
 	[Serializable]
 	[DataTable ("Te_AreaInfo")]
-	public partial class TeAreaInfoWithUserExtendrRefer2 :  TeAreaInfo
+	public partial class TeAreaInfoWithUserExtendrRefer2 : TeAreaInfo
 	{
 		private TeUserExtendWithUserRefer2 userExtend;
 

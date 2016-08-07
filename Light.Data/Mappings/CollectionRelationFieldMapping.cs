@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Light.Data
@@ -6,23 +7,39 @@ namespace Light.Data
 	/// <summary>
 	/// Collection relation field mapping.
 	/// </summary>
-	class CollectionRelationFieldMapping:BaseRelationFieldMapping
+	class CollectionRelationFieldMapping : BaseRelationFieldMapping
 	{
-		SingleRelationFieldMapping relateReferFieldMapping;
+		//SingleRelationFieldMapping relateReferFieldMapping;
 
-		public CollectionRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
+		ConstructorInfo defaultConstructorInfo;
+
+		public CollectionRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey [] keyPairs, PropertyHandler handler)
 			: base (fieldName, mapping, relateType, keyPairs, handler)
 		{
-			
+
 		}
+
+		string [] fieldPashs;
 
 		protected override void InitialRelateMappingInc ()
 		{
 			base.InitialRelateMappingInc ();
-			SingleRelationFieldMapping[] fields = this.relateEntityMapping.GetSingleRelationFieldMappings ();
+			List<string> list = new List<string> ();
+			SingleRelationFieldMapping [] fields = this.relateEntityMapping.GetSingleRelationFieldMappings ();
 			foreach (SingleRelationFieldMapping item in fields) {
 				if (this.IsReverseMatch (item)) {
-					this.relateReferFieldMapping = item;
+					list.Add ("." + item.FieldName);
+				}
+			}
+			fieldPashs = list.ToArray ();
+			Type itemstype = Type.GetType ("Light.Data.LCollection`1");
+			Type objectType = itemstype.MakeGenericType (this.relateType);
+			ConstructorInfo [] constructorInfoArray = objectType.GetConstructors (BindingFlags.Instance | BindingFlags.NonPublic);
+			foreach (ConstructorInfo constructorInfo in constructorInfoArray) {
+				ParameterInfo [] parameterInfoArray = constructorInfo.GetParameters ();
+				if (parameterInfoArray.Length == 4) {
+					defaultConstructorInfo = constructorInfo;
+					break;
 				}
 			}
 		}
@@ -36,24 +53,22 @@ namespace Light.Data
 				DataFieldMapping field = this.masterFieldMappings [i];
 				expression = QueryExpression.And (expression, info == field.Handler.Get (source));
 			}
-			Type itemstype = Type.GetType ("Light.Data.LCollection`1");
-			Type objectType = itemstype.MakeGenericType (this.relateType);
+
 			object target = null;
-			ConstructorInfo defaultConstructorInfo = null;
-			ConstructorInfo[] constructorInfoArray = objectType.GetConstructors (BindingFlags.Instance | BindingFlags.NonPublic);
-			foreach (ConstructorInfo constructorInfo in constructorInfoArray) {
-				ParameterInfo[] parameterInfoArray = constructorInfo.GetParameters ();
-				if (parameterInfoArray.Length == 4) {
-					defaultConstructorInfo = constructorInfo;
-					break;
-				}
-			}
 			if (defaultConstructorInfo != null) {
-				object[] args = { context, source, expression, this.relateReferFieldMapping };
+				object [] args = { context, source, expression, this.fieldPashs };
 				target = defaultConstructorInfo.Invoke (args);
 			}
 			return target;
 		}
+
+		//public DataFieldMapping [] GetMasterFieldMappings ()
+		//{
+		//	return (DataFieldMapping [])masterFieldMappings.Clone ();
+		//}
+
+
+
 	}
 }
 

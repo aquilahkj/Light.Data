@@ -67,7 +67,8 @@ namespace Light.Data.SQLiteTest
 				AssertExtend.AreTypeEqual<TeUser> (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
-				} else {
+				}
+				else {
 					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 				}
@@ -98,14 +99,15 @@ namespace Light.Data.SQLiteTest
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
 					Assert.IsNull (refer.UserExtend1);
-				} else {
+				}
+				else {
 					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
-					Assert.AreEqual (refer.UserExtend, refer.UserExtend1);
+					Assert.AreNotEqual (refer.UserExtend, refer.UserExtend1);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 					Assert.IsNotNull (refer.UserExtend.User1);
 					AssertExtend.AreTypeEqual<TeUser> (user, refer.UserExtend.User1);
 				}
-				Assert.IsNull (refer.UserExtend2);
+				Assert.IsNotNull (refer.UserExtend2);
 			}
 		}
 
@@ -135,13 +137,15 @@ namespace Light.Data.SQLiteTest
 				AssertExtend.AreTypeEqual<TeUser> (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
-				} else {
+				}
+				else {
 					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 					TeAreaInfo areaInfo = areaInfos.Find (x => x.Id == extend.ExtendAreaId);
 					if (areaInfo == null) {
 						Assert.IsNull (refer.UserExtend.AreaInfo);
-					} else {
+					}
+					else {
 						AssertExtend.AreTypeEqual<TeAreaInfo> (areaInfo, refer.UserExtend.AreaInfo);
 						Assert.AreEqual (refer.UserExtend, refer.UserExtend.AreaInfo.UserExtend);
 					}
