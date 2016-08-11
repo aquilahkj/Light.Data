@@ -18,7 +18,9 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			return _context.QueryDataMappingEnumerable<T> (null, _query, _order, _region, _level).GetEnumerator ();
+			foreach (T item in _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level)) {
+				yield return item;
+			}
 		}
 
 		#endregion
@@ -27,7 +29,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryDataMappingEnumerable<T> (null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -498,7 +500,10 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			list.AddRange (_context.QueryDataMappingEnumerable<T> (null, _query, _order, _region, _level));
+			IEnumerable ie = _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level);
+			foreach (T item in ie) {
+				list.Add (item);
+			}
 			return list;
 		}
 
@@ -816,22 +821,24 @@ namespace Light.Data
 			return _context.DeleteMass<T> (this._query);
 		}
 
-		public TResult Select<TResult> (Expression<Func<T, TResult>> expression) where TResult : class
+		public LSelectable<TResult> Select<TResult> (Expression<Func<T, TResult>> expression) where TResult : class
 		{
 			//object item = Activator.CreateInstance (typeof (TResult));
 			//return item as TResult;
 			//return 0;
-
-			//return null;
+			ISelector selector = LambdaExpressionExtend.CreateSelector (expression);
+			Delegate dele = expression.Compile ();
+			LSelectable<TResult> selectable = new LSelectable<TResult> (_context, dele, selector, typeof (T), _query, _order, _region, _level);
+			return selectable;
 
 
 			//return expression.Compile () (Activator.CreateInstance<T> ());
 
-			Type type = typeof (TResult);
-			TResult t = (TResult)Activator.CreateInstance (type, new object [type.GetProperties ().Length]);
+			//Type type = typeof (TResult);
+			//TResult t = (TResult)Activator.CreateInstance (type, new object [type.GetProperties ().Length]);
 
-			//var d = DataEntityMapping.GetEntityMapping (type);
-			return t;
+			////var d = DataEntityMapping.GetEntityMapping (type);
+			//return t;
 
 			//object [] objArr = new object [type.GetProperties ().Length];
 			//for (int i = 0; i < type.GetProperties ().Length; i++) {

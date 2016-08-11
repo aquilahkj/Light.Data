@@ -670,7 +670,9 @@ namespace Light.Data
 			//return list;
 
 			List<K> list = new List<K> ();
-			list.AddRange (_context.QueryJoinDataEnumerable<K> (_selector, _modelList, _query, _order, _region, _level));
+			foreach (K item in _context.QueryJoinDataEnumerable (typeof (K), _selector, _modelList, _query, _order, _region, _level)) {
+				list.Add (item);
+			}
 			return list;
 		}
 

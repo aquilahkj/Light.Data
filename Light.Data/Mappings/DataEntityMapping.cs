@@ -71,7 +71,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The entity mapping.</returns>
 		/// <param name="type">Type.</param>
-		public static bool CheckMapping(Type type)
+		public static bool CheckMapping (Type type)
 		{
 			return _defaultMapping.ContainsKey (type);
 		}
@@ -391,10 +391,12 @@ namespace Light.Data
 				}
 				else {
 					string name = string.Format ("{0}_{1}", aliasName, field.Name);
-					object obj = datareader [name];
-					object value = field.ToProperty (obj);
-					if (!Object.Equals (value, null)) {
-						field.Handler.Set (item, value);
+					if (datas.CheckSelectField (name)) {
+						object obj = datareader [name];
+						object value = field.ToProperty (obj);
+						if (!Object.Equals (value, null)) {
+							field.Handler.Set (item, value);
+						}
 					}
 				}
 			}
@@ -429,13 +431,11 @@ namespace Light.Data
 		public override object LoadData (DataContext context, IDataReader datareader, object state)
 		{
 			object item = Activator.CreateInstance (ObjectType);
+			QueryState queryState = state as QueryState;
 			if (this.singleRelationFields.Count > 0) {
-				QueryState datas = state as QueryState;
-				datas.InitialJoinData ();
-				//datas.SetRootJoinData (this, item);
-				//string aliasName = datas.GetRootAliasName ();
-				datas.SetJoinData (string.Empty, item);
-				LoadJoinTableData (context, datareader, item, datas, string.Empty);
+				queryState.InitialJoinData ();
+				queryState.SetJoinData (string.Empty, item);
+				LoadJoinTableData (context, datareader, item, queryState, string.Empty);
 				return item;
 			}
 
@@ -452,10 +452,19 @@ namespace Light.Data
 					}
 				}
 				else {
-					object obj = datareader [field.Name];
-					object value = field.ToProperty (obj);
-					if (!Object.Equals (value, null)) {
-						field.Handler.Set (item, value);
+					if (queryState == null) {
+						object obj = datareader [field.Name];
+						object value = field.ToProperty (obj);
+						if (!Object.Equals (value, null)) {
+							field.Handler.Set (item, value);
+						}
+					}
+					else if (queryState.CheckSelectField (field.Name)) {
+						object obj = datareader [field.Name];
+						object value = field.ToProperty (obj);
+						if (!Object.Equals (value, null)) {
+							field.Handler.Set (item, value);
+						}
 					}
 				}
 			}

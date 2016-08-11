@@ -17,16 +17,16 @@ namespace Light.Data
 		//	}
 		//}
 
-		Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
+		protected Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
 
-		public void SetDataField (DataFieldInfo field)
+		public virtual void SetDataField (DataFieldInfo field)
 		{
 			if (Object.Equals (field, null))
 				throw new ArgumentNullException (nameof (field));
 			this.infoDict [field.FieldName] = field;
 		}
 
-		public string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters)
+		public virtual string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters)
 		{
 			string [] selectList = new string [this.infoDict.Count];
 			int index = 0;
@@ -45,6 +45,32 @@ namespace Light.Data
 			string customSelect = string.Join (",", selectList);
 			dataParameters = innerParameters != null ? innerParameters.ToArray () : null;
 			return customSelect;
+		}
+
+		public virtual string [] GetSelectFiledNames ()
+		{
+			string [] fileds = new string [this.infoDict.Count];
+			int index = 0;
+			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
+				fileds [index] = fieldInfo.FieldName;
+				index++;
+			}
+			return fileds;
+		}
+
+		public static JoinSelector ComposeSelector (Dictionary<string, Selector> selectors)
+		{
+			JoinSelector joinSelector = new JoinSelector ();
+			foreach (KeyValuePair<string, Selector> selector in selectors) {
+				foreach (KeyValuePair<string, DataFieldInfo> kvs in selector.Value.infoDict) {
+					DataFieldInfo info = kvs.Value.Clone () as DataFieldInfo;
+					string aliasName = string.Format ("{0}_{1}", kvs.Key, info.FieldName);
+					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
+					alias.AliasTableName = kvs.Key;
+					joinSelector.SetAliasDataField (alias);
+				}
+			}
+			return joinSelector;
 		}
 	}
 }

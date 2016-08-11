@@ -54,14 +54,25 @@ namespace Light.Data.Demo
 			//List<TeUser> users2 = context.LQuery<TeUser> ()
 			//.Where (x =>  x.RegTime.ToString () == "" && dd.Contains (x.Account) && !dd.Contains (x.Address) && string.Concat (x.RegTime.Year, x.Account, "00", 11) == "" && x.Address.IndexOf ('a') == 2).ToList ();
 
-			List<TeUserWithLevel2> users2 = context.LQueryable<TeUserWithLevel2> ()
-												   .Where (x => x.UserLevel.Status == 1 && x.Id == 1)
-												   .OrderBy (x => x.Address).ToList ();
+			//List<TeUserWithLevel2> users2 = context.LQueryable<TeUserWithLevel2> ()
+			//									   .Where (x => x.UserLevel.Status == 1 && x.Id == 1)
+			//									   .OrderBy (x => x.Address).ToList ();
 
 			//var dd1 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AId = x.Account });
 			//var dd2 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AIds = x.Account});
 			//var dd3 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AIds = x.Account });
 			//var dd4 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AIds = x.Email });
+
+			TeUserWithLevel2 s = new TeUserWithLevel2 ();
+
+			var ll = context.LQueryable<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address).OrderBy (x => x.Address)
+						  .Select (x => new {
+							  Id = x.Id,
+							  Account = x.Account,
+							  AC = x.UserLevel != null ? x.UserLevel.LevelName : string.Empty,
+							  CD = x.UserLevel2
+						  }).ToList ();
+
 			Console.ReadLine ();
 		}
 

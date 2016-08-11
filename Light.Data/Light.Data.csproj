@@ -342,6 +342,9 @@
     <Compile Include="Model\RelationLink.cs" />
     <Compile Include="Model\RelationMap.cs" />
     <Compile Include="Model\Selector.cs" />
+    <Compile Include="LSelectable.cs" />
+    <Compile Include="MutliEntityLambdaState.cs" />
+    <Compile Include="SingleEntityLambdaState.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

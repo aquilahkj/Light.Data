@@ -9,8 +9,6 @@ namespace Light.Data
 	/// </summary>
 	class CollectionRelationFieldMapping : BaseRelationFieldMapping
 	{
-		//SingleRelationFieldMapping relateReferFieldMapping;
-
 		ConstructorInfo defaultConstructorInfo;
 
 		public CollectionRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey [] keyPairs, PropertyHandler handler)
@@ -61,14 +59,6 @@ namespace Light.Data
 			}
 			return target;
 		}
-
-		//public DataFieldMapping [] GetMasterFieldMappings ()
-		//{
-		//	return (DataFieldMapping [])masterFieldMappings.Clone ();
-		//}
-
-
-
 	}
 }
 

@@ -72,10 +72,10 @@ namespace Light.Data
 			_transaction = null;
 		}
 
-		internal override int[] ExecuteBluckInsertCommands (IDbCommand[] insertCommands, IDbCommand indentityCommand, SafeLevel level, out object lastId)
+		internal override int [] ExecuteBluckInsertCommands (IDbCommand [] insertCommands, IDbCommand indentityCommand, SafeLevel level, out object lastId)
 		{
 			ChecKStatus (true);
-			int[] rInts = new int[insertCommands.Length];
+			int [] rInts = new int [insertCommands.Length];
 			int index = 0;
 			foreach (IDbCommand dbcommand in insertCommands) {
 				_transaction.SetupCommand (dbcommand);
@@ -94,10 +94,10 @@ namespace Light.Data
 			return rInts;
 		}
 
-		internal override int[] ExecuteMultiCommands (IDbCommand[] dbcommands, SafeLevel level)
+		internal override int [] ExecuteMultiCommands (IDbCommand [] dbcommands, SafeLevel level)
 		{
 			ChecKStatus (true);
-			int[] rInts = new int[dbcommands.Length];
+			int [] rInts = new int [dbcommands.Length];
 			int index = 0;
 			foreach (IDbCommand dbcommand in dbcommands) {
 				_transaction.SetupCommand (dbcommand);
@@ -194,7 +194,7 @@ namespace Light.Data
 			}
 		}
 
-		internal override IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
+		internal override IEnumerable QueryDataMappingReader (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			ChecKStatus (true);
 			int start;
@@ -224,7 +224,7 @@ namespace Light.Data
 						if (count >= size) {
 							over = true;
 						}
-						yield return item as T;
+						yield return item;
 					}
 					index++;
 				}
@@ -261,7 +261,7 @@ namespace Light.Data
 			}
 
 			if (disposing) {
-				
+
 			}
 
 			if (_transaction != null) {

@@ -53,26 +53,34 @@ namespace Light.Data
 
 		public object ToProperty (DataContext context, IDataReader datareader, QueryState datas, string fieldPath)
 		{
-			//if (Object.ReferenceEquals (this, datas.CollectionRelateReferFieldMapping)) {
-			//	return datas.CollectionRelateReferFieldValue;
-			//}
-
-
 			object value;
 			if (!datas.GetJoinData (fieldPath, out value)) {
 				string aliasName = datas.GetAliasName (fieldPath);
 				foreach (DataFieldInfo info in this.relateInfos) {
 					string name = string.Format ("{0}_{1}", aliasName, info.FieldName);
-					object obj = datareader [name];
-					if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
+					if (datas.CheckSelectField (aliasName)) {
+						object obj = datareader [name];
+						if (Object.Equals (obj, DBNull.Value) || Object.Equals (obj, null)) {
+							datas.SetJoinData (fieldPath, null);
+							return null;
+						}
+					}
+					else {
 						datas.SetJoinData (fieldPath, null);
 						return null;
 					}
 				}
-				object item = Activator.CreateInstance (this.RelateMapping.ObjectType);
-				datas.SetJoinData (fieldPath, item);
-				this.relateEntityMapping.LoadJoinTableData (context, datareader, item, datas, fieldPath);
-				value = item;
+				if (datas.CheckSelectField (aliasName)) {
+					object item = Activator.CreateInstance (this.RelateMapping.ObjectType);
+					datas.SetJoinData (fieldPath, item);
+					this.relateEntityMapping.LoadJoinTableData (context, datareader, item, datas, fieldPath);
+					value = item;
+				}
+				else {
+					datas.SetJoinData (fieldPath, null);
+					return null;
+				}
+
 			}
 			return value;
 

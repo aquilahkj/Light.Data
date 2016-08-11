@@ -719,14 +719,13 @@ namespace Light.Data
 		//	return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
 		//}
 
-		internal IEnumerable<T> QueryDataMappingEnumerable<T> (ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-			where T : class, new()
+		internal IEnumerable QueryDataMappingEnumerable (Type type, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			//bool innerRegion = IsInnerPager && !mapping.HasJoinRelateModel;
 			//CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
 			//IDbCommand command = commandData.CreateCommand (_dataBase);
 			//return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
-			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			RelationMap relationMap = mapping.GetRelationMap ();
 			if (selector == null) {
 				selector = relationMap.GetDefaultSelector ();
@@ -764,7 +763,7 @@ namespace Light.Data
 			QueryState state = new QueryState ();
 			state.SetRelationMap (relationMap);
 			state.SetSelector (selector);
-			return QueryDataMappingReader<T> (mapping, command, commandData.InnerPage ? null : region, level, state);
+			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
 		}
 
 		//internal List<T> QueryDataList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level)
@@ -781,15 +780,14 @@ namespace Light.Data
 		//	return list;
 		//}
 
-		internal IEnumerable<T> QueryJoinDataEnumerable<T> (JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-			where T : class, new()
+		internal IEnumerable QueryJoinDataEnumerable (Type type, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order, region);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			QueryState state = new QueryState ();
 			state.SetSelector (selector);
-			return QueryDataMappingReader<T> (mapping, command, commandData.InnerPage ? null : region, level, state);
+			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
 		}
 
 		//internal List<T> QueryJoinDataList<T> (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
@@ -842,8 +840,11 @@ namespace Light.Data
 			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable<T> ie = QueryDataMappingReader<T> (amapping, command, null, level, commandData.State);
-				list.AddRange (ie);
+				IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
+				//list.AddRange (ie);
+				foreach (T item in ie) {
+					list.Add (item);
+				}
 			}
 			return list;
 		}
@@ -861,7 +862,7 @@ namespace Light.Data
 			//		break;
 			//	}
 			//}
-			foreach (T obj in QueryDataMappingEnumerable<T> (null, query, order, region, level)) {
+			foreach (T obj in QueryDataMappingEnumerable (typeof (T), null, query, order, region, level)) {
 				target = obj;
 				break;
 			}
@@ -1162,8 +1163,7 @@ namespace Light.Data
 			}
 		}
 
-		internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
-			where T : class, new()
+		internal virtual IEnumerable QueryDataMappingReader (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			int start;
 			int size;
@@ -1194,7 +1194,7 @@ namespace Light.Data
 							if (count >= size) {
 								over = true;
 							}
-							yield return item as T;
+							yield return item;
 						}
 						index++;
 					}
@@ -1202,6 +1202,48 @@ namespace Light.Data
 				transaction.Commit ();
 			}
 		}
+
+
+		//internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
+		//	where T : class, new()
+		//{
+		//	int start;
+		//	int size;
+		//	if (region != null) {
+		//		start = region.Start;
+		//		size = region.Size;
+		//	}
+		//	else {
+		//		start = 0;
+		//		size = int.MaxValue;
+		//	}
+		//	using (TransactionConnection transaction = CreateTransactionConnection (level)) {
+		//		transaction.Open ();
+		//		transaction.SetupCommand (dbcommand);
+		//		OutputCommand ("QueryDataMappingReader", dbcommand, level, start, size);
+		//		using (IDataReader reader = dbcommand.ExecuteReader ()) {
+		//			int index = 0;
+		//			int count = 0;
+		//			bool over = false;
+		//			while (reader.Read ()) {
+		//				if (over) {
+		//					dbcommand.Cancel ();
+		//					break;
+		//				}
+		//				if (index >= start) {
+		//					count++;
+		//					object item = source.LoadData (this, reader, state);
+		//					if (count >= size) {
+		//						over = true;
+		//					}
+		//					yield return item as T;
+		//				}
+		//				index++;
+		//			}
+		//		}
+		//		transaction.Commit ();
+		//	}
+		//}
 
 
 		#endregion
@@ -1370,10 +1412,9 @@ namespace Light.Data
 		/// <param name="owner">Owner.</param>
 		/// <param name="fieldPaths">Field paths.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		internal IEnumerable<T> QueryCollectionRelateEnumerable<T> (ISelector selector, QueryExpression query, object owner, string [] fieldPaths)
-			where T : class, new()
+		internal IEnumerable QueryCollectionRelateEnumerable (Type type, ISelector selector, QueryExpression query, object owner, string [] fieldPaths)
 		{
-			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
+			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			RelationMap relationMap = mapping.GetRelationMap ();
 			if (selector == null) {
 				selector = relationMap.GetDefaultSelector ();
@@ -1396,8 +1437,38 @@ namespace Light.Data
 					state.SetExtendData (fieldPath, owner);
 				}
 			}
-			return QueryDataMappingReader<T> (mapping, command, null, SafeLevel.Default, state);
+			return QueryDataMappingReader (mapping, command, null, SafeLevel.Default, state);
 		}
+
+
+		//internal IEnumerable<T> QueryCollectionRelateEnumerable<T> (ISelector selector, QueryExpression query, object owner, string [] fieldPaths)
+		//	where T : class, new()
+		//{
+		//	DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
+		//	RelationMap relationMap = mapping.GetRelationMap ();
+		//	if (selector == null) {
+		//		selector = relationMap.GetDefaultSelector ();
+		//	}
+		//	CommandData commandData;
+		//	if (mapping.HasJoinRelateModel) {
+		//		List<JoinModel> models = relationMap.CreateJoinModels (query, null);
+		//		commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, null, null, null);
+		//	}
+		//	else {
+		//		commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, null, null);
+
+		//	}
+		//	IDbCommand command = commandData.CreateCommand (_dataBase);
+		//	QueryState state = new QueryState ();
+		//	state.SetRelationMap (relationMap);
+		//	state.SetSelector (selector);
+		//	if (fieldPaths != null && fieldPaths.Length > 0) {
+		//		foreach (string fieldPath in fieldPaths) {
+		//			state.SetExtendData (fieldPath, owner);
+		//		}
+		//	}
+		//	return QueryDataMappingReader<T> (mapping, command, null, SafeLevel.Default, state);
+		//}
 
 		//internal object SelectFirst (DataEntityMapping mapping, QueryExpression query, object state)
 		//{
@@ -1411,25 +1482,25 @@ namespace Light.Data
 		//	return target;
 		//}
 
-		internal virtual object QueryRelateDataMappingReader (DataMapping source, IDbCommand dbcommand, object state)
-		{
-			object target = null;
-			using (TransactionConnection transaction = CreateTransactionConnection (SafeLevel.None)) {
-				transaction.Open ();
-				transaction.SetupCommand (dbcommand);
-				OutputCommand ("QueryRelateDataMappingReader", dbcommand, SafeLevel.None);
-				using (IDataReader reader = dbcommand.ExecuteReader ()) {
-					while (reader.Read ()) {
-						object item = source.LoadData (this, reader, state);
-						target = item;
-						dbcommand.Cancel ();
-						break;
-					}
-				}
-				transaction.Commit ();
-			}
-			return target;
-		}
+		//internal virtual object QueryRelateDataMappingReader (DataMapping source, IDbCommand dbcommand, object state)
+		//{
+		//	object target = null;
+		//	using (TransactionConnection transaction = CreateTransactionConnection (SafeLevel.None)) {
+		//		transaction.Open ();
+		//		transaction.SetupCommand (dbcommand);
+		//		OutputCommand ("QueryRelateDataMappingReader", dbcommand, SafeLevel.None);
+		//		using (IDataReader reader = dbcommand.ExecuteReader ()) {
+		//			while (reader.Read ()) {
+		//				object item = source.LoadData (this, reader, state);
+		//				target = item;
+		//				dbcommand.Cancel ();
+		//				break;
+		//			}
+		//		}
+		//		transaction.Commit ();
+		//	}
+		//	return target;
+		//}
 
 		#endregion
 

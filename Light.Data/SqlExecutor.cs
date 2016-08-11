@@ -139,8 +139,10 @@ namespace Light.Data
 		private List<T> QueryList<T> (Region region) where T : class, new()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable<T> ie = _context.QueryDataMappingReader<T> (DataEntityMapping.GetEntityMapping (typeof(T)), _command, region, _level, null);
-			list.AddRange (ie);
+			IEnumerable ie = _context.QueryDataMappingReader (DataEntityMapping.GetEntityMapping (typeof(T)), _command, region, _level, null);
+			foreach (T item in ie) {
+				list.Add (item);
+			}
 			return list;
 		}
 
@@ -164,10 +166,10 @@ namespace Light.Data
 		public List<T> QueryList<T> (int start, int size) where T : class, new()
 		{
 			if (start < 0) {
-				throw new ArgumentOutOfRangeException ("size");
+				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			if (size < 1) {
-				throw new ArgumentOutOfRangeException ("size");
+				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			Region region = new Region (start, size);
 			return QueryList<T> (region);
@@ -182,10 +184,10 @@ namespace Light.Data
 		public IEnumerable Query<T> (int start, int size) where T : class, new()
 		{
 			if (start < 0) {
-				throw new ArgumentOutOfRangeException ("size");
+				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			if (size < 1) {
-				throw new ArgumentOutOfRangeException ("size");
+				throw new ArgumentOutOfRangeException (nameof (size));
 			}
 			Region region = new Region (start, size);
 			return Query<T> (region);
@@ -199,7 +201,9 @@ namespace Light.Data
 		/// <returns>枚举数据</returns>
 		private IEnumerable<T> Query<T> (Region region) where T : class, new()
 		{
-			return _context.QueryDataMappingReader<T> (DataEntityMapping.GetEntityMapping (typeof(T)), _command, region, _level, null);
+			foreach (T item in _context.QueryDataMappingReader (DataEntityMapping.GetEntityMapping (typeof (T)), _command, region, _level, null)) {
+				yield return item;
+			}
 		}
 
 		/// <summary>

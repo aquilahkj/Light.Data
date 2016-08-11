@@ -23,6 +23,14 @@ namespace Light.Data
 
 		readonly Dictionary<string, DataFieldInfo> fieldInfoDict = new Dictionary<string, DataFieldInfo> ();
 
+		readonly List<RelationLink> linkList = new List<RelationLink> ();
+
+		readonly Dictionary<string, string> cycleDict = new Dictionary<string, string> ();
+
+		readonly Dictionary<string, string []> collectionDict = new Dictionary<string, string []> ();
+
+		readonly Dictionary<string, string []> singleDict = new Dictionary<string, string []> ();
+
 		void LoadJoinRelate ()
 		{
 			LoadEntityMapping (this.rootMapping, null);
@@ -53,8 +61,6 @@ namespace Light.Data
 			List<DataFieldInfo> rootInfoList = new List<DataFieldInfo> ();
 			foreach (DataFieldMapping field in this.rootMapping.FieldMappings) {
 				DataFieldInfo info = new DataFieldInfo (field);
-				//info.AliasTableName = this.rootAliasName;
-				//joinSelector.SetInnerDataField (info);
 				string aliasName = string.Format ("{0}_{1}", rootItem.AliasName, info.FieldName);
 				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
 				alias.AliasTableName = rootItem.AliasName;
@@ -85,8 +91,6 @@ namespace Light.Data
 				List<DataFieldInfo> infoList = new List<DataFieldInfo> ();
 				foreach (DataFieldMapping field in mapping.FieldMappings) {
 					DataFieldInfo info = new DataFieldInfo (field);
-					//info.AliasTableName = ralias;
-					//joinSelector.SetInnerDataField (info);
 					string aliasName = string.Format ("{0}_{1}", ralias, info.FieldName);
 					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
 					alias.AliasTableName = ralias;
@@ -141,20 +145,6 @@ namespace Light.Data
 			}
 		}
 
-		//public JoinCapsule CreateJoinCapsule (QueryExpression query, OrderExpression order)
-		//{
-		//	List<JoinModel> models1 = new List<JoinModel> ();
-
-		//	JoinModel model1 = new JoinModel (rootMapping, "T0", null, query, order);
-		//	//model1.AliasTableName = "T0";//rootAliasName;
-		//	models1.Add (model1);
-
-		//	models1.AddRange (this.models);
-		//	JoinCapsule clone = new JoinCapsule (this.selector, models1);
-		//	return clone;
-		//}
-
-
 		public List<JoinModel> CreateJoinModels (QueryExpression query, OrderExpression order)
 		{
 			if (!rootMapping.HasJoinRelateModel) {
@@ -167,22 +157,18 @@ namespace Light.Data
 			return joinModels;
 		}
 
-		List<RelationLink> linkList = new List<RelationLink> ();
-
-		Dictionary<string, string> cycleDict = new Dictionary<string, string> ();
-
-		Dictionary<string, string []> collectionDict = new Dictionary<string, string []> ();
-
 		void LoadEntityMapping (DataEntityMapping mapping, RelationLink link)
 		{
 			string path = link != null ? link.LastFieldPath : string.Empty;
 			SingleRelationFieldMapping [] relateFielsMappings = mapping.GetSingleJoinTableRelationFieldMappings ();
 			foreach (SingleRelationFieldMapping relateFieldMapping in relateFielsMappings) {
 				relateFieldMapping.InitialRelation ();
+				bool add = false;
 				if (link == null) {
 					RelationLink mlink = new RelationLink (relateFieldMapping, string.Empty);
 					linkList.Add (mlink);
 					LoadEntityMapping (relateFieldMapping.RelateMapping, mlink);
+					add = true;
 				}
 				else {
 					RelationLink flink = link.Fork ();
@@ -191,14 +177,25 @@ namespace Light.Data
 						RelationLink mlink = new RelationLink (relateFieldMapping, link.LastFieldPath);
 						linkList.Add (mlink);
 						LoadEntityMapping (relateFieldMapping.RelateMapping, mlink);
+						add = true;
 					}
 					else if (linkType == RelationLinkType.AddLink) {
 						linkList.Add (flink);
 						LoadEntityMapping (relateFieldMapping.RelateMapping, flink);
+						add = true;
 					}
 					else {
 						cycleDict.Add (flink.LastFieldPath, flink.CycleFieldPath);
 					}
+				}
+				if (add) {
+					RelationKey [] kps = relateFieldMapping.GetKeyPairs ();
+					string [] relates = new string [kps.Length];
+					for (int i = 0; i < kps.Length; i++) {
+						relates [i] = string.Format ("{0}.{1}.{2}", path, relateFieldMapping.FieldName, kps [i].RelateKey);
+					}
+					string relate = string.Format ("{0}.{1}", path, relateFieldMapping.FieldName);
+					singleDict [relate] = relates;
 				}
 			}
 			CollectionRelationFieldMapping [] collectFieldMappings = mapping.GetCollectionRelationFieldMappings ();
@@ -209,7 +206,7 @@ namespace Light.Data
 					masters [i] = string.Format ("{0}.{1}", path, kps [i].MasterKey);
 				}
 				string collectField = string.Format ("{0}.{1}", path, collectFieldMapping.FieldName);
-				collectionDict.Add (collectField, masters);
+				collectionDict [collectField] = masters;
 			}
 		}
 
@@ -235,7 +232,33 @@ namespace Light.Data
 			return cycleDict.TryGetValue (fieldPath, out cycleFieldPath);
 		}
 
-		public DataFieldInfo GetFieldInfoForField (string path)
+		public bool CheckIsField (string path)
+		{
+			return fieldInfoDict.ContainsKey (path);
+		}
+
+		public bool CheckIsRelateEntity (string path)
+		{
+			return tableInfoDict.ContainsKey (path);
+		}
+
+		public bool CheckIsEntityCollection (string path)
+		{
+			return collectionDict.ContainsKey (path);
+		}
+
+		public DataFieldInfo CreateFieldInfoForField (string path)
+		{
+			DataFieldInfo info;
+			if (fieldInfoDict.TryGetValue (path, out info)) {
+				return info.Clone() as DataFieldInfo;
+			}
+			else {
+				throw new LightDataException ("");
+			}
+		}
+
+		 DataFieldInfo GetFieldInfoForField (string path)
 		{
 			DataFieldInfo info;
 			if (fieldInfoDict.TryGetValue (path, out info)) {
@@ -246,10 +269,26 @@ namespace Light.Data
 			}
 		}
 
-		public DataFieldInfo[] GetFieldInfoForCollectionField (string path)
+
+		//public DataFieldInfo [] GetFieldInfoForCollectionField (string path)
+		//{
+		//	string [] fields;
+		//	if (collectionDict.TryGetValue (path, out fields)) {
+		//		DataFieldInfo [] infos = new DataFieldInfo [fields.Length];
+		//		for (int i = 0; i < fields.Length; i++) {
+		//			infos [i] = GetFieldInfoForField (fields [i]);
+		//		}
+		//		return infos;
+		//	}
+		//	else {
+		//		throw new LightDataException ("");
+		//	}
+		//}
+
+		DataFieldInfo [] GetFieldInfoForSingleField (string path)
 		{
 			string [] fields;
-			if (collectionDict.TryGetValue (path, out fields)) {
+			if (singleDict.TryGetValue (path, out fields)) {
 				DataFieldInfo [] infos = new DataFieldInfo [fields.Length];
 				for (int i = 0; i < fields.Length; i++) {
 					infos [i] = GetFieldInfoForField (fields [i]);
@@ -266,29 +305,84 @@ namespace Light.Data
 			return selector;
 		}
 
-		//public DataFieldInfo[] GetFieldInfoForEntity (string path)
-		//{
-		//	DataFieldInfo[] infos;
-		//	if (tableInfoDict.TryGetValue (path, out infos)) {
-		//		return infos;
-		//	}
-		//	else {
-		//		return null;
-		//	}
-		//}
+		string [] RewritePaths (string[] paths)
+		{
+			if (collectionDict.Count > 0) {
+				HashSet<string> ss = new HashSet<string> (paths);
+				foreach (string path in paths) {
+					string [] arr;
+					if (collectionDict.TryGetValue (path, out arr)) {
+						foreach (string item in arr) {
+							ss.Add (item);
+						}
+					}
+				}
+				string[] newpaths = new string [ss.Count];
+				ss.CopyTo (newpaths);
+				return newpaths;
+			}
+			else {
+				return paths;
+			}
+		}
+
+		public ISelector CreateSpecialSelector (params string [] paths)
+		{
+			paths = RewritePaths (paths);
+			HashSet<DataFieldInfo> hash = new HashSet<DataFieldInfo> ();
+			HashSet<string> stable = new HashSet<string> ();
+			foreach (string path in paths) {
+				DataFieldInfo info;
+				if (fieldInfoDict.TryGetValue (path, out info)) {
+					if (!hash.Contains (info)) {
+						hash.Add (info);
+						int index = path.LastIndexOf ('.');
+						if (index > 0) {
+							string t = path.Substring (0, index);
+							if (!stable.Contains (t)) {
+								stable.Add (t);
+								DataFieldInfo [] sinfos = GetFieldInfoForSingleField (t);
+								foreach (DataFieldInfo sinfo in sinfos) {
+									if (!hash.Contains (sinfo)) {
+										hash.Add (sinfo);
+									}
+								}
+							}
+						}
+					}
+					continue;
+				}
+
+				DataFieldInfo [] tinfos;
+				if (tableInfoDict.TryGetValue (path, out tinfos)) {
+					foreach (DataFieldInfo tinfo in tinfos) {
+						stable.Add (path);
+						if (!hash.Contains (tinfo)) {
+							hash.Add (tinfo);
+						}
+					}
+					continue;
+				}
 
 
-		//public bool CheckValid (SingleRelationFieldMapping relationMapping, out string aliasName)
-		//{
-		//	if (this.fieldInfoDict.ContainsKey (relationMapping)) {
-		//		aliasName = this.entityInfoDict [relationMapping.RelateMapping];
-		//		return true;
-		//	}
-		//	else {
-		//		aliasName = null;
-		//		return false;
-		//	}
-		//}
+				throw new LightDataException ("");
+			}
+			if (rootMapping.HasJoinRelateModel) {
+				JoinSelector jselector = new JoinSelector ();
+				foreach (AliasDataFieldInfo finfo in hash) {
+					jselector.SetAliasDataField (finfo);
+				}
+				return jselector;
+			}
+			else {
+				Selector nselector = new Selector ();
+				foreach (DataFieldInfo finfo in hash) {
+					nselector.SetDataField (finfo);
+				}
+				return nselector;
+			}
+		}
+
 	}
 }
 

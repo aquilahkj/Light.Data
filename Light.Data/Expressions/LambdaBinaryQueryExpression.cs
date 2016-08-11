@@ -34,7 +34,7 @@ namespace Light.Data
 			else if (!Object.Equals (leftInfo, null)) {
 				string leftSql = leftInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters1);
 				object right = LambdaExpressionExtend.ConvertLambdaObject (_right);
-				if (Object.Equals (_right, null)) {
+				if (Object.Equals (right, null)) {
 					bool predicate;
 					if (_predicate == QueryPredicate.Eq) {
 						predicate = true;

@@ -47,9 +47,12 @@ namespace Light.Data
 				//	rc.SetCollectionValue (this.relateReferFieldMapping, this.owner);
 				//}
 				//list = context.LQuery<T> ().Where (query).ToRelateList (rc);
-				IEnumerable<T> ie = context.QueryCollectionRelateEnumerable<T> (null, query, owner, fieldPaths);
+				IEnumerable ie = context.QueryCollectionRelateEnumerable (typeof (T), null, query, owner, fieldPaths);
 				list = new List<T> ();
-				list.AddRange (ie);
+				//list.AddRange (ie);
+				foreach (T item in ie) {
+					list.Add (item);
+				}
 			}
 		}
 

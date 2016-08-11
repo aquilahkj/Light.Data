@@ -18,7 +18,9 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			return _context.QueryDataMappingEnumerable<T> (null, _query, _order, _region, _level).GetEnumerator ();
+			foreach (T item in _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level)) {
+				yield return item;
+			}
 		}
 
 		#endregion
@@ -27,7 +29,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryDataMappingEnumerable<T> (null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -467,7 +469,10 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			list.AddRange (_context.QueryDataMappingEnumerable<T> (null, _query, _order, _region, _level));
+			IEnumerable ie = _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level);
+			foreach (T item in ie) {
+				list.Add (item);
+			}
 			return list;
 		}
 
