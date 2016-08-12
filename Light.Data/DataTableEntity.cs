@@ -10,7 +10,6 @@ namespace Light.Data
 	/// </summary>
 	public class DataTableEntity : DataEntity
 	{
-
 		/// <summary>
 		/// 是否已经读取数据
 		/// </summary>

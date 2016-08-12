@@ -73,7 +73,8 @@ namespace Light.Data.Demo
 			//				  CD = x.UserLevel2
 			//			  }).ToList ();
 
-			var vc = context.Query<TeUser> ().Where (x => x.Id > 5).LeftJoin<TeUserLevel> ((x, y) => x.LevelId == y.Id).Where ((x, y) => x.CheckPoint > 0 && y.LevelName != null)
+			var vc = context.Query<TeUser> ().Where (x => x.Id > 5).LeftJoin<TeUserLevel> ((x, y) => x.LevelId == y.Id)
+			                .Where ((x, y) => x.CheckPoint > 0 && y.LevelName != null)
 							.Select ((x, y) => new {
 								User = x,
 								LevelName = y.LevelName
