@@ -553,12 +553,21 @@ namespace Light.Data
 		/// <param name="count">Count.</param>
 		public JoinTable Take (int count)
 		{
+			int start;
+			int size = count;
 			if (_region == null) {
-				_region = new Region (0, count);
+				start = 0;
 			}
 			else {
-				_region.Size = count;
+				start = _region.Start;
 			}
+			_region = new Region (start, size);
+			//if (_region == null) {
+			//	_region = new Region (0, count);
+			//}
+			//else {
+			//	_region.Size = count;
+			//}
 			return this;
 		}
 
@@ -569,12 +578,21 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public JoinTable Skip (int index)
 		{
+			int start = index;
+			int size;
 			if (_region == null) {
-				_region = new Region (index, int.MaxValue);
+				size = int.MaxValue;
 			}
 			else {
-				_region.Start = index;
+				size = _region.Size;
 			}
+			_region = new Region (start, size);
+			//if (_region == null) {
+			//	_region = new Region (index, int.MaxValue);
+			//}
+			//else {
+			//	_region.Start = index;
+			//}
 			return this;
 		}
 
@@ -588,13 +606,13 @@ namespace Light.Data
 		{
 			int start = from;
 			int size = to - from;
-			if (_region == null) {
-				_region = new Region (start, size);
-			}
-			else {
-				_region.Start = start;
-				_region.Size = size;
-			}
+			//if (_region == null) {
+			//	_region = new Region (start, size);
+			//}
+			//else {
+			//	_region.Start = start;
+			//	_region.Size = size;
+			//}
 			return this;
 		}
 
@@ -616,14 +634,22 @@ namespace Light.Data
 		/// <param name="size">Size.</param>
 		public JoinTable PageSize (int page, int size)
 		{
+			if (page < 1) {
+				throw new ArgumentOutOfRangeException (nameof (page));
+			}
+			if (size < 1) {
+				throw new ArgumentOutOfRangeException (nameof (size));
+			}
+			page--;
 			int start = page * size;
-			if (_region == null) {
-				_region = new Region (start, size);
-			}
-			else {
-				_region.Start = start;
-				_region.Size = size;
-			}
+			_region = new Region (start, size);
+			//if (_region == null) {
+			//	_region = new Region (start, size);
+			//}
+			//else {
+			//	_region.Start = start;
+			//	_region.Size = size;
+			//}
 			return this;
 		}
 

@@ -8,7 +8,7 @@ namespace Light.Data
 	/// <summary>
 	/// Lenumerable.
 	/// </summary>
-	public class LQueryable<T> : IEnumerable<T> where T : class, new()
+	public class LightQuery<T> : IQuery<T> where T : class, new()
 	{
 		#region IEnumerable implementation
 
@@ -60,11 +60,29 @@ namespace Light.Data
 
 		Region _region;
 
-		readonly DataContext _context = null;
+		internal Region Region {
+			get {
+				return _region;
+			}
+		}
+
+		DataContext _context;
+
+		internal DataContext Context {
+			get {
+				return _context;
+			}
+		}
 
 		SafeLevel _level = SafeLevel.None;
 
-		internal LQueryable (DataContext dataContext)
+		internal SafeLevel Level {
+			get {
+				return _level;
+			}
+		}
+
+		internal LightQuery (DataContext dataContext)
 		{
 			_context = dataContext;
 			_mapping = DataEntityMapping.GetEntityMapping (typeof (T));
@@ -76,7 +94,7 @@ namespace Light.Data
 		/// Reset the specified where expression
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
-		public LQueryable<T> WhereReset ()
+		public IQuery<T> WhereReset ()
 		{
 			_query = null;
 			return this;
@@ -86,7 +104,7 @@ namespace Light.Data
 		/// Where the specified expression.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		public LQueryable<T> Where (Expression<Func<T, bool>> expression)
+		public IQuery<T> Where (Expression<Func<T, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaQueryExpression (expression);
 			_query = queryExpression;
@@ -99,7 +117,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
-		public LQueryable<T> WhereWithAnd (Expression<Func<T, bool>> expression)
+		public IQuery<T> WhereWithAnd (Expression<Func<T, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaQueryExpression (expression);
 			_query = QueryExpression.And (_query, queryExpression);
@@ -111,7 +129,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerables.</returns>
 		/// <param name="expression">Expression.</param>
-		public LQueryable<T> WhereWithOr (Expression<Func<T, bool>> expression)
+		public IQuery<T> WhereWithOr (Expression<Func<T, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaQueryExpression (expression);
 			_query = QueryExpression.Or (_query, queryExpression);
@@ -123,7 +141,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
-		public LQueryable<T> OrderByCatch<TKey> (Expression<Func<T, TKey>> expression)
+		public IQuery<T> OrderByCatch<TKey> (Expression<Func<T, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.ASC);
 			_order = OrderExpression.Catch (_order, orderExpression);
@@ -135,7 +153,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="expression">Expression.</param>
-		public LQueryable<T> OrderByDescendingCatch<TKey> (Expression<Func<T, TKey>> expression)
+		public IQuery<T> OrderByDescendingCatch<TKey> (Expression<Func<T, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.DESC);
 			_order = OrderExpression.Catch (_order, orderExpression);
@@ -148,7 +166,7 @@ namespace Light.Data
 		/// <returns>The by.</returns>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
-		public LQueryable<T> OrderBy<TKey> (Expression<Func<T, TKey>> expression)
+		public IQuery<T> OrderBy<TKey> (Expression<Func<T, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.ASC);
 			_order = orderExpression;
@@ -161,7 +179,7 @@ namespace Light.Data
 		/// <returns>The by.</returns>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
-		public LQueryable<T> OrderByDescending<TKey> (Expression<Func<T, TKey>> expression)
+		public IQuery<T> OrderByDescending<TKey> (Expression<Func<T, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.DESC);
 			_order = orderExpression;
@@ -172,7 +190,7 @@ namespace Light.Data
 		/// Reset the specified order by expression.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
-		public LQueryable<T> OrderByReset ()
+		public IQuery<T> OrderByReset ()
 		{
 			_order = null;
 			return this;
@@ -182,7 +200,7 @@ namespace Light.Data
 		/// Set order by random.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
-		public LQueryable<T> OrderByRandom ()
+		public IQuery<T> OrderByRandom ()
 		{
 			_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (typeof (T)));
 			return this;
@@ -193,14 +211,17 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="count">Count.</param>
-		public LQueryable<T> Take (int count)
+		public IQuery<T> Take (int count)
 		{
+			int start;
+			int size = count;
 			if (_region == null) {
-				_region = new Region (0, count);
+				start = 0;
 			}
 			else {
-				_region.Size = count;
+				start = _region.Start;
 			}
+			_region = new Region (start, size);
 			return this;
 		}
 
@@ -209,16 +230,18 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="index">Index.</param>
-		public LQueryable<T> Skip (int index)
+		public IQuery<T> Skip (int index)
 		{
+			int start = index;
+			int size;
 			if (_region == null) {
-				_region = new Region (index, int.MaxValue);
+				size = int.MaxValue;
 			}
 			else {
-				_region.Start = index;
+				size = _region.Size;
 			}
+			_region = new Region (start, size);
 			return this;
-
 		}
 
 		/// <summary>
@@ -227,17 +250,11 @@ namespace Light.Data
 		/// <returns>LEnumerable.</returns>
 		/// <param name="from">From.</param>
 		/// <param name="to">To.</param>
-		public LQueryable<T> Range (int from, int to)
+		public IQuery<T> Range (int from, int to)
 		{
 			int start = from;
 			int size = to - from;
-			if (_region == null) {
-				_region = new Region (start, size);
-			}
-			else {
-				_region.Start = start;
-				_region.Size = size;
-			}
+			_region = new Region (start, size);
 			return this;
 		}
 
@@ -245,7 +262,7 @@ namespace Light.Data
 		/// reset the range
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
-		public LQueryable<T> RangeReset ()
+		public IQuery<T> RangeReset ()
 		{
 			_region = null;
 			return this;
@@ -257,7 +274,7 @@ namespace Light.Data
 		/// <returns>LEnumerable.</returns>
 		/// <param name="page">Page.</param>
 		/// <param name="size">Size.</param>
-		public LQueryable<T> PageSize (int page, int size)
+		public IQuery<T> PageSize (int page, int size)
 		{
 			if (page < 1) {
 				throw new ArgumentOutOfRangeException (nameof (page));
@@ -267,13 +284,7 @@ namespace Light.Data
 			}
 			page--;
 			int start = page * size;
-			if (_region == null) {
-				_region = new Region (start, size);
-			}
-			else {
-				_region.Start = start;
-				_region.Size = size;
-			}
+			_region = new Region (start, size);
 			return this;
 		}
 
@@ -282,12 +293,13 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
 		/// <param name="level">Level.</param>
-		public LQueryable<T> SafeMode (SafeLevel level)
+		public IQuery<T> SafeMode (SafeLevel level)
 		{
 			_level = level;
 			return this;
 		}
 
+		#region aggregate function
 		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
@@ -306,88 +318,90 @@ namespace Light.Data
 			return _context.Aggregate (field.DataField, aggregateType, _query, isDistinct, _level);
 		}
 
-		/// <summary>
-		/// Get datas count of the field.
-		/// </summary>
-		/// <returns>count value.</returns>
-		/// <param name="field">Field.</param>
-		public int CountField (BasicFieldInfo field)
-		{
-			return CountField (field, false);
-		}
+		///// <summary>
+		///// Get datas count of the field.
+		///// </summary>
+		///// <returns>count value.</returns>
+		///// <param name="field">Field.</param>
+		//public int CountField (BasicFieldInfo field)
+		//{
+		//	return CountField (field, false);
+		//}
 
-		/// <summary>
-		/// Get datas count of the field.
-		/// </summary>
-		/// <returns>count value.</returns>
-		/// <param name="field">Field.</param>
-		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		public int CountField (BasicFieldInfo field, bool isDistinct)
-		{
-			return Convert.ToInt32 (Aggregate (field, AggregateType.COUNT, isDistinct));
-		}
+		///// <summary>
+		///// Get datas count of the field.
+		///// </summary>
+		///// <returns>count value.</returns>
+		///// <param name="field">Field.</param>
+		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
+		//public int CountField (BasicFieldInfo field, bool isDistinct)
+		//{
+		//	return Convert.ToInt32 (Aggregate (field, AggregateType.COUNT, isDistinct));
+		//}
 
-		/// <summary>
-		/// Get max value of the field.
-		/// </summary>
-		/// <returns>max value.</returns>
-		/// <param name="field">Field.</param>
-		public object Max (BasicFieldInfo field)
-		{
-			return Aggregate (field, AggregateType.MAX, false);
-		}
+		///// <summary>
+		///// Get max value of the field.
+		///// </summary>
+		///// <returns>max value.</returns>
+		///// <param name="field">Field.</param>
+		//public object Max (BasicFieldInfo field)
+		//{
+		//	return Aggregate (field, AggregateType.MAX, false);
+		//}
 
-		/// <summary>
-		/// Get min value of the field.
-		/// </summary>
-		/// <returns>min value.</returns>
-		/// <param name="field">Field.</param>
-		public object Min (BasicFieldInfo field)
-		{
-			return Aggregate (field, AggregateType.MIN, false);
-		}
+		///// <summary>
+		///// Get min value of the field.
+		///// </summary>
+		///// <returns>min value.</returns>
+		///// <param name="field">Field.</param>
+		//public object Min (BasicFieldInfo field)
+		//{
+		//	return Aggregate (field, AggregateType.MIN, false);
+		//}
 
-		/// <summary>
-		/// Get avg value of the field.
-		/// </summary>
-		/// <returns>max value.</returns>
-		/// <param name="field">Field.</param>
-		public object Avg (BasicFieldInfo field)
-		{
-			return Avg (field, false);
-		}
+		///// <summary>
+		///// Get avg value of the field.
+		///// </summary>
+		///// <returns>max value.</returns>
+		///// <param name="field">Field.</param>
+		//public object Avg (BasicFieldInfo field)
+		//{
+		//	return Avg (field, false);
+		//}
 
-		/// <summary>
-		/// Get avg value of the field.
-		/// </summary>
-		/// <returns>avg value.</returns>
-		/// <param name="field">Field.</param>
-		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		public object Avg (BasicFieldInfo field, bool isDistinct)
-		{
-			return Aggregate (field, AggregateType.AVG, isDistinct);
-		}
+		///// <summary>
+		///// Get avg value of the field.
+		///// </summary>
+		///// <returns>avg value.</returns>
+		///// <param name="field">Field.</param>
+		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
+		//public object Avg (BasicFieldInfo field, bool isDistinct)
+		//{
+		//	return Aggregate (field, AggregateType.AVG, isDistinct);
+		//}
 
-		/// <summary>
-		/// Get sum value of the field.
-		/// </summary>
-		/// <returns>sum value.</returns>
-		/// <param name="field">Field.</param>
-		public object Sum (BasicFieldInfo field)
-		{
-			return Sum (field, false);
-		}
+		///// <summary>
+		///// Get sum value of the field.
+		///// </summary>
+		///// <returns>sum value.</returns>
+		///// <param name="field">Field.</param>
+		//public object Sum (BasicFieldInfo field)
+		//{
+		//	return Sum (field, false);
+		//}
 
-		/// <summary>
-		/// Get sum value of the field.
-		/// </summary>
-		/// <returns>sum value.</returns>
-		/// <param name="field">Field.</param>
-		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		public object Sum (BasicFieldInfo field, bool isDistinct)
-		{
-			return Aggregate (field, AggregateType.SUM, isDistinct);
-		}
+		///// <summary>
+		///// Get sum value of the field.
+		///// </summary>
+		///// <returns>sum value.</returns>
+		///// <param name="field">Field.</param>
+		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
+		//public object Sum (BasicFieldInfo field, bool isDistinct)
+		//{
+		//	return Aggregate (field, AggregateType.SUM, isDistinct);
+		//}
+
+		#endregion
 
 		/// <summary>
 		/// Get single instance.
@@ -417,6 +431,8 @@ namespace Light.Data
 				return _context.Exists (_mapping, _query, _level);
 			}
 		}
+
+
 
 		///// <summary>
 		///// Queries the single field.
@@ -821,34 +837,43 @@ namespace Light.Data
 			return _context.DeleteMass<T> (this._query);
 		}
 
-		public LSelectable<TResult> Select<TResult> (Expression<Func<T, TResult>> expression) where TResult : class
+		public ISelect<TResult> Select<TResult> (Expression<Func<T, TResult>> expression) where TResult : class
 		{
-			//object item = Activator.CreateInstance (typeof (TResult));
-			//return item as TResult;
-			//return 0;
 			ISelector selector = LambdaExpressionExtend.CreateSelector (expression);
 			Delegate dele = expression.Compile ();
-			LSelectable<TResult> selectable = new LSelectable<TResult> (_context, dele, selector, typeof (T), _query, _order, _region, _level);
+			LightSelect<TResult> selectable = new LightSelect<TResult> (_context, dele, selector, typeof (T), _query, _order, _region, _level);
 			return selectable;
-
-
-			//return expression.Compile () (Activator.CreateInstance<T> ());
-
-			//Type type = typeof (TResult);
-			//TResult t = (TResult)Activator.CreateInstance (type, new object [type.GetProperties ().Length]);
-
-			////var d = DataEntityMapping.GetEntityMapping (type);
-			//return t;
-
-			//object [] objArr = new object [type.GetProperties ().Length];
-			//for (int i = 0; i < type.GetProperties ().Length; i++) {
-			//	objArr [i] = 0;
-
-			//}
-			//return (TResult)Activator.CreateInstance (type, objArr);
-
 		}
 
+		public IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, null, onExpression);
+		}
+
+		public IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, null, onExpression);
+		}
+
+		public IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, null, onExpression);
+		}
 	}
 }
 

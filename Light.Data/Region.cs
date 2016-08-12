@@ -42,14 +42,14 @@ namespace Light.Data
 			get {
 				return _start;
 			}
-			set {
-				if (value < 0) {
-					throw new ArgumentOutOfRangeException (nameof (value));
-				}
-				else {
-					_start = value;
-				}
-			}
+			//set {
+			//	if (value < 0) {
+			//		throw new ArgumentOutOfRangeException (nameof (value));
+			//	}
+			//	else {
+			//		_start = value;
+			//	}
+			//}
 		}
 
 		int _size = 1;
@@ -61,14 +61,14 @@ namespace Light.Data
 			get {
 				return _size;
 			}
-			set {
-				if (value <= 0) {
-					throw new ArgumentOutOfRangeException (nameof (value));
-				}
-				else {
-					_size = value;
-				}
-			}
+			//set {
+			//	if (value <= 0) {
+			//		throw new ArgumentOutOfRangeException (nameof (value));
+			//	}
+			//	else {
+			//		_size = value;
+			//	}
+			//}
 		}
 
 		/// <summary>

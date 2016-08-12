@@ -679,10 +679,10 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The ueryable.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public LQueryable<T> LQueryable<T> ()
+		public IQuery<T> Query<T> ()
 			where T : class, new()
 		{
-			return new LQueryable<T> (this);
+			return new LightQuery<T> (this);
 		}
 
 		/// <summary>
@@ -757,11 +757,26 @@ namespace Light.Data
 			}
 			else {
 				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, order, region);
-
 			}
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			QueryState state = new QueryState ();
 			state.SetRelationMap (relationMap);
+			state.SetSelector (selector);
+			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
+		}
+
+		internal IEnumerable QueryDynamicJoinDataEnumerable (Type type, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		{
+			Tuple<string, DataEntityMapping> [] array = new Tuple<string, DataEntityMapping> [models.Count];
+			for (int i = 0; i < models.Count; i++) {
+				JoinModel model = models [i];
+				Tuple<string, DataEntityMapping> tuple = new Tuple<string, DataEntityMapping> (model.AliasTableName, model.Mapping);
+				array [i] = tuple;
+			}
+			DynamicDataMapping mapping = new DynamicDataMapping (type, array);
+			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region);
+			IDbCommand command = commandData.CreateCommand (_dataBase);
+			QueryState state = new QueryState ();
 			state.SetSelector (selector);
 			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
 		}
@@ -780,10 +795,10 @@ namespace Light.Data
 		//	return list;
 		//}
 
-		internal IEnumerable QueryJoinDataEnumerable (Type type, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable QueryJoinDataEnumerable (Type type, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
-			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order, region);
+			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			QueryState state = new QueryState ();
 			state.SetSelector (selector);
@@ -1202,7 +1217,6 @@ namespace Light.Data
 				transaction.Commit ();
 			}
 		}
-
 
 		//internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		//	where T : class, new()

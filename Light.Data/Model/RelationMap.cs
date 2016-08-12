@@ -66,7 +66,7 @@ namespace Light.Data
 				alias.AliasTableName = rootItem.AliasName;
 				joinSelector.SetAliasDataField (alias);
 				rootInfoList.Add (alias);
-				fieldInfoDict.Add (string.Format ("{0}.{1}", items [0].CurrentFieldPath, field.Name), alias);
+				fieldInfoDict.Add (string.Format ("{0}.{1}", items [0].CurrentFieldPath, field.IndexName), alias);
 			}
 			tableInfoDict.Add (items [0].CurrentFieldPath, rootInfoList.ToArray ());
 
@@ -114,7 +114,7 @@ namespace Light.Data
 			foreach (DataFieldMapping fieldMapping in this.rootMapping.DataEntityFields) {
 				if (fieldMapping != null) {
 					DataFieldInfo field = new DataFieldInfo (fieldMapping);
-					fieldInfoDict.Add (string.Format ("{0}.{1}", string.Empty, fieldMapping.Name), field);
+					fieldInfoDict.Add (string.Format ("{0}.{1}", string.Empty, fieldMapping.IndexName), field);
 					rootInfoList.Add (field);
 					dataSelector.SetDataField (field);
 				}
@@ -251,14 +251,14 @@ namespace Light.Data
 		{
 			DataFieldInfo info;
 			if (fieldInfoDict.TryGetValue (path, out info)) {
-				return info.Clone() as DataFieldInfo;
+				return info.Clone () as DataFieldInfo;
 			}
 			else {
 				throw new LightDataException ("");
 			}
 		}
 
-		 DataFieldInfo GetFieldInfoForField (string path)
+		DataFieldInfo GetFieldInfoForField (string path)
 		{
 			DataFieldInfo info;
 			if (fieldInfoDict.TryGetValue (path, out info)) {
@@ -305,7 +305,7 @@ namespace Light.Data
 			return selector;
 		}
 
-		string [] RewritePaths (string[] paths)
+		string [] RewritePaths (string [] paths)
 		{
 			if (collectionDict.Count > 0) {
 				HashSet<string> ss = new HashSet<string> (paths);
@@ -317,7 +317,7 @@ namespace Light.Data
 						}
 					}
 				}
-				string[] newpaths = new string [ss.Count];
+				string [] newpaths = new string [ss.Count];
 				ss.CopyTo (newpaths);
 				return newpaths;
 			}

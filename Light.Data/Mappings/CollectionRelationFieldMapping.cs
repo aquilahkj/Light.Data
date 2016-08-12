@@ -17,7 +17,7 @@ namespace Light.Data
 
 		}
 
-		string [] fieldPashs;
+		string [] fieldPaths;
 
 		protected override void InitialRelateMappingInc ()
 		{
@@ -29,7 +29,7 @@ namespace Light.Data
 					list.Add ("." + item.FieldName);
 				}
 			}
-			fieldPashs = list.ToArray ();
+			fieldPaths = list.ToArray ();
 			Type itemstype = Type.GetType ("Light.Data.LCollection`1");
 			Type objectType = itemstype.MakeGenericType (this.relateType);
 			ConstructorInfo [] constructorInfoArray = objectType.GetConstructors (BindingFlags.Instance | BindingFlags.NonPublic);
@@ -42,7 +42,7 @@ namespace Light.Data
 			}
 		}
 
-		public object ToProperty (DataContext context, object source)
+		public object ToProperty (DataContext context, object source, bool exceptOwner)
 		{
 			InitialRelateMapping ();
 			QueryExpression expression = null;
@@ -54,7 +54,7 @@ namespace Light.Data
 
 			object target = null;
 			if (defaultConstructorInfo != null) {
-				object [] args = { context, source, expression, this.fieldPashs };
+				object [] args = { context, source, expression, exceptOwner ? this.fieldPaths : null };
 				target = defaultConstructorInfo.Invoke (args);
 			}
 			return target;

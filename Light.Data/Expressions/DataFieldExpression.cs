@@ -44,7 +44,7 @@ namespace Light.Data
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
-		private static DataFieldExpression Catch (DataFieldExpression expression1, CatchOperatorsType operatorType, DataFieldExpression expression2)
+		internal static DataFieldExpression Catch (DataFieldExpression expression1, CatchOperatorsType operatorType, DataFieldExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {
 				return null;

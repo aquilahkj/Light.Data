@@ -63,15 +63,22 @@ namespace Light.Data.Demo
 			//var dd3 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AIds = x.Account });
 			//var dd4 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AIds = x.Email });
 
-			TeUserWithLevel2 s = new TeUserWithLevel2 ();
+			//TeUserWithLevel2 s = new TeUserWithLevel2 ();
 
-			var ll = context.LQueryable<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address).OrderBy (x => x.Address)
-						  .Select (x => new {
-							  Id = x.Id,
-							  Account = x.Account,
-							  AC = x.UserLevel != null ? x.UserLevel.LevelName : string.Empty,
-							  CD = x.UserLevel2
-						  }).ToList ();
+			//var ll = context.Query<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address).OrderBy (x => x.Address)
+			//			  .Select (x => new {
+			//				  x.Id,
+			//				  x.Account,
+			//				  AC = x.UserLevel != null ? x.UserLevel.LevelName : string.Empty,
+			//				  CD = x.UserLevel2
+			//			  }).ToList ();
+
+			var vc = context.Query<TeUser> ().Where (x => x.Id > 5).LeftJoin<TeUserLevel> ((x, y) => x.LevelId == y.Id).Where ((x, y) => x.CheckPoint > 0 && y.LevelName != null)
+							.Select ((x, y) => new {
+								User = x,
+								LevelName = y.LevelName
+							}).ToList();
+			                
 
 			Console.ReadLine ();
 		}

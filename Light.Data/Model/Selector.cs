@@ -64,9 +64,9 @@ namespace Light.Data
 			foreach (KeyValuePair<string, Selector> selector in selectors) {
 				foreach (KeyValuePair<string, DataFieldInfo> kvs in selector.Value.infoDict) {
 					DataFieldInfo info = kvs.Value.Clone () as DataFieldInfo;
-					string aliasName = string.Format ("{0}_{1}", kvs.Key, info.FieldName);
+					string aliasName = string.Format ("{0}_{1}", selector.Key, info.FieldName);
 					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
-					alias.AliasTableName = kvs.Key;
+					alias.AliasTableName = selector.Key;
 					joinSelector.SetAliasDataField (alias);
 				}
 			}

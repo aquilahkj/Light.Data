@@ -374,9 +374,9 @@ namespace Light.Data
 		//	}
 		//}
 
-		public void LoadJoinTableData (DataContext context, IDataReader datareader, object item, QueryState datas, string fieldPath)
+		public void LoadJoinTableData (DataContext context, IDataReader datareader, object item, QueryState queryState, string fieldPath)
 		{
-			string aliasName = datas.GetAliasName (fieldPath);
+			string aliasName = queryState.GetAliasName (fieldPath);
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
@@ -384,14 +384,14 @@ namespace Light.Data
 				IFieldCollection fieldCollection = field as IFieldCollection;
 				if (fieldCollection != null) {
 					IFieldCollection ifc = fieldCollection;
-					object obj = ifc.LoadData (context, datareader, datas);
+					object obj = ifc.LoadData (context, datareader, queryState);
 					if (!Object.Equals (obj, null)) {
 						field.Handler.Set (item, obj);
 					}
 				}
 				else {
 					string name = string.Format ("{0}_{1}", aliasName, field.Name);
-					if (datas.CheckSelectField (name)) {
+					if (queryState.CheckSelectField (name)) {
 						object obj = datareader [name];
 						object value = field.ToProperty (obj);
 						if (!Object.Equals (value, null)) {
@@ -402,7 +402,7 @@ namespace Light.Data
 			}
 			if (collectionRelationFields.Count > 0) {
 				foreach (CollectionRelationFieldMapping mapping in collectionRelationFields) {
-					mapping.Handler.Set (item, mapping.ToProperty (context, item));
+					mapping.Handler.Set (item, mapping.ToProperty (context, item, true));
 				}
 			}
 			//if (singleMultiQueryRelationFields.Count > 0) {
@@ -416,7 +416,7 @@ namespace Light.Data
 
 			foreach (SingleRelationFieldMapping mapping in singleRelationFields) {
 				string fpath = string.Format ("{0}.{1}", fieldPath, mapping.FieldName);
-				object value = mapping.ToProperty (context, datareader, datas, fpath);
+				object value = mapping.ToProperty (context, datareader, queryState, fpath);
 				if (!Object.Equals (value, null)) {
 					mapping.Handler.Set (item, value);
 				}
@@ -470,7 +470,7 @@ namespace Light.Data
 			}
 			if (collectionRelationFields.Count > 0) {
 				foreach (CollectionRelationFieldMapping mapping in collectionRelationFields) {
-					mapping.Handler.Set (item, mapping.ToProperty (context, item));
+					mapping.Handler.Set (item, mapping.ToProperty (context, item, true));
 				}
 			}
 			//if (singleMultiQueryRelationFields.Count > 0) {
@@ -482,6 +482,53 @@ namespace Light.Data
 			//		}
 			//	}
 			//}
+			if (IsDataEntity) {
+				DataEntity de = item as DataEntity;
+				de.SetContext (context);
+				de.LoadDataComplete ();
+			}
+			return item;
+		}
+
+		public object LoadJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+		{
+			object item = Activator.CreateInstance (ObjectType);
+		
+			foreach (DataFieldMapping field in this._fieldList) {
+				if (field == null)
+					continue;
+
+				IFieldCollection fieldCollection = field as IFieldCollection;
+				if (fieldCollection != null) {
+					IFieldCollection ifc = fieldCollection;
+					object obj = ifc.LoadData (context, datareader, queryState);
+					if (!Object.Equals (obj, null)) {
+						field.Handler.Set (item, obj);
+					}
+				}
+				else {
+					string name = string.Format ("{0}_{1}", aliasName, field.Name);
+					if (queryState == null) {
+						object obj = datareader [name];
+						object value = field.ToProperty (obj);
+						if (!Object.Equals (value, null)) {
+							field.Handler.Set (item, value);
+						}
+					}
+					else if (queryState.CheckSelectField (name)) {
+						object obj = datareader [name];
+						object value = field.ToProperty (obj);
+						if (!Object.Equals (value, null)) {
+							field.Handler.Set (item, value);
+						}
+					}
+				}
+			}
+			if (collectionRelationFields.Count > 0) {
+				foreach (CollectionRelationFieldMapping mapping in collectionRelationFields) {
+					mapping.Handler.Set (item, mapping.ToProperty (context, item, false));
+				}
+			}
 			if (IsDataEntity) {
 				DataEntity de = item as DataEntity;
 				de.SetContext (context);

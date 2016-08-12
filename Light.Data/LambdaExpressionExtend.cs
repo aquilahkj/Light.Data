@@ -35,7 +35,7 @@ namespace Light.Data
 			}
 		}
 
-		private	static LambdaState CreateLambdaState (LambdaExpression expression)
+		private static LambdaState CreateLambdaState (LambdaExpression expression)
 		{
 			if (expression.Parameters.Count == 0) {
 				throw new LightDataException ("");
@@ -103,6 +103,25 @@ namespace Light.Data
 			}
 			catch (Exception ex) {
 				throw new LightDataException (string.Format ("parse query expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+			}
+		}
+
+		public static DataFieldExpression ResolvelambdaOnExpression (LambdaExpression expression)
+		{
+			LambdaState state;
+			if (expression.Parameters.Count <= 1) {
+				throw new LightDataException ("");
+			}
+			else {
+				state = new MutliEntityLambdaState (expression.Parameters);
+			}
+			try {
+				DataFieldExpression on = ResolveOnExpression (expression.Body, state);
+
+				return on;
+			}
+			catch (Exception ex) {
+				throw new LightDataException (string.Format ("parse on expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
 			}
 		}
 
@@ -1229,7 +1248,57 @@ namespace Light.Data
 					return convertFieldInfo.ConvertToExpression ();
 				}
 			}
-			throw new LambdaParseException (string.Format ("lambda expression [{0}] not support", expression));
+			throw new LambdaParseException (string.Format ("lambda query expression [{0}] not support", expression));
+		}
+
+		private static DataFieldExpression ResolveOnExpression (Expression expression, LambdaState state)
+		{
+			BinaryExpression binary = expression as BinaryExpression;
+			if (binary != null) {
+				CatchOperatorsType catchType;
+				if (CheckCatchOperatorsType (binary.NodeType, out catchType)) {
+					var left = ResolveOnExpression (binary.Left, state);
+					var right = ResolveOnExpression (binary.Right, state);
+					return DataFieldExpression.Catch (left, catchType, right);
+				}
+				else {
+					QueryPredicate queryPredicate;
+					if (CheckQueryPredicate (binary.NodeType, out queryPredicate)) {
+						DataFieldInfo leftFieldInfo;
+						object leftValue = null;
+						bool left;
+						if (ParseDataFieldInfo (binary.Left, state, out leftFieldInfo)) {
+							left = true;
+							CheckFieldInfo (leftFieldInfo);
+						}
+						else {
+							left = false;
+							leftValue = ConvertObject (binary.Left);
+						}
+
+						DataFieldInfo rightFieldInfo;
+						object rightValue = null;
+						bool right;
+						if (ParseDataFieldInfo (binary.Right, state, out rightFieldInfo)) {
+							right = true;
+							CheckFieldInfo (rightFieldInfo);
+						}
+						else {
+							right = false;
+							rightValue = ConvertObject (binary.Right);
+						}
+
+						if (left && right) {
+							return new DataFieldMatchExpression (leftFieldInfo, rightFieldInfo, queryPredicate);
+						}
+						else {
+							throw new LambdaParseException (string.Format ("not allow one side constant value in BinaryExpression \"{0}\"", binary));
+						}
+					}
+				}
+			}
+
+			throw new LambdaParseException (string.Format ("lambda on expression [{0}] not support", expression));
 		}
 	}
 }

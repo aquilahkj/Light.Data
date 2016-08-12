@@ -7,7 +7,7 @@ namespace Light.Data
 	/// <summary>
 	/// LSelectable.
 	/// </summary>
-	public class LSelectable<K> : IEnumerable<K> where K : class
+	public class LightSelect<K> : ISelect<K> where K : class
 	{
 		readonly Type _type;
 
@@ -25,7 +25,7 @@ namespace Light.Data
 
 		readonly ISelector _selector;
 
-		internal LSelectable (DataContext context, Delegate dele, ISelector selector, Type type, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal LightSelect (DataContext context, Delegate dele, ISelector selector, Type type, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			_context = context;
 			_dele = dele;
@@ -37,15 +37,20 @@ namespace Light.Data
 			_level = level;
 		}
 
-
 		public IEnumerator<K> GetEnumerator ()
 		{
-			throw new NotImplementedException ();
+			foreach (object item in _context.QueryDataMappingEnumerable (_type, _selector, _query, _order, _region, _level)) {
+				object obj = _dele.DynamicInvoke (item);
+				yield return obj as K;
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			throw new NotImplementedException ();
+			foreach (object item in _context.QueryDataMappingEnumerable (_type, _selector, _query, _order, _region, _level)) {
+				object obj = _dele.DynamicInvoke (item);
+				yield return obj;
+			}
 		}
 
 		public List<K> ToList ()

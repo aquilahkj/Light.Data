@@ -335,16 +335,25 @@
     <Compile Include="DataField\LambdaDateDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaStringLengthDataFieldInfo.cs" />
     <Compile Include="LambdaState.cs" />
-    <Compile Include="LQueryable.cs" />
+    <Compile Include="LightQuery.cs" />
     <Compile Include="Model\ISelector.cs" />
     <Compile Include="Model\JoinSelector.cs" />
     <Compile Include="Model\RelationItem.cs" />
     <Compile Include="Model\RelationLink.cs" />
     <Compile Include="Model\RelationMap.cs" />
     <Compile Include="Model\Selector.cs" />
-    <Compile Include="LSelectable.cs" />
+    <Compile Include="LightSelect.cs" />
     <Compile Include="MutliEntityLambdaState.cs" />
     <Compile Include="SingleEntityLambdaState.cs" />
+    <Compile Include="LJoinTable.cs" />
+    <Compile Include="LightJoinTable_1.cs" />
+    <Compile Include="LightJoinTable_2.cs" />
+    <Compile Include="IQuery.cs" />
+    <Compile Include="IJoinTable_1.cs" />
+    <Compile Include="IJoinTable_2.cs" />
+    <Compile Include="ISelect.cs" />
+    <Compile Include="LightJoinSelect.cs" />
+    <Compile Include="Mappings\DynamicDataMapping.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

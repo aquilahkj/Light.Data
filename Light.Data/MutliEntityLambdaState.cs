@@ -94,7 +94,54 @@ namespace Light.Data
 
 		public override ISelector CreateSelector (string [] fullPaths)
 		{
-			throw new NotImplementedException ();
+			Dictionary<string, List<string>> dict = new Dictionary<string, List<string>> ();
+			foreach (string fullPath in fullPaths) {
+				int index = fullPath.IndexOf (".", StringComparison.Ordinal);
+				if (index < 0) {
+					if (mapDict.ContainsKey (fullPath)) {
+						List<string> list;
+						if (!dict.TryGetValue (fullPath, out list)) {
+							list = new List<string> ();
+							dict.Add (fullPath, list);
+						}
+						if (!list.Contains (string.Empty)) {
+							list.Add (string.Empty);
+						}
+					}
+					else {
+						throw new LambdaParseException ("");
+					}
+				}
+				else {
+					string name = fullPath.Substring (0, index);
+					string path = fullPath.Substring (index);
+					if (mapDict.ContainsKey (name)) {
+						List<string> list;
+						if (!dict.TryGetValue (name, out list)) {
+							list = new List<string> ();
+							dict.Add (name, list);
+						}
+						if (!list.Contains (path)) {
+							list.Add (path);
+						}
+					}
+					else {
+						throw new LambdaParseException ("");
+					}
+				}
+			}
+			Dictionary<string, Selector> selectDict = new Dictionary<string, Selector> ();
+			foreach (KeyValuePair<string, List<string>> kvs in dict) {
+				RelationMap map = mapDict [kvs.Key];
+				string alias = aliasDict [kvs.Key];
+				Selector selector = map.CreateSpecialSelector (kvs.Value.ToArray ()) as Selector;
+				if (selector == null) {
+					throw new LightDataException ("");
+				}
+				selectDict.Add (alias, selector);
+			}
+			JoinSelector joinSelector = Selector.ComposeSelector (selectDict);
+			return joinSelector;
 		}
 	}
 }
