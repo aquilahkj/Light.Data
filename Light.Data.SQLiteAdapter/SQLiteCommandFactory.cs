@@ -229,6 +229,11 @@ namespace Light.Data.SQLiteAdapter
 			}
 		}
 
+		public override string CreateDateSql (object field)
+		{
+			return string.Format ("date({0})", field);
+		}
+
 		public override string CreateDateTimeFormatSql (string field, string format)
 		{
 			string sqlformat;

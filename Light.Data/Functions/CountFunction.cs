@@ -1,18 +1,25 @@
 ﻿
 namespace Light.Data
 {
-	class CountFunction : AggregateFunction
+	class CountFunction : AggregateData
 	{
 		DataFieldInfo _fieldinfo;
 
 		bool _isDistinct;
 
-		internal CountFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
-			: base (mapping)
+		internal CountFunction (DataFieldInfo fieldInfo, bool isDistinct)
+			: base (fieldInfo.TableMapping)
 		{
 			_fieldinfo = fieldInfo;
 			_isDistinct = isDistinct;
 		}
+
+		//internal CountFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
+		//	: base (mapping)
+		//{
+		//	_fieldinfo = fieldInfo;
+		//	_isDistinct = isDistinct;
+		//}
 
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		//{
@@ -20,10 +27,9 @@ namespace Light.Data
 		//	return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			dataParameters = null;
-			return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isDistinct);
+			return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, isFullName, out dataParameters), _isDistinct);
 		}
 
 		//protected override bool EqualsDetail (AggregateFunction function)

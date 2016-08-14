@@ -49,7 +49,7 @@ namespace Light.Data.MysqlTest
 				Assert.GreaterOrEqual (listAgg [i - 1].Data, listAgg [i].Data);
 			}
 
-			AggregateFunction countFunction = AggregateFunction.Count ();
+			AggregateData countFunction = AggregateFunction.Count ();
 
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField)
 				.Aggregate (countFunction, "Data")
@@ -75,7 +75,7 @@ namespace Light.Data.MysqlTest
 		{
 			InitialUserTable (57);
 			List<LevelIdAgg> listAgg;
-			AggregateFunction countFunction = AggregateFunction.Count ();
+			AggregateData countFunction = AggregateFunction.Count ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField)
 				.Aggregate (AggregateFunction.Count (), "Data")
 				.OrderBy (TeUser.LevelIdField.OrderByAsc () & countFunction.OrderByAsc ())

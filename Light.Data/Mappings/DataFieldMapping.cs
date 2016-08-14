@@ -22,7 +22,7 @@ namespace Light.Data
 			if (type.IsGenericType) {
 				Type frameType = type.GetGenericTypeDefinition ();
 				if (frameType.FullName == "System.Nullable`1") {
-					Type[] arguments = type.GetGenericArguments ();
+					Type [] arguments = type.GetGenericArguments ();
 					type = arguments [0];
 				}
 			}
@@ -62,9 +62,6 @@ namespace Light.Data
 			Type type = property.PropertyType;
 			string indexName = property.Name;
 			string fieldName = string.IsNullOrEmpty (config.Name) ? property.Name : config.Name;
-			if (!Regex.IsMatch (fieldName, _fieldRegex, RegexOptions.IgnoreCase)) {
-				throw new LightDataException (RE.FieldNameIsInvalid);
-			}
 
 			DataFieldMapping fieldMapping;
 			string dbType = null;
@@ -72,14 +69,14 @@ namespace Light.Data
 			if (type.IsGenericType) {
 				Type frameType = type.GetGenericTypeDefinition ();
 				if (frameType.FullName == "System.Nullable`1") {
-					Type[] arguments = type.GetGenericArguments ();
+					Type [] arguments = type.GetGenericArguments ();
 					type = arguments [0];
 					isNullable = true;
 				}
 
 			}
 
-			if (type.IsArray && type.FullName != "System.Byte[]") {
+			if (type.IsArray) {
 				throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 			}
 			else if (type.IsGenericParameter | type.IsGenericTypeDefinition) {
@@ -94,13 +91,12 @@ namespace Light.Data
 				if (code == TypeCode.DBNull) {
 					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 				}
-				if (code == TypeCode.Empty) {
+				else if (code == TypeCode.Empty) {
 					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 				}
-//				else if (code == TypeCode.Object && type.FullName != "System.Byte[]") {
-//					ComplexFieldMapping complexFieldMapping = new ComplexFieldMapping (type, fieldName, indexName, mapping, isNullable);
-//					fieldMapping = complexFieldMapping;
-//				}
+				else if (code == TypeCode.Object) {
+					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
+				}
 				else {
 					PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType, config.DefaultValue, false, false);
 					fieldMapping = primitiveFieldMapping;
@@ -109,6 +105,55 @@ namespace Light.Data
 			fieldMapping._handler = new PropertyHandler (property);
 			return fieldMapping;
 		}
+
+		public static DataFieldMapping CreateAggregateFieldMapping (PropertyInfo property, DataMapping mapping)
+		{
+			Type type = property.PropertyType;
+			string indexName = property.Name;
+			string fieldName = property.Name;
+
+			DataFieldMapping fieldMapping;
+			string dbType = null;
+			bool isNullable = false;
+			if (type.IsGenericType) {
+				Type frameType = type.GetGenericTypeDefinition ();
+				if (frameType.FullName == "System.Nullable`1") {
+					Type [] arguments = type.GetGenericArguments ();
+					type = arguments [0];
+					isNullable = true;
+				}
+			}
+
+			if (type.IsArray) {
+				return null;
+			}
+			else if (type.IsGenericParameter | type.IsGenericTypeDefinition) {
+				return null;
+			}
+			else if (type.IsEnum) {
+				EnumFieldMapping enumFieldMapping = new EnumFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType, null);
+				fieldMapping = enumFieldMapping;
+			}
+			else {
+				TypeCode code = Type.GetTypeCode (type);
+				if (code == TypeCode.DBNull) {
+					return null;
+				}
+				else if (code == TypeCode.Empty) {
+					return null;
+				}
+				else if (code == TypeCode.Object) {
+					return null;
+				}
+				else {
+					PrimitiveFieldMapping primitiveFieldMapping = new PrimitiveFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType, null, false, false);
+					fieldMapping = primitiveFieldMapping;
+				}
+			}
+			fieldMapping._handler = new PropertyHandler (property);
+			return fieldMapping;
+		}
+
 
 		protected int? _dataOrder;
 

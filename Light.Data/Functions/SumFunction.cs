@@ -1,18 +1,25 @@
 ﻿
 namespace Light.Data
 {
-	class SumFunction : AggregateFunction
+	class SumFunction : AggregateData
 	{
 		DataFieldInfo _fieldinfo;
 
 		bool _isDistinct;
 
-		internal SumFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
-			: base (mapping)
+		internal SumFunction (DataFieldInfo fieldInfo, bool isDistinct)
+			: base (fieldInfo.TableMapping)
 		{
 			_fieldinfo = fieldInfo;
 			_isDistinct = isDistinct;
 		}
+
+		//internal SumFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
+		//	: base (mapping)
+		//{
+		//	_fieldinfo = fieldInfo;
+		//	_isDistinct = isDistinct;
+		//}
 
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		//{
@@ -20,9 +27,9 @@ namespace Light.Data
 		//	return factory.CreateSumSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			return factory.CreateSumSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isDistinct);
+			return factory.CreateSumSql (_fieldinfo.CreateDataFieldSql (factory, isFullName, out dataParameters), _isDistinct);
 		}
 
 		//protected override bool EqualsDetail (AggregateFunction function)

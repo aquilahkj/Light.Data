@@ -25,8 +25,6 @@ namespace Light.Data
 			}
 		}
 
-		TypeCode _typeCode;
-
 		Regex textRegex = new Regex ("char|text|string", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue)
@@ -41,7 +39,7 @@ namespace Light.Data
 			Type itemstype = Type.GetType ("System.Nullable`1");
 			_nullableType = itemstype.MakeGenericType (type);
 			Array values = Enum.GetValues (ObjectType);
-			_typeCode = Type.GetTypeCode (ObjectType);
+			//_typeCode = Type.GetTypeCode (ObjectType);
 			object value = values.GetValue (0);
 
 			if (_enumType == EnumFieldType.EnumToString) {
@@ -78,7 +76,7 @@ namespace Light.Data
 				return null;
 			}
 			else {
-				if (EnumType == EnumFieldType.EnumToString) {
+				if (_enumType == EnumFieldType.EnumToString) {
 					return Enum.Parse (ObjectType, value.ToString ());
 				}
 				else {

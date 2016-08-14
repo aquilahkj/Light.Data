@@ -1,15 +1,21 @@
 ﻿
 namespace Light.Data
 {
-	class MinFunction : AggregateFunction
+	class MinFunction : AggregateData
 	{
 		DataFieldInfo _fieldinfo;
 
-		internal MinFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo)
-			: base (mapping)
+		internal MinFunction (DataFieldInfo fieldInfo)
+			: base (fieldInfo.TableMapping)
 		{
 			_fieldinfo = fieldInfo;
 		}
+
+		//internal MinFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo)
+		//	: base (mapping)
+		//{
+		//	_fieldinfo = fieldInfo;
+		//}
 
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		//{
@@ -17,9 +23,9 @@ namespace Light.Data
 		//	return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName));
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters));
+			return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, isFullName, out dataParameters));
 		}
 
 		//protected override bool EqualsDetail (AggregateFunction function)

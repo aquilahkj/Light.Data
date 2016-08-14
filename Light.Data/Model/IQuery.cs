@@ -193,6 +193,8 @@ namespace Light.Data
 		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
 
 		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
+
+		IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class;
 	}
 }
 

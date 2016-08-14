@@ -3,11 +3,11 @@ namespace Light.Data
 {
 	class NullAggregateExpression : AggregateHavingExpression
 	{
-		AggregateFunction _function;
+		AggregateData _function;
 
 		bool _isNull;
 
-		public NullAggregateExpression (AggregateFunction function, bool isNull)
+		public NullAggregateExpression (AggregateData function, bool isNull)
 			: base (function.TableMapping)
 		{
 			_function = function;

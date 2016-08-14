@@ -481,6 +481,11 @@ namespace Light.Data.OracleAdapter
 			}
 		}
 
+		public override string CreateDateSql (object field)
+		{
+			return string.Format ("trunc({0})", field);
+		}
+
 		public override string CreateDateTimeFormatSql (string field, string format)
 		{
 			string sqlformat;

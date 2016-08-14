@@ -142,18 +142,6 @@ namespace Light.Data
 				}
 			}
 			else {
-//				Type type = value.GetType ();
-//				if (ObjectType != null && type != ObjectType) {
-//					if (ObjectType == typeof(double) && type == typeof(float)) {
-//						return Convert.ToDouble (value);
-//					}
-//					else {
-//						return Convert.ChangeType (value, ObjectType);
-//					}
-//				}
-//				else {
-//					return value;
-//				}
 				if (ObjectType != null && value.GetType () != ObjectType) {
 					return Convert.ChangeType (value, ObjectType);
 				}

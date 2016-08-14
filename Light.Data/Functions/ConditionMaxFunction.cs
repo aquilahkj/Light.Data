@@ -2,18 +2,25 @@
 
 namespace Light.Data
 {
-	class ConditionMaxFunction: AggregateFunction
+	class ConditionMaxFunction: AggregateData
 	{
 		QueryExpression _expression;
 
 		DataFieldInfo _fieldinfo;
 
-		internal ConditionMaxFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo)
-			: base (mapping)
+		internal ConditionMaxFunction (DataFieldInfo fieldinfo, QueryExpression expression)
+			: base (fieldinfo.TableMapping)
 		{
 			_expression = expression;
 			_fieldinfo = fieldinfo;
 		}
+
+		//internal ConditionMaxFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo)
+		//	: base (mapping)
+		//{
+		//	_expression = expression;
+		//	_fieldinfo = fieldinfo;
+		//}
 
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		//{
@@ -21,12 +28,12 @@ namespace Light.Data
 		//	return factory.CreateConditionMaxSql (sql, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateDataFieldSql (factory, fullFieldName) : null);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
 		{
 			DataParameter [] dataParameters1 = null;
 			DataParameter [] dataParameters2 = null;
-			string expressionString = _expression.CreateSqlString (factory, fullFieldName, out dataParameters1);
-			string sql = factory.CreateConditionMaxSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2) : null);
+			string expressionString = _expression.CreateSqlString (factory, isFullName, out dataParameters1);
+			string sql = factory.CreateConditionMaxSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateDataFieldSql (factory, isFullName, out dataParameters2) : null);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}

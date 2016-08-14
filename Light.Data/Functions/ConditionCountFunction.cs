@@ -2,7 +2,7 @@
 
 namespace Light.Data
 {
-	class ConditionCountFunction : AggregateFunction
+	class ConditionCountFunction : AggregateData
 	{
 		QueryExpression _expression;
 
@@ -10,13 +10,28 @@ namespace Light.Data
 
 		bool _isDistinct;
 
-		internal ConditionCountFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo, bool isDistinct)
-			: base (mapping)
+		//internal ConditionCountFunction (QueryExpression expression, bool isDistinct)
+		//	: base (expression.TableMapping)
+		//{
+		//	_expression = expression;
+		//	_isDistinct = isDistinct;
+		//}
+
+		internal ConditionCountFunction (DataFieldInfo fieldinfo, QueryExpression expression, bool isDistinct)
+			: base (fieldinfo.TableMapping)
 		{
 			_expression = expression;
 			_fieldinfo = fieldinfo;
 			_isDistinct = isDistinct;
 		}
+
+		//internal ConditionCountFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo, bool isDistinct)
+		//	: base (mapping)
+		//{
+		//	_expression = expression;
+		//	_fieldinfo = fieldinfo;
+		//	_isDistinct = isDistinct;
+		//}
 
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
 		//{
@@ -24,12 +39,12 @@ namespace Light.Data
 		//	return factory.CreateConditionCountSql (sql, _fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			DataParameter [] dataParameters1 = null;
 			DataParameter [] dataParameters2 = null;
-			string expressionString = _expression.CreateSqlString (factory, fullFieldName, out dataParameters1);
-			string sql = factory.CreateConditionCountSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2) : null, _isDistinct);
+			string expressionString = _expression.CreateSqlString (factory, isFullName, out dataParameters1);
+			string sql = factory.CreateConditionCountSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateDataFieldSql (factory, isFullName, out dataParameters2) : null, _isDistinct);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}

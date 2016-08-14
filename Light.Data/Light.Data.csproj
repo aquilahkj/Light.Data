@@ -192,7 +192,7 @@
     <Compile Include="Expressions\NullAggregateExpression.cs" />
     <Compile Include="Expressions\SubQueryExpression.cs" />
     <Compile Include="Expressions\SubAggregateExpression.cs" />
-    <Compile Include="Function\AggregateFunction.cs" />
+    <Compile Include="Functions\AggregateData.cs" />
     <Compile Include="Attributes\AggregateFieldAttribute.cs" />
     <Compile Include="Attributes\AggregateTableAttribute.cs" />
     <Compile Include="Attributes\DataFieldAttribute.cs" />
@@ -212,15 +212,15 @@
     <Compile Include="Expressions\NullQueryExpression.cs" />
     <Compile Include="Expressions\OrderType.cs" />
     <Compile Include="Expressions\SingleParamQueryExpression.cs" />
-    <Compile Include="Function\ConditionCountFunction.cs" />
-    <Compile Include="Function\ConditionSumFunction.cs" />
-    <Compile Include="Function\CountAllFunction.cs" />
-    <Compile Include="Function\CountFunction.cs" />
-    <Compile Include="Function\MinFunction.cs" />
-    <Compile Include="Function\SumFunction.cs" />
-    <Compile Include="Function\AvgFunction.cs" />
-    <Compile Include="Function\ConditionAvgFunction.cs" />
-    <Compile Include="Function\MaxFunction.cs" />
+    <Compile Include="Functions\ConditionCountFunction.cs" />
+    <Compile Include="Functions\ConditionSumFunction.cs" />
+    <Compile Include="Functions\CountAllFunction.cs" />
+    <Compile Include="Functions\CountFunction.cs" />
+    <Compile Include="Functions\MinFunction.cs" />
+    <Compile Include="Functions\SumFunction.cs" />
+    <Compile Include="Functions\AvgFunction.cs" />
+    <Compile Include="Functions\ConditionAvgFunction.cs" />
+    <Compile Include="Functions\MaxFunction.cs" />
     <Compile Include="Handler\AttributeCore.cs" />
     <Compile Include="Handler\PropertyHandler.cs" />
     <Compile Include="Handler\ReflectionHandlerFactory.cs" />
@@ -264,9 +264,9 @@
     <Compile Include="DataContextSetting.cs" />
     <Compile Include="CommandData.cs" />
     <Compile Include="DataField\AliasDataFieldInfo.cs" />
-    <Compile Include="Function\AggregateFunctionInfo.cs" />
-    <Compile Include="Function\ConditionMaxFunction.cs" />
-    <Compile Include="Function\ConditionMinFunction.cs" />
+    <Compile Include="Functions\AggregateDataInfo.cs" />
+    <Compile Include="Functions\ConditionMaxFunction.cs" />
+    <Compile Include="Functions\ConditionMinFunction.cs" />
     <Compile Include="DataField\SelectFieldInfo.cs" />
     <Compile Include="DataField\DataSelectFieldInfo.cs" />
     <Compile Include="DataField\ConstantSelectFieldInfo.cs" />
@@ -325,7 +325,7 @@
     <Compile Include="Model\RelationLink.cs" />
     <Compile Include="Model\RelationMap.cs" />
     <Compile Include="Model\Selector.cs" />
-    <Compile Include="Mappings\DynamicDataMapping.cs" />
+    <Compile Include="Mappings\DynamicMultiDataMapping.cs" />
     <Compile Include="Model\IJoinTable_1.cs" />
     <Compile Include="Model\IJoinTable_2.cs" />
     <Compile Include="Model\IQuery.cs" />
@@ -353,6 +353,24 @@
     <Compile Include="Model\SafeLevel.cs" />
     <Compile Include="Model\UpdateSetValue.cs" />
     <Compile Include="Model\SelectInsertor.cs" />
+    <Compile Include="Model\IJoinTable_3.cs" />
+    <Compile Include="Model\IJoinTable_4.cs" />
+    <Compile Include="Model\IJoinTable_5.cs" />
+    <Compile Include="Model\LightJoinTable_3.cs" />
+    <Compile Include="Model\LightJoinTable_4.cs" />
+    <Compile Include="Model\LightJoinTable_5.cs" />
+    <Compile Include="Model\IAggregate.cs" />
+    <Compile Include="Functions\Function.cs" />
+    <Compile Include="Model\LightAggregate.cs" />
+    <Compile Include="Functions\AggregateFunction.cs" />
+    <Compile Include="Functions\AggregateDataFieldInfo.cs" />
+    <Compile Include="Model\AggregateModel.cs" />
+    <Compile Include="Mappings\AggregateMapping.cs" />
+    <Compile Include="Mappings\DynamicAggregateMapping.cs" />
+    <Compile Include="Mappings\SpecialAggregateMapping.cs" />
+    <Compile Include="Mappings\DynamicFieldMapping.cs" />
+    <Compile Include="Mappings\DynamicPrimitiveFieldMapping.cs" />
+    <Compile Include="Mappings\DynamicEnumFieldMapping.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -773,7 +773,7 @@ namespace Light.Data
 				Tuple<string, DataEntityMapping> tuple = new Tuple<string, DataEntityMapping> (model.AliasTableName, model.Mapping);
 				array [i] = tuple;
 			}
-			DynamicDataMapping mapping = new DynamicDataMapping (type, array);
+			DynamicMultiDataMapping mapping = new DynamicMultiDataMapping (type, array);
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region);
 			IDbCommand command = commandData.CreateCommand (_dataBase);
 			QueryState state = new QueryState ();
@@ -840,19 +840,34 @@ namespace Light.Data
 			return list;
 		}
 
-		internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
+			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				return QueryDataTable (command, null, level);
 			}
 		}
 
-		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 			where T : class, new()
 		{
 			AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof (T));
-			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, fields, functions, query, having, order);
+			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
+			List<T> list = new List<T> ();
+			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+				IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
+				//list.AddRange (ie);
+				foreach (T item in ie) {
+					list.Add (item);
+				}
+			}
+			return list;
+		}
+
+		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, AggregateMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+			where T : class
+		{
+			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
 			List<T> list = new List<T> ();
 			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
 				IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);

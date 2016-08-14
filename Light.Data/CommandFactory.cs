@@ -259,17 +259,17 @@ namespace Light.Data
 			return queryString;
 		}
 
-		public virtual string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateFunctionInfo> functions)
+		public virtual string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateDataInfo> functions)
 		{
 			string havingString = null;
 			parameters = null;
 			if (having != null) {
 				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					string alias = null;
-					AggregateFunction aggregateFunction = obj as AggregateFunction;
+					AggregateData aggregateFunction = obj as AggregateData;
 					if (!Object.Equals (aggregateFunction, null)) {
-						foreach (AggregateFunctionInfo info in functions) {
-							if (Object.ReferenceEquals (aggregateFunction, info.Function)) {
+						foreach (AggregateDataInfo info in functions) {
+							if (Object.ReferenceEquals (aggregateFunction, info.Data)) {
 								alias = info.Name;
 								break;
 							}
@@ -294,35 +294,44 @@ namespace Light.Data
 			return orderString;
 		}
 
-		public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions)
+		public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, List<AggregateDataInfo> fields, List<AggregateDataInfo> functions)
 		{
 			string orderString = null;
 			parameters = null;
 			if (order != null) {
 				orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
 					string alias = null;
-					if (obj is DataFieldInfo) {
-						foreach (DataFieldInfo info in fields) {
-							if (Object.ReferenceEquals (obj, info)) {
-								AliasDataFieldInfo aliasInfo = info as AliasDataFieldInfo;
-								if (!Object.Equals (aliasInfo, null)) {
-									alias = aliasInfo.Alias;
-								}
-								break;
+					//if (obj is DataFieldInfo) {
+					//	foreach (DataFieldInfo info in fields) {
+					//		if (Object.ReferenceEquals (obj, info)) {
+					//			AliasDataFieldInfo aliasInfo = info as AliasDataFieldInfo;
+					//			if (!Object.Equals (aliasInfo, null)) {
+					//				alias = aliasInfo.Alias;
+					//			}
+					//			break;
+					//		}
+					//	}
+					//}
+					//else
+					if (obj is AggregateData) {
+						foreach (AggregateDataInfo info in fields) {
+							if (Object.ReferenceEquals (obj, info.Data)) {
+								//alias = info.Name;
+								//break;
+								return info.Name;
+							}
+						}
+						foreach (AggregateDataInfo info in functions) {
+							if (Object.ReferenceEquals (obj, info.Data)) {
+								//alias = info.Name;
+								//break;
+								return info.Name;
 							}
 						}
 					}
-					else if (obj is AggregateFunction) {
-						foreach (AggregateFunctionInfo info in functions) {
-							if (Object.ReferenceEquals (obj, info.Function)) {
-								alias = info.Name;
-								break;
-							}
-						}
-					}
-					else {
-						throw new LightDataException (RE.UnknowOrderType);
-					}
+					//else {
+					//	throw new LightDataException (RE.UnknowOrderType);
+					//}
 					return alias;
 				})));
 			}
@@ -800,36 +809,104 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateDynamicAggregateCommand (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateFunctionInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order)
+		//public virtual CommandData CreateDynamicAggregateCommand (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order)
+		//{
+		//	if (fields == null || fields.Count == 0) {
+		//		throw new LightDataException (RE.DynamicAggregateFieldIsNotExists);
+		//	}
+		//	StringBuilder sql = new StringBuilder ();
+
+		//	string [] selectList = new string [fields.Count + functions.Count];
+		//	string [] groupbyList = new string [fields.Count];
+		//	int index = 0;
+		//	List<DataParameter> innerParameters = new List<DataParameter> ();
+		//	foreach (DataFieldInfo fieldInfo in fields) {
+		//		if (!mapping.Equals (fieldInfo.TableMapping)) {
+		//			throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+		//		}
+		//		DataParameter [] dataParameters = null;
+		//		string groupbyField = fieldInfo.CreateDataFieldSql (this, false, out dataParameters);
+		//		groupbyList [index] = groupbyField;
+		//		AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
+		//		if (!Object.Equals (aliasInfo, null)) {
+		//			selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false, out dataParameters);
+		//		}
+		//		else {
+		//			selectList [index] = groupbyField;
+		//		}
+		//		index++;
+		//	}
+		//	List<DataParameter> functionParameters = new List<DataParameter> ();
+		//	foreach (AggregateDataInfo functionInfo in functions) {
+		//		AggregateData function = functionInfo.Data;
+		//		if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
+		//			throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+		//		}
+		//		DataParameter [] aggparameters;
+		//		string aggField = function.CreateSqlString (this, false, out aggparameters);
+		//		string selectField = CreateAliasSql (aggField, functionInfo.Name);
+		//		selectList [index] = selectField;
+		//		if (aggparameters != null && aggparameters.Length > 0) {
+		//			functionParameters.AddRange (aggparameters);
+		//		}
+		//		index++;
+		//	}
+		//	string select = string.Join (",", selectList);
+		//	string groupby = string.Join (",", groupbyList);
+		//	sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
+
+		//	DataParameter [] queryparameters;
+		//	string queryString = GetQueryString (query, out queryparameters);
+		//	DataParameter [] havingparameters;
+		//	string havingString = GetHavingString (having, out havingparameters);
+		//	DataParameter [] orderparameters;
+		//	string orderString = GetOrderString (order, out orderparameters, fields, functions);
+
+		//	if (!string.IsNullOrEmpty (queryString)) {
+		//		sql.AppendFormat (" {0}", queryString);
+		//	}
+
+		//	sql.AppendFormat (" group by {0}", groupby);
+
+		//	if (!string.IsNullOrEmpty (havingString)) {
+		//		sql.AppendFormat (" {0}", havingString);
+		//	}
+
+		//	if (!string.IsNullOrEmpty (orderString)) {
+		//		sql.AppendFormat (" {0}", orderString);
+		//	}
+		//	DataParameter [] parameters = DataParameter.ConcatDataParameters (innerParameters, functionParameters, queryparameters, havingparameters, orderparameters);
+		//	CommandData command = new CommandData (sql.ToString (), parameters);
+		//	command.TransParamName = true;
+		//	return command;
+		//}
+
+		public virtual CommandData CreateDynamicAggregateCommand (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order)
 		{
-			if (fields == null || fields.Count == 0) {
-				throw new LightDataException (RE.DynamicAggregateFieldIsNotExists);
-			}
 			StringBuilder sql = new StringBuilder ();
 
-			string [] selectList = new string [fields.Count + functions.Count];
-			string [] groupbyList = new string [fields.Count];
+			string [] selectList = new string [groupbys.Count + functions.Count];
+			string [] groupbyList = new string [groupbys.Count];
 			int index = 0;
 			List<DataParameter> innerParameters = new List<DataParameter> ();
-			foreach (DataFieldInfo fieldInfo in fields) {
-				if (!mapping.Equals (fieldInfo.TableMapping)) {
+			foreach (AggregateDataInfo groupbyInfo in groupbys) {
+				AggregateData data = groupbyInfo.Data;
+				if (!mapping.Equals (data.TableMapping)) {
 					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
 				}
 				DataParameter [] dataParameters = null;
-				string groupbyField = fieldInfo.CreateDataFieldSql (this, false, out dataParameters);
+				string groupbyField = data.CreateSqlString (this, false, out dataParameters);
 				groupbyList [index] = groupbyField;
-				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
-				if (!Object.Equals (aliasInfo, null)) {
-					selectList [index] = aliasInfo.CreateAliasDataFieldSql (this, false, out dataParameters);
-				}
-				else {
-					selectList [index] = groupbyField;
+				string selectField = CreateAliasSql (groupbyField, groupbyInfo.Name);
+				selectList [index] = selectField;
+				if (dataParameters != null && dataParameters.Length > 0) {
+					innerParameters.AddRange (dataParameters);
 				}
 				index++;
 			}
 			List<DataParameter> functionParameters = new List<DataParameter> ();
-			foreach (AggregateFunctionInfo functionInfo in functions) {
-				AggregateFunction function = functionInfo.Function;
+			foreach (AggregateDataInfo functionInfo in functions) {
+				AggregateData function = functionInfo.Data;
 				if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
 					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
 				}
@@ -851,7 +928,7 @@ namespace Light.Data
 			DataParameter [] havingparameters;
 			string havingString = GetHavingString (having, out havingparameters);
 			DataParameter [] orderparameters;
-			string orderString = GetOrderString (order, out orderparameters, fields, functions);
+			string orderString = GetOrderString (order, out orderparameters, groupbys, functions);
 
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
@@ -1239,6 +1316,11 @@ namespace Light.Data
 		}
 
 		public virtual string CreateDateSql (object field, string format)
+		{
+			throw new NotSupportedException ();
+		}
+
+		public virtual string CreateDateSql (object field)
 		{
 			throw new NotSupportedException ();
 		}

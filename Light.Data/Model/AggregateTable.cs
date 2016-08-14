@@ -21,14 +21,14 @@ namespace Light.Data
 
 		SafeLevel _level = SafeLevel.Default;
 
-		Dictionary<string, DataFieldInfo> _dataFieldInfoDictionary = new Dictionary<string, DataFieldInfo> ();
+		Dictionary<string, AggregateDataInfo> _dataFieldInfoDictionary = new Dictionary<string, AggregateDataInfo> ();
 
-		Dictionary<string, AggregateFunctionInfo> _aggregateFunctionDictionary = new Dictionary<string, AggregateFunctionInfo> ();
+		Dictionary<string, AggregateDataInfo> _aggregateFunctionDictionary = new Dictionary<string, AggregateDataInfo> ();
 
 		internal AggregateTable (DataContext dataContext)
 		{
 			_context = dataContext;
-			_enetityMapping = DataEntityMapping.GetEntityMapping (typeof(T));
+			_enetityMapping = DataEntityMapping.GetEntityMapping (typeof (T));
 		}
 
 		/// <summary>
@@ -37,9 +37,9 @@ namespace Light.Data
 		/// <returns>The data table.</returns>
 		public DataTable GetDataTable ()
 		{
-			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
-			List<AggregateFunctionInfo> functions = new List<AggregateFunctionInfo> (_aggregateFunctionDictionary.Values);
-			return _context.QueryDynamicAggregateTable (_enetityMapping, fields, functions, _query, _having, _order, _level);
+			List<AggregateDataInfo> groupbys = new List<AggregateDataInfo> (_dataFieldInfoDictionary.Values);
+			List<AggregateDataInfo> functions = new List<AggregateDataInfo> (_aggregateFunctionDictionary.Values);
+			return _context.QueryDynamicAggregateTable (_enetityMapping, groupbys, functions, _query, _having, _order, _level);
 		}
 
 		/// <summary>
@@ -49,9 +49,9 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public List<K> GetObjectList<K> () where K : class, new()
 		{
-			List<DataFieldInfo> fields = new List<DataFieldInfo> (_dataFieldInfoDictionary.Values);
-			List<AggregateFunctionInfo> functions = new List<AggregateFunctionInfo> (_aggregateFunctionDictionary.Values);
-			List<K> list = _context.QueryDynamicAggregateList<K> (_enetityMapping, fields, functions, _query, _having, _order, _level);
+			List<AggregateDataInfo> groupbys = new List<AggregateDataInfo> (_dataFieldInfoDictionary.Values);
+			List<AggregateDataInfo> functions = new List<AggregateDataInfo> (_aggregateFunctionDictionary.Values);
+			List<K> list = _context.QueryDynamicAggregateList<K> (_enetityMapping, groupbys, functions, _query, _having, _order, _level);
 			return list;
 		}
 
@@ -77,22 +77,29 @@ namespace Light.Data
 			if (Object.Equals (fieldInfo, null)) {
 				throw new ArgumentNullException (nameof (fieldInfo));
 			}
+			//if (string.IsNullOrEmpty (alias)) {
+			//	alias = fieldInfo.FieldName;
+			//	if (fieldInfo is ExtendDataFieldInfo) {
+			//		fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
+			//	}
+			//}
+			//else {
+			//	fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
+			//}
 			if (string.IsNullOrEmpty (alias)) {
 				alias = fieldInfo.FieldName;
-				if (fieldInfo is ExtendDataFieldInfo) {
-					fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
-				}
 			}
-			else {
-				fieldInfo = new AliasDataFieldInfo (fieldInfo, alias);
-			}
+
+			AggregateDataFieldInfo dataFieldInfo = new AggregateDataFieldInfo (fieldInfo);
+			AggregateDataInfo data = new AggregateDataInfo (dataFieldInfo, alias);
+
 			if (_dataFieldInfoDictionary.ContainsKey (alias)) {
 				throw new LightDataException (string.Format (RE.GroupNameFieldIsExists, alias));
 			}
 			if (_aggregateFunctionDictionary.ContainsKey (alias)) {
 				throw new LightDataException (string.Format (RE.AggregateFunctionFieldIsExists, alias));
 			}
-			_dataFieldInfoDictionary.Add (alias, fieldInfo);
+			_dataFieldInfoDictionary.Add (alias, data);
 
 			return this;
 		}
@@ -103,7 +110,7 @@ namespace Light.Data
 		/// <returns>The aggregateTable.</returns>
 		/// <param name="function">Function.</param>
 		/// <param name="alias">Alias.</param>
-		public AggregateTable<T> Aggregate (AggregateFunction function, string alias)
+		public AggregateTable<T> Aggregate (AggregateData function, string alias)
 		{
 			if (Object.Equals (function, null)) {
 				throw new ArgumentNullException (nameof (function));
@@ -117,7 +124,7 @@ namespace Light.Data
 			if (_dataFieldInfoDictionary.ContainsKey (alias)) {
 				throw new LightDataException (string.Format (RE.GroupNameFieldIsExists, alias));
 			}
-			AggregateFunctionInfo info = new AggregateFunctionInfo (function, alias);
+			AggregateDataInfo info = new AggregateDataInfo (function, alias);
 			_aggregateFunctionDictionary.Add (alias, info);
 
 			return this;
@@ -206,7 +213,7 @@ namespace Light.Data
 		/// <returns>The aggregateTable.</returns>
 		public AggregateTable<T> OrderByRandom ()
 		{
-			_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (typeof(T)));
+			_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (typeof (T)));
 			return this;
 		}
 

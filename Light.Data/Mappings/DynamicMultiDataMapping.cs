@@ -3,18 +3,15 @@ using System.Data;
 
 namespace Light.Data
 {
-	class DynamicDataMapping : DataMapping
+	class DynamicMultiDataMapping : DataMapping
 	{
-		//readonly Type [] targetTypes;
-
 		DataEntityMapping [] mappings;
 
 		string [] aliasNames;
 
-		public DynamicDataMapping (Type type, Tuple<string, DataEntityMapping> [] targetMappings)
+		public DynamicMultiDataMapping (Type type, Tuple<string, DataEntityMapping> [] targetMappings)
 			: base (type)
 		{
-			//this.targetTypes = targetTypes;
 			mappings = new DataEntityMapping [targetMappings.Length];
 			aliasNames = new string [targetMappings.Length];
 			for (int i = 0; i < targetMappings.Length; i++) {

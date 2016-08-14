@@ -25,13 +25,13 @@ namespace Light.Data
 			SupportTypeCodes.Add (TypeCode.UInt64);
 		}
 
-		AggregateFunction _function;
+		AggregateData _function;
 
 		QueryCollectionPredicate _predicate;
 
 		IEnumerable _values;
 
-		public CollectionParamsAggregateExpression (AggregateFunction function, QueryCollectionPredicate predicate, IEnumerable values)
+		public CollectionParamsAggregateExpression (AggregateData function, QueryCollectionPredicate predicate, IEnumerable values)
 			: base (function.TableMapping)
 		{
 			Type type = values.GetType ();

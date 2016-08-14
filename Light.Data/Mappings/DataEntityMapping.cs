@@ -16,7 +16,6 @@ namespace Light.Data
 
 		static Dictionary<Type, DataEntityMapping> _defaultMapping = new Dictionary<Type, DataEntityMapping> ();
 
-
 		/// <summary>
 		/// Gets the table mapping.
 		/// </summary>
@@ -47,23 +46,25 @@ namespace Light.Data
 				lock (_synobj) {
 					mappings.TryGetValue (type, out mapping);
 					if (mapping == null) {
-						try {
-							mapping = CreateMapping (type);
-						}
-						catch (Exception ex) {
-							mapping = new ErrorDataMapping (type, ex);
-						}
+						//try {
+						//	mapping = CreateMapping (type);
+						//}
+						//catch (Exception ex) {
+						//	mapping = new ErrorDataMapping (type, ex);
+						//}
+						mapping = CreateMapping (type);
 						mappings [type] = mapping;
 					}
 				}
 			}
-			ErrorDataMapping errMapping = mapping as ErrorDataMapping;
-			if (errMapping != null) {
-				throw errMapping.InnerException;
-			}
-			else {
-				return mapping;
-			}
+			return mapping;
+			//ErrorDataMapping errMapping = mapping as ErrorDataMapping;
+			//if (errMapping != null) {
+			//	throw errMapping.InnerException;
+			//}
+			//else {
+			//	return mapping;
+			//}
 		}
 
 		/// <summary>

@@ -15,7 +15,7 @@ namespace Light.Data.OracleTest
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
 			Dictionary<int,LevelIdAgg> dict;
-			AggregateFunction function = AggregateFunction.Sum (TeUser.LoginTimesField);
+			AggregateData function = AggregateFunction.Sum (TeUser.LoginTimesField);
 
 
 			list = context.LQuery<TeUser> ().ToList ();
@@ -53,7 +53,7 @@ namespace Light.Data.OracleTest
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
 			Dictionary<int,LevelIdAgg> dict;
-			AggregateFunction function = AggregateFunction.Sum (TeUser.LoginTimesField);
+			AggregateData function = AggregateFunction.Sum (TeUser.LoginTimesField);
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAc = context.LAggregate<TeUser> ()
@@ -222,7 +222,7 @@ namespace Light.Data.OracleTest
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
 			Dictionary<int,LevelIdAgg> dict;
-			AggregateFunction function = AggregateFunction.Sum (TeUser.LoginTimesField);
+			AggregateData function = AggregateFunction.Sum (TeUser.LoginTimesField);
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAc = context.LAggregate<TeUser> ()
@@ -391,7 +391,7 @@ namespace Light.Data.OracleTest
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
 			Dictionary<int,LevelIdAgg> dict;
-			AggregateFunction function = AggregateFunction.Sum (TeUser.LoginTimesField);
+			AggregateData function = AggregateFunction.Sum (TeUser.LoginTimesField);
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAc = context.LAggregate<TeUser> ()
@@ -455,7 +455,7 @@ namespace Light.Data.OracleTest
 			List<LevelIdAgg> listEx;
 			List<LevelIdAgg> listAc;
 			Dictionary<int,LevelIdAgg> dict;
-			AggregateFunction function = AggregateFunction.Sum (TeUser.LoginTimesField);
+			AggregateData function = AggregateFunction.Sum (TeUser.LoginTimesField);
 
 			int[] arrayx = new int[]{ 18, 20 };
 			List<int> listx = new List<int> (arrayx);
@@ -638,7 +638,7 @@ namespace Light.Data.OracleTest
 			List<LevelIdAggAvg> listEx;
 			List<LevelIdAggAvg> listAc;
 			Dictionary<int,LevelIdAggX> dict;
-			AggregateFunction function = AggregateFunction.Avg (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8, TeUser.LoginTimesField);
+			AggregateData function = AggregateFunction.Avg (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8, TeUser.LoginTimesField);
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listEx = new List<LevelIdAggAvg> ();
@@ -720,7 +720,7 @@ namespace Light.Data.OracleTest
 			List<LevelIdAgg> listAc;
 			Dictionary<int,LevelIdAgg> dict;
 			List<TeUserLevel> listSub;
-			AggregateFunction function = AggregateFunction.Max (TeUser.LoginTimesField);
+			AggregateData function = AggregateFunction.Max (TeUser.LoginTimesField);
 
 			listSub = listLevel.FindAll (x => x.Id >= 2 && x.Id <= 4);
 			list = context.LQuery<TeUser> ().ToList ();

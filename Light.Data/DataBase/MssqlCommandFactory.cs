@@ -206,6 +206,11 @@ namespace Light.Data
 			}
 		}
 
+		public override string CreateDateSql (object field)
+		{
+			return string.Format ("cast({0} as date)", field);
+		}
+
 		public override string CreateDateTimeFormatSql (string field, string format)
 		{
 			string sqlformat;

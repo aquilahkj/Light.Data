@@ -4,7 +4,7 @@ namespace Light.Data
 {
 	class SubAggregateExpression : AggregateHavingExpression
 	{
-		AggregateFunction _function;
+		AggregateData _function;
 
 		QueryCollectionPredicate _predicate;
 
@@ -12,7 +12,7 @@ namespace Light.Data
 
 		DataFieldInfo _queryFieldInfo;
 
-		public SubAggregateExpression (AggregateFunction function, QueryCollectionPredicate predicate, DataFieldInfo queryFieldInfo, QueryExpression queryExpression)
+		public SubAggregateExpression (AggregateData function, QueryCollectionPredicate predicate, DataFieldInfo queryFieldInfo, QueryExpression queryExpression)
 			: base (function.TableMapping)
 		{
 			_function = function;

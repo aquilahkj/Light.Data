@@ -1,15 +1,21 @@
 ﻿
 namespace Light.Data
 {
-	class MaxFunction : AggregateFunction
+	class MaxFunction : AggregateData
 	{
 		DataFieldInfo _fieldinfo;
 
-		internal MaxFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo)
-			: base (mapping)
+		internal MaxFunction (DataFieldInfo fieldInfo)
+			: base (fieldInfo.TableMapping)
 		{
 			_fieldinfo = fieldInfo;
 		}
+
+		//internal MaxFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo)
+		//	: base (mapping)
+		//{
+		//	_fieldinfo = fieldInfo;
+		//}
 
 
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
@@ -18,9 +24,9 @@ namespace Light.Data
 		//	return factory.CreateMaxSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName));
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			return factory.CreateMaxSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters));
+			return factory.CreateMaxSql (_fieldinfo.CreateDataFieldSql (factory, isFullName, out dataParameters));
 		}
 
 		//protected override bool EqualsDetail (AggregateFunction function)

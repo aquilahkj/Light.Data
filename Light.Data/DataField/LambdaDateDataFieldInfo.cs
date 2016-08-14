@@ -11,7 +11,7 @@ namespace Light.Data
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
-			return factory.CreateDateTimeFormatSql (field, null);
+			return factory.CreateDateSql (field);
 		}
 	}
 }

@@ -24,7 +24,7 @@ namespace Light.Data
 			SupportTypeCodes.Add (TypeCode.UInt64);
 		}
 
-		AggregateFunction _function;
+		AggregateData _function;
 
 		bool _isNot;
 
@@ -32,7 +32,7 @@ namespace Light.Data
 
 		object _toValue;
 
-		public BetweenParamsAggregateExpression (AggregateFunction function, bool isNot, object fromValue, object toValue)
+		public BetweenParamsAggregateExpression (AggregateData function, bool isNot, object fromValue, object toValue)
 			: base (function.TableMapping)
 		{
 			TypeCode typeCode1 = Type.GetTypeCode (fromValue.GetType ());

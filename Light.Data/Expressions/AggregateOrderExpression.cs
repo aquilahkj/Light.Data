@@ -7,13 +7,13 @@ namespace Light.Data
 	/// </summary>
 	class AggregateOrderExpression : OrderExpression
 	{
-		AggregateFunction _function;
+		AggregateData _function;
 
 		OrderType _orderType = OrderType.ASC;
 
 		string _aliasTableName;
 
-		public AggregateOrderExpression (AggregateFunction function, OrderType orderType)
+		public AggregateOrderExpression (AggregateData function, OrderType orderType)
 			: base (function.TableMapping)
 		{
 			_function = function;

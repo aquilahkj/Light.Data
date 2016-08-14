@@ -73,15 +73,40 @@ namespace Light.Data.Demo
 			//				  CD = x.UserLevel2
 			//			  }).ToList ();
 
-			var vc = context.Query<TeUser> ().Where (x => x.Id > 5).LeftJoin<TeUserLevel> ((x, y) => x.LevelId == y.Id)
-			                .Where ((x, y) => x.CheckPoint > 0 && y.LevelName != null)
-							.Select ((x, y) => new {
+			var vc = context.Query<TeUser> ().Where (x => x.Id > 5)
+							.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
+							.Where ((x, y) => y.Remark == "")
+							.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
+							.WhereWithAnd ((x, y, z) => x.CheckPoint > 0 && y.LevelName != null)
+							//.Select ((x, y, z) => new SGroub {
+							//	Date = x.RegTime.Date,
+							//	Count = 10
+							//}).ToList ();
+							.Select ((x, y, z) => new {
 								User = x,
-								LevelName = y.LevelName
-							}).ToList();
-			                
+								LevelName = y.LevelName,
+								E1 = z.Extend1,
+								E2 = z.Extend2
+							}).ToList ();
+
+			var df = context.Query<TeUser> ().GroupBy (x => new SGroub {
+				Date = x.RegTime.Date,
+				Count = Function.Count (x.Address, x.DeleteFlag)
+			}).ToList ();
 
 			Console.ReadLine ();
+		}
+
+		class SGroub
+		{
+			public DateTime Date {
+				get;
+				set;
+			}
+			public int Count {
+				get;
+				set;
+			}
 		}
 
 		public static int TestInt ()

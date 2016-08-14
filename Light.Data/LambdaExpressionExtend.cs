@@ -38,7 +38,7 @@ namespace Light.Data
 		private static LambdaState CreateLambdaState (LambdaExpression expression)
 		{
 			if (expression.Parameters.Count == 0) {
-				throw new LightDataException ("");
+				throw new LambdaParseException ("");
 			}
 			else if (expression.Parameters.Count == 1) {
 				return new SingleEntityLambdaState (expression.Parameters [0]);
@@ -48,19 +48,240 @@ namespace Light.Data
 			}
 		}
 
-		public static ISelector CreateSelector (LambdaExpression expression)
+		public static AggregateModel CreateAggregateModel (LambdaExpression expression)
 		{
-			LambdaState state = CreateLambdaState (expression);
-
-			try {
-				NewExpression newExpression = expression.Body as NewExpression;
-				if (newExpression == null) {
+			//try {
+				if (expression.Parameters.Count != 1) {
 					throw new LambdaParseException ("");
 				}
-				List<string> list;
+				else {
+					LambdaState state = new SingleEntityLambdaState (expression.Parameters [0]);
+					AggregateModel model = null;
+					MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
+					if (memberInitObj != null) {
+						model = ParseAggregateModel (memberInitObj, state);
+					}
+					else {
+						NewExpression newObj = expression.Body as NewExpression;
+						if (newObj != null) {
+							model = ParseAggregateModel (newObj, state);
+						}
+					}
+					if (model != null) {
+						return model;
+					}
+					else {
+						throw new LambdaParseException ("");
+					}
+				}
+			//}
+			//catch (Exception ex) {
+			//	throw new LightDataException (string.Format ("parse group by expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+			//}
+		}
 
-				if (ParseNewArguments (newExpression, state, out list)) {
-					return state.CreateSelector (list.ToArray ());
+		private static AggregateData CreateAggregateFunction (MethodCallExpression expression, LambdaState state)
+		{
+			MethodInfo method = expression.Method;
+
+			//ParameterInfo [] paramInfos = method.GetParameters();
+			ReadOnlyCollection<Expression> paramExpressions = expression.Arguments;
+			AggregateData data = null;
+			DataFieldInfo fieldInfo = null;
+			QueryExpression queryExpression = null;
+			if (paramExpressions.Count >= 1) {
+				if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
+					throw new LambdaParseException ("");
+				}
+			}
+			if (paramExpressions.Count == 2) {
+				queryExpression = ResolveQueryExpression (paramExpressions [1], state);
+			}
+
+			switch (method.Name) {
+			case "Count":
+				if (paramExpressions.Count == 0) {
+					data = new CountAllFunction ();
+				}
+				else if (paramExpressions.Count == 1) {
+					data = new CountFunction (fieldInfo, false);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionCountFunction (fieldInfo, queryExpression, false);
+				}
+				break;
+			case "LongCount":
+				if (paramExpressions.Count == 0) {
+					data = new CountAllFunction ();
+				}
+				else if (paramExpressions.Count == 1) {
+					data = new CountFunction (fieldInfo, false);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionCountFunction (fieldInfo, queryExpression, false);
+				}
+				break;
+			case "DistinctCount":
+				if (paramExpressions.Count == 1) {
+					data = new CountFunction (fieldInfo, false);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionCountFunction (fieldInfo, queryExpression, true);
+				}
+				break;
+			case "DistinctLongCount":
+				if (paramExpressions.Count == 1) {
+					data = new CountFunction (fieldInfo, true);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionCountFunction (fieldInfo, queryExpression, true);
+				}
+				break;
+			case "Sum":
+				if (paramExpressions.Count == 1) {
+					data = new SumFunction (fieldInfo, false);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionSumFunction (fieldInfo, queryExpression, false);
+				}
+				break;
+			case "LongSum":
+				if (paramExpressions.Count == 1) {
+					data = new SumFunction (fieldInfo, false);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionSumFunction (fieldInfo, queryExpression, false);
+				}
+				break;
+			case "DistinctSum":
+				if (paramExpressions.Count == 1) {
+					data = new SumFunction (fieldInfo, true);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionSumFunction (fieldInfo, queryExpression, true);
+				}
+				break;
+			case "DistinctLongSum":
+				if (paramExpressions.Count == 1) {
+					data = new SumFunction (fieldInfo, true);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionSumFunction (fieldInfo, queryExpression, true);
+				}
+				break;
+			case "Avg":
+				if (paramExpressions.Count == 1) {
+					data = new AvgFunction (fieldInfo, false);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionAvgFunction (fieldInfo, queryExpression, false);
+				}
+				break;
+			case "DistinctAvg":
+				if (paramExpressions.Count == 1) {
+					data = new AvgFunction (fieldInfo, true);
+				}
+				else if (paramExpressions.Count == 2) {
+					data = new ConditionAvgFunction (fieldInfo, queryExpression, true);
+				}
+				break;
+			case "Max":
+				if (paramExpressions.Count == 1) {
+					data = new MaxFunction (fieldInfo);
+				}
+				break;
+			case "Min":
+				if (paramExpressions.Count == 1) {
+					data = new MinFunction (fieldInfo);
+				}
+				break;
+			}
+			if (Object.Equals (data, null)) {
+				throw new LambdaParseException ("");
+			}
+			return data;
+		}
+
+		private static AggregateModel ParseAggregateModel (MemberInitExpression expression, LambdaState state)
+		{
+			SpecialAggregateMapping arrgregateMapping = SpecialAggregateMapping.GetAggregateMapping (expression.Type);
+			AggregateModel model = new AggregateModel (arrgregateMapping);
+			if (expression.Bindings != null) {
+				foreach (MemberAssignment ass in expression.Bindings) {
+					if (ass != null) {
+						Expression innerExpression = ass.Expression;
+						MethodCallExpression methodObj = innerExpression as MethodCallExpression;
+						if (methodObj != null && methodObj.Method.DeclaringType == typeof (Function)) {
+							AggregateData data = CreateAggregateFunction (methodObj, state);
+							model.AddFunction (ass.Member.Name, data);
+							continue;
+						}
+						DataFieldInfo fieldInfo;
+						if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
+							model.AddGroupByField (ass.Member.Name, fieldInfo);
+							continue;
+						}
+						else {
+							throw new LambdaParseException ("");
+						}
+					}
+					else {
+						throw new LambdaParseException ("");
+					}
+				}
+			}
+			else {
+				throw new LambdaParseException ("");
+			}
+			return model;
+		}
+
+		private static AggregateModel ParseAggregateModel (NewExpression expression, LambdaState state)
+		{
+			DynamicAggregateMapping arrgregateMapping = DynamicAggregateMapping.GetAggregateMapping (expression.Type);
+			AggregateModel model = new AggregateModel (arrgregateMapping);
+			if (expression.Arguments != null) {
+				int index = 0;
+				foreach (Expression arg in expression.Arguments) {
+					MemberInfo member = expression.Members [index];
+					Expression innerExpression = arg;
+					MethodCallExpression methodObj = innerExpression as MethodCallExpression;
+					if (methodObj != null && methodObj.Method.DeclaringType == typeof (Function)) {
+						AggregateData data = CreateAggregateFunction (methodObj, state);
+						model.AddFunction (member.Name, data);
+						index++;
+						continue;
+					}
+					DataFieldInfo fieldInfo;
+					if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
+						model.AddGroupByField (member.Name, fieldInfo);
+						index++;
+						continue;
+					}
+					else {
+						throw new LambdaParseException ("");
+					}
+				}
+			}
+			else {
+				throw new LambdaParseException ("");
+			}
+			return model;
+		}
+
+		public static ISelector CreateSelector (LambdaExpression expression)
+		{
+			try {
+				LambdaState state = CreateLambdaState (expression);
+				Expression bodyExpression = expression.Body;
+				if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression) {
+					List<string> list;
+					if (ParseNewArguments (bodyExpression, state, out list)) {
+						return state.CreateSelector (list.ToArray ());
+					}
+					else {
+						throw new LambdaParseException ("");
+					}
 				}
 				else {
 					throw new LambdaParseException ("");
@@ -73,30 +294,29 @@ namespace Light.Data
 
 		public static OrderExpression ResolveLambdaOrderByExpression (LambdaExpression expression, OrderType orderType)
 		{
-			LambdaState state = CreateLambdaState (expression);
-			DataFieldInfo dataFieldInfo;
-			bool ret;
 			try {
-				ret = ParseDataFieldInfo (expression.Body, state, out dataFieldInfo);
+				DataFieldInfo dataFieldInfo;
+				LambdaState state = CreateLambdaState (expression);
+				if (ParseDataFieldInfo (expression.Body, state, out dataFieldInfo)) {
+					CheckFieldInfo (dataFieldInfo);
+					OrderExpression exp = new FieldOrderExpression (dataFieldInfo, orderType);
+					exp.MutliOrder = true;
+					return exp;
+				}
+				else {
+					throw new LambdaParseException ("not valid field in order expression");
+				}
 			}
 			catch (Exception ex) {
 				throw new LightDataException (string.Format ("parse order expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
 			}
-			if (ret) {
-				CheckFieldInfo (dataFieldInfo);
-				OrderExpression exp = new FieldOrderExpression (dataFieldInfo, orderType);
-				exp.MutliOrder = true;
-				return exp;
-			}
-			else {
-				throw new LightDataException (string.Format ("not valid field in order expression \"{0}\"", expression));
-			}
+
 		}
 
 		public static QueryExpression ResolveLambdaQueryExpression (LambdaExpression expression)
 		{
-			LambdaState state = CreateLambdaState (expression);
 			try {
+				LambdaState state = CreateLambdaState (expression);
 				QueryExpression query = ResolveQueryExpression (expression.Body, state);
 				query.MutliQuery = state.MutliQuery;
 				return query;
@@ -108,16 +328,12 @@ namespace Light.Data
 
 		public static DataFieldExpression ResolvelambdaOnExpression (LambdaExpression expression)
 		{
-			LambdaState state;
-			if (expression.Parameters.Count <= 1) {
-				throw new LightDataException ("");
-			}
-			else {
-				state = new MutliEntityLambdaState (expression.Parameters);
-			}
 			try {
+				if (expression.Parameters.Count <= 1) {
+					throw new LambdaParseException ("");
+				}
+				LambdaState state = new MutliEntityLambdaState (expression.Parameters);
 				DataFieldExpression on = ResolveOnExpression (expression.Body, state);
-
 				return on;
 			}
 			catch (Exception ex) {
@@ -125,16 +341,16 @@ namespace Light.Data
 			}
 		}
 
-		public static void ResolveLambdaSelectExpression (LambdaExpression expression)
-		{
-			LambdaState state = CreateLambdaState (expression);
-			try {
-				ResolveQueryExpression (expression.Body, state);
-			}
-			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse query expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
-			}
-		}
+		//public static void ResolveLambdaSelectExpression (LambdaExpression expression)
+		//{
+		//	LambdaState state = CreateLambdaState (expression);
+		//	try {
+		//		ResolveQueryExpression (expression.Body, state);
+		//	}
+		//	catch (Exception ex) {
+		//		throw new LightDataException (string.Format ("parse query expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+		//	}
+		//}
 
 		private static bool ParseNewArguments (Expression expression, LambdaState state, out List<string> pathList)
 		{
@@ -341,6 +557,48 @@ namespace Light.Data
 						pathList = null;
 						return false;
 					}
+				}
+				else {
+					pathList = null;
+					return false;
+				}
+			}
+			MemberInitExpression memberInitObj = expression as MemberInitExpression;
+			if (memberInitObj != null) {
+				bool ret = false;
+				List<string> memberInitList = new List<string> ();
+
+				if (memberInitObj.Bindings != null) {
+					foreach (MemberAssignment ass in memberInitObj.Bindings) {
+						if (ass != null) {
+							List<string> argList = null;
+							if (ParseNewArguments (ass.Expression, state, out argList)) {
+								ret = true;
+								if (argList == null) {
+									memberInitList.Add (ass.Expression.ToString ());
+								}
+								else {
+									memberInitList.AddRange (argList);
+								}
+							}
+						}
+					}
+				}
+				if (memberInitObj.NewExpression != null) {
+					List<string> newList = null;
+					if (ParseNewArguments (memberInitObj.NewExpression, state, out newList)) {
+						ret = true;
+						if (newList == null) {
+							memberInitList.Add (methodcallObj.Object.ToString ());
+						}
+						else {
+							memberInitList.AddRange (newList);
+						}
+					}
+				}
+				if (ret) {
+					pathList = memberInitList;
+					return true;
 				}
 				else {
 					pathList = null;

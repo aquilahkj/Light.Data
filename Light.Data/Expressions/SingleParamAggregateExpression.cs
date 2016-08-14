@@ -24,7 +24,7 @@ namespace Light.Data
 			SupportTypeCodes.Add (TypeCode.UInt64);
 		}
 
-		AggregateFunction _function = null;
+		AggregateData _function = null;
 
 		QueryPredicate _predicate;
 
@@ -32,7 +32,7 @@ namespace Light.Data
 
 		bool _isReverse = false;
 
-		public SingleParamAggregateExpression (AggregateFunction function, QueryPredicate predicate, object value, bool isReverse)
+		public SingleParamAggregateExpression (AggregateData function, QueryPredicate predicate, object value, bool isReverse)
 			: base (function.TableMapping)
 		{
 			TypeCode typeCode = Type.GetTypeCode (value.GetType ());

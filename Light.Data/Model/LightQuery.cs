@@ -874,6 +874,11 @@ namespace Light.Data
 		{
 			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, null, onExpression);
 		}
+
+		public IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class
+		{
+			return new LightAggregate<T, K> (this, expression);
+		}
 	}
 }
 

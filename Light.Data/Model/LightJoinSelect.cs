@@ -22,7 +22,7 @@ namespace Light.Data
 
 		readonly List<JoinModel> _models;
 
-		readonly DynamicDataMapping _mapping;
+		readonly DynamicMultiDataMapping _mapping;
 
 		internal LightJoinSelect (DataContext context, Delegate dele, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{

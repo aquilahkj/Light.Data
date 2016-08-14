@@ -1,18 +1,25 @@
 ﻿
 namespace Light.Data
 {
-	class AvgFunction : AggregateFunction
+	class AvgFunction : AggregateData
 	{
 		DataFieldInfo _fieldinfo;
 
 		bool _isDistinct;
 
-		internal AvgFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
-			: base (mapping)
+		internal AvgFunction (DataFieldInfo fieldInfo, bool isDistinct)
+			: base (fieldInfo.TableMapping)
 		{
 			_fieldinfo = fieldInfo;
 			_isDistinct = isDistinct;
 		}
+
+		//internal AvgFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
+		//	: base (mapping)
+		//{
+		//	_fieldinfo = fieldInfo;
+		//	_isDistinct = isDistinct;
+		//}
 
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		//{
@@ -20,10 +27,9 @@ namespace Light.Data
 		//	return factory.CreateAvgSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			dataParameters = null;
-			return factory.CreateAvgSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters), _isDistinct);
+			return factory.CreateAvgSql (_fieldinfo.CreateDataFieldSql (factory, isFullName, out dataParameters), _isDistinct);
 		}
 
 		//		internal override AggregateFunction CreateAliasTableFunction (string aliasTableName)

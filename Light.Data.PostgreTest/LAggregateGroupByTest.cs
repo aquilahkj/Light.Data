@@ -82,24 +82,24 @@ namespace Light.Data.PostgreTest
 				Assert.AreEqual (i, agg.Data);
 			}
 
-			list = context.LQuery<TeUser> ().ToList ();
-			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Count (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8), "Data").GetObjectList<LevelIdAgg> ();
-			dict = new Dictionary<int, int> ();
-			foreach (TeUser user in list) {
-				int i;
-				dict.TryGetValue (user.LevelId, out i);
-				if (user.RefereeId != null && user.RefereeId.Value >= 4 && user.RefereeId.Value <= 8) {
-					dict [user.LevelId] = i + 1;
-				} else {
-					dict [user.LevelId] = i;
-				}
-			}
-			Assert.AreEqual (dict.Count, listAgg.Count);
-			foreach (LevelIdAgg agg in listAgg) {
-				int i;
-				Assert.IsTrue (dict.TryGetValue (agg.LevelId, out i));
-				Assert.AreEqual (i, agg.Data);
-			}
+			//list = context.LQuery<TeUser> ().ToList ();
+			//listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Count (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8), "Data").GetObjectList<LevelIdAgg> ();
+			//dict = new Dictionary<int, int> ();
+			//foreach (TeUser user in list) {
+			//	int i;
+			//	dict.TryGetValue (user.LevelId, out i);
+			//	if (user.RefereeId != null && user.RefereeId.Value >= 4 && user.RefereeId.Value <= 8) {
+			//		dict [user.LevelId] = i + 1;
+			//	} else {
+			//		dict [user.LevelId] = i;
+			//	}
+			//}
+			//Assert.AreEqual (dict.Count, listAgg.Count);
+			//foreach (LevelIdAgg agg in listAgg) {
+			//	int i;
+			//	Assert.IsTrue (dict.TryGetValue (agg.LevelId, out i));
+			//	Assert.AreEqual (i, agg.Data);
+			//}
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAgg = context.LAggregate<TeUser> ().GroupBy (TeUser.LevelIdField).Aggregate (AggregateFunction.Count (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8, TeUser.AreaField), "Data").GetObjectList<LevelIdAgg> ();

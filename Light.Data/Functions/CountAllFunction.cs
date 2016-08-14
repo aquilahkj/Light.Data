@@ -1,7 +1,7 @@
 ﻿
 namespace Light.Data
 {
-	class CountAllFunction : AggregateFunction
+	class CountAllFunction : AggregateData
 	{
 		internal CountAllFunction ()
 			: base (null)
@@ -9,7 +9,7 @@ namespace Light.Data
 
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
 		{
 			dataParameters = null;
 			return factory.CreateCountAllSql ();
