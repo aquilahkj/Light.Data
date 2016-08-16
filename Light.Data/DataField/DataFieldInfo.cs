@@ -64,9 +64,9 @@ namespace Light.Data
 			DataField = fieldMapping;
 		}
 
-		internal DataFieldInfo ()
+		internal DataFieldInfo (DataEntityMapping mapping)
 		{
-			
+			TableMapping = mapping;
 		}
 
 		/// <summary>

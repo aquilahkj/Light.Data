@@ -7,8 +7,8 @@ namespace Light.Data
 	{
 		object [] _values;
 
-		public LambdaStringConcatDataFieldInfo (DataFieldInfo info, params object [] values)
-			: base (info)
+		public LambdaStringConcatDataFieldInfo (DataEntityMapping mapping, params object [] values)
+			: base (mapping)
 		{
 			if (values == null)
 				throw new ArgumentNullException (nameof (values));

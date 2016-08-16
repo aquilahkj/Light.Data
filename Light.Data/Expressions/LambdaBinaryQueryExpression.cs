@@ -101,7 +101,7 @@ namespace Light.Data
 				else {
 					string pn = factory.CreateTempParamName ();
 					DataParameter dataParameter = new DataParameter (pn, left);
-					dataParameters2 = new [] { dataParameter };
+					dataParameters1 = new [] { dataParameter };
 					sql = factory.CreateLambdaSingleParamSql (dataParameter.ParameterName, _predicate, rightSql);
 				}
 			}

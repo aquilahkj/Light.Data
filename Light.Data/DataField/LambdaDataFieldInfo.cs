@@ -1,10 +1,10 @@
 ﻿using System;
 namespace Light.Data
 {
-	abstract class LambdaDataFieldInfo : ExtendDataFieldInfo
+	abstract class LambdaDataFieldInfo : DataFieldInfo
 	{
-		public LambdaDataFieldInfo (DataFieldInfo info)
-			: base (info)
+		public LambdaDataFieldInfo (DataEntityMapping mapping)
+			: base (mapping)
 		{
 		}
 

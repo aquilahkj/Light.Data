@@ -5,15 +5,18 @@ namespace Light.Data
 	{
 		string _format;
 
+		DataFieldInfo _baseFieldInfo;
+
 		internal LambdaDateFormatDataFieldInfo (DataFieldInfo info, string format)
-			: base (info)
+			: base (info.TableMapping)
 		{
+			_baseFieldInfo = info;
 			_format = format;
 		}
 
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
+			string field = _baseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
 			return factory.CreateDateTimeFormatSql (field, _format);
 		}
 	}

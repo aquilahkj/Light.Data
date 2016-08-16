@@ -90,7 +90,7 @@ namespace Light.Data
 				alias = fieldInfo.FieldName;
 			}
 
-			AggregateDataFieldInfo dataFieldInfo = new AggregateDataFieldInfo (fieldInfo);
+			FieldInfoAggregateData dataFieldInfo = new FieldInfoAggregateData (fieldInfo);
 			AggregateDataInfo data = new AggregateDataInfo (dataFieldInfo, alias);
 
 			if (_dataFieldInfoDictionary.ContainsKey (alias)) {

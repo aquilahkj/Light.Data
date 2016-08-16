@@ -63,15 +63,15 @@ namespace Light.Data.Demo
 			//var dd3 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AIds = x.Account });
 			//var dd4 = context.LQuery<TeUser> ().Select (x => new { Id = x.Id, AIds = x.Email });
 
-			//TeUserWithLevel2 s = new TeUserWithLevel2 ();
+			TeUserWithLevel2 s = new TeUserWithLevel2 ();
 
-			//var ll = context.Query<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address).OrderBy (x => x.Address)
-			//			  .Select (x => new {
-			//				  x.Id,
-			//				  x.Account,
-			//				  AC = x.UserLevel != null ? x.UserLevel.LevelName : string.Empty,
-			//				  CD = x.UserLevel2
-			//			  }).ToList ();
+			var ll = context.Query<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address & (x.Area > 1 ? x.Account : x.Address).Length > 10 & x.Email.Length > 0 ? x.DeleteFlag : x.Area > 0 & x.Email.Length > 0 ? x.Account.Length > 0 ? x.DeleteFlag : !x.DeleteFlag : x.CheckPoint > 0).OrderBy (x => x.Address)
+						  .Select (x => new {
+							  x.Id,
+							  x.Account,
+							  AC = x.UserLevel != null ? x.UserLevel.LevelName : string.Empty,
+							  CD = x.UserLevel2
+						  }).ToList ();
 
 			var vc = context.Query<TeUser> ().Where (x => x.Id > 5)
 							.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)

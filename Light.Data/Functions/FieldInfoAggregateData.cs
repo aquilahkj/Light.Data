@@ -1,11 +1,11 @@
 ﻿using System;
 namespace Light.Data
 {
-	public class AggregateDataFieldInfo:AggregateData
+	public class FieldInfoAggregateData:AggregateData
 	{
 		DataFieldInfo _fieldinfo;
 
-		internal AggregateDataFieldInfo (DataFieldInfo fieldInfo)
+		internal FieldInfoAggregateData (DataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
 			_fieldinfo = fieldInfo;

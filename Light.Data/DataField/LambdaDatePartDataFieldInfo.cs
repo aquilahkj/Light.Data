@@ -5,15 +5,18 @@ namespace Light.Data
 	{
 		DatePart _part;
 
+		DataFieldInfo _baseFieldInfo;
+
 		internal LambdaDatePartDataFieldInfo (DataFieldInfo info, DatePart part)
-			: base (info)
+			: base (info.TableMapping)
 		{
+			_baseFieldInfo = info;
 			_part = part;
 		}
 
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
+			string field = _baseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
 			string sql = null;
 			switch (_part) {
 			case DatePart.Year:

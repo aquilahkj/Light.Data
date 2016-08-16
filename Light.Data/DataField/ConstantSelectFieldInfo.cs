@@ -4,7 +4,7 @@ namespace Light.Data
 	/// <summary>
 	/// Constant select field info.
 	/// </summary>
-	class ConstantSelectFieldInfo:SelectFieldInfo
+	class ConstantSelectFieldInfo : SelectFieldInfo
 	{
 		readonly object _value;
 
@@ -24,7 +24,7 @@ namespace Light.Data
 		/// <returns>The data field sql.</returns>
 		/// <param name="factory">Factory.</param>
 		/// <param name="dataParameters">Data parameter.</param>
-		internal override string CreateDataFieldSql (CommandFactory factory, out DataParameter[] dataParameters)
+		internal override string CreateDataFieldSql (CommandFactory factory, out DataParameter [] dataParameters)
 		{
 			if (_value != null) {
 				string pn = factory.CreateTempParamName ();

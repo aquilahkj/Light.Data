@@ -13,9 +13,8 @@ namespace Light.Data
 
 		object _right;
 
-
-		public LambdaStringMatchDataFieldInfo (DataFieldInfo info, bool starts, bool ends, object left, object right)
-			: base (info)
+		public LambdaStringMatchDataFieldInfo (DataEntityMapping mapping, bool starts, bool ends, object left, object right)
+			: base (mapping)
 		{
 			_starts = starts;
 			_ends = ends;
@@ -27,13 +26,6 @@ namespace Light.Data
 		{
 			_isNot = !_isNot;
 		}
-
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
-		//{
-		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
-		//	object value = LambdaExpressionExtend.ConvertObject (_value, factory, isFullName, true);
-		//	return factory.CreateLambdaMatchQuerySql (field, _isReverse, _starts, _ends, _isNot, value);
-		//}
 
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
@@ -61,7 +53,7 @@ namespace Light.Data
 				object leftObject = LambdaExpressionExtend.ConvertLambdaObject (_left);
 				string pn = factory.CreateTempParamName ();
 				DataParameter dataParameter = new DataParameter (pn, leftObject);
-				dataParameters2 = new [] { dataParameter };
+				dataParameters1 = new [] { dataParameter };
 				left = dataParameter.ParameterName;
 			}
 			else {
@@ -76,39 +68,6 @@ namespace Light.Data
 		{
 			return new LambdaMatchQuerryExpression (this);
 		}
-
-		//internal override string DBType {
-		//	get {
-		//		return "bool";
-		//	}
-		//}
-
-		//internal override object ToParameter (object value)
-		//{
-		//	if (value is Boolean) {
-		//		return value;
-		//	}
-		//	else {
-		//		return Convert.ToBoolean (value);
-		//	}
-		//}
-
-		//protected override bool EqualsDetail (DataFieldInfo info)
-		//{
-		//	if (base.EqualsDetail (info)) {
-		//		LambdaMatchDataFieldInfo target = info as LambdaMatchDataFieldInfo;
-		//		return this._starts == target._starts
-		//				   && this._ends == target._ends
-		//				   && this._isNot == target._isNot
-		//				   && this._left == target._left
-		//			       && this._right == target._right;
-		//	}
-		//	else {
-		//		return false;
-		//	}
-		//}
-
-
 	}
 }
 

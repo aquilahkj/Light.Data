@@ -10,12 +10,15 @@ namespace Light.Data
 
 		bool _isNot;
 
+		DataFieldInfo _baseFieldInfo;
+
 		public LambdaContainsDataFieldInfo (DataFieldInfo info, object collection)
-			: base (info)
+			: base (info.TableMapping)
 		{
 			if (collection == null)
 				throw new ArgumentNullException (nameof (collection));
 			this._collection = collection;
+			this._baseFieldInfo = info;
 		}
 
 		public void SetNot ()
@@ -26,10 +29,9 @@ namespace Light.Data
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string sql = null;
-			List<DataParameter []> parameterList = new List<DataParameter []> ();
 			DataParameter [] dataParameters1 = null;
 
-			object obj = BaseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
+			object obj = _baseFieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
 
 			IEnumerable values = LambdaExpressionExtend.ConvertLambdaObject (_collection) as IEnumerable;
 			List<DataParameter> list = new List<DataParameter> ();

@@ -311,7 +311,6 @@
     <Compile Include="DataField\LambdaNotDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaBinaryQueryExpression.cs" />
     <Compile Include="DataField\LambdaStringFunctionDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaNewArrayDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaContainsDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaContainsQueryExpression.cs" />
     <Compile Include="DataField\LambdaDatePartDataFieldInfo.cs" />
@@ -363,7 +362,7 @@
     <Compile Include="Functions\Function.cs" />
     <Compile Include="Model\LightAggregate.cs" />
     <Compile Include="Functions\AggregateFunction.cs" />
-    <Compile Include="Functions\AggregateDataFieldInfo.cs" />
+    <Compile Include="Functions\FieldInfoAggregateData.cs" />
     <Compile Include="Model\AggregateModel.cs" />
     <Compile Include="Mappings\AggregateMapping.cs" />
     <Compile Include="Mappings\DynamicAggregateMapping.cs" />
@@ -371,6 +370,12 @@
     <Compile Include="Mappings\DynamicFieldMapping.cs" />
     <Compile Include="Mappings\DynamicPrimitiveFieldMapping.cs" />
     <Compile Include="Mappings\DynamicEnumFieldMapping.cs" />
+    <Compile Include="Functions\LambdaAggregateData.cs" />
+    <Compile Include="Functions\ExtendAggregateData.cs" />
+    <Compile Include="LambdaNewArrayDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaConditionDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaConditionQueryExpression.cs" />
+    <Compile Include="DataField\LambdaQueryDataFieldInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

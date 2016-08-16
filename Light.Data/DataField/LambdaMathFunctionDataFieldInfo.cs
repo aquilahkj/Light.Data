@@ -9,8 +9,8 @@ namespace Light.Data
 
 		object [] _argsObjects;
 
-		public LambdaMathFunctionDataFieldInfo (DataFieldInfo info, MathFunction function, params object [] argsObjects)
-			: base (info)
+		public LambdaMathFunctionDataFieldInfo (DataEntityMapping mapping, MathFunction function, params object [] argsObjects)
+			: base (mapping)
 		{
 			if (argsObjects == null || argsObjects.Length == 0)
 				throw new ArgumentNullException (nameof (argsObjects));

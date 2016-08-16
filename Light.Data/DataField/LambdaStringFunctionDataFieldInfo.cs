@@ -12,8 +12,8 @@ namespace Light.Data
 
 		object [] _argsObjects;
 
-		public LambdaStringFunctionDataFieldInfo (DataFieldInfo info, StringFunction function, object callObject, params object [] argsObjects)
-			: base (info)
+		public LambdaStringFunctionDataFieldInfo (DataEntityMapping mapping, StringFunction function, object callObject, params object [] argsObjects)
+			: base (mapping)
 		{
 			if (callObject == null)
 				throw new ArgumentNullException (nameof (callObject));

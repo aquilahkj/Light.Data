@@ -51,29 +51,29 @@ namespace Light.Data
 		public static AggregateModel CreateAggregateModel (LambdaExpression expression)
 		{
 			//try {
-				if (expression.Parameters.Count != 1) {
-					throw new LambdaParseException ("");
+			if (expression.Parameters.Count != 1) {
+				throw new LambdaParseException ("");
+			}
+			else {
+				LambdaState state = new SingleEntityLambdaState (expression.Parameters [0]);
+				AggregateModel model = null;
+				MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
+				if (memberInitObj != null) {
+					model = ParseAggregateModel (memberInitObj, state);
 				}
 				else {
-					LambdaState state = new SingleEntityLambdaState (expression.Parameters [0]);
-					AggregateModel model = null;
-					MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
-					if (memberInitObj != null) {
-						model = ParseAggregateModel (memberInitObj, state);
-					}
-					else {
-						NewExpression newObj = expression.Body as NewExpression;
-						if (newObj != null) {
-							model = ParseAggregateModel (newObj, state);
-						}
-					}
-					if (model != null) {
-						return model;
-					}
-					else {
-						throw new LambdaParseException ("");
+					NewExpression newObj = expression.Body as NewExpression;
+					if (newObj != null) {
+						model = ParseAggregateModel (newObj, state);
 					}
 				}
+				if (model != null) {
+					return model;
+				}
+				else {
+					throw new LambdaParseException ("");
+				}
+			}
 			//}
 			//catch (Exception ex) {
 			//	throw new LightDataException (string.Format ("parse group by expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
@@ -848,7 +848,6 @@ namespace Light.Data
 			}
 		}
 
-
 		private static bool ParseDataFieldInfo (Expression expression, LambdaState state, out DataFieldInfo fieldInfo)
 		{
 			fieldInfo = null;
@@ -883,15 +882,15 @@ namespace Light.Data
 					}
 
 					if (left && right) {
-						fieldInfo = new LambdaStringConcatDataFieldInfo (leftFieldInfo, leftFieldInfo, rightFieldInfo);
+						fieldInfo = new LambdaStringConcatDataFieldInfo (leftFieldInfo.TableMapping, leftFieldInfo, rightFieldInfo);
 						return true;
 					}
 					else if (left && !right) {
-						fieldInfo = new LambdaStringConcatDataFieldInfo (leftFieldInfo, leftFieldInfo, rightValue);
+						fieldInfo = new LambdaStringConcatDataFieldInfo (leftFieldInfo.TableMapping, leftFieldInfo, rightValue);
 						return true;
 					}
 					else if (!left && right) {
-						fieldInfo = new LambdaStringConcatDataFieldInfo (rightFieldInfo, leftValue, rightFieldInfo);
+						fieldInfo = new LambdaStringConcatDataFieldInfo (rightFieldInfo.TableMapping, leftValue, rightFieldInfo);
 						return true;
 					}
 					else {
@@ -926,24 +925,64 @@ namespace Light.Data
 						}
 
 						if (left && right) {
-							fieldInfo = new LambdaMathCalculateDataFieldInfo (leftFieldInfo, mathOperator, leftFieldInfo, rightFieldInfo);
+							fieldInfo = new LambdaMathCalculateDataFieldInfo (leftFieldInfo.TableMapping, mathOperator, leftFieldInfo, rightFieldInfo);
 							return true;
 						}
 						else if (left && !right) {
-							fieldInfo = new LambdaMathCalculateDataFieldInfo (leftFieldInfo, mathOperator, leftFieldInfo, rightValue);
+							fieldInfo = new LambdaMathCalculateDataFieldInfo (leftFieldInfo.TableMapping, mathOperator, leftFieldInfo, rightValue);
 							return true;
 						}
 						else if (!left && right) {
-							fieldInfo = new LambdaMathCalculateDataFieldInfo (rightFieldInfo, mathOperator, leftValue, rightFieldInfo);
+							fieldInfo = new LambdaMathCalculateDataFieldInfo (rightFieldInfo.TableMapping, mathOperator, leftValue, rightFieldInfo);
 							return true;
 						}
 						else {
 							return false;
 						}
 					}
-					else {
-						throw new LambdaParseException (string.Format ("not support node type {0}", binaryObj.NodeType));
+					QueryPredicate queryPredicate;
+					if (CheckQueryPredicate (binaryObj.NodeType, out queryPredicate)) {
+						DataFieldInfo leftFieldInfo;
+						object leftValue = null;
+						bool left;
+						if (ParseDataFieldInfo (binaryObj.Left, state, out leftFieldInfo)) {
+							left = true;
+							CheckFieldInfo (leftFieldInfo);
+						}
+						else {
+							left = false;
+							leftValue = ConvertObject (binaryObj.Left);
+						}
+
+						DataFieldInfo rightFieldInfo;
+						object rightValue = null;
+						bool right;
+						if (ParseDataFieldInfo (binaryObj.Right, state, out rightFieldInfo)) {
+							right = true;
+							CheckFieldInfo (rightFieldInfo);
+						}
+						else {
+							right = false;
+							rightValue = ConvertObject (binaryObj.Right);
+						}
+						QueryExpression queryExpression;
+						if (left && right) {
+							queryExpression = new LambdaBinaryQueryExpression (leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightFieldInfo);
+						}
+						else if (left && !right) {
+							queryExpression = new LambdaBinaryQueryExpression (leftFieldInfo.TableMapping, queryPredicate, leftFieldInfo, rightValue);
+						}
+						else if (!left && right) {
+							queryExpression = new LambdaBinaryQueryExpression (rightFieldInfo.TableMapping, queryPredicate, rightFieldInfo, leftValue);
+						}
+						else {
+							throw new LambdaParseException (string.Format ("not allow two constant value in BinaryExpression \"{0}\"", binaryObj));
+						}
+						fieldInfo = new LambdaQueryDataFieldInfo (queryExpression);
+						return true;
 					}
+
+					throw new LambdaParseException (string.Format ("not support node type {0}", binaryObj.NodeType));
 				}
 			}
 			UnaryExpression unaryObj = expression as UnaryExpression;
@@ -1001,25 +1040,6 @@ namespace Light.Data
 						else {
 							throw new LambdaParseException (string.Format ("parameter not correct,name:{0},type:{1}", param.Name, param.Type));
 						}
-
-						//RelationMap relationMap;
-						//if (state.TryGetRelationMap (param.Name, out relationMap) && param.Type == relationMap.RootMapping.ObjectType) {
-						//	string path = "." + member.Member.Name;
-						//	if (relationMap.CheckIsField (path)) {
-						//		DataFieldInfo myinfo = relationMap.GetFieldInfoForField (path);
-						//		fieldInfo = myinfo;
-						//		return true;
-						//	}
-						//	else if (relationMap.CheckIsRelateEntity (path)) {
-						//		return true;
-						//	}
-						//	else {
-						//		throw new LambdaParseException ("");
-						//	}
-						//}
-						//else {
-						//	throw new LambdaParseException (string.Format ("parameter not correct,name:{0},type:{1}", param.Name, param.Type));
-						//}
 					}
 					if (ParseDataFieldInfo (memberObj.Expression, state, out fieldInfo)) {
 						if (Object.Equals (fieldInfo, null)) {
@@ -1037,26 +1057,6 @@ namespace Light.Data
 							else {
 								throw new LambdaParseException ("");
 							}
-
-
-
-							//int index = fullPath.IndexOf (".", StringComparison.Ordinal);
-							//string paramName = fullPath.Substring (0, index);
-							//string path = fullPath.Substring (index);
-							//RelationMap relationMap;
-							//state.TryGetRelationMap (paramName, out relationMap);
-							//if (relationMap.CheckIsField (path)) {
-							//	DataFieldInfo myinfo = relationMap.GetFieldInfoForField (path);
-							//	fieldInfo = myinfo;
-							//	state.MutliQuery = true;
-							//	return true;
-							//}
-							//else if (relationMap.CheckIsRelateEntity (path)) {
-							//	return true;
-							//}
-							//else {
-							//	throw new LambdaParseException ("");
-							//}
 						}
 						else {
 							if (memberObj.Expression.Type == typeof (DateTime)) {
@@ -1094,7 +1094,7 @@ namespace Light.Data
 							return true;
 						}
 						if (methodInfo.DeclaringType == typeof (string)) {
-							fieldInfo = ParseStaticeStringFunctionDataFieldInfo (methodInfo, mainFieldInfo, argObjects, state);
+							fieldInfo = ParseStaticStringFunctionDataFieldInfo (methodInfo, mainFieldInfo, argObjects, state);
 							return true;
 						}
 						else {
@@ -1148,12 +1148,36 @@ namespace Light.Data
 				object [] argsObjects;
 				DataFieldInfo arrayFieldInfo;
 				if (ParseArguments (newarrayObj.Expressions, state, out argsObjects, out arrayFieldInfo)) {
-					fieldInfo = new LambdaNewArrayDataFieldInfo (arrayFieldInfo, argsObjects);
+					fieldInfo = new LambdaNewArrayDataFieldInfo (arrayFieldInfo.TableMapping, argsObjects);
 					return true;
 				}
 				else {
 					return false;
 				}
+			}
+			ConditionalExpression conditionObj = expression as ConditionalExpression;
+			if (conditionObj != null) {
+				QueryExpression query = ResolveQueryExpression (conditionObj.Test, state);
+				DataFieldInfo ifTrueFieldInfo;
+				object ifTrueValue = null;
+				if (ParseDataFieldInfo (conditionObj.IfTrue, state, out ifTrueFieldInfo)) {
+					CheckFieldInfo (ifTrueFieldInfo);
+					ifTrueValue = ifTrueFieldInfo;
+				}
+				else {
+					ifTrueValue = ConvertObject (conditionObj.IfTrue);
+				}
+				DataFieldInfo ifFalseFieldInfo;
+				object ifFalseValue = null;
+				if (ParseDataFieldInfo (conditionObj.IfFalse, state, out ifFalseFieldInfo)) {
+					CheckFieldInfo (ifFalseFieldInfo);
+					ifFalseValue = ifFalseFieldInfo;
+				}
+				else {
+					ifFalseValue = ConvertObject (conditionObj.IfFalse);
+				}
+				fieldInfo = new LambdaConditionDataFieldInfo (query, ifTrueValue, ifFalseValue);
+				return true;
 			}
 			throw new LambdaParseException (string.Format ("lambda expression [{0}] not support", expression));
 		}
@@ -1328,25 +1352,25 @@ namespace Light.Data
 						throw new LambdaParseException (string.Format ("Math.{0} method args error", method.Name));
 					}
 				}
-				return new LambdaMathFunctionDataFieldInfo (mainFieldInfo, mathFunction, argObjects);
+				return new LambdaMathFunctionDataFieldInfo (mainFieldInfo.TableMapping, mathFunction, argObjects);
 			}
 			throw new LambdaParseException (string.Format ("Math.{0} method not support", method.Name));
 		}
 
-		private static DataFieldInfo ParseStaticeStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, LambdaState state)
+		private static DataFieldInfo ParseStaticStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, LambdaState state)
 		{
 			if (method.Name == "Concat") {
 				if (argObjects.Length == 1) {
 					LambdaNewArrayDataFieldInfo newarray = argObjects [0] as LambdaNewArrayDataFieldInfo;
 					if (!Object.Equals (newarray, null)) {
-						return new LambdaStringConcatDataFieldInfo (newarray.BaseFieldInfo, newarray.Values);
+						return new LambdaStringConcatDataFieldInfo (newarray.TableMapping, newarray.Values);
 					}
 					else {
-						return new LambdaStringConcatDataFieldInfo (mainFieldInfo, argObjects);
+						return new LambdaStringConcatDataFieldInfo (mainFieldInfo.TableMapping, argObjects);
 					}
 				}
 				else {
-					return new LambdaStringConcatDataFieldInfo (mainFieldInfo, argObjects);
+					return new LambdaStringConcatDataFieldInfo (mainFieldInfo.TableMapping, argObjects);
 				}
 			}
 			throw new LambdaParseException (string.Format ("String.{0} method not support", method.Name));
@@ -1359,19 +1383,19 @@ namespace Light.Data
 				if (parameterInfos.Length != 1) {
 					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
 				}
-				return new LambdaStringMatchDataFieldInfo (mainFieldInfo, true, false, callObject, argObjects [0]);
+				return new LambdaStringMatchDataFieldInfo (mainFieldInfo.TableMapping, true, false, callObject, argObjects [0]);
 			}
 			else if (method.Name == "EndsWith") {
 				if (parameterInfos.Length != 1) {
 					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
 				}
-				return new LambdaStringMatchDataFieldInfo (mainFieldInfo, false, true, callObject, argObjects [0]);
+				return new LambdaStringMatchDataFieldInfo (mainFieldInfo.TableMapping, false, true, callObject, argObjects [0]);
 			}
 			else if (method.Name == "Contains") {
 				if (parameterInfos.Length != 1) {
 					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
 				}
-				return new LambdaStringMatchDataFieldInfo (mainFieldInfo, true, true, callObject, argObjects [0]);
+				return new LambdaStringMatchDataFieldInfo (mainFieldInfo.TableMapping, true, true, callObject, argObjects [0]);
 			}
 			else {
 				StringFunction stringFunction;
@@ -1382,7 +1406,7 @@ namespace Light.Data
 					else if (stringFunction == StringFunction.Trim && parameterInfos.Length > 0) {
 						throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
 					}
-					return new LambdaStringFunctionDataFieldInfo (mainFieldInfo, stringFunction, callObject, argObjects);
+					return new LambdaStringFunctionDataFieldInfo (mainFieldInfo.TableMapping, stringFunction, callObject, argObjects);
 				}
 			}
 			throw new LambdaParseException (string.Format ("String.{0} method not support", method.Name));
@@ -1500,7 +1524,22 @@ namespace Light.Data
 				CheckFieldInfo (fieldInfo);
 				IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
 				if (Object.Equals (convertFieldInfo, null)) {
-					throw new LambdaParseException (string.Format ("not allow method in MethodCallExpression \"{0}\"", methodcall));
+					throw new LambdaParseException (string.Format ("not allow special method in MethodCallExpression \"{0}\"", methodcall));
+				}
+				else {
+					return convertFieldInfo.ConvertToExpression ();
+				}
+			}
+			ConditionalExpression conditionObj = expression as ConditionalExpression;
+			if (conditionObj != null) {
+				DataFieldInfo fieldInfo;
+				if (!ParseDataFieldInfo (expression, state, out fieldInfo)) {
+					throw new LambdaParseException (string.Format ("not allow constant condition in ConditionalExpression \"{0}\"", methodcall));
+				}
+				CheckFieldInfo (fieldInfo);
+				IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
+				if (Object.Equals (convertFieldInfo, null)) {
+					throw new LambdaParseException (string.Format ("not allow special condition in ConditionalExpression \"{0}\"", methodcall));
 				}
 				else {
 					return convertFieldInfo.ConvertToExpression ();
@@ -1522,8 +1561,7 @@ namespace Light.Data
 				else {
 					QueryPredicate queryPredicate;
 					if (CheckQueryPredicate (binary.NodeType, out queryPredicate)) {
-						DataFieldInfo leftFieldInfo;
-						object leftValue = null;
+						DataFieldInfo leftFieldInfo; ;
 						bool left;
 						if (ParseDataFieldInfo (binary.Left, state, out leftFieldInfo)) {
 							left = true;
@@ -1531,11 +1569,9 @@ namespace Light.Data
 						}
 						else {
 							left = false;
-							leftValue = ConvertObject (binary.Left);
 						}
 
 						DataFieldInfo rightFieldInfo;
-						object rightValue = null;
 						bool right;
 						if (ParseDataFieldInfo (binary.Right, state, out rightFieldInfo)) {
 							right = true;
@@ -1543,7 +1579,6 @@ namespace Light.Data
 						}
 						else {
 							right = false;
-							rightValue = ConvertObject (binary.Right);
 						}
 
 						if (left && right) {

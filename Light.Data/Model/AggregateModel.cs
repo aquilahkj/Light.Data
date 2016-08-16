@@ -42,7 +42,7 @@ namespace Light.Data
 
 		public void AddGroupByField (string name, DataFieldInfo fieldInfo)
 		{
-			AggregateDataFieldInfo dataFieldInfo = new AggregateDataFieldInfo (fieldInfo);
+			FieldInfoAggregateData dataFieldInfo = new FieldInfoAggregateData (fieldInfo);
 			AggregateDataInfo data = new AggregateDataInfo (dataFieldInfo, name);
 			_fieldInfoList.Add (data);
 			_aggregateDict.Add (name, dataFieldInfo);

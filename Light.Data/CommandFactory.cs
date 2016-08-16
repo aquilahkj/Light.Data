@@ -1657,6 +1657,11 @@ namespace Light.Data
 			return string.Format ("(case when {0}<{1} then {0} else {1} end)", left, right);
 		}
 
+		public virtual string CreateConditionSql (string querySql, object ifTrue, object IfFalse)
+		{
+			return string.Format ("case when {0} then {1} else {2} end", querySql, ifTrue, IfFalse);
+		}
+
 		#endregion
 
 

@@ -9,8 +9,8 @@ namespace Light.Data
 
 		object _right;
 
-		public LambdaMathCalculateDataFieldInfo (DataFieldInfo info, MathOperator opera, object left, object right)
-			: base (info)
+		public LambdaMathCalculateDataFieldInfo (DataEntityMapping mapping, MathOperator opera, object left, object right)
+			: base (mapping)
 		{
 			_opera = opera;
 			_left = left;
@@ -43,7 +43,7 @@ namespace Light.Data
 				object leftObject = LambdaExpressionExtend.ConvertLambdaObject (_left);
 				string pn = factory.CreateTempParamName ();
 				DataParameter dataParameter = new DataParameter (pn, leftObject);
-				dataParameters2 = new [] { dataParameter };
+				dataParameters1 = new [] { dataParameter };
 				left = dataParameter.ParameterName;
 			}
 			else {
@@ -70,9 +70,7 @@ namespace Light.Data
 				sql = factory.CreatePowerSql (left, right);
 				break;
 			}
-
-
-
+ 
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}

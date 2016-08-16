@@ -5,8 +5,8 @@ namespace Light.Data
 	{
 		object [] _values;
 
-		public LambdaNewArrayDataFieldInfo (DataFieldInfo info, params object [] values)
-			: base (info)
+		public LambdaNewArrayDataFieldInfo (DataEntityMapping mapping, params object [] values)
+			: base (mapping)
 		{
 			if (values == null)
 				throw new ArgumentNullException (nameof (values));
@@ -27,7 +27,7 @@ namespace Light.Data
 
 		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			throw new NotSupportedException ();
+			throw new NotImplementedException ();
 		}
 	}
 }
