@@ -11,17 +11,17 @@ namespace Light.Data
 			_aggregateExpression = expression;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			string queryString = _aggregateExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
+			string queryString = _aggregateExpression.CreateSqlString (factory, isFullName, out dataParameters);
 			return factory.CreateNotQuerySql (queryString);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
-		{
-			string queryString = _aggregateExpression.CreateSqlString (factory, fullFieldName, out dataParameters, handler);
-			return factory.CreateNotQuerySql (queryString);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
+		//{
+		//	string queryString = _aggregateExpression.CreateSqlString (factory, fullFieldName, out dataParameters, handler);
+		//	return factory.CreateNotQuerySql (queryString);
+		//}
 
 		//protected override bool EqualsDetail (AggregateHavingExpression expression)
 		//{

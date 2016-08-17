@@ -299,7 +299,7 @@ namespace Light.Data
 				LambdaState state = CreateLambdaState (expression);
 				if (ParseDataFieldInfo (expression.Body, state, out dataFieldInfo)) {
 					CheckFieldInfo (dataFieldInfo);
-					OrderExpression exp = new FieldOrderExpression (dataFieldInfo, orderType);
+					OrderExpression exp = new DataFieldOrderExpression (dataFieldInfo, orderType);
 					exp.MutliOrder = true;
 					return exp;
 				}

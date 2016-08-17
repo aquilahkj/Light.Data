@@ -24,15 +24,15 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The sql string.</returns>
 		/// <param name="factory">Factory.</param>
-		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			DataParameter [] dp1;
-			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1);
+			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, out dp1);
 
 			DataParameter [] dp2;
-			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
+			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, out dp2);
 
 			if (dp1 == null && dp2 == null) {
 				dataParameters = null;

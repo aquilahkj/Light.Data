@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 
@@ -51,7 +52,13 @@ namespace Light.Data
 		{
 			List<AggregateDataInfo> groupbys = new List<AggregateDataInfo> (_dataFieldInfoDictionary.Values);
 			List<AggregateDataInfo> functions = new List<AggregateDataInfo> (_aggregateFunctionDictionary.Values);
-			List<K> list = _context.QueryDynamicAggregateList<K> (_enetityMapping, groupbys, functions, _query, _having, _order, _level);
+
+			List<K> list = new List<K> ();
+			AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof (K));
+			IEnumerable ie = _context.QueryDynamicAggregateEnumerable (_enetityMapping, amapping, groupbys, functions, _query, _having, _order, _level);
+			foreach (K item in ie) {
+				list.Add (item);
+			}
 			return list;
 		}
 

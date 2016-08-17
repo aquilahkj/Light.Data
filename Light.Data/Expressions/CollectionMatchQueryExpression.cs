@@ -66,7 +66,7 @@ namespace Light.Data
 		//	return factory.CreateCollectionMatchQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isReverse, _starts, _ends, _isNot, dataParameters1);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			List<DataParameter> dataParameters1 = new List<DataParameter> ();
 			DataParameter [] dataParameters2 = null;
@@ -85,7 +85,7 @@ namespace Light.Data
 				dataParameters1.Add (new DataParameter (pn, _fieldInfo.ToParameter (_value)));
 			}
 			//dataParameters = dataParameters1.ToArray ();
-			string sql = factory.CreateCollectionMatchQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2), _isReverse, _starts, _ends, _isNot, dataParameters1);
+			string sql = factory.CreateCollectionMatchQuerySql (_fieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2), _isReverse, _starts, _ends, _isNot, dataParameters1);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}

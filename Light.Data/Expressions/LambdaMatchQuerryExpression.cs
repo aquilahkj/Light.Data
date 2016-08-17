@@ -19,9 +19,9 @@ namespace Light.Data
 			this._fieldInfo.SetNot ();
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			return _fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters);
+			return _fieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters);
 		}
 
 		//protected override bool EqualsDetail (QueryExpression expression)

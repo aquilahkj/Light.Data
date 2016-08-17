@@ -31,7 +31,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The sql string.</returns>
 		/// <param name="factory">Factory.</param>
-		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
 		//{
@@ -41,7 +41,7 @@ namespace Light.Data
 		//	return factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			DataParameter [] dataParameters1 = null;
 			DataParameter [] dataParameters2 = null;

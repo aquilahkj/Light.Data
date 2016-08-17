@@ -208,7 +208,7 @@
     <Compile Include="DataField\DataFieldInfo.cs" />
     <Compile Include="DataField\BasicFieldInfo.cs" />
     <Compile Include="Expressions\CollectionMatchQueryExpression.cs" />
-    <Compile Include="Expressions\FieldOrderExpression.cs" />
+    <Compile Include="Expressions\DataFieldOrderExpression.cs" />
     <Compile Include="Expressions\NullQueryExpression.cs" />
     <Compile Include="Expressions\OrderType.cs" />
     <Compile Include="Expressions\SingleParamQueryExpression.cs" />
@@ -376,6 +376,7 @@
     <Compile Include="DataField\LambdaConditionDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaConditionQueryExpression.cs" />
     <Compile Include="DataField\LambdaQueryDataFieldInfo.cs" />
+    <Compile Include="ParameterState.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

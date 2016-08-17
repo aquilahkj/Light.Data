@@ -27,15 +27,15 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The sql string.</returns>
 		/// <param name="factory">Factory.</param>
-		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
+		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
 		{
 			DataParameter[] dp1;
-			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1);
+			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, out dp1);
 
 			DataParameter[] dp2;
-			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2);
+			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, out dp2);
 
 			dataParameters = new DataParameter[dp1.Length + dp2.Length];
 			dp1.CopyTo (dataParameters, 0);
@@ -43,29 +43,6 @@ namespace Light.Data
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
-		/// <summary>
-		/// Creates the sql string.
-		/// </summary>
-		/// <returns>The sql string.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="fullFieldName">If set to <c>true</c> full field name.</param>
-		/// <param name="dataParameters">Data parameters.</param>
-		/// <param name="handler">Handler.</param>
-		internal virtual string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
-		{
-			DataParameter[] dp1;
-			string expressionString1 = _expression1.CreateSqlString (factory, fullFieldName, out dp1, handler);
-
-			DataParameter[] dp2;
-			string expressionString2 = _expression2.CreateSqlString (factory, fullFieldName, out dp2, handler);
-
-			dataParameters = new DataParameter[dp1.Length + dp2.Length];
-			dp1.CopyTo (dataParameters, 0);
-			dp2.CopyTo (dataParameters, dp1.Length);
-
-			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
-		}
-			
 		private static AggregateHavingExpression Catch (AggregateHavingExpression expression1, CatchOperatorsType operatorType, AggregateHavingExpression expression2)
 		{
 			if (expression1 == null && expression2 == null) {

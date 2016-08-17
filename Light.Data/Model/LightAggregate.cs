@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -105,7 +106,11 @@ namespace Light.Data
 
 		public List<K> ToList ()
 		{
-			List<K> list = _context.QueryDynamicAggregateList<K> (_mapping, _model.Mapping, _model.FieldInfoList, _model.AggregateFunctionList, _query, null, null, _level);
+			List<K> list = new List<K> ();
+			IEnumerable ie = _context.QueryDynamicAggregateEnumerable (_mapping, _model.Mapping, _model.FieldInfoList, _model.AggregateFunctionList, _query, null, null, _level);
+			foreach (K item in ie) {
+				list.Add (item);
+			}
 			return list;
 		}
 	}

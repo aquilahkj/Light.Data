@@ -46,13 +46,13 @@ namespace Light.Data
 			_isReverse = isReverse;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			DataParameter dataParameter = new DataParameter (pn, _fieldInfo.ToParameter (_value));
 			DataParameter [] dataParameters1 = new [] { dataParameter };
 			DataParameter [] dataParameters2 = null;
-			string sql = factory.CreateSingleParamSql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2), _predicate, _isReverse, dataParameter);
+			string sql = factory.CreateSingleParamSql (_fieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2), _predicate, _isReverse, dataParameter);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}

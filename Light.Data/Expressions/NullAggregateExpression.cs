@@ -14,22 +14,22 @@ namespace Light.Data
 			_isNull = isNull;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
 		{
-			string functionSql = _function.CreateSqlString (factory, fullFieldName, out dataParameters);
+			string functionSql = _function.CreateSqlString (factory, isFullName, out dataParameters);
 			return factory.CreateNullQuerySql (functionSql, _isNull);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
-		{
-			string alise = handler (_function);
-			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, fullFieldName, out dataParameters);
-			}
-			string name = factory.CreateDataFieldSql (alise);
-			dataParameters = new DataParameter[0];
-			return factory.CreateNullQuerySql (name, _isNull);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
+		//{
+		//	string alise = handler (_function);
+		//	if (string.IsNullOrEmpty (alise)) {
+		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
+		//	}
+		//	string name = factory.CreateDataFieldSql (alise);
+		//	dataParameters = new DataParameter[0];
+		//	return factory.CreateNullQuerySql (name, _isNull);
+		//}
 
 		//protected override bool EqualsDetail (AggregateHavingExpression expression)
 		//{

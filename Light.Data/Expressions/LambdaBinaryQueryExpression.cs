@@ -18,7 +18,7 @@ namespace Light.Data
 			_right = right;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string sql = null;
 			DataParameter [] dataParameters1 = null;
@@ -27,12 +27,12 @@ namespace Light.Data
 			DataFieldInfo leftInfo = _left as DataFieldInfo;
 			DataFieldInfo rightInfo = _right as DataFieldInfo;
 			if (!Object.Equals (leftInfo, null) && !Object.Equals (rightInfo, null)) {
-				string leftSql = leftInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters1);
-				string rightSql = rightInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2);
+				string leftSql = leftInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
+				string rightSql = rightInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2);
 				sql = factory.CreateLambdaSingleParamSql (leftSql, _predicate, rightSql);
 			}
 			else if (!Object.Equals (leftInfo, null)) {
-				string leftSql = leftInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters1);
+				string leftSql = leftInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
 				object right = LambdaExpressionExtend.ConvertLambdaObject (_right);
 				if (Object.Equals (right, null)) {
 					bool predicate;
@@ -69,7 +69,7 @@ namespace Light.Data
 				}
 			}
 			else if (!Object.Equals (rightInfo, null)) {
-				string rightSql = rightInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2);
+				string rightSql = rightInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2);
 				object left = LambdaExpressionExtend.ConvertLambdaObject (_left);
 				if (Object.Equals (left, null)) {
 					bool predicate;

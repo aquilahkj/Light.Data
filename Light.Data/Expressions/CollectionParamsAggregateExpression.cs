@@ -74,22 +74,22 @@ namespace Light.Data
 			return factory.CreateCollectionParamsQuerySql (functionSql, _predicate, list);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
-		{
-			string alise = handler (_function);
-			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, fullFieldName, out dataParameters);
-			}
-			string name = factory.CreateDataFieldSql (alise);
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
+		//{
+		//	string alise = handler (_function);
+		//	if (string.IsNullOrEmpty (alise)) {
+		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
+		//	}
+		//	string name = factory.CreateDataFieldSql (alise);
 
-			List<DataParameter> list = new List<DataParameter> ();
-			foreach (object value in _values) {
-				string pn = factory.CreateTempParamName ();
-				list.Add (new DataParameter (pn, value));
-			}
-			dataParameters = list.ToArray ();
-			return factory.CreateCollectionParamsQuerySql (name, _predicate, list);
-		}
+		//	List<DataParameter> list = new List<DataParameter> ();
+		//	foreach (object value in _values) {
+		//		string pn = factory.CreateTempParamName ();
+		//		list.Add (new DataParameter (pn, value));
+		//	}
+		//	dataParameters = list.ToArray ();
+		//	return factory.CreateCollectionParamsQuerySql (name, _predicate, list);
+		//}
 
 		//protected override bool EqualsDetail (AggregateHavingExpression expression)
 		//{

@@ -15,9 +15,9 @@ namespace Light.Data
 		}
 
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
 		{
-			string queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
+			string queryString = _queryExpression.CreateSqlString (factory, isFullName, out dataParameters);
 			return factory.CreateExistsQuerySql (factory.CreateDataTableSql (_queryExpression.TableMapping), queryString, _isNot);
 		}
 

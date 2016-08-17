@@ -60,7 +60,7 @@ namespace Light.Data
 		//	return factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isNot, fromParam, toParam);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
@@ -69,7 +69,7 @@ namespace Light.Data
 			DataParameter toParam = new DataParameter (pn1, _fieldInfo.ToParameter (_toValue));
 			DataParameter [] dataParameters1 = new [] { fromParam, toParam };
 			DataParameter [] dataParameters2 = null;
-			string sql = factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2), _isNot, fromParam, toParam);
+			string sql = factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2), _isNot, fromParam, toParam);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}

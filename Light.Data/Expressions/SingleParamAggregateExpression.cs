@@ -45,13 +45,13 @@ namespace Light.Data
 			_isReverse = isReverse;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			DataParameter dataParameter = new DataParameter (pn, _value);
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps;
-			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
+			string functionSql = _function.CreateSqlString (factory, isFullName, out ps);
 			if (ps != null && ps.Length > 0) {
 				list.AddRange (ps);
 			}
@@ -60,19 +60,19 @@ namespace Light.Data
 			return factory.CreateSingleParamSql (functionSql, _predicate, _isReverse, dataParameter);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
-		{
-			string alise = handler (_function);
-			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, fullFieldName, out dataParameters);
-			}
-			string name = factory.CreateDataFieldSql (alise);
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
+		//{
+		//	string alise = handler (_function);
+		//	if (string.IsNullOrEmpty (alise)) {
+		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
+		//	}
+		//	string name = factory.CreateDataFieldSql (alise);
 
-			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _value);
-			dataParameters = new DataParameter[] { dataParameter };
-			return factory.CreateSingleParamSql (name, _predicate, _isReverse, dataParameter);
-		}
+		//	string pn = factory.CreateTempParamName ();
+		//	DataParameter dataParameter = new DataParameter (pn, _value);
+		//	dataParameters = new DataParameter[] { dataParameter };
+		//	return factory.CreateSingleParamSql (name, _predicate, _isReverse, dataParameter);
+		//}
 
 		//protected override bool EqualsDetail (AggregateHavingExpression expression)
 		//{

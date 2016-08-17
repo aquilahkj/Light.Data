@@ -103,73 +103,73 @@ namespace Light.Data
 		//	return command;
 		//}
 
-		public override CommandData CreateDynamicAggregateCommand (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order)
-		{
-			StringBuilder sql = new StringBuilder ();
+		//public override CommandData CreateDynamicAggregateCommand (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, AggregateOrderExpression order)
+		//{
+		//	StringBuilder sql = new StringBuilder ();
 
-			string [] selectList = new string [groupbys.Count + functions.Count];
-			string [] groupbyList = new string [groupbys.Count];
-			int index = 0;
-			List<DataParameter> innerParameters = new List<DataParameter> ();
-			foreach (AggregateDataInfo groupbyInfo in groupbys) {
-				AggregateData data = groupbyInfo.Data;
-				if (!mapping.Equals (data.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
-				}
-				DataParameter [] dataParameters = null;
-				string groupbyField = data.CreateSqlString (this, false, out dataParameters);
-				groupbyList [index] = groupbyField;
-				string selectField = CreateAliasSql (groupbyField, groupbyInfo.Name);
-				selectList [index] = selectField;
-				if (dataParameters != null && dataParameters.Length > 0) {
-					innerParameters.AddRange (dataParameters);
-				}
-				index++;
-			}
-			List<DataParameter> functionParameters = new List<DataParameter> ();
-			foreach (AggregateDataInfo functionInfo in functions) {
-				AggregateData function = functionInfo.Data;
-				if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
-				}
-				DataParameter [] aggparameters;
-				string aggField = function.CreateSqlString (this, false, out aggparameters);
-				string selectField = CreateAliasSql (aggField, functionInfo.Name);
-				selectList [index] = selectField;
-				if (aggparameters != null && aggparameters.Length > 0) {
-					functionParameters.AddRange (aggparameters);
-				}
-				index++;
-			}
-			string select = string.Join (",", selectList);
-			string groupby = string.Join (",", groupbyList);
-			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
+		//	string [] selectList = new string [groupbys.Count + functions.Count];
+		//	string [] groupbyList = new string [groupbys.Count];
+		//	int index = 0;
+		//	List<DataParameter> innerParameters = new List<DataParameter> ();
+		//	foreach (AggregateDataInfo groupbyInfo in groupbys) {
+		//		AggregateData data = groupbyInfo.Data;
+		//		if (!mapping.Equals (data.TableMapping)) {
+		//			throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+		//		}
+		//		DataParameter [] dataParameters = null;
+		//		string groupbyField = data.CreateSqlString (this, false, out dataParameters);
+		//		groupbyList [index] = groupbyField;
+		//		string selectField = CreateAliasSql (groupbyField, groupbyInfo.Name);
+		//		selectList [index] = selectField;
+		//		if (dataParameters != null && dataParameters.Length > 0) {
+		//			innerParameters.AddRange (dataParameters);
+		//		}
+		//		index++;
+		//	}
+		//	List<DataParameter> functionParameters = new List<DataParameter> ();
+		//	foreach (AggregateDataInfo functionInfo in functions) {
+		//		AggregateData function = functionInfo.Data;
+		//		if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
+		//			throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+		//		}
+		//		DataParameter [] aggparameters;
+		//		string aggField = function.CreateSqlString (this, false, out aggparameters);
+		//		string selectField = CreateAliasSql (aggField, functionInfo.Name);
+		//		selectList [index] = selectField;
+		//		if (aggparameters != null && aggparameters.Length > 0) {
+		//			functionParameters.AddRange (aggparameters);
+		//		}
+		//		index++;
+		//	}
+		//	string select = string.Join (",", selectList);
+		//	string groupby = string.Join (",", groupbyList);
+		//	sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
 
-			DataParameter [] queryparameters;
-			string queryString = GetQueryString (query, out queryparameters);
-			DataParameter [] havingparameters;
-			string havingString = GetHavingString (having, out havingparameters);
-			DataParameter [] orderparameters;
-			string orderString = GetOrderString (order, out orderparameters);
+		//	DataParameter [] queryparameters;
+		//	string queryString = GetQueryString (query, out queryparameters);
+		//	DataParameter [] havingparameters;
+		//	string havingString = GetHavingString (having, out havingparameters);
+		//	DataParameter [] orderparameters;
+		//	string orderString = GetOrderString (order, out orderparameters);
 
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
-			}
+		//	if (!string.IsNullOrEmpty (queryString)) {
+		//		sql.AppendFormat (" {0}", queryString);
+		//	}
 
-			sql.AppendFormat (" group by {0}", groupby);
+		//	sql.AppendFormat (" group by {0}", groupby);
 
-			if (!string.IsNullOrEmpty (havingString)) {
-				sql.AppendFormat (" {0}", havingString);
-			}
+		//	if (!string.IsNullOrEmpty (havingString)) {
+		//		sql.AppendFormat (" {0}", havingString);
+		//	}
 
-			if (!string.IsNullOrEmpty (orderString)) {
-				sql.AppendFormat (" {0}", orderString);
-			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (innerParameters, functionParameters, queryparameters, havingparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
-			return command;
-		}
+		//	if (!string.IsNullOrEmpty (orderString)) {
+		//		sql.AppendFormat (" {0}", orderString);
+		//	}
+		//	DataParameter [] parameters = DataParameter.ConcatDataParameters (innerParameters, functionParameters, queryparameters, havingparameters, orderparameters);
+		//	CommandData command = new CommandData (sql.ToString (), parameters);
+		//	command.TransParamName = true;
+		//	return command;
+		//}
 
 
 

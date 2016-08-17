@@ -427,7 +427,7 @@ namespace Light.Data
 		/// Order by asc.
 		/// </summary>
 		/// <returns>The expression</returns>
-		public OrderExpression OrderByAsc ()
+		public AggregateOrderExpression OrderByAsc ()
 		{
 			return OrderBy (OrderType.ASC);
 		}
@@ -436,14 +436,14 @@ namespace Light.Data
 		/// Order by desc.
 		/// </summary>
 		/// <returns>The expression</returns>
-		public OrderExpression OrderByDesc ()
+		public AggregateOrderExpression OrderByDesc ()
 		{
 			return OrderBy (OrderType.DESC);
 		}
 
-		private OrderExpression OrderBy (OrderType type)
+		private AggregateOrderExpression OrderBy (OrderType type)
 		{
-			OrderExpression exp = new AggregateOrderExpression (this, type);
+			AggregateOrderExpression exp = new AggregateOrderExpression (this, type);
 			return exp;
 		}
 

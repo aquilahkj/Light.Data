@@ -68,7 +68,7 @@ namespace Light.Data
 		//	return factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, list);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			List<DataParameter> list = new List<DataParameter> ();
 			foreach (object value in _values) {
@@ -77,7 +77,7 @@ namespace Light.Data
 			}
 			DataParameter [] dataParameters1 = list.ToArray ();
 			DataParameter [] dataParameters2 = null;
-			string sql = factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName, out dataParameters2), _predicate, list);
+			string sql = factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2), _predicate, list);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
 			return sql;
 		}

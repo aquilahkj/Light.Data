@@ -259,29 +259,39 @@ namespace Light.Data
 			return queryString;
 		}
 
-		public virtual string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateDataInfo> functions)
+		//public virtual string GetHavingString (AggregateHavingExpression having, out DataParameter [] parameters, List<AggregateDataInfo> functions)
+		//{
+		//	string havingString = null;
+		//	parameters = null;
+		//	if (having != null) {
+		//		havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
+		//			string alias = null;
+		//			AggregateData aggregateFunction = obj as AggregateData;
+		//			if (!Object.Equals (aggregateFunction, null)) {
+		//				foreach (AggregateDataInfo info in functions) {
+		//					if (Object.ReferenceEquals (aggregateFunction, info.Data)) {
+		//						alias = info.Name;
+		//						break;
+		//					}
+		//				}
+		//			}
+		//			else {
+		//				throw new LightDataException (RE.UnknowHavingType);
+		//			}
+		//			return alias;
+		//		})));
+		//	}
+		//	return havingString;
+		//}
+
+		public virtual string GetOrderString (AggregateOrderExpression order, out DataParameter [] parameters)
 		{
-			string havingString = null;
+			string orderString = null;
 			parameters = null;
-			if (having != null) {
-				havingString = string.Format ("having {0}", having.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
-					string alias = null;
-					AggregateData aggregateFunction = obj as AggregateData;
-					if (!Object.Equals (aggregateFunction, null)) {
-						foreach (AggregateDataInfo info in functions) {
-							if (Object.ReferenceEquals (aggregateFunction, info.Data)) {
-								alias = info.Name;
-								break;
-							}
-						}
-					}
-					else {
-						throw new LightDataException (RE.UnknowHavingType);
-					}
-					return alias;
-				})));
+			if (order != null) {
+				orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters));
 			}
-			return havingString;
+			return orderString;
 		}
 
 		public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, bool fullFieldName = false)
@@ -294,49 +304,49 @@ namespace Light.Data
 			return orderString;
 		}
 
-		public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, List<AggregateDataInfo> fields, List<AggregateDataInfo> functions)
-		{
-			string orderString = null;
-			parameters = null;
-			if (order != null) {
-				orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
-					string alias = null;
-					//if (obj is DataFieldInfo) {
-					//	foreach (DataFieldInfo info in fields) {
-					//		if (Object.ReferenceEquals (obj, info)) {
-					//			AliasDataFieldInfo aliasInfo = info as AliasDataFieldInfo;
-					//			if (!Object.Equals (aliasInfo, null)) {
-					//				alias = aliasInfo.Alias;
-					//			}
-					//			break;
-					//		}
-					//	}
-					//}
-					//else
-					if (obj is AggregateData) {
-						foreach (AggregateDataInfo info in fields) {
-							if (Object.ReferenceEquals (obj, info.Data)) {
-								//alias = info.Name;
-								//break;
-								return info.Name;
-							}
-						}
-						foreach (AggregateDataInfo info in functions) {
-							if (Object.ReferenceEquals (obj, info.Data)) {
-								//alias = info.Name;
-								//break;
-								return info.Name;
-							}
-						}
-					}
-					//else {
-					//	throw new LightDataException (RE.UnknowOrderType);
-					//}
-					return alias;
-				})));
-			}
-			return orderString;
-		}
+		//public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, List<AggregateDataInfo> fields, List<AggregateDataInfo> functions)
+		//{
+		//	string orderString = null;
+		//	parameters = null;
+		//	if (order != null) {
+		//		orderString = string.Format ("order by {0}", order.CreateSqlString (this, false, out parameters, new GetAliasHandler (delegate (object obj) {
+		//			string alias = null;
+		//			//if (obj is DataFieldInfo) {
+		//			//	foreach (DataFieldInfo info in fields) {
+		//			//		if (Object.ReferenceEquals (obj, info)) {
+		//			//			AliasDataFieldInfo aliasInfo = info as AliasDataFieldInfo;
+		//			//			if (!Object.Equals (aliasInfo, null)) {
+		//			//				alias = aliasInfo.Alias;
+		//			//			}
+		//			//			break;
+		//			//		}
+		//			//	}
+		//			//}
+		//			//else
+		//			if (obj is AggregateData) {
+		//				foreach (AggregateDataInfo info in fields) {
+		//					if (Object.ReferenceEquals (obj, info.Data)) {
+		//						//alias = info.Name;
+		//						//break;
+		//						return info.Name;
+		//					}
+		//				}
+		//				foreach (AggregateDataInfo info in functions) {
+		//					if (Object.ReferenceEquals (obj, info.Data)) {
+		//						//alias = info.Name;
+		//						//break;
+		//						return info.Name;
+		//					}
+		//				}
+		//			}
+		//			//else {
+		//			//	throw new LightDataException (RE.UnknowOrderType);
+		//			//}
+		//			return alias;
+		//		})));
+		//	}
+		//	return orderString;
+		//}
 
 		public virtual string GetOnString (DataFieldExpression on, out DataParameter [] parameters, bool fullFieldName = true)
 		{
@@ -347,54 +357,6 @@ namespace Light.Data
 			}
 			return onString;
 		}
-
-		//public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region)
-		//{
-		//	if (region != null && !_canInnerPage) {
-		//		throw new LightDataException (RE.DataBaseNotSupportInnerPage);
-		//	}
-		//	CommandData data;
-		//	if (mapping.HasJoinRelateModel) {
-		//		RelationMap relationMap = mapping.GetRelationMap ();
-		//		QueryExpression subQuery = null;
-		//		QueryExpression mainQuery = null;
-		//		OrderExpression subOrder = null;
-		//		OrderExpression mainOrder = null;
-		//		if (query != null) {
-		//			if (query.MutliQuery) {
-		//				mainQuery = query;
-		//			}
-		//			else {
-		//				subQuery = query;
-		//			}
-		//		}
-		//		if (order != null) {
-		//			if (order.MutliOrder) {
-		//				mainOrder = order;
-		//			}
-		//			else {
-		//				subOrder = order;
-		//			}
-		//		}
-		//		//capsule = relationMap.CreateJoinCapsule (subQuery, subOrder);
-		//		ISelector selector = relationMap.GetDefaultSelector ();
-		//		List<JoinModel> models = relationMap.CreateJoinModels (subQuery, subOrder);
-		//		data = CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder);
-		//		QueryState rc = new QueryState ();
-		//		rc.SetRelationMap (relationMap);
-		//		data.State = rc;
-		//		return data;
-		//	}
-		//	string [] fieldNames = new string [mapping.FieldCount];
-		//	int i = 0;
-		//	foreach (DataFieldMapping field in mapping.DataEntityFields) {
-		//		fieldNames [i] = CreateDataFieldSql (field.Name);
-		//		i++;
-		//	}
-		//	string selectString = string.Join (",", fieldNames);
-		//	data = this.CreateSelectBaseCommand (mapping, selectString, null, query, order, region);
-		//	return data;
-		//}
 
 		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, Region region)
 		{
@@ -419,40 +381,6 @@ namespace Light.Data
 			data = this.CreateSelectBaseCommand (mapping, selectString, dataParameters, query, order, region);
 			return data;
 		}
-
-		//public virtual CommandData CreateRelateSelectCommand (DataEntityMapping mapping, QueryExpression query, object extendState)
-		//{
-		//	CommandData data;
-		//	if (mapping.HasJoinRelateModel) {
-		//		RelationMap relationMap = mapping.GetRelationMap ();
-		//		JoinCapsule capsule = relationMap.CreateJoinCapsule (query, null);
-		//		JoinSelector selector = capsule.Slector;
-		//		QueryState rc = extendState as QueryState;
-		//		if (rc != null) {
-		//			if (rc.CollectionRelateReferFieldMapping != null) {
-		//				DataEntityMapping exceptMapping = rc.CollectionRelateReferFieldMapping.RelateMapping;
-		//				selector = selector.CloneWithExcept (new [] { exceptMapping });
-		//			}
-		//		}
-		//		else {
-		//			rc = new QueryState ();
-		//		}
-		//		rc.SetRelationMap (relationMap);
-		//		data = CreateSelectJoinTableCommand (selector, capsule.Models, null, null);
-		//		data.State = rc;
-		//		return data;
-		//	}
-
-		//	string [] fieldNames = new string [mapping.FieldCount];
-		//	int i = 0;
-		//	foreach (DataFieldMapping field in mapping.DataEntityFields) {
-		//		fieldNames [i] = CreateDataFieldSql (field.Name);
-		//		i++;
-		//	}
-		//	string selectString = string.Join (",", fieldNames);
-		//	data = this.CreateSelectBaseCommand (mapping, selectString, null, query, null, null);
-		//	return data;
-		//}
 
 		public virtual CommandData CreateSelectSingleFieldCommand (DataFieldInfo fieldinfo, QueryExpression query, OrderExpression order, bool distinct, Region region)
 		{
@@ -928,8 +856,8 @@ namespace Light.Data
 			DataParameter [] havingparameters;
 			string havingString = GetHavingString (having, out havingparameters);
 			DataParameter [] orderparameters;
-			string orderString = GetOrderString (order, out orderparameters, groupbys, functions);
-
+			//string orderString = GetOrderString (order, out orderparameters, groupbys, functions);
+			string orderString = GetOrderString (order, out orderparameters);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
 			}

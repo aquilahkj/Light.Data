@@ -49,7 +49,7 @@ namespace Light.Data
 			_toValue = toValue;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
 		{
 			string pn = factory.CreateTempParamName ();
 			string pn1 = factory.CreateTempParamName ();
@@ -58,7 +58,7 @@ namespace Light.Data
 			DataParameter toParam = new DataParameter (pn1, _toValue);
 			List<DataParameter> list = new List<DataParameter> ();
 			DataParameter[] ps;
-			string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
+			string functionSql = _function.CreateSqlString (factory, isFullName, out ps);
 			if (ps != null && ps.Length > 0) {
 				list.AddRange (ps);
 			}
@@ -68,24 +68,24 @@ namespace Light.Data
 			return factory.CreateBetweenParamsQuerySql (functionSql, _isNot, fromParam, toParam);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
-		{
-			string alise = handler (_function);
-			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, fullFieldName, out dataParameters);
-			}
-			string name = factory.CreateDataFieldSql (alise);
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters, GetAliasHandler handler)
+		//{
+		//	string alise = handler (_function);
+		//	if (string.IsNullOrEmpty (alise)) {
+		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
+		//	}
+		//	string name = factory.CreateDataFieldSql (alise);
 
-			string pn = factory.CreateTempParamName ();
-			string pn1 = factory.CreateTempParamName ();
+		//	string pn = factory.CreateTempParamName ();
+		//	string pn1 = factory.CreateTempParamName ();
 
-			DataParameter fromParam = new DataParameter (pn, _fromValue);
-			DataParameter toParam = new DataParameter (pn1, _toValue);
-			dataParameters = new [] { fromParam, toParam };
+		//	DataParameter fromParam = new DataParameter (pn, _fromValue);
+		//	DataParameter toParam = new DataParameter (pn1, _toValue);
+		//	dataParameters = new [] { fromParam, toParam };
 
-			return factory.CreateBetweenParamsQuerySql (name, _isNot, fromParam, toParam);
+		//	return factory.CreateBetweenParamsQuerySql (name, _isNot, fromParam, toParam);
 
-		}
+		//}
 
 		//protected override bool EqualsDetail (AggregateHavingExpression expression)
 		//{

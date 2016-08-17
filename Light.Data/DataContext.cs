@@ -710,21 +710,8 @@ namespace Light.Data
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
 
-		//internal IEnumerable<T> QueryDataMappingEnumerable<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//	where T : class, new()
-		//{
-		//	bool innerRegion = IsInnerPager && !mapping.HasJoinRelateModel;
-		//	CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
-		//	IDbCommand command = commandData.CreateCommand (_dataBase);
-		//	return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
-		//}
-
 		internal IEnumerable QueryDataMappingEnumerable (Type type, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			//bool innerRegion = IsInnerPager && !mapping.HasJoinRelateModel;
-			//CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
-			//IDbCommand command = commandData.CreateCommand (_dataBase);
-			//return QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
 			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			RelationMap relationMap = mapping.GetRelationMap ();
 			if (selector == null) {
@@ -848,35 +835,42 @@ namespace Light.Data
 			}
 		}
 
-		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-			where T : class, new()
-		{
-			AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof (T));
-			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
-			List<T> list = new List<T> ();
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
-				//list.AddRange (ie);
-				foreach (T item in ie) {
-					list.Add (item);
-				}
-			}
-			return list;
-		}
+		//internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		//	where T : class, new()
+		//{
+		//	AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof (T));
+		//	CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
+		//	List<T> list = new List<T> ();
+		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//		IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
+		//		//list.AddRange (ie);
+		//		foreach (T item in ie) {
+		//			list.Add (item);
+		//		}
+		//	}
+		//	return list;
+		//}
 
-		internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, AggregateMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-			where T : class
+		//internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, AggregateMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		//	where T : class
+		//{
+		//	CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
+		//	List<T> list = new List<T> ();
+		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//		IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
+		//		//list.AddRange (ie);
+		//		foreach (T item in ie) {
+		//			list.Add (item);
+		//		}
+		//	}
+		//	return list;
+		//}
+
+		internal IEnumerable QueryDynamicAggregateEnumerable (DataEntityMapping mapping, DataMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
 			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
-			List<T> list = new List<T> ();
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
-				//list.AddRange (ie);
-				foreach (T item in ie) {
-					list.Add (item);
-				}
-			}
-			return list;
+			IDbCommand command = commandData.CreateCommand (_dataBase);
+			return QueryDataMappingReader (amapping, command, null, level, commandData.State);
 		}
 
 		internal T SelectSingle<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
@@ -884,14 +878,6 @@ namespace Light.Data
 		{
 			T target = default (T);
 			Region region = new Region (index, 1);
-			//bool innerRegion = IsInnerPager && mapping.HasJoinRelateModel;
-			//CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
-			//using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-			//	foreach (T obj in QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State)) {
-			//		target = obj;
-			//		break;
-			//	}
-			//}
 			foreach (T obj in QueryDataMappingEnumerable (typeof (T), null, query, order, region, level)) {
 				target = obj;
 				break;

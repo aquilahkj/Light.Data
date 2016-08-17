@@ -754,7 +754,7 @@ namespace Light.Data
 
 		private OrderExpression OrderBy (OrderType type)
 		{
-			OrderExpression exp = new FieldOrderExpression (this, type);
+			OrderExpression exp = new DataFieldOrderExpression (this, type);
 			return exp;
 		}
 
@@ -810,16 +810,6 @@ namespace Light.Data
 			}
 		}
 
-		///// <summary>
-		///// Creates the data field sql.
-		///// </summary>
-		///// <returns>The data field sql.</returns>
-		///// <param name="factory">Factory.</param>
-		//internal virtual string CreateDataFieldSql (CommandFactory factory)
-		//{
-		//	return CreateDataFieldSql (factory, false);
-		//}
-
 		string _aliasTableName;
 
 		internal virtual string AliasTableName {
@@ -831,27 +821,9 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// Creates the data field sql.
-		/// </summary>
-		/// <returns>The data field sql.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
-		//internal virtual string CreateDataFieldSql (CommandFactory factory, bool isFullName)
-		//{
-		//	if (isFullName) {
-		//		string tableName = this._aliasTableName ?? TableMapping.TableName;
-		//		return factory.CreateFullDataFieldSql (tableName, FieldName);
-		//	}
-		//	else {
-		//		return factory.CreateDataFieldSql (FieldName);
-		//	}
-		//}
-
 		internal virtual string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			dataParameters = null;
-			//return CreateDataFieldSql (factory, isFullName);
 			if (isFullName) {
 				string tableName = this._aliasTableName ?? TableMapping.TableName;
 				return factory.CreateFullDataFieldSql (tableName, FieldName);
@@ -860,18 +832,6 @@ namespace Light.Data
 				return factory.CreateDataFieldSql (FieldName);
 			}
 		}
-
-		//		/// <summary>
-		//		/// Creates the data field sql.
-		//		/// </summary>
-		//		/// <returns>The data field sql.</returns>
-		//		/// <param name="factory">Factory.</param>
-		//		/// <param name="aliasTableName">Alias table name.</param>
-		//		internal virtual string CreateDataFieldSql (CommandFactory factory, string aliasTableName)
-		//		{
-		//			return factory.CreateFullDataFieldSql (aliasTableName, FieldName);
-		//		}
-
 
 		/// <summary>
 		/// Transforms the starts with match.

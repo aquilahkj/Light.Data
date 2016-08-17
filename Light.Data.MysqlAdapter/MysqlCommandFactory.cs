@@ -223,10 +223,11 @@ namespace Light.Data.MysqlAdapter
 			DataParameter [] queryparameters;
 			string queryString = GetQueryString (query, out queryparameters);
 			DataParameter [] havingparameters;
-			string havingString = GetHavingString (having, out havingparameters, functions);
+			//string havingString = GetHavingString (having, out havingparameters, functions);
+			string havingString = GetHavingString (having, out havingparameters);
 			DataParameter [] orderparameters;
-			string orderString = GetOrderString (order, out orderparameters, groupbys, functions);
-
+			//string orderString = GetOrderString (order, out orderparameters, groupbys, functions);
+			string orderString = GetOrderString (order, out orderparameters);
 			if (!string.IsNullOrEmpty (queryString)) {
 				sql.AppendFormat (" {0}", queryString);
 			}

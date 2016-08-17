@@ -66,21 +66,21 @@ namespace Light.Data
 		//	return factory.CreateSubQuerySql (name, _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
-		{
-			string alise = handler (_function);
-			if (string.IsNullOrEmpty (alise)) {
-				return CreateSqlString (factory, fullFieldName, out dataParameters);
-			}
-			DataParameter [] dataParameters1 = null;
-			DataParameter [] dataParameters2 = null;
-			string name = factory.CreateDataFieldSql (alise);
-			string queryString;
-			queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters1);
-			string sql = factory.CreateSubQuerySql (name, _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false, out dataParameters2), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-			return sql;
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
+		//{
+		//	string alise = handler (_function);
+		//	if (string.IsNullOrEmpty (alise)) {
+		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
+		//	}
+		//	DataParameter [] dataParameters1 = null;
+		//	DataParameter [] dataParameters2 = null;
+		//	string name = factory.CreateDataFieldSql (alise);
+		//	string queryString;
+		//	queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters1);
+		//	string sql = factory.CreateSubQuerySql (name, _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false, out dataParameters2), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+		//	return sql;
+		//}
 
 		//protected override bool EqualsDetail (AggregateHavingExpression expression)
 		//{
