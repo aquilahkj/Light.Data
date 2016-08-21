@@ -24,7 +24,7 @@ namespace Light.Data
 			_isNot = !_isNot;
 		}
 
-		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string sql = null;
 			DataParameter [] dataParameters0 = null;
@@ -38,11 +38,11 @@ namespace Light.Data
 			DataFieldInfo ifTrueInfo = _ifTrue as DataFieldInfo;
 			DataFieldInfo ifFalseInfo = _ifFalse as DataFieldInfo;
 			if (!Object.Equals (ifTrueInfo, null) && !Object.Equals (ifFalseInfo, null)) {
-				ifTrue = ifTrueInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
-				ifFalse = ifFalseInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2);
+				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, out dataParameters1);
+				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, out dataParameters2);
 			}
 			else if (!Object.Equals (ifTrueInfo, null)) {
-				ifTrue = ifTrueInfo.CreateDataFieldSql (factory, isFullName, out dataParameters1);
+				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, out dataParameters1);
 				object ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
 				string pn = factory.CreateTempParamName ();
 				DataParameter dataParameter = new DataParameter (pn, ifFalseObject);
@@ -50,7 +50,7 @@ namespace Light.Data
 				ifFalse = dataParameter.ParameterName;
 			}
 			else if (!Object.Equals (ifFalseInfo, null)) {
-				ifFalse = ifFalseInfo.CreateDataFieldSql (factory, isFullName, out dataParameters2);
+				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, out dataParameters2);
 				object ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
 				string pn = factory.CreateTempParamName ();
 				DataParameter dataParameter = new DataParameter (pn, ifTrueObject);
@@ -72,6 +72,47 @@ namespace Light.Data
 
 			sql = factory.CreateConditionSql (query, ifTrue, ifFalse);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters0,dataParameters1, dataParameters2);
+			return sql;
+		}
+
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string sql = state.GetDataSql (this, isFullName);
+			if (sql != null) {
+				return sql;
+			}
+
+			string query = _query.CreateSqlString (factory, isFullName, state);
+
+			object ifTrue;
+			object ifFalse;
+			DataFieldInfo ifTrueInfo = _ifTrue as DataFieldInfo;
+			DataFieldInfo ifFalseInfo = _ifFalse as DataFieldInfo;
+			if (!Object.Equals (ifTrueInfo, null) && !Object.Equals (ifFalseInfo, null)) {
+				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, state);
+				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, state);
+			}
+			else if (!Object.Equals (ifTrueInfo, null)) {
+				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, state);
+				object ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
+				string pn = factory.CreateTempParamName ();
+				ifFalse = state.AddDataParameter (ifFalseObject);
+			}
+			else if (!Object.Equals (ifFalseInfo, null)) {
+				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, state);
+				object ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
+				string pn = factory.CreateTempParamName ();
+				ifTrue = state.AddDataParameter (ifTrueObject);
+			}
+			else {
+				object ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
+				object ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
+				ifTrue = state.AddDataParameter (ifTrueObject);
+				ifFalse = state.AddDataParameter (ifFalseObject);
+			}
+
+			sql = factory.CreateConditionSql (query, ifTrue, ifFalse);
+			state.SetDataSql (this, isFullName, sql);
 			return sql;
 		}
 

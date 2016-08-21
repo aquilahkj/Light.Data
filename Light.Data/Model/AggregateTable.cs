@@ -36,12 +36,12 @@ namespace Light.Data
 		/// Gets the data table.
 		/// </summary>
 		/// <returns>The data table.</returns>
-		public DataTable GetDataTable ()
-		{
-			List<AggregateDataInfo> groupbys = new List<AggregateDataInfo> (_dataFieldInfoDictionary.Values);
-			List<AggregateDataInfo> functions = new List<AggregateDataInfo> (_aggregateFunctionDictionary.Values);
-			return _context.QueryDynamicAggregateTable (_enetityMapping, groupbys, functions, _query, _having, _order, _level);
-		}
+		//public DataTable GetDataTable ()
+		//{
+		//	List<AggregateDataInfo> groupbys = new List<AggregateDataInfo> (_dataFieldInfoDictionary.Values);
+		//	List<AggregateDataInfo> functions = new List<AggregateDataInfo> (_aggregateFunctionDictionary.Values);
+		//	return _context.QueryDynamicAggregateTable (_enetityMapping, groupbys, functions, _query, _having, _order, _level);
+		//}
 
 		/// <summary>
 		/// Gets the object list.

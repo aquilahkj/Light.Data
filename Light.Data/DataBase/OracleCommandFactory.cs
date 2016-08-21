@@ -254,22 +254,22 @@ namespace Light.Data
 			return seq;
 		}
 
-		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)//, bool distinct)
 		{
 			if (region == null) {
-				return base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, null);
+				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null, state);
 			}
 
 			StringBuilder sql = new StringBuilder ();
-			DataParameter [] queryparameters;
-			DataParameter [] orderparameters;
-			string queryString = GetQueryString (query, out queryparameters);
-			string orderString = GetOrderString (order, out orderparameters);
+			//DataParameter [] queryparameters;
+			//DataParameter [] orderparameters;
+			//string queryString = GetQueryString (query, out queryparameters);
+			//string orderString = GetOrderString (order, out orderparameters);
 
-			if (region.Start == 0 && orderString == null) {
+			if (region.Start == 0 && order == null) {
 				sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
-				if (!string.IsNullOrEmpty (queryString)) {
-					sql.AppendFormat (" {0}", queryString);
+				if (query != null) {
+					sql.Append (GetQueryString (query, false, state));
 					sql.AppendFormat (" and ROWNUM<={0}", region.Size);
 				}
 				else {
@@ -288,43 +288,39 @@ namespace Light.Data
                 */
 				StringBuilder innerSQL = new StringBuilder ();
 				innerSQL.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
-				if (!string.IsNullOrEmpty (queryString)) {
-					innerSQL.AppendFormat (" {0}", queryString);
+				if (query != null) {
+					sql.Append (GetQueryString (query, false, state));
 				}
-				if (!string.IsNullOrEmpty (orderString)) {
-					innerSQL.AppendFormat (" {0}", orderString);
+				if (order != null) {
+					sql.Append (GetOrderString (order, false, state));
 				}
 				string tempRowNumber = CreateCustomFiledName ();
 				sql.AppendFormat ("select {4} from (select a.*,ROWNUM {3} from ({0})a where ROWNUM<={2})b where {3}>{1}",
 					innerSQL, region.Start, region.Start + region.Size, tempRowNumber, customSelect);
 			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
+			//DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
+			CommandData command = new CommandData (sql.ToString ());
 			command.TransParamName = true;
 			return command;
 
 		}
 
-		public override CommandData CreateSelectJoinTableCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region)
+		//
+
+		public override CommandData CreateSelectJoinTableBaseCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
 		{
 			StringBuilder tables = new StringBuilder ();
 			OrderExpression totalOrder = null;
 			QueryExpression totalQuery = null;
-			List<DataParameter> innerParameters = new List<DataParameter> ();
 			foreach (JoinModel model in modelList) {
 				if (model.Connect != null) {
 					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
 				}
+
 				if (model.Query != null) {
-					DataParameter [] queryparameters_sub;
-					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
+					string mqueryString = GetQueryString (model.Query, false, state);
 					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
-					if (!string.IsNullOrEmpty (mqueryString)) {
-						tables.AppendFormat (" {0}", mqueryString);
-						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
-							innerParameters.AddRange (queryparameters_sub);
-						}
-					}
+					tables.Append (GetQueryString (model.Query, false, state));
 					string aliseName = model.AliasTableName;
 					if (aliseName != null) {
 						tables.AppendFormat (") {0}", CreateDataTableSql (aliseName));
@@ -346,36 +342,25 @@ namespace Light.Data
 					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
 				}
 				if (model.Connect != null && model.Connect.On != null) {
-					DataParameter [] onparameters;
-					string onString = GetOnString (model.Connect.On, out onparameters);
-					if (!string.IsNullOrEmpty (onString)) {
-						tables.AppendFormat (" {0}", onString);
-						if (onparameters != null && onparameters.Length > 0) {
-							innerParameters.AddRange (onparameters);
-						}
-					}
+					tables.Append (GetOnString (model.Connect.On, state));
 				}
 			}
 			totalQuery &= query;
 			totalOrder &= order;
 			StringBuilder sql = new StringBuilder ();
-			DataParameter [] queryparameters;
-			DataParameter [] orderparameters;
-			string queryString = GetQueryString (totalQuery, out queryparameters, true);
-			string orderString = GetOrderString (totalOrder, out orderparameters, true);
+
 
 			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
+			if (totalQuery != null) {
+				sql.AppendFormat (GetQueryString (totalQuery, true, state));
 			}
-			if (!string.IsNullOrEmpty (orderString)) {
-				sql.AppendFormat (" {0}", orderString);
+			if (totalOrder != null) {
+				sql.AppendFormat (GetOrderString (totalOrder, true, state));
 			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, innerParameters, queryparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
+			CommandData command = new CommandData (sql.ToString ());
 			return command;
 		}
+
 
 		public override string CreateAvgSql (object fieldName, bool isDistinct)
 		{
@@ -407,14 +392,14 @@ namespace Light.Data
 			return sb.ToString ();
 		}
 
-		public override string CreateLambdaConcatSql (params object [] values)
+		public override string CreateConcatSql (params object [] values)
 		{
 			string value1 = string.Join ("||", values);
 			string sql = string.Format ("({0})", value1);
 			return sql;
 		}
 
-		public override string CreateConcatSql (object field, object value, bool forward)
+		public override string CreateDualConcatSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}||{1})", field, value);

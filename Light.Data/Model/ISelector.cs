@@ -6,6 +6,8 @@ namespace Light.Data
 		string [] GetSelectFiledNames ();
 
 		string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters);
+
+		string CreateSelectString (CommandFactory factory, CreateSqlState state);
 	}
 }
 

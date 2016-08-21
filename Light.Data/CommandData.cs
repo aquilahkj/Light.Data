@@ -94,11 +94,11 @@ namespace Light.Data
 		{
 			if (database == null)
 				throw new ArgumentNullException (nameof (database));
-			IDataParameter[] idataParameters = null;
+			IDataParameter [] idataParameters = null;
 			string sql = this.commandText;
 			int length = dataParameters.Count;
 			if (length > 0) {
-				idataParameters = new IDataParameter[length];
+				idataParameters = new IDataParameter [length];
 				if (this.transParamName) {
 					Dictionary<string, string> paramReplaceDict = new Dictionary<string, string> ();
 					for (int i = 0; i < length; i++) {
@@ -107,7 +107,7 @@ namespace Light.Data
 						idataParameters [i] = idp;
 						paramReplaceDict.Add (dp.ParameterName, idp.ParameterName);
 					}
-					sql = ParamNameRegex.Replace (sql, new MatchEvaluator (delegate(Match match) {
+					sql = ParamNameRegex.Replace (sql, new MatchEvaluator (delegate (Match match) {
 						string value = match.Value;
 						if (paramReplaceDict.ContainsKey (value)) {
 							return paramReplaceDict [value];
@@ -123,6 +123,32 @@ namespace Light.Data
 						IDataParameter idp = database.CreateParameter (dp.ParameterName, dp.Value, dp.DbType, dp.Direction);
 						idataParameters [i] = idp;
 					}
+				}
+			}
+			IDbCommand command = database.CreateCommand (sql);
+			command.CommandType = this.commandType;
+			if (idataParameters != null) {
+				foreach (IDataParameter param in idataParameters) {
+					command.Parameters.Add (param);
+				}
+			}
+			return command;
+		}
+
+		public IDbCommand CreateCommand (Database database, CreateSqlState state)
+		{
+			if (database == null)
+				throw new ArgumentNullException (nameof (database));
+			IDataParameter [] idataParameters = null;
+			string sql = this.commandText;
+			DataParameter [] dps = state.GetDataParameters();
+			int length = dps.Length;
+			if (length > 0) {
+				idataParameters = new IDataParameter [length];
+				for (int i = 0; i < length; i++) {
+					DataParameter dp = dps [i];
+					IDataParameter idp = database.CreateParameter (dp.ParameterName, dp.Value, dp.DbType, dp.Direction);
+					idataParameters [i] = idp;
 				}
 			}
 			IDbCommand command = database.CreateCommand (sql);

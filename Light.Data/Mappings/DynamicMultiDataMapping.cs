@@ -1,10 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Light.Data
 {
 	class DynamicMultiDataMapping : DataMapping
 	{
+		public static DynamicMultiDataMapping CreateDynamicMultiDataMapping (Type type, List<JoinModel> models)
+		{
+			Tuple<string, DataEntityMapping> [] array = new Tuple<string, DataEntityMapping> [models.Count];
+			for (int i = 0; i < models.Count; i++) {
+				JoinModel model = models [i];
+				Tuple<string, DataEntityMapping> tuple = new Tuple<string, DataEntityMapping> (model.AliasTableName, model.Mapping);
+				array [i] = tuple;
+			}
+			DynamicMultiDataMapping mapping = new DynamicMultiDataMapping (type, array);
+			return mapping;
+		}
+
 		DataEntityMapping [] mappings;
 
 		string [] aliasNames;

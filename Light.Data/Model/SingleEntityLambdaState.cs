@@ -18,6 +18,12 @@ namespace Light.Data
 			singleEntityMap = entityMapping.GetRelationMap ();
 		}
 
+		public override DataEntityMapping MainMapping {
+			get {
+				return singleEntityMap.RootMapping;
+			}
+		}
+
 		public override bool CheckPamramter (string name, Type type)
 		{
 			return singleEntityName == name && singleEntityMap.RootMapping.ObjectType == type;

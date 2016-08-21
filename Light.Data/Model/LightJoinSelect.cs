@@ -22,7 +22,9 @@ namespace Light.Data
 
 		readonly List<JoinModel> _models;
 
-		readonly DynamicMultiDataMapping _mapping;
+		readonly DynamicMultiDataMapping _mappping;
+
+		//readonly DynamicMultiDataMapping _mapping;
 
 		internal LightJoinSelect (DataContext context, Delegate dele, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
@@ -34,11 +36,12 @@ namespace Light.Data
 			_order = order;
 			_region = region;
 			_level = level;
+			_mappping = DynamicMultiDataMapping.CreateDynamicMultiDataMapping (typeof (K), models);
 		}
 
 		public IEnumerator<K> GetEnumerator ()
 		{
-			foreach (object item in _context.QueryDynamicJoinDataEnumerable (typeof (K), _selector, _models, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item as object []);
 				yield return obj as K;
 			}
@@ -46,7 +49,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			foreach (object item in _context.QueryDynamicJoinDataEnumerable (typeof (K), _selector, _models, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item as object []);
 				yield return obj;
 			}
@@ -55,7 +58,7 @@ namespace Light.Data
 		public List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			foreach (object item in _context.QueryDynamicJoinDataEnumerable (typeof (K), _selector, _models, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item as object[]);
 				list.Add (obj as K);
 			}

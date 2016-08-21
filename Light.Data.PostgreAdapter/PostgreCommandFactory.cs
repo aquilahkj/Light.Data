@@ -77,9 +77,9 @@ namespace Light.Data.PostgreAdapter
 		}
 
 
-		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)//, bool distinct)
 		{
-			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, region);
+			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, query, order, region, state);
 			if (region != null) {
 				if (region.Start == 0) {
 					command.CommandText = string.Format ("{0} limit {1}", command.CommandText, region.Size);
@@ -150,22 +150,20 @@ namespace Light.Data.PostgreAdapter
 			return commands.ToArray ();
 		}
 
-		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, IEnumerable<object> list)
 		{
 			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
-				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
+				return base.CreateCollectionParamsQuerySql (fieldName, predicate, list);
 			}
 			string op = GetQueryCollectionPredicate (predicate);
-			if (dataParameters.Count == 0) {
-				throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
-			}
+
 			int i = 0;
 			StringBuilder sb = new StringBuilder ();
 			sb.AppendFormat ("{0} {1} (", fieldName, op);
-			foreach (DataParameter dataParameter in dataParameters) {
+			foreach (object item in list) {
 				if (i > 0)
 					sb.Append (" union all ");
-				sb.AppendFormat ("select {0}", dataParameter.ParameterName);
+				sb.AppendFormat ("select {0}", item);
 				i++;
 			}
 			sb.Append (")");
@@ -216,7 +214,7 @@ namespace Light.Data.PostgreAdapter
 			return sb.ToString ();
 		}
 
-		public override string CreateLambdaBooleanQuerySql (object field, bool isTrue, bool isEqual, bool isReverse)
+		public override string CreateBooleanQuerySql (object field, bool isTrue, bool isEqual, bool isReverse)
 		{
 			if (!isReverse) {
 				return string.Format ("{0}{2}{1}", field, isTrue ? "true" : "false", isEqual ? "=" : "!=");
@@ -226,14 +224,14 @@ namespace Light.Data.PostgreAdapter
 			}
 		}
 
-		public override string CreateLambdaConcatSql (params object [] values)
+		public override string CreateConcatSql (params object [] values)
 		{
 			string value1 = string.Join ("||", values);
 			string sql = string.Format ("({0})", value1);
 			return sql;
 		}
 
-		public override string CreateConcatSql (object field, object value, bool forward)
+		public override string CreateDualConcatSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}||{1})", field, value);

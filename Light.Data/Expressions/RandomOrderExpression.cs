@@ -29,6 +29,11 @@ namespace Light.Data
 			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, isFullName);
 		}
 
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, isFullName);
+		}
+
 		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
 		//{
 		//	dataParameters = new DataParameter [0];

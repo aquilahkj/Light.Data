@@ -18,6 +18,12 @@ namespace Light.Data
 			return factory.CreateNotQuerySql (queryString);
 		}
 
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string queryString = _queryExpression.CreateSqlString (factory, isFullName, state);
+			return factory.CreateNotQuerySql (queryString);
+		}
+
 		//protected override bool EqualsDetail (QueryExpression expression)
 		//{
 		//	if (base.EqualsDetail (expression)) {

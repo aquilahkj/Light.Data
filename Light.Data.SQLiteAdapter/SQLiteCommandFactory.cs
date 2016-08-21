@@ -102,9 +102,9 @@ namespace Light.Data.SQLiteAdapter
 		}
 
 
-		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)//, bool distinct)
+		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)//, bool distinct)
 		{
-			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, region);
+			CommandData command = base.CreateSelectBaseCommand (mapping, customSelect, query, order, region, state);
 			if (region != null) {
 				if (region.Start == 0) {
 					command.CommandText = string.Format ("{0} limit {1}", command.CommandText, region.Size);
@@ -128,10 +128,10 @@ namespace Light.Data.SQLiteAdapter
 		}
 
 
-		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, IEnumerable<object> list)
 		{
 			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
-				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
+				return base.CreateCollectionParamsQuerySql (fieldName, predicate, list);
 			}
 			else {
 				throw new NotSupportedException ();
@@ -166,14 +166,14 @@ namespace Light.Data.SQLiteAdapter
 			return sb.ToString ();
 		}
 
-		public override string CreateLambdaConcatSql (params object [] values)
+		public override string CreateConcatSql (params object [] values)
 		{
 			string value1 = string.Join ("||", values);
 			string sql = string.Format ("({0})", value1);
 			return sql;
 		}
 
-		public override string CreateConcatSql (object field, object value, bool forward)
+		public override string CreateDualConcatSql (object field, object value, bool forward)
 		{
 			if (forward) {
 				return string.Format ("({0}||{1})", field, value);

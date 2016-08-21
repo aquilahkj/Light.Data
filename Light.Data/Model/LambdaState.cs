@@ -14,6 +14,9 @@ namespace Light.Data
 
 		public abstract ISelector CreateSelector (string[] fullPaths);
 
+		public abstract DataEntityMapping MainMapping {
+			get;
+		}
 
 		bool mutliQuery;
 
@@ -27,8 +30,17 @@ namespace Light.Data
 			}
 		}
 
+		bool aggregateField;
 
+		public bool AggregateField {
+			get {
+				return aggregateField;
+			}
 
+			set {
+				aggregateField = value;
+			}
+		}
 	}
 
 	enum LambdaPathType

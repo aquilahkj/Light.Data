@@ -44,6 +44,7 @@ namespace Light.Data
 			_context = dataContext;
 		}
 
+
 		JoinSelector _selector = new JoinSelector ();
 
 		QueryExpression _query;
@@ -696,7 +697,9 @@ namespace Light.Data
 			//return list;
 
 			List<K> list = new List<K> ();
-			foreach (K item in _context.QueryJoinDataEnumerable (typeof (K), _selector, _modelList, _query, _order, _region, _level)) {
+
+			DataEntityMapping _mapping = DataEntityMapping.GetEntityMapping (typeof (K));
+			foreach (K item in _context.QueryJoinData (_mapping, _selector, _modelList, _query, _order, _region, _level)) {
 				list.Add (item);
 			}
 			return list;

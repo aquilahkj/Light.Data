@@ -33,7 +33,7 @@ namespace Light.Data
 			dateTimeFormatDict.Add ("dd", "CONVERT(char(2), {0}, 103)");
 			dateTimeFormatDict.Add ("hh:mm", "CONVERT(char(5), {0}, 108)");
 
-			dateTimeFormatDict.Add ("yyyy-MM","CONVERT(char(7), {0}, 23)");
+			dateTimeFormatDict.Add ("yyyy-MM", "CONVERT(char(7), {0}, 23)");
 			dateTimeFormatDict.Add ("dd-MM", "CONVERT(char(5), {0}, 105)");
 			dateTimeFormatDict.Add ("MM-dd", "CONVERT(char(5), {0}, 110)");
 
@@ -69,18 +69,64 @@ namespace Light.Data
 		//	return havingString;
 		//}
 
-		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
+		//public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
+		//{
+		//	if (region == null) {
+		//		return base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, null);
+		//	}
+
+		//	StringBuilder sql = new StringBuilder ();
+		//	//List<DataParameter> parameters = new List<DataParameter> ();
+		//	DataParameter [] queryparameters;
+		//	DataParameter [] orderparameters;
+		//	string queryString = GetQueryString (query, out queryparameters);
+		//	string orderString = GetOrderString (order, out orderparameters);
+		//	bool distinct = false;
+		//	if (customSelect.StartsWith ("distinct ", StringComparison.OrdinalIgnoreCase)) {
+		//		distinct = true;
+		//		customSelect = customSelect.Substring (9);
+		//	}
+		//	if (region.Start == 0) {
+		//		sql.AppendFormat ("select {3}top {2} {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Size, distinct ? "distinct " : string.Empty);
+		//		if (!string.IsNullOrEmpty (queryString)) {
+		//			sql.AppendFormat (" {0}", queryString);
+		//		}
+		//		if (!string.IsNullOrEmpty (orderString)) {
+		//			sql.AppendFormat (" {0}", orderString);
+		//		}
+		//	}
+		//	else {
+		//		StringBuilder innerSQL = new StringBuilder ();
+		//		string tempCount = CreateCustomFiledName ();
+		//		string tempRowNumber = CreateCustomFiledName ();
+		//		innerSQL.AppendFormat ("select {4}top {2} {0},0 {3} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Start + region.Size, tempCount, distinct ? "distinct " : string.Empty);
+		//		if (!string.IsNullOrEmpty (queryString)) {
+		//			innerSQL.AppendFormat (" {0}", queryString);
+		//		}
+		//		if (!string.IsNullOrEmpty (orderString)) {
+		//			innerSQL.AppendFormat (" {0}", orderString);
+		//		}
+		//		sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
+		//			innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
+		//	}
+		//	DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
+		//	CommandData command = new CommandData (sql.ToString (), parameters);
+		//	command.TransParamName = true;
+		//	return command;
+		//}
+
+		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
 		{
 			if (region == null) {
-				return base.CreateSelectBaseCommand (mapping, customSelect, dataParameters, query, order, null);
+				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null, state);
 			}
 
 			StringBuilder sql = new StringBuilder ();
 			//List<DataParameter> parameters = new List<DataParameter> ();
-			DataParameter [] queryparameters;
-			DataParameter [] orderparameters;
-			string queryString = GetQueryString (query, out queryparameters);
-			string orderString = GetOrderString (order, out orderparameters);
+			//DataParameter [] queryparameters;
+			//DataParameter [] orderparameters;
+			//string queryString = GetQueryString (query, out queryparameters);
+			//string orderString = GetOrderString (order, out orderparameters);
 			bool distinct = false;
 			if (customSelect.StartsWith ("distinct ", StringComparison.OrdinalIgnoreCase)) {
 				distinct = true;
@@ -88,11 +134,11 @@ namespace Light.Data
 			}
 			if (region.Start == 0) {
 				sql.AppendFormat ("select {3}top {2} {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Size, distinct ? "distinct " : string.Empty);
-				if (!string.IsNullOrEmpty (queryString)) {
-					sql.AppendFormat (" {0}", queryString);
+				if (query != null) {
+					sql.Append (GetQueryString (query, false, state));
 				}
-				if (!string.IsNullOrEmpty (orderString)) {
-					sql.AppendFormat (" {0}", orderString);
+				if (order != null) {
+					sql.Append (GetOrderString (order, false, state));
 				}
 			}
 			else {
@@ -100,42 +146,41 @@ namespace Light.Data
 				string tempCount = CreateCustomFiledName ();
 				string tempRowNumber = CreateCustomFiledName ();
 				innerSQL.AppendFormat ("select {4}top {2} {0},0 {3} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Start + region.Size, tempCount, distinct ? "distinct " : string.Empty);
-				if (!string.IsNullOrEmpty (queryString)) {
-					innerSQL.AppendFormat (" {0}", queryString);
+				if (query != null) {
+					sql.Append (GetQueryString (query, false, state));
 				}
-				if (!string.IsNullOrEmpty (orderString)) {
-					innerSQL.AppendFormat (" {0}", orderString);
+				if (order != null) {
+					sql.Append (GetOrderString (order, false, state));
 				}
 				sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
 					innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
 			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
+			CommandData command = new CommandData (sql.ToString ());
 			command.TransParamName = true;
 			return command;
 		}
 
-		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
-		{
-			if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
-				return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
-			}
-			string op = GetQueryCollectionPredicate (predicate);
-			if (dataParameters.Count == 0) {
-				throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
-			}
-			int i = 0;
-			StringBuilder sb = new StringBuilder ();
-			sb.AppendFormat ("{0} {1} (", fieldName, op);
-			foreach (DataParameter dataParameter in dataParameters) {
-				if (i > 0)
-					sb.Append (" union all ");
-				sb.AppendFormat ("select {0}", dataParameter.ParameterName);
-				i++;
-			}
-			sb.Append (")");
-			return sb.ToString ();
-		}
+		//public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
+		//{
+		//	if (predicate == QueryCollectionPredicate.In || predicate == QueryCollectionPredicate.NotIn) {
+		//		return base.CreateCollectionParamsQuerySql (fieldName, predicate, dataParameters);
+		//	}
+		//	string op = GetQueryCollectionPredicate (predicate);
+		//	if (dataParameters.Count == 0) {
+		//		throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
+		//	}
+		//	int i = 0;
+		//	StringBuilder sb = new StringBuilder ();
+		//	sb.AppendFormat ("{0} {1} (", fieldName, op);
+		//	foreach (DataParameter dataParameter in dataParameters) {
+		//		if (i > 0)
+		//			sb.Append (" union all ");
+		//		sb.AppendFormat ("select {0}", dataParameter.ParameterName);
+		//		i++;
+		//	}
+		//	sb.Append (")");
+		//	return sb.ToString ();
+		//}
 
 		public override string CreateAvgSql (object fieldName, bool isDistinct)
 		{

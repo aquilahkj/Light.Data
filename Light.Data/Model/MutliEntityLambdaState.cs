@@ -10,7 +10,9 @@ namespace Light.Data
 
 		readonly Dictionary<string, string> aliasDict = new Dictionary<string, string> ();
 
-		readonly Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
+		//readonly Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
+
+		readonly DataEntityMapping firstMapping = null;
 
 		public MutliEntityLambdaState (ICollection<ParameterExpression> paramters)
 		{
@@ -19,9 +21,19 @@ namespace Light.Data
 				string name = parameter.Name;
 				Type type = parameter.Type;
 				DataEntityMapping entityMapping = DataEntityMapping.GetEntityMapping (type);
+				if (firstMapping != null) {
+					firstMapping = entityMapping;
+				}
 				mapDict [name] = entityMapping.GetRelationMap ();
 				aliasDict [name] = "T" + index;
 				index++;
+			}
+
+		}
+
+		public override DataEntityMapping MainMapping {
+			get {
+				return firstMapping;
 			}
 		}
 
@@ -50,9 +62,6 @@ namespace Light.Data
 				string aliasTableName = aliasDict [name];
 				info.AliasTableName = aliasTableName;
 				return info;
-				//AliasDataFieldInfo alias = new AliasDataFieldInfo (info, string.Format ("{0}_{1}", aliasTableName, info.FieldName));
-				//alias.AliasTableName = aliasTableName;
-				//return alias;
 			}
 			else {
 				throw new LambdaParseException ("");

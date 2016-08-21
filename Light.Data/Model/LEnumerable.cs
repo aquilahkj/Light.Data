@@ -18,7 +18,7 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			foreach (T item in _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level)) {
+			foreach (T item in _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -29,7 +29,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -289,12 +289,12 @@ namespace Light.Data
 			}
 		}
 
-		private object Aggregate (BasicFieldInfo field, AggregateType aggregateType, bool isDistinct)
+		private object Aggregate (DataFieldInfo field, AggregateType aggregateType, bool isDistinct)
 		{
 			if (!_mapping.Equals (field.TableMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			return _context.Aggregate (field.DataField, aggregateType, _query, isDistinct, _level);
+			return _context.Aggregate (field, aggregateType, _query, isDistinct, _level);
 		}
 
 		/// <summary>
@@ -302,7 +302,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>count value.</returns>
 		/// <param name="field">Field.</param>
-		public int CountField (BasicFieldInfo field)
+		public int CountField (DataFieldInfo field)
 		{
 			return CountField (field, false);
 		}
@@ -313,7 +313,7 @@ namespace Light.Data
 		/// <returns>count value.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		public int CountField (BasicFieldInfo field, bool isDistinct)
+		public int CountField (DataFieldInfo field, bool isDistinct)
 		{
 			return Convert.ToInt32 (Aggregate (field, AggregateType.COUNT, isDistinct));
 		}
@@ -323,7 +323,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>max value.</returns>
 		/// <param name="field">Field.</param>
-		public object Max (BasicFieldInfo field)
+		public object Max (DataFieldInfo field)
 		{
 			return Aggregate (field, AggregateType.MAX, false);
 		}
@@ -333,7 +333,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>min value.</returns>
 		/// <param name="field">Field.</param>
-		public object Min (BasicFieldInfo field)
+		public object Min (DataFieldInfo field)
 		{
 			return Aggregate (field, AggregateType.MIN, false);
 		}
@@ -343,7 +343,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>max value.</returns>
 		/// <param name="field">Field.</param>
-		public object Avg (BasicFieldInfo field)
+		public object Avg (DataFieldInfo field)
 		{
 			return Avg (field, false);
 		}
@@ -354,7 +354,7 @@ namespace Light.Data
 		/// <returns>avg value.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		public object Avg (BasicFieldInfo field, bool isDistinct)
+		public object Avg (DataFieldInfo field, bool isDistinct)
 		{
 			return Aggregate (field, AggregateType.AVG, isDistinct);
 		}
@@ -364,7 +364,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>sum value.</returns>
 		/// <param name="field">Field.</param>
-		public object Sum (BasicFieldInfo field)
+		public object Sum (DataFieldInfo field)
 		{
 			return Sum (field, false);
 		}
@@ -375,7 +375,7 @@ namespace Light.Data
 		/// <returns>sum value.</returns>
 		/// <param name="field">Field.</param>
 		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		public object Sum (BasicFieldInfo field, bool isDistinct)
+		public object Sum (DataFieldInfo field, bool isDistinct)
 		{
 			return Aggregate (field, AggregateType.SUM, isDistinct);
 		}
@@ -386,7 +386,7 @@ namespace Light.Data
 		/// <returns>instance.</returns>
 		public T Single ()
 		{
-			return _context.SelectSingle<T> (_mapping, _query, _order, 0, _level);
+			return _context.SelectSingle (_mapping, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -396,7 +396,7 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.SelectSingle<T> (_mapping, _query, _order, index, _level);
+			return _context.SelectSingle (_mapping, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>
@@ -432,7 +432,7 @@ namespace Light.Data
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			return _context.QueryColumeEnumerable (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level);
+			return _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level);
 		}
 
 		/// <summary>
@@ -458,7 +458,12 @@ namespace Light.Data
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			return _context.QueryColumeList<K> (fieldInfo, _query, _order, _region, isDistinct, _level);
+			List<K> list = new List<K> ();
+			foreach (K item in _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level)) {
+				list.Add (item);
+			}
+			return list;
+			//return _context.QueryColumeList<K> (fieldInfo, _query, _order, _region, isDistinct, _level);
 		}
 
 		/// <summary>
@@ -491,7 +496,7 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable ie = _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level);
+			IEnumerable ie = _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level);
 			foreach (T item in ie) {
 				list.Add (item);
 			}

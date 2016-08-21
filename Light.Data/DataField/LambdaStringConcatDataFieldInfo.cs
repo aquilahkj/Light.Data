@@ -17,7 +17,7 @@ namespace Light.Data
 			this._values = values;
 		}
 
-		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string sql = null;
 
@@ -28,7 +28,7 @@ namespace Light.Data
 				DataParameter [] dataParameters1 = null;
 				DataFieldInfo info1 = item as DataFieldInfo;
 				if (!Object.Equals (info1, null)) {
-					obj1 = info1.CreateDataFieldSql (factory, isFullName, out dataParameters1);
+					obj1 = info1.CreateSqlString (factory, isFullName, out dataParameters1);
 				}
 				else {
 					obj1 = LambdaExpressionExtend.ConvertLambdaObject (item);
@@ -48,8 +48,39 @@ namespace Light.Data
 				}
 				objectList.Add (obj1);
 			}
-			sql = factory.CreateLambdaConcatSql (objectList.ToArray());
+			sql = factory.CreateConcatSql (objectList.ToArray());
 			dataParameters = DataParameter.ConcatDataParameters (parameterList.ToArray());
+			return sql;
+		}
+
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string sql = state.GetDataSql (this, isFullName);
+			if (sql != null) {
+				return sql;
+			}
+
+			List<object> objectList = new List<object> ();
+			foreach (object item in _values) {
+				object obj1;
+				DataFieldInfo info1 = item as DataFieldInfo;
+				if (!Object.Equals (info1, null)) {
+					obj1 = info1.CreateSqlString (factory, isFullName, state);
+				}
+				else {
+					obj1 = LambdaExpressionExtend.ConvertLambdaObject (item);
+					if (obj1 == null) {
+						obj1 = string.Empty;
+					}
+					else if (!(obj1 is string)) {
+						obj1 = obj1.ToString ();
+					}
+					obj1 = state.AddDataParameter (obj1);
+				}
+				objectList.Add (obj1);
+			}
+			sql = factory.CreateConcatSql (objectList.ToArray ());
+			state.SetDataSql (this, isFullName, sql);
 			return sql;
 		}
 	}

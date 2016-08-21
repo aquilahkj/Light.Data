@@ -45,10 +45,18 @@ namespace Light.Data
 		{
 			DataParameter [] dataParameters1 = null;
 			DataParameter [] dataParameters2 = null;
-			string leftFieldSql = leftField.CreateDataFieldSql (factory, true, out dataParameters1);
-			string rightFieldSql = rightField.CreateDataFieldSql (factory, true, out dataParameters2);
+			string leftFieldSql = leftField.CreateSqlString (factory, true, out dataParameters1);
+			string rightFieldSql = rightField.CreateSqlString (factory, true, out dataParameters2);
 			string sql = factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+			return sql;
+		}
+
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string leftFieldSql = leftField.CreateSqlString (factory, true, state);
+			string rightFieldSql = rightField.CreateSqlString (factory, true, state);
+			string sql = factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 			return sql;
 		}
 

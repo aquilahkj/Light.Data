@@ -99,7 +99,7 @@ namespace Light.Data
 					selectList [index] = aliasInfo.CreateAliasDataFieldSql (factory, true, out dataParameters1);
 				}
 				else {
-					selectList [index] = fieldInfo.CreateDataFieldSql (factory, true, out dataParameters1);
+					selectList [index] = fieldInfo.CreateSqlString (factory, true, out dataParameters1);
 				}
 				if (dataParameters1 != null && dataParameters1.Length > 0) {
 					if (innerParameters == null) {
@@ -137,6 +137,24 @@ namespace Light.Data
 				index++;
 			}
 			return fileds;
+		}
+
+		public string CreateSelectString (CommandFactory factory, CreateSqlState state)
+		{
+			string [] selectList = new string [this.infoDict.Count];
+			int index = 0;
+			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
+				IAliasDataFieldInfo aliasInfo = fieldInfo as IAliasDataFieldInfo;
+				if (!Object.Equals (aliasInfo, null)) {
+					selectList [index] = aliasInfo.CreateAliasDataFieldSql (factory, true, state);
+				}
+				else {
+					selectList [index] = fieldInfo.CreateSqlString (factory, true, state);
+				}
+				index++;
+			}
+			string customSelect = string.Join (",", selectList);
+			return customSelect;
 		}
 	}
 }

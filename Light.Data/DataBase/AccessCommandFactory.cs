@@ -218,10 +218,17 @@ namespace Light.Data
 		/// <param name="mapping">数据表映射</param>
 		/// <param name="query">查询表达式</param>
 		/// <returns></returns>
-		public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
+		public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query, CreateSqlState state)
 		{
-			return this.CreateSelectBaseCommand (mapping, "top 1 1", null, query, null, null);
+			return this.CreateSelectBaseCommand (mapping, "top 1 1", query, null, null, state);
 		}
+
+
+		//public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
+		//{
+		//	return this.CreateSelectBaseCommand (mapping, "top 1 1", null, query, null, null);
+		//}
+
 
 		public override string CreateDataTableSql (string tableName)
 		{

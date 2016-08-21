@@ -65,7 +65,12 @@ namespace Light.Data.Demo
 
 			TeUserWithLevel2 s = new TeUserWithLevel2 ();
 
-			var ll = context.Query<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address & (x.Area > 1 ? x.Account : x.Address).Length > 10 & x.Email.Length > 0 ? x.DeleteFlag : x.Area > 0 & x.Email.Length > 0 ? x.Account.Length > 0 ? x.DeleteFlag : !x.DeleteFlag : x.CheckPoint > 0).OrderBy (x => x.Address)
+			var ll = context.Query<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address & (x.Area > 1 ? x.Account : x.Address).Length > 10 & (x.Email.Length > 0 ? 
+			                                                   x.DeleteFlag : 
+			                                                   x.Area > 0 & x.Email.Length > 0 
+			                                                   		? x.Account.Length > 0 
+			                                                   			? x.DeleteFlag : 
+			                                             !x.DeleteFlag : x.CheckPoint > 0)).OrderBy (x => x.Address)
 						  .Select (x => new {
 							  x.Id,
 							  x.Account,
@@ -91,8 +96,8 @@ namespace Light.Data.Demo
 
 			var df = context.Query<TeUser> ().GroupBy (x => new SGroub {
 				Date = x.RegTime.Date,
-				Count = Function.Count (x.Address, x.DeleteFlag)
-			}).ToList ();
+				Count = Function.Count (x.Address + "1111", x.Gender == GenderType.Female)
+			}).Having (x => x.Count + 10 > 11).OrderBy (x => x.Count).ToList ();
 
 			Console.ReadLine ();
 		}

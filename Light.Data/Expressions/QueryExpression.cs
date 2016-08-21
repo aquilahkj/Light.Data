@@ -44,13 +44,22 @@ namespace Light.Data
 				dataParameters = dp2;
 			}
 			else {
-				List<DataParameter> list = new List<DataParameter> ();
-				list.AddRange (dp1);
-				list.AddRange (dp2);
-				dataParameters = list.ToArray ();
+				dataParameters = new DataParameter [dp1.Length + dp2.Length];
+				dp1.CopyTo (dataParameters, 0);
+				dp2.CopyTo (dataParameters, dp1.Length);
 			}
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
+
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
+
+			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
+
+			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
+		}
+
 
 		/// <summary>
 		/// Catch the specified expression1, operatorType and expression2.
@@ -83,6 +92,8 @@ namespace Light.Data
 			newExpression.mutliQuery = expression1.mutliQuery | expression2.mutliQuery;
 			return newExpression;
 		}
+
+
 
 		/// <summary>
 		/// And the specified expression1 and expression2.

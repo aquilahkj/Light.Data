@@ -39,7 +39,7 @@ namespace Light.Data
 
 		public IEnumerator<K> GetEnumerator ()
 		{
-			foreach (object item in _context.QueryDataMappingEnumerable (_type, _selector, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryMappingData (_type, _selector, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item);
 				yield return obj as K;
 			}
@@ -47,7 +47,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			foreach (object item in _context.QueryDataMappingEnumerable (_type, _selector, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryMappingData (_type, _selector, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item);
 				yield return obj;
 			}
@@ -56,7 +56,7 @@ namespace Light.Data
 		public List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			foreach (object item in _context.QueryDataMappingEnumerable (_type, _selector, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryMappingData (_type, _selector, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item);
 				list.Add (obj as K);
 			}

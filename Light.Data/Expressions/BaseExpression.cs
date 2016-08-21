@@ -23,5 +23,7 @@ namespace Light.Data
 		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
 		internal abstract string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters);
+
+		internal abstract string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state);
 	}
 }

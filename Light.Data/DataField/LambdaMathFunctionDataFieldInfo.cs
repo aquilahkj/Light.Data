@@ -28,7 +28,7 @@ namespace Light.Data
 			_argsObjects = argsObjects;
 		}
 
-		internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
 			string sql = null;
 
@@ -39,7 +39,7 @@ namespace Light.Data
 				DataParameter [] dataParameters1 = null;
 				DataFieldInfo info1 = item as DataFieldInfo;
 				if (!Object.Equals (info1, null)) {
-					obj1 = info1.CreateDataFieldSql (factory, isFullName, out dataParameters1);
+					obj1 = info1.CreateSqlString (factory, isFullName, out dataParameters1);
 				}
 				else {
 					obj1 = LambdaExpressionExtend.ConvertLambdaObject (item);
@@ -124,7 +124,96 @@ namespace Light.Data
 			return sql;
 		}
 
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string sql = state.GetDataSql (this, isFullName);
+			if (sql != null) {
+				return sql;
+			}
 
+			List<object> objectList = new List<object> ();
+			foreach (object item in _argsObjects) {
+				object obj1;
+				DataFieldInfo info1 = item as DataFieldInfo;
+				if (!Object.Equals (info1, null)) {
+					obj1 = info1.CreateSqlString (factory, isFullName, state);
+				}
+				else {
+					obj1 = LambdaExpressionExtend.ConvertLambdaObject (item);
+					obj1 = state.AddDataParameter (obj1);
+				}
+				objectList.Add (obj1);
+			}
+			switch (_function) {
+			case MathFunction.Abs:
+				sql = factory.CreateAbsSql (objectList [0]);
+				break;
+			case MathFunction.Sign:
+				sql = factory.CreateSignSql (objectList [0]);
+				break;
+			case MathFunction.Sin:
+				sql = factory.CreateSinSql (objectList [0]);
+				break;
+			case MathFunction.Cos:
+				sql = factory.CreateCosSql (objectList [0]);
+				break;
+			case MathFunction.Tan:
+				sql = factory.CreateTanSql (objectList [0]);
+				break;
+			case MathFunction.Atan:
+				sql = factory.CreateAtanSql (objectList [0]);
+				break;
+			case MathFunction.ASin:
+				sql = factory.CreateSinSql (objectList [0]);
+				break;
+			case MathFunction.ACos:
+				sql = factory.CreateCosSql (objectList [0]);
+				break;
+			case MathFunction.Atan2:
+				sql = factory.CreateAtan2Sql (objectList [0], objectList [1]);
+				break;
+			case MathFunction.Ceiling:
+				sql = factory.CreateSinSql (objectList [0]);
+				break;
+			case MathFunction.Floor:
+				sql = factory.CreateFloorSql (objectList [0]);
+				break;
+			case MathFunction.Round:
+				sql = factory.CreateRoundSql (objectList [0], objectList [1] != null ? objectList [1] : 0);
+				break;
+			case MathFunction.Truncate:
+				sql = factory.CreateTruncateSql (objectList [0]);
+				break;
+			case MathFunction.Log:
+				if (objectList.Count == 2) {
+					sql = factory.CreateLogSql (objectList [0], objectList [1]);
+				}
+				else {
+					sql = factory.CreateLogSql (objectList [0]);
+				}
+				break;
+			case MathFunction.Log10:
+				sql = factory.CreateLog10Sql (objectList [0]);
+				break;
+			case MathFunction.Exp:
+				sql = factory.CreateExpSql (objectList [0]);
+				break;
+			case MathFunction.Pow:
+				sql = factory.CreatePowSql (objectList [0], objectList [1]);
+				break;
+			case MathFunction.Sqrt:
+				sql = factory.CreateSqrtSql (objectList [0]);
+				break;
+			case MathFunction.Max:
+				sql = factory.CreateMaxSql (objectList [0], objectList [1]);
+				break;
+			case MathFunction.Min:
+				sql = factory.CreateMinSql (objectList [0], objectList [1]);
+				break;
+			}
+			state.SetDataSql (this, isFullName, sql);
+			return sql;
+		}
 
 
 

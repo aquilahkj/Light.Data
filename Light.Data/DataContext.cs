@@ -413,8 +413,9 @@ namespace Light.Data
 		internal int DeleteMass (DataTableEntityMapping mapping, QueryExpression query)
 		{
 			int rInt;
-			CommandData commandData = _dataBase.Factory.CreateDeleteMassCommand (mapping, query);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateDeleteMassCommand (mapping, query, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -454,8 +455,9 @@ namespace Light.Data
 		internal int UpdateMass (DataTableEntityMapping mapping, UpdateSetValue [] updates, QueryExpression query)
 		{
 			int rInt;
-			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (mapping, updates, query);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (mapping, updates, query, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -567,8 +569,9 @@ namespace Light.Data
 			DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (insertType);
 			DataTableEntityMapping selectMapping = DataEntityMapping.GetTableMapping (selectType);
 			int rInt;
-			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, insertFields, selectMapping, selectFields, query, order);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, insertFields, selectMapping, selectFields, query, order, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				rInt = ExecuteNonQuery (command, SafeLevel.Default);
 			}
 			return rInt;
@@ -600,7 +603,7 @@ namespace Light.Data
 				query = QueryExpression.And (query, info == primaryKeys [i]);
 				i++;
 			}
-			return SelectSingle<T> (mapping, query, null, 0, SafeLevel.None);
+			return SelectSingle (mapping, query, null, 0, SafeLevel.None) as T;
 		}
 
 		/// <summary>
@@ -660,7 +663,7 @@ namespace Light.Data
 			}
 			DataFieldInfo idfield = new DataFieldInfo (dtmapping.IdentityField);
 			QueryExpression query = idfield == id;
-			return SelectSingle<T> (dtmapping, query, null, 0, SafeLevel.None);
+			return SelectSingle (dtmapping, query, null, 0, SafeLevel.None) as T;
 		}
 
 		/// <summary>
@@ -710,7 +713,7 @@ namespace Light.Data
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
 
-		internal IEnumerable QueryDataMappingEnumerable (Type type, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable QueryMappingData (Type type, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			RelationMap relationMap = mapping.GetRelationMap ();
@@ -718,6 +721,7 @@ namespace Light.Data
 				selector = relationMap.GetDefaultSelector ();
 			}
 			CommandData commandData;
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			if (mapping.HasJoinRelateModel) {
 				QueryExpression subQuery = null;
 				QueryExpression mainQuery = null;
@@ -740,100 +744,123 @@ namespace Light.Data
 					}
 				}
 				List<JoinModel> models = relationMap.CreateJoinModels (subQuery, subOrder);
-				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder, region);
+				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder, region, state);
 			}
 			else {
-				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, order, region);
+				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, order, region, state);
 			}
-			IDbCommand command = commandData.CreateCommand (_dataBase);
-			QueryState state = new QueryState ();
-			state.SetRelationMap (relationMap);
-			state.SetSelector (selector);
-			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
+			IDbCommand command = commandData.CreateCommand (_dataBase, state);
+			QueryState queryState = new QueryState ();
+			queryState.SetRelationMap (relationMap);
+			queryState.SetSelector (selector);
+			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
 		}
 
-		internal IEnumerable QueryDynamicJoinDataEnumerable (Type type, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		{
-			Tuple<string, DataEntityMapping> [] array = new Tuple<string, DataEntityMapping> [models.Count];
-			for (int i = 0; i < models.Count; i++) {
-				JoinModel model = models [i];
-				Tuple<string, DataEntityMapping> tuple = new Tuple<string, DataEntityMapping> (model.AliasTableName, model.Mapping);
-				array [i] = tuple;
-			}
-			DynamicMultiDataMapping mapping = new DynamicMultiDataMapping (type, array);
-			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region);
-			IDbCommand command = commandData.CreateCommand (_dataBase);
-			QueryState state = new QueryState ();
-			state.SetSelector (selector);
-			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
-		}
 
-		//internal List<T> QueryDataList<T> (QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//	where T : class, new()
+
+		//internal IEnumerable QueryDynamicJoinData (Type type, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		//{
-		//	DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
-		//	bool innerRegion = IsInnerPager && !mapping.HasJoinRelateModel;
-		//	CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, order, innerRegion ? region : null);
-		//	List<T> list = new List<T> ();
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//		IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, innerRegion ? null : region, level, commandData.State);
-		//		list.AddRange (ie);
+		//	Tuple<string, DataEntityMapping> [] array = new Tuple<string, DataEntityMapping> [models.Count];
+		//	for (int i = 0; i < models.Count; i++) {
+		//		JoinModel model = models [i];
+		//		Tuple<string, DataEntityMapping> tuple = new Tuple<string, DataEntityMapping> (model.AliasTableName, model.Mapping);
+		//		array [i] = tuple;
 		//	}
-		//	return list;
+		//	DynamicMultiDataMapping mapping = new DynamicMultiDataMapping (type, array);
+		//	CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+		//	CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region, state);
+		//	IDbCommand command = commandData.CreateCommand (_dataBase, state);
+		//	QueryState queryState = new QueryState ();
+		//	queryState.SetSelector (selector);
+		//	return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
 		//}
 
-		internal IEnumerable QueryJoinDataEnumerable (Type type, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		{
-			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
-			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region);
-			IDbCommand command = commandData.CreateCommand (_dataBase);
-			QueryState state = new QueryState ();
-			state.SetSelector (selector);
-			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
-		}
 
-		//internal List<T> QueryJoinDataList<T> (DataMapping mapping, JoinSelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//	where T : class, new()
+
+		//internal IEnumerable QueryDataMappingEnumerable (Type type, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		//{
-		//	CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, modelList, query, order);
-		//	List<T> list = new List<T> ();
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//		IEnumerable<T> ie = QueryDataMappingReader<T> (mapping, command, region, level, commandData.State);
-		//		list.AddRange (ie);
+		//	DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
+		//	RelationMap relationMap = mapping.GetRelationMap ();
+		//	if (selector == null) {
+		//		selector = relationMap.GetDefaultSelector ();
 		//	}
-		//	return list;
+		//	CommandData commandData;
+		//	if (mapping.HasJoinRelateModel) {
+		//		QueryExpression subQuery = null;
+		//		QueryExpression mainQuery = null;
+		//		OrderExpression subOrder = null;
+		//		OrderExpression mainOrder = null;
+		//		if (query != null) {
+		//			if (query.MutliQuery) {
+		//				mainQuery = query;
+		//			}
+		//			else {
+		//				subQuery = query;
+		//			}
+		//		}
+		//		if (order != null) {
+		//			if (order.MutliOrder) {
+		//				mainOrder = order;
+		//			}
+		//			else {
+		//				subOrder = order;
+		//			}
+		//		}
+		//		List<JoinModel> models = relationMap.CreateJoinModels (subQuery, subOrder);
+		//		commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder, region);
+		//	}
+		//	else {
+		//		commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, order, region);
+		//	}
+		//	IDbCommand command = commandData.CreateCommand (_dataBase);
+		//	QueryState state = new QueryState ();
+		//	state.SetRelationMap (relationMap);
+		//	state.SetSelector (selector);
+		//	return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
 		//}
 
-		internal IEnumerable QueryColumeEnumerable (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		internal IEnumerable QueryJoinData (DataMapping mapping, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
-			IDbCommand command = commandData.CreateCommand (_dataBase);
+			//DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region, state);
+			IDbCommand command = commandData.CreateCommand (_dataBase, state);
+			QueryState queryState = new QueryState ();
+			queryState.SetSelector (selector);
+			return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
+		}
+
+		internal IEnumerable QuerySingleColume (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		{
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null, state);
+			IDbCommand command = commandData.CreateCommand (_dataBase, state);
 			DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
 			return QueryDataReader (define, command, region, level, null);
 		}
 
-		internal List<K> QueryColumeList<K> (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
-		{
-			Type outputType = typeof (K);
-			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
-			List<K> list = new List<K> ();
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
-				IEnumerable ie = QueryDataReader (define, command, region, level, null);
-				foreach (K obj in ie) {
-					list.Add (obj);
-				}
-			}
-			return list;
-		}
+		//internal List<K> QueryColumeList<K> (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		//{
+		//	Type outputType = typeof (K);
+		//	CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
+		//	List<K> list = new List<K> ();
+		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//		DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
+		//		IEnumerable ie = QueryDataReader (define, command, region, level, null);
+		//		foreach (K obj in ie) {
+		//			list.Add (obj);
+		//		}
+		//	}
+		//	return list;
+		//}
 
-		internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-		{
-			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-				return QueryDataTable (command, null, level);
-			}
-		}
+		//internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		//{
+		//	CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (mapping, groupbys, functions, query, having, order);
+		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+		//		return QueryDataTable (command, null, level);
+		//	}
+		//}
 
 		//internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		//	where T : class, new()
@@ -868,17 +895,26 @@ namespace Light.Data
 
 		internal IEnumerable QueryDynamicAggregateEnumerable (DataEntityMapping mapping, DataMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
-			IDbCommand command = commandData.CreateCommand (_dataBase);
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (mapping, groupbys, functions, query, having, order, state);
+			IDbCommand command = commandData.CreateCommand (_dataBase, state);
 			return QueryDataMappingReader (amapping, command, null, level, commandData.State);
 		}
 
-		internal T SelectSingle<T> (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
-			where T : class, new()
+
+		internal IEnumerable QueryDynamicAggregateEnumerable (AggregateGroup group, QueryExpression query, QueryExpression having, OrderExpression order, SafeLevel level)
 		{
-			T target = default (T);
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (group.EntityMapping, group.GetAggregateDataFieldInfos (), query, having, order, state);
+			IDbCommand command = commandData.CreateCommand (_dataBase, state);
+			return QueryDataMappingReader (group.AggregateMapping, command, null, level, commandData.State);
+		}
+
+		internal object SelectSingle (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		{
+			object target = null;
 			Region region = new Region (index, 1);
-			foreach (T obj in QueryDataMappingEnumerable (typeof (T), null, query, order, region, level)) {
+			foreach (object obj in QueryMappingData (mapping.ObjectType, null, query, order, region, level)) {
 				target = obj;
 				break;
 			}
@@ -887,24 +923,27 @@ namespace Light.Data
 
 		internal object AggregateCount (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateAggregateCountCommand (mapping, query);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateAggregateCountCommand (mapping, query, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				return ExecuteScalar (command, level);
 			}
 		}
 
 		internal object AggregateJoinTableCount (List<JoinModel> models, QueryExpression query, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateAggregateJoinCountCommand (models, query);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateAggregateJoinCountCommand (models, query, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				return ExecuteScalar (command, level);
 			}
 		}
 
-		internal object Aggregate (DataFieldMapping fieldMapping, AggregateType aggregateType, QueryExpression query, bool distinct, SafeLevel level)
+		internal object Aggregate (DataFieldInfo field, AggregateType aggregateType, QueryExpression query, bool distinct, SafeLevel level)
 		{
-			CommandData commandData = _dataBase.Factory.CreateAggregateCommand (fieldMapping, aggregateType, query, distinct);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateAggregateFunctionCommand (field, aggregateType, query, distinct, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				object obj = ExecuteScalar (command, level);
 				if (Object.Equals (obj, DBNull.Value)) {
 					return null;
@@ -919,8 +958,9 @@ namespace Light.Data
 		{
 			bool exists = false;
 			Region region = new Region (0, 1);
-			CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query);
-			using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateExistsCommand (mapping, query, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof (Int32));
 				foreach (object obj in QueryDataReader (pm, command, region, level, null)) {
 					exists = true;
@@ -1422,11 +1462,11 @@ namespace Light.Data
 		/// Queries the collection relate enumerable.
 		/// </summary>
 		/// <returns>The collection relate enumerable.</returns>
+		/// <param name="type">Type.</param>
 		/// <param name="selector">Selector.</param>
 		/// <param name="query">Query.</param>
 		/// <param name="owner">Owner.</param>
 		/// <param name="fieldPaths">Field paths.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		internal IEnumerable QueryCollectionRelateEnumerable (Type type, ISelector selector, QueryExpression query, object owner, string [] fieldPaths)
 		{
 			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
@@ -1435,87 +1475,26 @@ namespace Light.Data
 				selector = relationMap.GetDefaultSelector ();
 			}
 			CommandData commandData;
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			if (mapping.HasJoinRelateModel) {
 				List<JoinModel> models = relationMap.CreateJoinModels (query, null);
-				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, null, null, null);
+				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, null, null, null, state);
 			}
 			else {
-				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, null, null);
+				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, null, null, state);
 
 			}
-			IDbCommand command = commandData.CreateCommand (_dataBase);
-			QueryState state = new QueryState ();
-			state.SetRelationMap (relationMap);
-			state.SetSelector (selector);
+			IDbCommand command = commandData.CreateCommand (_dataBase, state);
+			QueryState queryState = new QueryState ();
+			queryState.SetRelationMap (relationMap);
+			queryState.SetSelector (selector);
 			if (fieldPaths != null && fieldPaths.Length > 0) {
 				foreach (string fieldPath in fieldPaths) {
-					state.SetExtendData (fieldPath, owner);
+					queryState.SetExtendData (fieldPath, owner);
 				}
 			}
-			return QueryDataMappingReader (mapping, command, null, SafeLevel.Default, state);
+			return QueryDataMappingReader (mapping, command, null, SafeLevel.Default, queryState);
 		}
-
-
-		//internal IEnumerable<T> QueryCollectionRelateEnumerable<T> (ISelector selector, QueryExpression query, object owner, string [] fieldPaths)
-		//	where T : class, new()
-		//{
-		//	DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (T));
-		//	RelationMap relationMap = mapping.GetRelationMap ();
-		//	if (selector == null) {
-		//		selector = relationMap.GetDefaultSelector ();
-		//	}
-		//	CommandData commandData;
-		//	if (mapping.HasJoinRelateModel) {
-		//		List<JoinModel> models = relationMap.CreateJoinModels (query, null);
-		//		commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, null, null, null);
-		//	}
-		//	else {
-		//		commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, null, null);
-
-		//	}
-		//	IDbCommand command = commandData.CreateCommand (_dataBase);
-		//	QueryState state = new QueryState ();
-		//	state.SetRelationMap (relationMap);
-		//	state.SetSelector (selector);
-		//	if (fieldPaths != null && fieldPaths.Length > 0) {
-		//		foreach (string fieldPath in fieldPaths) {
-		//			state.SetExtendData (fieldPath, owner);
-		//		}
-		//	}
-		//	return QueryDataMappingReader<T> (mapping, command, null, SafeLevel.Default, state);
-		//}
-
-		//internal object SelectFirst (DataEntityMapping mapping, QueryExpression query, object state)
-		//{
-		//	object target;
-		//	Region region = new Region (0, 1);
-		//	bool innerRegion = IsInnerPager && mapping.HasJoinRelateModel;
-		//	CommandData commandData = _dataBase.Factory.CreateSelectCommand (mapping, query, null, innerRegion ? region : null);
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//		target = QueryRelateDataMappingReader (mapping, command, state);
-		//	}
-		//	return target;
-		//}
-
-		//internal virtual object QueryRelateDataMappingReader (DataMapping source, IDbCommand dbcommand, object state)
-		//{
-		//	object target = null;
-		//	using (TransactionConnection transaction = CreateTransactionConnection (SafeLevel.None)) {
-		//		transaction.Open ();
-		//		transaction.SetupCommand (dbcommand);
-		//		OutputCommand ("QueryRelateDataMappingReader", dbcommand, SafeLevel.None);
-		//		using (IDataReader reader = dbcommand.ExecuteReader ()) {
-		//			while (reader.Read ()) {
-		//				object item = source.LoadData (this, reader, state);
-		//				target = item;
-		//				dbcommand.Cancel ();
-		//				break;
-		//			}
-		//		}
-		//		transaction.Commit ();
-		//	}
-		//	return target;
-		//}
 
 		#endregion
 

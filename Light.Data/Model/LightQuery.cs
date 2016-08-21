@@ -18,7 +18,7 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			foreach (T item in _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level)) {
+			foreach (T item in _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -29,7 +29,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -310,13 +310,13 @@ namespace Light.Data
 			}
 		}
 
-		private object Aggregate (BasicFieldInfo field, AggregateType aggregateType, bool isDistinct)
-		{
-			if (!_mapping.Equals (field.TableMapping)) {
-				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-			}
-			return _context.Aggregate (field.DataField, aggregateType, _query, isDistinct, _level);
-		}
+		//private object Aggregate (BasicFieldInfo field, AggregateType aggregateType, bool isDistinct)
+		//{
+		//	if (!_mapping.Equals (field.TableMapping)) {
+		//		throw new LightDataException (RE.FieldIsNotMatchDataMapping);
+		//	}
+		//	return _context.Aggregate (field.DataField, aggregateType, _query, isDistinct, _level);
+		//}
 
 		///// <summary>
 		///// Get datas count of the field.
@@ -409,7 +409,7 @@ namespace Light.Data
 		/// <returns>instance.</returns>
 		public T Single ()
 		{
-			return _context.SelectSingle<T> (_mapping, _query, _order, 0, _level);
+			return _context.SelectSingle (_mapping, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -419,7 +419,7 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.SelectSingle<T> (_mapping, _query, _order, index, _level);
+			return _context.SelectSingle (_mapping, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>
@@ -516,7 +516,7 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable ie = _context.QueryDataMappingEnumerable (typeof (T), null, _query, _order, _region, _level);
+			IEnumerable ie = _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level);
 			foreach (T item in ie) {
 				list.Add (item);
 			}

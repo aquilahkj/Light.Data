@@ -71,13 +71,13 @@ namespace Light.Data
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			string[] array = new string[_orderExpressions.Count];
+			string [] array = new string [_orderExpressions.Count];
 			List<DataParameter> list = new List<DataParameter> ();
 			int len = array.Length;
 			for (int i = 0; i < len; i++) {
-				DataParameter[] dps;
+				DataParameter [] dps;
 				array [i] = _orderExpressions [i].CreateSqlString (factory, isFullName, out dps);
 				if (dps != null && dps.Length > 0) {
 					list.AddRange (dps);
@@ -113,22 +113,22 @@ namespace Light.Data
 		//	return factory.CreateCatchExpressionSql (array);
 		//}
 
-//		internal virtual string CreateSqlString (CommandFactory factory, string aliasTableName, out DataParameter[] dataParameters)
-//		{
-//			string[] array = new string[_orderExpressions.Count];
-//			List<DataParameter> list = new List<DataParameter> ();
-//			int len = array.Length;
-//			for (int i = 0; i < len; i++) {
-//				DataParameter[] dps;
-//				array [i] = _orderExpressions [i].CreateSqlString (factory, aliasTableName, out dps);
-//				list.AddRange (dps);
-//			}
-//			dataParameters = list.ToArray ();
-//
-//			return factory.CreateCatchExpressionSql (array);
-//		}
+		//		internal virtual string CreateSqlString (CommandFactory factory, string aliasTableName, out DataParameter[] dataParameters)
+		//		{
+		//			string[] array = new string[_orderExpressions.Count];
+		//			List<DataParameter> list = new List<DataParameter> ();
+		//			int len = array.Length;
+		//			for (int i = 0; i < len; i++) {
+		//				DataParameter[] dps;
+		//				array [i] = _orderExpressions [i].CreateSqlString (factory, aliasTableName, out dps);
+		//				list.AddRange (dps);
+		//			}
+		//			dataParameters = list.ToArray ();
+		//
+		//			return factory.CreateCatchExpressionSql (array);
+		//		}
 
-		internal virtual OrderExpression CreateAliasTableNameOrder(string aliasTableName)
+		internal virtual OrderExpression CreateAliasTableNameOrder (string aliasTableName)
 		{
 			OrderExpression newExpression = new OrderExpression (TableMapping);
 			List<OrderExpression> list = new List<OrderExpression> ();
@@ -138,6 +138,16 @@ namespace Light.Data
 			}
 			newExpression._orderExpressions = list;
 			return newExpression;
+		}
+
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string [] array = new string [_orderExpressions.Count];
+			int len = array.Length;
+			for (int i = 0; i < len; i++) {
+				array [i] = _orderExpressions [i].CreateSqlString (factory, isFullName, state);
+			}
+			return factory.CreateCatchExpressionSql (array);
 		}
 
 		/// <summary>

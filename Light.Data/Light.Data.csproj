@@ -164,63 +164,22 @@
     <Compile Include="Config\RelationFieldConfig.cs" />
     <Compile Include="Config\RelationKey.cs" />
     <Compile Include="Config\TableConfig.cs" />
-    <Compile Include="DataField\DatePartDataFieldInfo.cs" />
-    <Compile Include="DataField\DatePart.cs" />
-    <Compile Include="DataField\MathFunctionDataFieldInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DataField\MathCalculateDataFieldInfo.cs" />
-    <Compile Include="DataField\SupportFunction.cs" />
-    <Compile Include="DataField\MathOperator.cs" />
-    <Compile Include="DataField\ExtendDataFieldInfo.cs" />
     <Compile Include="_DataTableAlias.cs" />
-    <Compile Include="DataField\DateDataFieldInfo.cs" />
-    <Compile Include="DataField\LengthDataFieldInfo.cs" />
-    <Compile Include="DataField\MatchDataFieldInfo.cs" />
-    <Compile Include="DataField\SubStringDataFieldInfo.cs" />
     <Compile Include="Handler\TypeHelper.cs" />
-    <Compile Include="Expressions\AggregateHavingExpression.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Expressions\AggregateOrderExpression.cs" />
-    <Compile Include="Expressions\BetweenParamsAggregateExpression.cs" />
-    <Compile Include="Expressions\ExistsQueryExpression.cs" />
     <Compile Include="Expressions\RandomOrderExpression.cs" />
-    <Compile Include="Expressions\DataFieldQueryExpression.cs" />
-    <Compile Include="Expressions\SingleParamAggregateExpression.cs" />
-    <Compile Include="Expressions\CollectionParamsAggregateExpression.cs" />
-    <Compile Include="Expressions\NullAggregateExpression.cs" />
-    <Compile Include="Expressions\SubQueryExpression.cs" />
-    <Compile Include="Expressions\SubAggregateExpression.cs" />
-    <Compile Include="Functions\AggregateData.cs" />
     <Compile Include="Attributes\AggregateFieldAttribute.cs" />
     <Compile Include="Attributes\AggregateTableAttribute.cs" />
     <Compile Include="Attributes\DataFieldAttribute.cs" />
     <Compile Include="Attributes\RelationPropertyAttribute.cs" />
-    <Compile Include="Expressions\BetweenParamsQueryExpression.cs" />
-    <Compile Include="Expressions\BooleanQueryExpression.cs" />
     <Compile Include="Expressions\CatchOperatorType.cs" />
-    <Compile Include="Expressions\CollectionParamsQueryExpression.cs" />
     <Compile Include="CommandFactory.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="DataEntity.cs" />
     <Compile Include="DataParameter.cs" />
     <Compile Include="DataField\DataFieldInfo.cs" />
     <Compile Include="DataField\BasicFieldInfo.cs" />
-    <Compile Include="Expressions\CollectionMatchQueryExpression.cs" />
     <Compile Include="Expressions\DataFieldOrderExpression.cs" />
-    <Compile Include="Expressions\NullQueryExpression.cs" />
     <Compile Include="Expressions\OrderType.cs" />
-    <Compile Include="Expressions\SingleParamQueryExpression.cs" />
-    <Compile Include="Functions\ConditionCountFunction.cs" />
-    <Compile Include="Functions\ConditionSumFunction.cs" />
-    <Compile Include="Functions\CountAllFunction.cs" />
-    <Compile Include="Functions\CountFunction.cs" />
-    <Compile Include="Functions\MinFunction.cs" />
-    <Compile Include="Functions\SumFunction.cs" />
-    <Compile Include="Functions\AvgFunction.cs" />
-    <Compile Include="Functions\ConditionAvgFunction.cs" />
-    <Compile Include="Functions\MaxFunction.cs" />
     <Compile Include="Handler\AttributeCore.cs" />
     <Compile Include="Handler\PropertyHandler.cs" />
     <Compile Include="Handler\ReflectionHandlerFactory.cs" />
@@ -264,13 +223,6 @@
     <Compile Include="DataContextSetting.cs" />
     <Compile Include="CommandData.cs" />
     <Compile Include="DataField\AliasDataFieldInfo.cs" />
-    <Compile Include="Functions\AggregateDataInfo.cs" />
-    <Compile Include="Functions\ConditionMaxFunction.cs" />
-    <Compile Include="Functions\ConditionMinFunction.cs" />
-    <Compile Include="DataField\SelectFieldInfo.cs" />
-    <Compile Include="DataField\DataSelectFieldInfo.cs" />
-    <Compile Include="DataField\ConstantSelectFieldInfo.cs" />
-    <Compile Include="DataField\EnumSelectFieldInfo.cs" />
     <Compile Include="Mappings\DefaultTimeFunction.cs" />
     <Compile Include="Mappings\DefaultTime.cs" />
     <Compile Include="Attributes\XmlConfiguratorAttribute.cs" />
@@ -297,12 +249,9 @@
     <Compile Include="Config\ExtendParamCollection.cs" />
     <Compile Include="LambdaExpressionExtend.cs" />
     <Compile Include="Expressions\LambdaNotQueryExpression.cs" />
-    <Compile Include="Expressions\NotAggregateExpression.cs" />
-    <Compile Include="DataField\ConcatStringDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaMatchQuerryExpression.cs" />
     <Compile Include="DataField\LambdaStringMatchDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaDataFieldInfo.cs" />
-    <Compile Include="DataField\CastStringDataFielfInfo.cs" />
     <Compile Include="LambdaParseException.cs" />
     <Compile Include="DataField\IDataFieldInfoConvert.cs" />
     <Compile Include="DataField\LambdaMathFunctionDataFieldInfo.cs" />
@@ -361,22 +310,81 @@
     <Compile Include="Model\IAggregate.cs" />
     <Compile Include="Functions\Function.cs" />
     <Compile Include="Model\LightAggregate.cs" />
-    <Compile Include="Functions\AggregateFunction.cs" />
-    <Compile Include="Functions\FieldInfoAggregateData.cs" />
-    <Compile Include="Model\AggregateModel.cs" />
+    <Compile Include="Model\_AggregateModel.cs" />
     <Compile Include="Mappings\AggregateMapping.cs" />
     <Compile Include="Mappings\DynamicAggregateMapping.cs" />
     <Compile Include="Mappings\SpecialAggregateMapping.cs" />
     <Compile Include="Mappings\DynamicFieldMapping.cs" />
     <Compile Include="Mappings\DynamicPrimitiveFieldMapping.cs" />
     <Compile Include="Mappings\DynamicEnumFieldMapping.cs" />
-    <Compile Include="Functions\LambdaAggregateData.cs" />
-    <Compile Include="Functions\ExtendAggregateData.cs" />
     <Compile Include="LambdaNewArrayDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaConditionDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaConditionQueryExpression.cs" />
     <Compile Include="DataField\LambdaQueryDataFieldInfo.cs" />
-    <Compile Include="ParameterState.cs" />
+    <Compile Include="CreateSqlState.cs" />
+    <Compile Include="Expressions\HavingExpression.cs" />
+    <Compile Include="Expressions\_SpecialOrderExpression.cs" />
+    <Compile Include="Expressions\outdate\SingleParamAggregateExpression.cs" />
+    <Compile Include="Expressions\outdate\SingleParamQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\SubAggregateExpression.cs" />
+    <Compile Include="Expressions\outdate\SubQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\BetweenParamsAggregateExpression.cs" />
+    <Compile Include="Expressions\outdate\BetweenParamsQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\CollectionMatchQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\CollectionParamsAggregateExpression.cs" />
+    <Compile Include="Expressions\outdate\CollectionParamsQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\BooleanQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\AggregateHavingExpression.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Expressions\outdate\AggregateOrderExpression.cs" />
+    <Compile Include="Expressions\outdate\ExistsQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\NotAggregateExpression.cs" />
+    <Compile Include="Expressions\outdate\NullAggregateExpression.cs" />
+    <Compile Include="Expressions\outdate\NullQueryExpression.cs" />
+    <Compile Include="Expressions\outdate\DataFieldQueryExpression.cs" />
+    <Compile Include="DataField\outdate\DataFieldInfo.cs" />
+    <Compile Include="Functions\outdate\AggregateData.cs" />
+    <Compile Include="DataField\outdate\CastStringDataFielfInfo.cs" />
+    <Compile Include="DataField\outdate\ConcatStringDataFieldInfo.cs" />
+    <Compile Include="DataField\outdate\ConstantSelectFieldInfo.cs" />
+    <Compile Include="DataField\outdate\DateDataFieldInfo.cs" />
+    <Compile Include="DataField\outdate\LengthDataFieldInfo.cs" />
+    <Compile Include="DataField\outdate\MatchDataFieldInfo.cs" />
+    <Compile Include="DataField\outdate\MathCalculateDataFieldInfo.cs" />
+    <Compile Include="DataField\outdate\MathFunctionDataFieldInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataField\outdate\SubStringDataFieldInfo.cs" />
+    <Compile Include="DataField\outdate\ExtendDataFieldInfo.cs" />
+    <Compile Include="DataField\outdate\SelectFieldInfo.cs" />
+    <Compile Include="DataField\outdate\EnumSelectFieldInfo.cs" />
+    <Compile Include="DataField\outdate\DataSelectFieldInfo.cs" />
+    <Compile Include="DataField\outdate\DatePartDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaAggregateDataFieldInfo.cs" />
+    <Compile Include="DataField\EnumDefine\MathOperator.cs" />
+    <Compile Include="DataField\EnumDefine\StringFunction.cs" />
+    <Compile Include="DataField\EnumDefine\DatePart.cs" />
+    <Compile Include="DataField\EnumDefine\MathFunction.cs" />
+    <Compile Include="DataField\LambdaAggregateCountAllDataFieldInfo.cs" />
+    <Compile Include="Model\AggregateGroup.cs" />
+    <Compile Include="DataField\AggregateDataFieldInfo.cs" />
+    <Compile Include="Model\AggregateLambdaState.cs" />
+    <Compile Include="DataField\IAliasDataFieldInfo.cs" />
+    <Compile Include="Functions\outdate\MaxFunction.cs" />
+    <Compile Include="Functions\outdate\MinFunction.cs" />
+    <Compile Include="Functions\outdate\SumFunction.cs" />
+    <Compile Include="Functions\outdate\AggregateDataInfo.cs" />
+    <Compile Include="Functions\outdate\AggregateFunction.cs" />
+    <Compile Include="Functions\outdate\AvgFunction.cs" />
+    <Compile Include="Functions\outdate\ConditionAvgFunction.cs" />
+    <Compile Include="Functions\outdate\ConditionCountFunction.cs" />
+    <Compile Include="Functions\outdate\ConditionMaxFunction.cs" />
+    <Compile Include="Functions\outdate\ConditionMinFunction.cs" />
+    <Compile Include="Functions\outdate\ConditionSumFunction.cs" />
+    <Compile Include="Functions\outdate\CountAllFunction.cs" />
+    <Compile Include="Functions\outdate\CountFunction.cs" />
+    <Compile Include="Functions\outdate\FieldInfoAggregateData.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -407,5 +415,9 @@
   <ItemGroup>
     <Folder Include="DataBase\" />
     <Folder Include="Model\" />
+    <Folder Include="Expressions\outdate\" />
+    <Folder Include="DataField\outdate\" />
+    <Folder Include="Functions\outdate\" />
+    <Folder Include="DataField\EnumDefine\" />
   </ItemGroup>
 </Project>

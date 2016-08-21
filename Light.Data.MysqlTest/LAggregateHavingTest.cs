@@ -711,76 +711,76 @@ namespace Light.Data.MysqlTest
 			}));
 		}
 
-		[Test ()]
-		public void TestCase_QueryHaving_SubQuery_Match ()
-		{
-			List<TeUser> list = InitialUserTable (15);
-			List<TeUserLevel> listLevel = InitialUserLevelTable (8);
-			List<LevelIdAgg> listEx;
-			List<LevelIdAgg> listAc;
-			Dictionary<int,LevelIdAgg> dict;
-			List<TeUserLevel> listSub;
-			AggregateData function = AggregateFunction.Max (TeUser.LoginTimesField);
+		//[Test ()]
+		//public void TestCase_QueryHaving_SubQuery_Match ()
+		//{
+		//	List<TeUser> list = InitialUserTable (15);
+		//	List<TeUserLevel> listLevel = InitialUserLevelTable (8);
+		//	List<LevelIdAgg> listEx;
+		//	List<LevelIdAgg> listAc;
+		//	Dictionary<int,LevelIdAgg> dict;
+		//	List<TeUserLevel> listSub;
+		//	AggregateData function = AggregateFunction.Max (TeUser.LoginTimesField);
 
-			listSub = listLevel.FindAll (x => x.Id >= 2 && x.Id <= 4);
-			list = context.LQuery<TeUser> ().ToList ();
-			listAc = context.LAggregate<TeUser> ()
-				.GroupBy (TeUser.LevelIdField)
-				.Aggregate (function, "Data")
-				.Having (function.In (TeUserLevel.IdField, TeUserLevel.IdField.Between (2, 4)))
-				.GetObjectList<LevelIdAgg> ();
-			dict = new Dictionary<int, LevelIdAgg> ();
-			listEx = new List<LevelIdAgg> ();
-			foreach (TeUser user in list) {
-				LevelIdAgg i;
-				if (!dict.TryGetValue (user.LevelId, out i)) {
-					i = new LevelIdAgg ();
-					i.LevelId = user.LevelId;
-					i.Data = 0;
-				}
-				if (user.LoginTimes > i.Data) {
-					i.Data = user.LoginTimes;
-				}
-				dict [user.LevelId] = i;
-			}
-			foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
-				if (listSub.Exists (x => x.Id == kv.Value.Data)) {
-					listEx.Add (kv.Value);
-				}
-			}
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listEx.Exists (y => y.LevelId == x.LevelId && y.Data == x.Data)));
+		//	listSub = listLevel.FindAll (x => x.Id >= 2 && x.Id <= 4);
+		//	list = context.LQuery<TeUser> ().ToList ();
+		//	listAc = context.LAggregate<TeUser> ()
+		//		.GroupBy (TeUser.LevelIdField)
+		//		.Aggregate (function, "Data")
+		//		.Having (function.In (TeUserLevel.IdField, TeUserLevel.IdField.Between (2, 4)))
+		//		.GetObjectList<LevelIdAgg> ();
+		//	dict = new Dictionary<int, LevelIdAgg> ();
+		//	listEx = new List<LevelIdAgg> ();
+		//	foreach (TeUser user in list) {
+		//		LevelIdAgg i;
+		//		if (!dict.TryGetValue (user.LevelId, out i)) {
+		//			i = new LevelIdAgg ();
+		//			i.LevelId = user.LevelId;
+		//			i.Data = 0;
+		//		}
+		//		if (user.LoginTimes > i.Data) {
+		//			i.Data = user.LoginTimes;
+		//		}
+		//		dict [user.LevelId] = i;
+		//	}
+		//	foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
+		//		if (listSub.Exists (x => x.Id == kv.Value.Data)) {
+		//			listEx.Add (kv.Value);
+		//		}
+		//	}
+		//	Assert.AreEqual (listEx.Count, listAc.Count);
+		//	Assert.IsTrue (listAc.TrueForAll (x => listEx.Exists (y => y.LevelId == x.LevelId && y.Data == x.Data)));
 
 
-			listSub = listLevel.FindAll (x => x.Id >= 2 && x.Id <= 4);
-			list = context.LQuery<TeUser> ().ToList ();
-			listAc = context.LAggregate<TeUser> ()
-				.GroupBy (TeUser.LevelIdField)
-				.Aggregate (function, "Data")
-				.Having (function.NotIn (TeUserLevel.IdField, TeUserLevel.IdField.Between (2, 4)))
-				.GetObjectList<LevelIdAgg> ();
-			dict = new Dictionary<int, LevelIdAgg> ();
-			listEx = new List<LevelIdAgg> ();
-			foreach (TeUser user in list) {
-				LevelIdAgg i;
-				if (!dict.TryGetValue (user.LevelId, out i)) {
-					i = new LevelIdAgg ();
-					i.LevelId = user.LevelId;
-					i.Data = 0;
-				}
-				if (user.LoginTimes > i.Data) {
-					i.Data = user.LoginTimes;
-				}
-				dict [user.LevelId] = i;
-			}
-			foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
-				if (listSub.TrueForAll (x => x.Id != kv.Value.Data)) {
-					listEx.Add (kv.Value);
-				}
-			}
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listEx.Exists (y => y.LevelId == x.LevelId && y.Data == x.Data)));
-		}
+		//	listSub = listLevel.FindAll (x => x.Id >= 2 && x.Id <= 4);
+		//	list = context.LQuery<TeUser> ().ToList ();
+		//	listAc = context.LAggregate<TeUser> ()
+		//		.GroupBy (TeUser.LevelIdField)
+		//		.Aggregate (function, "Data")
+		//		.Having (function.NotIn (TeUserLevel.IdField, TeUserLevel.IdField.Between (2, 4)))
+		//		.GetObjectList<LevelIdAgg> ();
+		//	dict = new Dictionary<int, LevelIdAgg> ();
+		//	listEx = new List<LevelIdAgg> ();
+		//	foreach (TeUser user in list) {
+		//		LevelIdAgg i;
+		//		if (!dict.TryGetValue (user.LevelId, out i)) {
+		//			i = new LevelIdAgg ();
+		//			i.LevelId = user.LevelId;
+		//			i.Data = 0;
+		//		}
+		//		if (user.LoginTimes > i.Data) {
+		//			i.Data = user.LoginTimes;
+		//		}
+		//		dict [user.LevelId] = i;
+		//	}
+		//	foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
+		//		if (listSub.TrueForAll (x => x.Id != kv.Value.Data)) {
+		//			listEx.Add (kv.Value);
+		//		}
+		//	}
+		//	Assert.AreEqual (listEx.Count, listAc.Count);
+		//	Assert.IsTrue (listAc.TrueForAll (x => listEx.Exists (y => y.LevelId == x.LevelId && y.Data == x.Data)));
+		//}
 	}
 }
 

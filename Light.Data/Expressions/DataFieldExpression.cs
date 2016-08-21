@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data field expression.
 	/// </summary>
-	public class DataFieldExpression:BaseExpression
+	public class DataFieldExpression : BaseExpression
 	{
 		DataFieldExpression _expression1;
 
@@ -20,11 +20,11 @@ namespace Light.Data
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		{
-			DataParameter[] dp1;
+			DataParameter [] dp1;
 			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, out dp1);
-			DataParameter[] dp2;
+			DataParameter [] dp2;
 			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, out dp2);
 			if (dp1 == null && dp2 == null) {
 				dataParameters = null;
@@ -41,6 +41,15 @@ namespace Light.Data
 				list.AddRange (dp2);
 				dataParameters = list.ToArray ();
 			}
+			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
+		}
+
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		{
+			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
+
+			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
+
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
 
