@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Text;
 
-namespace Light.Data
-{
-	interface IFieldCollection : IDataDefine
-	{
-		IEnumerable<FieldMapping> FieldMappings {
-			get;
-		}
+//namespace Light.Data
+//{
+//	interface IFieldCollection : IDataDefine
+//	{
+//		IEnumerable<FieldMapping> FieldMappings {
+//			get;
+//		}
 
-		FieldMapping FindFieldMapping (string fieldName);
+//		FieldMapping FindFieldMapping (string fieldName);
 
-		object InitialData ();
-	}
-}
+//		object InitialData ();
+//	}
+//}

@@ -22,17 +22,24 @@ namespace Light.Data
 		/// <param name="name">Name.</param>
 		public AggregateFieldAttribute (string name)
 		{
-			Name = name;
+			this.name = name;
 		}
+		string name;
 
 		/// <summary>
 		/// Gets or sets the name.
 		/// </summary>
 		/// <value>The name.</value>
 		public string Name {
-			get;
-			set;
+			get {
+				return name;
+			}
+
+			set {
+				name = value;
+			}
 		}
+		bool isNullable;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this instance is nullable.
@@ -40,17 +47,28 @@ namespace Light.Data
 		/// <value>true</value>
 		/// <c>false</c>
 		public bool IsNullable {
-			get;
-			set;
+			get {
+				return isNullable;
+			}
+
+			set {
+				isNullable = value;
+			}
 		}
+		object defaultValue;
 
 		/// <summary>
 		/// Gets or sets the default value.
 		/// </summary>
 		/// <value>The default value.</value>
 		public object DefaultValue {
-			get;
-			set;
+			get {
+				return defaultValue;
+			}
+
+			set {
+				defaultValue = value;
+			}
 		}
 	}
 }

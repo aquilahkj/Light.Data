@@ -55,25 +55,23 @@ namespace Light.Data
 			_values = values;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			List<DataParameter> parameters = new List<DataParameter> ();
-			List<string> list = new List<string> ();
-			DataParameter [] ps;
-			string functionSql = _function.CreateSqlString (factory, isFullName, out ps);
-			if (ps != null && ps.Length > 0) {
-				parameters.AddRange (ps);
-			}
-
-			foreach (object value in _values) {
-				string pn = factory.CreateTempParamName ();
-				parameters.Add (new DataParameter (pn, value));
-				list.Add (pn);
-			}
-
-			dataParameters = parameters.ToArray ();
-			return factory.CreateCollectionParamsQuerySql (functionSql, _predicate, list);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	List<DataParameter> parameters = new List<DataParameter> ();
+		//	List<string> list = new List<string> ();
+		//	DataParameter [] ps;
+		//	string functionSql = _function.CreateSqlString (factory, isFullName, out ps);
+		//	if (ps != null && ps.Length > 0) {
+		//		parameters.AddRange (ps);
+		//	}
+		//	foreach (object value in _values) {
+		//		string pn = factory.CreateTempParamName ();
+		//		parameters.Add (new DataParameter (pn, value));
+		//		list.Add (pn);
+		//	}
+		//	dataParameters = parameters.ToArray ();
+		//	return factory.CreateCollectionParamsQuerySql (functionSql, _predicate, list);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

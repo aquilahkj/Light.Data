@@ -14,11 +14,11 @@ namespace Light.Data
 			_isNull = isNull;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
-		{
-			string functionSql = _function.CreateSqlString (factory, isFullName, out dataParameters);
-			return factory.CreateNullQuerySql (functionSql, _isNull);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
+		//{
+		//	string functionSql = _function.CreateSqlString (factory, isFullName, out dataParameters);
+		//	return factory.CreateNullQuerySql (functionSql, _isNull);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

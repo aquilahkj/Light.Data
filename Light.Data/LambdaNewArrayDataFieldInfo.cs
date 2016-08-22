@@ -25,9 +25,14 @@ namespace Light.Data
 			}
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	throw new NotImplementedException ();
+		//}
+
+		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 	}
 }

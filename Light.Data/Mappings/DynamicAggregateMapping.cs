@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Reflection;
 
@@ -7,6 +8,10 @@ namespace Light.Data
 {
 	class DynamicAggregateMapping : AggregateMapping
 	{
+		protected Dictionary<string, DynamicFieldMapping> _fieldMappingDictionary = new Dictionary<string, DynamicFieldMapping> ();
+
+		protected ReadOnlyCollection<DynamicFieldMapping> _fieldList;
+
 		#region static
 
 		static object _synobj = new object ();
@@ -46,22 +51,35 @@ namespace Light.Data
 		private void InitialAggregateFieldMapping ()
 		{
 			PropertyInfo [] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
+			List<DynamicFieldMapping> tmepList = new List<DynamicFieldMapping> ();
 			foreach (PropertyInfo pi in propertys) {
 				DynamicFieldMapping mapping = DynamicFieldMapping.CreateAggregateFieldMapping (pi, this);
 				_fieldMappingDictionary.Add (mapping.IndexName, mapping);
-				_fieldList.Add (mapping);
+				tmepList.Add (mapping);
 			}
-			if (_fieldMappingDictionary.Count == 0) {
+			if (tmepList.Count == 0) {
 				throw new LightDataException (RE.NoAggregationFields);
+			}
+			_fieldList = new ReadOnlyCollection<DynamicFieldMapping> (tmepList);
+		}
+
+		public int FieldCount {
+			get {
+				return this._fieldList.Count;
 			}
 		}
 
+		public ReadOnlyCollection<DynamicFieldMapping> DataEntityFields {
+			get {
+				return _fieldList;
+			}
+		}
 
 		public override object InitialData ()
 		{
 			object [] args = new object [this._fieldList.Count];
 			object item = Activator.CreateInstance (ObjectType, args);
-			return args;
+			return item;
 		}
 
 		public override object LoadData (DataContext context, IDataReader datareader, object state)

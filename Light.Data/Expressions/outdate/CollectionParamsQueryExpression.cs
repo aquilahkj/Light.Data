@@ -57,32 +57,21 @@ namespace Light.Data
 			_values = values;
 		}
 
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	List<DataParameter> list = new List<DataParameter> ();
+		//	List<DataParameter> parameters = new List<DataParameter> ();
+		//	List<string> list = new List<string> ();
 		//	foreach (object value in _values) {
 		//		string pn = factory.CreateTempParamName ();
-		//		list.Add (new DataParameter (pn, _fieldInfo.ToParameter (value)));
+		//		parameters.Add (new DataParameter (pn, _fieldInfo.ToParameter (value)));
+		//		list.Add (pn);
 		//	}
-		//	dataParameters = list.ToArray ();
-		//	return factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _predicate, list);
+		//	DataParameter [] dataParameters1 = parameters.ToArray ();
+		//	DataParameter [] dataParameters2 = null;
+		//	string sql = factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters2), _predicate, list);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			List<DataParameter> parameters = new List<DataParameter> ();
-			List<string> list = new List<string> ();
-			foreach (object value in _values) {
-				string pn = factory.CreateTempParamName ();
-				parameters.Add (new DataParameter (pn, _fieldInfo.ToParameter (value)));
-				list.Add (pn);
-			}
-			DataParameter [] dataParameters1 = parameters.ToArray ();
-			DataParameter [] dataParameters2 = null;
-			string sql = factory.CreateCollectionParamsQuerySql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters2), _predicate, list);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

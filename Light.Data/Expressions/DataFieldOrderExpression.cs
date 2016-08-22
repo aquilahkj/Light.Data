@@ -15,41 +15,17 @@ namespace Light.Data
 			_orderType = orderType;
 		}
 
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	dataParameters = new DataParameter[0];
-		//	return factory.CreateOrderBySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _orderType);
+		//	string fieldSql = _fieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//	return factory.CreateOrderBySql (fieldSql, _orderType);
 		//}
-
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string fieldSql = _fieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			return factory.CreateOrderBySql (fieldSql, _orderType);
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			string fieldSql = _fieldInfo.CreateSqlString (factory, isFullName, state);
 			return factory.CreateOrderBySql (fieldSql, _orderType);
 		}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
-		//{
-		//	string alise = handler (_fieldInfo);
-		//	if (string.IsNullOrEmpty (alise)) {
-		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
-		//	}
-		//	dataParameters = new DataParameter [0];
-		//	string name = factory.CreateDataFieldSql (alise);
-		//	return factory.CreateOrderBySql (name, _orderType);
-		//}
-
-		//		internal override string CreateSqlString (CommandFactory factory, string aliasTableName, out DataParameter[] dataParameters)
-		//		{
-		//			dataParameters = new DataParameter[0];
-		//			return factory.CreateOrderBySql (_fieldInfo.CreateDataFieldSql (factory, aliasTableName), _orderType);
-		//		}
 
 		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
 		{

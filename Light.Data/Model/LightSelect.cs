@@ -25,6 +25,8 @@ namespace Light.Data
 
 		readonly ISelector _selector;
 
+		readonly DataEntityMapping _mapping;
+
 		internal LightSelect (DataContext context, Delegate dele, ISelector selector, Type type, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			_context = context;
@@ -35,11 +37,12 @@ namespace Light.Data
 			_order = order;
 			_region = region;
 			_level = level;
+			_mapping = DataEntityMapping.GetEntityMapping (type);
 		}
 
 		public IEnumerator<K> GetEnumerator ()
 		{
-			foreach (object item in _context.QueryMappingData (_type, _selector, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryMappingData (_mapping, _selector, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item);
 				yield return obj as K;
 			}
@@ -47,7 +50,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			foreach (object item in _context.QueryMappingData (_type, _selector, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryMappingData (_mapping, _selector, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item);
 				yield return obj;
 			}
@@ -56,7 +59,7 @@ namespace Light.Data
 		public List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			foreach (object item in _context.QueryMappingData (_type, _selector, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryMappingData (_mapping, _selector, _query, _order, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item);
 				list.Add (obj as K);
 			}

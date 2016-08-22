@@ -45,20 +45,20 @@ namespace Light.Data
 			_isReverse = isReverse;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
-		{
-			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _value);
-			List<DataParameter> list = new List<DataParameter> ();
-			DataParameter[] ps;
-			string functionSql = _function.CreateSqlString (factory, isFullName, out ps);
-			if (ps != null && ps.Length > 0) {
-				list.AddRange (ps);
-			}
-			list.Add (dataParameter);
-			dataParameters = list.ToArray ();
-			return factory.CreateSingleParamSql (functionSql, _predicate, _isReverse, dataParameter.ParameterName);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter[] dataParameters)
+		//{
+		//	string pn = factory.CreateTempParamName ();
+		//	DataParameter dataParameter = new DataParameter (pn, _value);
+		//	List<DataParameter> list = new List<DataParameter> ();
+		//	DataParameter[] ps;
+		//	string functionSql = _function.CreateSqlString (factory, isFullName, out ps);
+		//	if (ps != null && ps.Length > 0) {
+		//		list.AddRange (ps);
+		//	}
+		//	list.Add (dataParameter);
+		//	dataParameters = list.ToArray ();
+		//	return factory.CreateSingleParamSql (functionSql, _predicate, _isReverse, dataParameter.ParameterName);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

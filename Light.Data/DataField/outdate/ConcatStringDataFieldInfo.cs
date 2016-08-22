@@ -13,24 +13,15 @@ namespace Light.Data
 			this._forward = forward;
 		}
 
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
-		//	//string sql =  factory.CreateConcatSql (field, _value, _forward);
-		//	object value = LambdaExpressionExtend.ConvertObject (_value, factory, isFullName, true);
-		//	string sql = factory.CreateConcatSql (field, value, _forward);
+		//	DataParameter [] dataParameters1 = null;
+		//	string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters1);
+		//	object value = factory.CreateStringWrap (_value);
+		//	string sql = factory.CreateDualConcatSql (field, value, _forward);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1);
 		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			DataParameter [] dataParameters1 = null;
-			string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters1);
-			object value = factory.CreateStringWrap (_value);
-			string sql = factory.CreateDualConcatSql (field, value, _forward);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

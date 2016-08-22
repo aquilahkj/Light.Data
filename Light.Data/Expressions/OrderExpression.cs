@@ -71,22 +71,21 @@ namespace Light.Data
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string [] array = new string [_orderExpressions.Count];
-			List<DataParameter> list = new List<DataParameter> ();
-			int len = array.Length;
-			for (int i = 0; i < len; i++) {
-				DataParameter [] dps;
-				array [i] = _orderExpressions [i].CreateSqlString (factory, isFullName, out dps);
-				if (dps != null && dps.Length > 0) {
-					list.AddRange (dps);
-				}
-			}
-			dataParameters = list.ToArray ();
-
-			return factory.CreateCatchExpressionSql (array);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	string [] array = new string [_orderExpressions.Count];
+		//	List<DataParameter> list = new List<DataParameter> ();
+		//	int len = array.Length;
+		//	for (int i = 0; i < len; i++) {
+		//		DataParameter [] dps;
+		//		array [i] = _orderExpressions [i].CreateSqlString (factory, isFullName, out dps);
+		//		if (dps != null && dps.Length > 0) {
+		//			list.AddRange (dps);
+		//		}
+		//	}
+		//	dataParameters = list.ToArray ();
+		//	return factory.CreateCatchExpressionSql (array);
+		//}
 
 		/// <summary>
 		/// Creates the sql string.

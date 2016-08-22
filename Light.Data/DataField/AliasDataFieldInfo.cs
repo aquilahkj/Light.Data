@@ -54,10 +54,10 @@ namespace Light.Data
 		/// <returns>The data field sql.</returns>
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			return _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	return _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
@@ -83,11 +83,11 @@ namespace Light.Data
 		/// <param name="factory">Factory.</param>
 		/// <param name="isFullName">Is full name.</param>
 		/// <param name="dataParameters">Data parameters.</param>
-		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			return factory.CreateAliasSql (field, this._alias);
-		}
+		//public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	string field = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//	return factory.CreateAliasSql (field, this._alias);
+		//}
 
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

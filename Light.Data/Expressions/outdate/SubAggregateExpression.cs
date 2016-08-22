@@ -21,38 +21,19 @@ namespace Light.Data
 			_queryExpression = queryExpression;
 		}
 
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
 		//	string queryString;
-		//	List<DataParameter> list = new List<DataParameter> ();
-		//	DataParameter[] ps;
-		//	string functionSql = _function.CreateSqlString (factory, fullFieldName, out ps);
-		//	if (ps != null && ps.Length > 0) {
-		//		list.AddRange (ps);
-		//	}
+		//	DataParameter [] dataParameters1 = null;
+		//	DataParameter [] dataParameters2 = null;
+		//	DataParameter [] dataParameters3 = null;
+		//	string functionSql = _function.CreateSqlString (factory, isFullName, out dataParameters1);
+		//	queryString = _queryExpression.CreateSqlString (factory, isFullName, out dataParameters2);
 
-		//	DataParameter[] ps2;
-		//	queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out ps2);
-		//	if (ps2 != null && ps2.Length > 0) {
-		//		list.AddRange (ps2);
-		//	}
-		//	dataParameters = list.ToArray ();
-		//	return factory.CreateSubQuerySql (functionSql, _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
+		//	string sql = factory.CreateSubQuerySql (functionSql, _predicate, _queryFieldInfo.CreateSqlString (factory, false, out dataParameters3), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2, dataParameters3);
+		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string queryString;
-			DataParameter [] dataParameters1 = null;
-			DataParameter [] dataParameters2 = null;
-			DataParameter [] dataParameters3 = null;
-			string functionSql = _function.CreateSqlString (factory, isFullName, out dataParameters1);
-			queryString = _queryExpression.CreateSqlString (factory, isFullName, out dataParameters2);
-
-			string sql = factory.CreateSubQuerySql (functionSql, _predicate, _queryFieldInfo.CreateSqlString (factory, false, out dataParameters3), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2, dataParameters3);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
@@ -66,33 +47,6 @@ namespace Light.Data
 			return sql;
 		}
 
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
-		//{
-		//	string alise = handler (_function);
-		//	if (string.IsNullOrEmpty (alise)) {
-		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
-		//	}
-		//	string name = factory.CreateDataFieldSql (alise);
-		//	string queryString;
-		//	queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters);
-		//	return factory.CreateSubQuerySql (name, _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
-		//}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
-		//{
-		//	string alise = handler (_function);
-		//	if (string.IsNullOrEmpty (alise)) {
-		//		return CreateSqlString (factory, fullFieldName, out dataParameters);
-		//	}
-		//	DataParameter [] dataParameters1 = null;
-		//	DataParameter [] dataParameters2 = null;
-		//	string name = factory.CreateDataFieldSql (alise);
-		//	string queryString;
-		//	queryString = _queryExpression.CreateSqlString (factory, fullFieldName, out dataParameters1);
-		//	string sql = factory.CreateSubQuerySql (name, _predicate, _queryFieldInfo.CreateDataFieldSql (factory, false, out dataParameters2), factory.CreateDataTableSql (_queryFieldInfo.TableMapping), queryString);
-		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-		//	return sql;
-		//}
 
 		//protected override bool EqualsDetail (AggregateHavingExpression expression)
 		//{

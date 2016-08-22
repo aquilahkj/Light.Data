@@ -59,7 +59,7 @@ namespace Light.Data
 			RelationItem rootItem = items [0];
 			mapDict.Add (items [0].CurrentFieldPath, items [0]);
 			List<DataFieldInfo> rootInfoList = new List<DataFieldInfo> ();
-			foreach (DataFieldMapping field in this.rootMapping.FieldMappings) {
+			foreach (DataFieldMapping field in this.rootMapping.DataEntityFields) {
 				DataFieldInfo info = new DataFieldInfo (field);
 				string aliasName = string.Format ("{0}_{1}", rootItem.AliasName, info.FieldName);
 				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
@@ -89,7 +89,7 @@ namespace Light.Data
 					expression = DataFieldExpression.And (expression, minfo == rinfo);
 				}
 				List<DataFieldInfo> infoList = new List<DataFieldInfo> ();
-				foreach (DataFieldMapping field in mapping.FieldMappings) {
+				foreach (DataFieldMapping field in mapping.DataEntityFields) {
 					DataFieldInfo info = new DataFieldInfo (field);
 					string aliasName = string.Format ("{0}_{1}", ralias, info.FieldName);
 					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
@@ -121,8 +121,7 @@ namespace Light.Data
 			}
 			tableInfoDict.Add (string.Empty, rootInfoList.ToArray ());
 			string path = string.Empty;
-			CollectionRelationFieldMapping [] collectFieldMappings = rootMapping.GetCollectionRelationFieldMappings ();
-			foreach (CollectionRelationFieldMapping collectFieldMapping in collectFieldMappings) {
+			foreach (CollectionRelationFieldMapping collectFieldMapping in rootMapping.CollectionRelationFieldMappings) {
 				RelationKey [] kps = collectFieldMapping.GetKeyPairs ();
 				string [] masters = new string [kps.Length];
 				for (int i = 0; i < kps.Length; i++) {
@@ -160,8 +159,7 @@ namespace Light.Data
 		void LoadEntityMapping (DataEntityMapping mapping, RelationLink link)
 		{
 			string path = link != null ? link.LastFieldPath : string.Empty;
-			SingleRelationFieldMapping [] relateFielsMappings = mapping.GetSingleJoinTableRelationFieldMappings ();
-			foreach (SingleRelationFieldMapping relateFieldMapping in relateFielsMappings) {
+			foreach (SingleRelationFieldMapping relateFieldMapping in mapping.SingleJoinTableRelationFieldMappings) {
 				relateFieldMapping.InitialRelation ();
 				bool add = false;
 				if (link == null) {
@@ -198,8 +196,7 @@ namespace Light.Data
 					singleDict [relate] = relates;
 				}
 			}
-			CollectionRelationFieldMapping [] collectFieldMappings = mapping.GetCollectionRelationFieldMappings ();
-			foreach (CollectionRelationFieldMapping collectFieldMapping in collectFieldMappings) {
+			foreach (CollectionRelationFieldMapping collectFieldMapping in mapping.CollectionRelationFieldMappings) {
 				RelationKey [] kps = collectFieldMapping.GetKeyPairs ();
 				string [] masters = new string [kps.Length];
 				for (int i = 0; i < kps.Length; i++) {

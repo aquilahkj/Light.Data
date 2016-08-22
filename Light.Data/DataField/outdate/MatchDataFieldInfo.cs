@@ -20,17 +20,11 @@ namespace Light.Data
 
 		bool _ends;
 
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+		//	string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
 		//	return factory.CreateMatchSql (field, _starts, _ends);
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			return factory.CreateMatchSql (field, _starts, _ends);
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

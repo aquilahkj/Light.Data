@@ -22,10 +22,10 @@ namespace Light.Data
 		//	return factory.CreateBooleanQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isTrue);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			return factory.CreateBooleanQuerySql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters), _isTrue);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	return factory.CreateBooleanQuerySql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters), _isTrue);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

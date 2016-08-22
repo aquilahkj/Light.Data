@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Light.Data
 {
@@ -22,35 +23,29 @@ namespace Light.Data
 			}
 		}
 
-		public IEnumerable<DataFieldMapping> NoIdentityFields {
+		public ReadOnlyCollection<DataFieldMapping> NoIdentityFields {
 			get {
-				foreach (DataFieldMapping item in _noIdentityFieldList) {
-					yield return item;
-				}
+				return _noIdentityFieldList;
 			}
 		}
 
-		readonly List<DataFieldMapping> _noIdentityFieldList = new List<DataFieldMapping> ();
+		ReadOnlyCollection<DataFieldMapping> _noIdentityFieldList;// = new List<DataFieldMapping> ();
 
-		public IEnumerable<DataFieldMapping> PrimaryKeyFields {
+		public ReadOnlyCollection<DataFieldMapping> PrimaryKeyFields {
 			get {
-				foreach (DataFieldMapping item in _primaryKeyFieldList) {
-					yield return item;
-				}
+				return _primaryKeyFieldList;
 			}
 		}
 
-		readonly List<DataFieldMapping> _primaryKeyFieldList = new List<DataFieldMapping> ();
+		ReadOnlyCollection<DataFieldMapping> _primaryKeyFieldList;// = new List<DataFieldMapping> ();
 
-		public IEnumerable<DataFieldMapping> NoPrimaryKeyFields {
+		public ReadOnlyCollection<DataFieldMapping> NoPrimaryKeyFields {
 			get {
-				foreach (DataFieldMapping item in _noPrimaryKeyFieldList) {
-					yield return item;
-				}
+				return _noPrimaryKeyFieldList;
 			}
 		}
 
-		readonly List<DataFieldMapping> _noPrimaryKeyFieldList = new List<DataFieldMapping> ();
+		ReadOnlyCollection<DataFieldMapping> _noPrimaryKeyFieldList;// = new List<DataFieldMapping> ();
 
 		/// <summary>
 		/// Gets a value indicating whether this instance has identity.
@@ -84,6 +79,10 @@ namespace Light.Data
 
 		void GetPrimaryKey ()
 		{
+			List<DataFieldMapping> noIdentityTmpList = new List<DataFieldMapping> ();
+			List<DataFieldMapping> primaryKeyTmpList = new List<DataFieldMapping> ();
+			List<DataFieldMapping> noPrimaryKeyTmpList = new List<DataFieldMapping> ();
+
 			foreach (FieldMapping field in _fieldList) {
 				PrimitiveFieldMapping pfmapping = field as PrimitiveFieldMapping;
 				if (pfmapping != null) {
@@ -96,21 +95,25 @@ namespace Light.Data
 						}
 					}
 					else {
-						_noIdentityFieldList.Add (pfmapping);
+						noIdentityTmpList.Add (pfmapping);
 					}
 					if (pfmapping.IsPrimaryKey) {
-						_primaryKeyFieldList.Add (pfmapping);
+						primaryKeyTmpList.Add (pfmapping);
 					}
 					else {
-						_noPrimaryKeyFieldList.Add (pfmapping);
+						noPrimaryKeyTmpList.Add (pfmapping);
 					}
 				}
 				else {
 					DataFieldMapping mapping = field as DataFieldMapping;
-					_noIdentityFieldList.Add (mapping);
-					_noPrimaryKeyFieldList.Add (mapping);
+					noIdentityTmpList.Add (mapping);
+					noPrimaryKeyTmpList.Add (mapping);
 				}
 			}
+
+			_noIdentityFieldList = new ReadOnlyCollection<DataFieldMapping> (noIdentityTmpList);
+			_primaryKeyFieldList = new ReadOnlyCollection<DataFieldMapping> (primaryKeyTmpList);
+			_noPrimaryKeyFieldList = new ReadOnlyCollection<DataFieldMapping> (noPrimaryKeyTmpList);
 		}
 	}
 }

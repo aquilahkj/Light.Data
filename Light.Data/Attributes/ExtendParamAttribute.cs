@@ -8,22 +8,35 @@ namespace Light.Data
 	[AttributeUsage (AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 	public abstract class ExtendParamAttribute: Attribute
 	{
+		string name;
+
 		/// <summary>
 		/// Gets or sets the name.
 		/// </summary>
 		/// <value>The name.</value>
 		public string Name {
-			get;
-			set;
+			get {
+				return name;
+			}
+
+			set {
+				name = value;
+			}
 		}
+		string value;
 
 		/// <summary>
 		/// Gets or sets the value.
 		/// </summary>
 		/// <value>The value.</value>
 		public string Value {
-			get;
-			set;
+			get {
+				return this.value;
+			}
+
+			set {
+				this.value = value;
+			}
 		}
 
 		/// <summary>
@@ -33,8 +46,8 @@ namespace Light.Data
 		/// <param name="value">Value.</param>
 		protected ExtendParamAttribute (string name, string value)
 		{
-			this.Name = name;
-			this.Value = value;
+			this.name = name;
+			this.value = value;
 		}
 	}
 

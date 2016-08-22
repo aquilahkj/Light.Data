@@ -26,13 +26,13 @@ namespace Light.Data
 
 		#region implemented abstract members of SelectFieldInfo
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
-		{
-			string pn = factory.CreateTempParamName ();
-			DataParameter dataParameter = new DataParameter (pn, _value);
-			dataParameters = new [] { dataParameter };
-			return pn;
-		}
+		//internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		//{
+		//	string pn = factory.CreateTempParamName ();
+		//	DataParameter dataParameter = new DataParameter (pn, _value);
+		//	dataParameters = new [] { dataParameter };
+		//	return pn;
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{

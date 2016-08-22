@@ -21,26 +21,16 @@ namespace Light.Data
 			_size = size;
 		}
 
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
-		//	//object start = _start;
-		//	//object size = _size;
-		//	object start = LambdaExpressionExtend.ConvertObject (_start, factory, isFullName, false);
-		//	object size = LambdaExpressionExtend.ConvertObject (_size, factory, isFullName, false);
-		//	return factory.CreateSubStringSql (field, start, size);
+		//	DataParameter [] dataParameters1 = null;
+		//	string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters1);
+		//	object start = _start;
+		//	object size = _size;
+		//	string sql = factory.CreateSubStringSql (field, start, size);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1);
+		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			DataParameter [] dataParameters1 = null;
-			string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters1);
-			object start = _start;
-			object size = _size;
-			string sql = factory.CreateSubStringSql (field, start, size);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

@@ -14,16 +14,22 @@ namespace Light.Data
 		/// <param name="configPath">Config path.</param>
 		public XmlConfiguratorAttribute (string configPath)
 		{
-			ConfigPath = configPath;
+			this.configPath = configPath;
 		}
+		string configPath;
 
 		/// <summary>
 		/// Gets the config path.
 		/// </summary>
 		/// <value>The config path.</value>
 		public string ConfigPath {
-			get;
-			private set;
+			get {
+				return configPath;
+			}
+
+			//set {
+			//	configPath = value;
+			//}
 		}
 	}
 }

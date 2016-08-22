@@ -21,26 +21,38 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (relateKey)) {
 				throw new ArgumentNullException (nameof (relateKey));
 			}
-			MasterKey = masterKey;
-			RelateKey = relateKey;
+			this.masterKey = masterKey;
+			this.relateKey = relateKey;
 		}
+		string masterKey;
 
 		/// <summary>
 		/// Gets the master key.
 		/// </summary>
 		/// <value>The master key.</value>
 		public string MasterKey {
-			get;
-			private set;
+			get {
+				return masterKey;
+			}
+
+			//set {
+			//	masterKey = value;
+			//}
 		}
+		string relateKey;
 
 		/// <summary>
 		/// Gets the relate key.
 		/// </summary>
 		/// <value>The relate key.</value>
 		public string RelateKey {
-			get;
-			private set;
+			get {
+				return relateKey;
+			}
+
+			//set {
+			//	relateKey = value;
+			//}
 		}
 	}
 }

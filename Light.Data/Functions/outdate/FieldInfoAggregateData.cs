@@ -16,10 +16,10 @@ namespace Light.Data
 			return _fieldinfo.CreateSqlString (factory, isFullName, state);
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			return _fieldinfo.CreateSqlString (factory, isFullName, out dataParameters);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	return _fieldinfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//}
 	}
 }
 

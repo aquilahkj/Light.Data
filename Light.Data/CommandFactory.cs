@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
 
@@ -576,6 +577,68 @@ namespace Light.Data
 			return command;
 		}
 
+		public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertTableMapping, DataEntityMapping selectMapping, QueryExpression query, OrderExpression order, CreateSqlState state)
+		{
+			StringBuilder sql = new StringBuilder ();
+			string insertString;
+			string selectString;
+			ReadOnlyCollection<DataFieldMapping> insertFields;
+			ReadOnlyCollection<DataFieldMapping> selectFields;
+			if (insertTableMapping.HasIdentity) {
+				DataTableEntityMapping selectTableEntityMapping = selectMapping as DataTableEntityMapping;
+				if (selectTableEntityMapping != null && selectTableEntityMapping.HasIdentity) {
+					if (insertTableMapping.FieldCount == selectTableEntityMapping.FieldCount && insertTableMapping.IdentityField.PositionOrder == selectTableEntityMapping.IdentityField.PositionOrder) {
+						insertFields = insertTableMapping.NoIdentityFields;
+						selectFields = selectTableEntityMapping.NoIdentityFields;
+					}
+					else {
+						throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
+					}
+				}
+				else {
+					if (insertTableMapping.FieldCount == selectMapping.FieldCount + 1) {
+						insertFields = insertTableMapping.NoIdentityFields;
+						selectFields = selectMapping.DataEntityFields;
+					}
+					else {
+						throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
+					}
+				}
+			}
+			else {
+				if (insertTableMapping.FieldCount == selectMapping.FieldCount) {
+					insertFields = insertTableMapping.DataEntityFields;
+					selectFields = selectMapping.DataEntityFields;
+				}
+				else {
+					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
+				}
+			}
+
+			string [] insertFieldNames = new string [insertFields.Count];
+			for (int i = 0; i < insertFields.Count; i++) {
+				insertFieldNames [i] = CreateDataFieldSql (insertFields[i].Name);
+			}
+			insertString = string.Join (",", insertFieldNames);
+
+			string [] selectFieldNames = new string [selectFields.Count];
+			for (int i = 0; i < insertFields.Count; i++) {
+				selectFieldNames [i] = CreateDataFieldSql (selectFields [i].Name);
+			}
+			selectString = string.Join (",", selectFieldNames);
+			sql.AppendFormat ("insert into {0}({1})", CreateDataTableSql (insertTableMapping.TableName), insertString);
+			sql.AppendFormat ("select {0} from {1}", selectString, CreateDataTableSql (selectMapping.TableName));
+			if (query != null) {
+				sql.Append (GetQueryString (query, false, state));
+			}
+			if (order != null) {
+				sql.Append (GetOrderString (order, false, state));
+			}
+			CommandData command = new CommandData (sql.ToString ());
+			command.TransParamName = true;
+			return command;
+		}
+
 		public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertMapping, DataFieldInfo [] insertFields, DataTableEntityMapping selectMapping, SelectFieldInfo [] selectFields, QueryExpression query, OrderExpression order, CreateSqlState state)
 		{
 			StringBuilder sql = new StringBuilder ();
@@ -584,21 +647,21 @@ namespace Light.Data
 			int insertCount;
 			bool noidentity = false;
 			DataFieldMapping [] insertFieldMappings;
-			List<DataParameter> isnertparameters = new List<DataParameter> ();
+			//List<DataParameter> isnertparameters = new List<DataParameter> ();
 			if (insertFields != null && insertFields.Length > 0) {
 				insertFieldMappings = new DataFieldMapping [insertFields.Length];
 				string [] fieldNames = new string [insertFields.Length];
 				for (int i = 0; i < insertFields.Length; i++) {
 					DataFieldInfo info = insertFields [i];
-					DataParameter [] dataParameters = null;
+					//DataParameter [] dataParameters = null;
 					if (!insertMapping.Equals (info.TableMapping)) {
 						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 					}
 					insertFieldMappings [i] = info.DataField;
-					fieldNames [i] = info.CreateSqlString (this, false, out dataParameters);
-					if (dataParameters != null && dataParameters.Length > 0) {
-						isnertparameters.AddRange (dataParameters);
-					}
+					fieldNames [i] = info.CreateSqlString (this, false, state);
+					//if (dataParameters != null && dataParameters.Length > 0) {
+					//	isnertparameters.AddRange (dataParameters);
+					//}
 				}
 				insertCount = fieldNames.Length;
 				insertString = string.Join (",", fieldNames);
@@ -697,10 +760,8 @@ namespace Light.Data
 		public virtual CommandData CreateUpdateMassCommand (DataTableEntityMapping mapping, UpdateSetValue [] updateSetValues, QueryExpression query, CreateSqlState state)
 		{
 			StringBuilder sql = new StringBuilder ();
-
 			int length = updateSetValues.Length;
 			string [] setList = new string [length];
-
 			for (int i = 0; i < length; i++) {
 				if (!mapping.Equals (updateSetValues [i].DataField.DataField.EntityMapping)) {
 					throw new LightDataException (RE.UpdateFieldTypeIsError);
@@ -709,8 +770,8 @@ namespace Light.Data
 				UpdateSetValue ups = updateSetValues [i];
 				DataFieldInfo fieldInfo = ups.DataField;
 				string name = state.AddDataParameter (fieldInfo.DataField.ToColumn (ups.Value), fieldInfo.DBType);
-				DataParameter [] dataParameters = null;
-				setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateSqlString (this, false, out dataParameters), name);
+				//DataParameter [] dataParameters = null;
+				setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateSqlString (this, false, state), name);
 			}
 			string setString = string.Join (",", setList);
 			sql.AppendFormat ("update {0} set {1}", CreateDataTableSql (mapping.TableName), setString);

@@ -25,29 +25,15 @@ namespace Light.Data
 			_isDistinct = isDistinct;
 		}
 
-		//internal ConditionCountFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo, bool isDistinct)
-		//	: base (mapping)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	_expression = expression;
-		//	_fieldinfo = fieldinfo;
-		//	_isDistinct = isDistinct;
+		//	DataParameter [] dataParameters1 = null;
+		//	DataParameter [] dataParameters2 = null;
+		//	string expressionString = _expression.CreateSqlString (factory, isFullName, out dataParameters1);
+		//	string sql = factory.CreateConditionCountSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateSqlString (factory, isFullName, out dataParameters2) : null, _isDistinct);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+		//	return sql;
 		//}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters)
-		//{
-		//	string sql = _expression.CreateSqlString (factory, fullFieldName, out dataParameters);
-		//	return factory.CreateConditionCountSql (sql, _fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
-		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			DataParameter [] dataParameters1 = null;
-			DataParameter [] dataParameters2 = null;
-			string expressionString = _expression.CreateSqlString (factory, isFullName, out dataParameters1);
-			string sql = factory.CreateConditionCountSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateSqlString (factory, isFullName, out dataParameters2) : null, _isDistinct);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

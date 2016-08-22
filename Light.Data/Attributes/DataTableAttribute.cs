@@ -13,9 +13,8 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="tableName">Table name.</param>
 		public DataTableAttribute (string tableName)
-			: this ()
 		{
-			TableName = tableName;
+			this.tableName = tableName;
 		}
 
 		/// <summary>
@@ -23,17 +22,24 @@ namespace Light.Data
 		/// </summary>
 		public DataTableAttribute ()
 		{
-			IsEntityTable = true;
+			//IsEntityTable = true;
 		}
+		string tableName;
 
 		/// <summary>
 		/// Gets or sets the name of the table.
 		/// </summary>
 		/// <value>The name of the table.</value>
 		public string TableName {
-			get;
-			set;
+			get {
+				return tableName;
+			}
+
+			set {
+				tableName = value;
+			}
 		}
+		bool isEntityTable = true;
 
 		/// <summary>
 		/// Gets or sets the extend parameters.
@@ -45,9 +51,13 @@ namespace Light.Data
 		/// <value>true</value>
 		/// <c>false</c>
 		public bool IsEntityTable {
-			get;
-			set;
-		}
+			get {
+				return isEntityTable;
+			}
 
+			set {
+				isEntityTable = value;
+			}
+		}
 	}
 }

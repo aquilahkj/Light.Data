@@ -23,22 +23,16 @@ namespace Light.Data
 			TableMapping = mapping;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			dataParameters = new DataParameter [0];
-			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, isFullName);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	dataParameters = new DataParameter [0];
+		//	return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, isFullName);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, isFullName);
 		}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter [] dataParameters, GetAliasHandler handler)
-		//{
-		//	dataParameters = new DataParameter [0];
-		//	return factory.CreateRandomOrderBySql (TableMapping, this._aliasTableName, fullFieldName);
-		//}
 
 		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
 		{

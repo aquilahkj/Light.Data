@@ -18,7 +18,7 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			foreach (T item in _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level)) {
+			foreach (T item in _context.QueryMappingData (_mapping, null, _query, _order, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -29,7 +29,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryMappingData (_mapping, null, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -432,8 +432,6 @@ namespace Light.Data
 			}
 		}
 
-
-
 		///// <summary>
 		///// Queries the single field.
 		///// </summary>
@@ -516,7 +514,7 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable ie = _context.QueryMappingData (typeof (T), null, _query, _order, _region, _level);
+			IEnumerable ie = _context.QueryMappingData (_mapping, null, _query, _order, _region, _level);
 			foreach (T item in ie) {
 				list.Add (item);
 			}
@@ -532,293 +530,28 @@ namespace Light.Data
 			return ToList ().ToArray ();
 		}
 
-		//internal List<T> ToRelateList (object extentState)
-		//{
-		//	return _context.QueryDataRelateList<T> (_query, _order, _region, _level, extentState);
-		//}
 
 		#endregion
 
-		///// <summary>
-		///// Inner join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="le">Le.</param>
-		///// <param name="on">On.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable Join<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
-		//{
-		//	if (le == null)
-		//		throw new ArgumentNullException (nameof (le));
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, on);
-		//}
 
-		///// <summary>
-		///// Inner join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="query">Query.</param>
-		///// <param name="on">On.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable Join<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
-		//{
-		//	if (query == null)
-		//		throw new ArgumentNullException (nameof (query));
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, on);
-		//}
-
-		///// <summary>
-		///// Inner join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="query">Query.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable Join<K> (QueryExpression query) where K : class, new()
-		//{
-		//	if (query == null)
-		//		throw new ArgumentNullException (nameof (query));
-		//	LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, null);
-		//}
-
-		///// <summary>
-		///// Inner join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="le">Le.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable Join<K> (LEnumerable<K> le) where K : class, new()
-		//{
-		//	if (le == null)
-		//		throw new ArgumentNullException (nameof (le));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, le, null);
-		//}
-
-		///// <summary>
-		///// Inner join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="on">On.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable Join<K> (DataFieldExpression on) where K : class, new()
-		//{
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, null, on);
-		//}
-
-		///// <summary>
-		///// Inner join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable Join<K> () where K : class, new()
-		//{
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.InnerJoin, this, null, null);
-		//}
-
-		///// <summary>
-		///// Left join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="le">Le.</param>
-		///// <param name="on">On.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable LeftJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
-		//{
-		//	if (le == null)
-		//		throw new ArgumentNullException (nameof (le));
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, on);
-		//}
-
-		///// <summary>
-		///// Left join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="query">Query.</param>
-		///// <param name="on">On.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable LeftJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
-		//{
-		//	if (query == null)
-		//		throw new ArgumentNullException (nameof (query));
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, on);
-		//}
-
-		///// <summary>
-		///// Left join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="query">Query.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable LeftJoin<K> (QueryExpression query) where K : class, new()
-		//{
-		//	if (query == null)
-		//		throw new ArgumentNullException (nameof (query));
-		//	LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, null);
-		//}
-
-		///// <summary>
-		///// Left join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="le">Le.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable LeftJoin<K> (LEnumerable<K> le) where K : class, new()
-		//{
-		//	if (le == null)
-		//		throw new ArgumentNullException (nameof (le));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, le, null);
-		//}
-
-		///// <summary>
-		///// Left join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable LeftJoin<K> (DataFieldExpression on) where K : class, new()
-		//{
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, null, on);
-		//}
-
-		///// <summary>
-		///// Left join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable LeftJoin<K> () where K : class, new()
-		//{
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.LeftJoin, this, null, null);
-		//}
-
-		///// <summary>
-		///// Right join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="le">Le.</param>
-		///// <param name="on">On.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable RightJoin<K> (LEnumerable<K> le, DataFieldExpression on) where K : class, new()
-		//{
-		//	if (le == null)
-		//		throw new ArgumentNullException (nameof (le));
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, on);
-		//}
-
-		///// <summary>
-		///// Right join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="query">Query.</param>
-		///// <param name="on">On.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable RightJoin<K> (QueryExpression query, DataFieldExpression on) where K : class, new()
-		//{
-		//	if (query == null)
-		//		throw new ArgumentNullException (nameof (query));
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, on);
-		//}
-
-		///// <summary>
-		///// Right join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="le">Le.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable RightJoin<K> (LEnumerable<K> le) where K : class, new()
-		//{
-		//	if (le == null)
-		//		throw new ArgumentNullException (nameof (le));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, null);
-		//}
-
-		///// <summary>
-		///// Right join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <param name="query">Query.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable RightJoin<K> (QueryExpression query) where K : class, new()
-		//{
-		//	if (query == null)
-		//		throw new ArgumentNullException (nameof (query));
-		//	LEnumerable<K> le = this._context.LQuery<K> ().Where (query);
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, le, null);
-		//}
-
-		///// <summary>
-		///// Right join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable RightJoin<K> (DataFieldExpression on) where K : class, new()
-		//{
-		//	if (on == null)
-		//		throw new ArgumentNullException (nameof (on));
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, null, on);
-		//}
-
-		///// <summary>
-		///// Right join table.
-		///// </summary>
-		///// <returns>The join.</returns>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public JoinTable RightJoin<K> () where K : class, new()
-		//{
-		//	return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, null, null);
-		//}
-
-		///// <summary>
-		///// Creates the insertor.
-		///// </summary>
-		///// <returns>The insertor.</returns>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public SelectInsertor CreateInsertor<K> ()
-		//{
-		//	return new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
-		//}
-
-		///// <summary>
-		///// Insert the specified selectInfos.
-		///// </summary>
-		///// <param name="selectInfos">Select infos.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public int Insert<K> (params SelectFieldInfo [] selectInfos)
-		//{
-		//	SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
-		//	if (selectInfos != null && selectInfos.Length > 0) {
-		//		insertor.SetSelectField (selectInfos);
-		//	}
-		//	return insertor.Execute ();
-		//}
 
 		/// <summary>
 		/// Insert this instance.
 		/// </summary>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public int Insert<K> ()
+		public int Insert<K> () where K : class, new()
 		{
-			SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
-			return insertor.Execute ();
+			DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (typeof (K));
+			return this._context.SelectInsert (insertMapping, _mapping, _query, _order, _level);
 		}
+
+		public int Insert<K> (Expression<Func<T, K>> queryExpression) where K : class, new()
+		{
+
+			DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (typeof (K));
+			return 0;
+		}
+
 
 		/// <summary>
 		/// Update the values on specified query expression..

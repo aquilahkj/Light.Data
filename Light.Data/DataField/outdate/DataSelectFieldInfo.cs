@@ -21,10 +21,10 @@ namespace Light.Data
 		//	return info.CreateDataFieldSql (factory, false);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
-		{
-			return info.CreateSqlString (factory, false, out dataParameters);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters)
+		//{
+		//	return info.CreateSqlString (factory, false, out dataParameters);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{

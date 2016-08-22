@@ -14,23 +14,10 @@ namespace Light.Data
 			_isDistinct = isDistinct;
 		}
 
-		//internal CountFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo, bool isDistinct)
-		//	: base (mapping)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	_fieldinfo = fieldInfo;
-		//	_isDistinct = isDistinct;
+		//	return factory.CreateCountSql (_fieldinfo.CreateSqlString (factory, isFullName, out dataParameters), _isDistinct);
 		//}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
-		//{
-		//	dataParameters = null;
-		//	return factory.CreateCountSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName), _isDistinct);
-		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			return factory.CreateCountSql (_fieldinfo.CreateSqlString (factory, isFullName, out dataParameters), _isDistinct);
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

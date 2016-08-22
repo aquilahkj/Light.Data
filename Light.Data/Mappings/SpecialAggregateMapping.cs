@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Reflection;
 
@@ -36,6 +37,12 @@ namespace Light.Data
 
 		#endregion
 
+		protected Dictionary<string, DataFieldMapping> _fieldMappingDictionary = new Dictionary<string, DataFieldMapping> ();
+
+		//protected List<DataFieldMapping> _fieldList = new List<DataFieldMapping> ();
+
+		protected ReadOnlyCollection<DataFieldMapping> _fieldList;
+
 		SpecialAggregateMapping (Type type)
 			: base (type)
 		{
@@ -45,16 +52,18 @@ namespace Light.Data
 		private void InitialDataFieldMapping ()
 		{
 			PropertyInfo [] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
+			List<DataFieldMapping> tmepList = new List<DataFieldMapping> ();
 			foreach (PropertyInfo pi in propertys) {
 				DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (pi, this);
 				if (mapping != null) {
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
-					_fieldList.Add (mapping);
+					tmepList.Add (mapping);
 				}
 			}
-			if (_fieldMappingDictionary.Count == 0) {
+			if (tmepList.Count == 0) {
 				throw new LightDataException (RE.NoAggregationFields);
 			}
+			_fieldList = new ReadOnlyCollection<DataFieldMapping> (tmepList);
 		}
 
 		public override object LoadData (DataContext context, IDataReader datareader, object state)

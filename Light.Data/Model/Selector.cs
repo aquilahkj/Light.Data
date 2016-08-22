@@ -26,26 +26,26 @@ namespace Light.Data
 			this.infoDict [field.FieldName] = field;
 		}
 
-		public virtual string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters)
-		{
-			string [] selectList = new string [this.infoDict.Count];
-			int index = 0;
-			List<DataParameter> innerParameters = null;
-			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
-				DataParameter [] dataParameters1 = null;
-				selectList [index] = fieldInfo.CreateSqlString (factory, true, out dataParameters1);
-				if (dataParameters1 != null && dataParameters1.Length > 0) {
-					if (innerParameters == null) {
-						innerParameters = new List<DataParameter> ();
-					}
-					innerParameters.AddRange (dataParameters1);
-				}
-				index++;
-			}
-			string customSelect = string.Join (",", selectList);
-			dataParameters = innerParameters != null ? innerParameters.ToArray () : null;
-			return customSelect;
-		}
+		//public virtual string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters)
+		//{
+		//	string [] selectList = new string [this.infoDict.Count];
+		//	int index = 0;
+		//	List<DataParameter> innerParameters = null;
+		//	foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
+		//		DataParameter [] dataParameters1 = null;
+		//		selectList [index] = fieldInfo.CreateSqlString (factory, true, out dataParameters1);
+		//		if (dataParameters1 != null && dataParameters1.Length > 0) {
+		//			if (innerParameters == null) {
+		//				innerParameters = new List<DataParameter> ();
+		//			}
+		//			innerParameters.AddRange (dataParameters1);
+		//		}
+		//		index++;
+		//	}
+		//	string customSelect = string.Join (",", selectList);
+		//	dataParameters = innerParameters != null ? innerParameters.ToArray () : null;
+		//	return customSelect;
+		//}
 
 		public virtual string [] GetSelectFiledNames ()
 		{
@@ -56,6 +56,18 @@ namespace Light.Data
 				index++;
 			}
 			return fileds;
+		}
+
+		public string CreateSelectString (CommandFactory factory, CreateSqlState state)
+		{
+			string [] selectList = new string [this.infoDict.Count];
+			int index = 0;
+			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
+				selectList [index] = fieldInfo.CreateSqlString (factory, true, state);
+				index++;
+			}
+			string customSelect = string.Join (",", selectList);
+			return customSelect;
 		}
 
 		public static JoinSelector ComposeSelector (Dictionary<string, Selector> selectors)
@@ -71,18 +83,6 @@ namespace Light.Data
 				}
 			}
 			return joinSelector;
-		}
-
-		public string CreateSelectString (CommandFactory factory, CreateSqlState state)
-		{
-			string [] selectList = new string [this.infoDict.Count];
-			int index = 0;
-			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
-				selectList [index] = fieldInfo.CreateSqlString (factory, true, state);
-				index++;
-			}
-			string customSelect = string.Join (",", selectList);
-			return customSelect;
 		}
 	}
 }

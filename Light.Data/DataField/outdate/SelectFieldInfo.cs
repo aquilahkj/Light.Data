@@ -109,7 +109,7 @@ namespace Light.Data
 			}
 		}
 
-		internal abstract string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters);
+		//internal abstract string CreateSqlString (CommandFactory factory, out DataParameter[] dataParameters);
 
 		internal abstract string CreateSqlString (CommandFactory factory, CreateSqlState state);
 

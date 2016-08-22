@@ -43,6 +43,10 @@ namespace Light.Data
 
 		#endregion
 
+		protected Dictionary<string, DataFieldMapping> _fieldMappingDictionary = new Dictionary<string, DataFieldMapping> ();
+
+		protected List<DataFieldMapping> _fieldList = new List<DataFieldMapping> ();
+
 		AggregateTableMapping (Type type)
 			: base (type)
 		{

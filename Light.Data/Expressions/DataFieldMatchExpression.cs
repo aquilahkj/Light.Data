@@ -41,16 +41,16 @@ namespace Light.Data
 		//	return factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
 		//}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			DataParameter [] dataParameters1 = null;
-			DataParameter [] dataParameters2 = null;
-			string leftFieldSql = leftField.CreateSqlString (factory, true, out dataParameters1);
-			string rightFieldSql = rightField.CreateSqlString (factory, true, out dataParameters2);
-			string sql = factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-			return sql;
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	DataParameter [] dataParameters1 = null;
+		//	DataParameter [] dataParameters2 = null;
+		//	string leftFieldSql = leftField.CreateSqlString (factory, true, out dataParameters1);
+		//	string rightFieldSql = rightField.CreateSqlString (factory, true, out dataParameters2);
+		//	string sql = factory.CreateJoinOnMatchSql (leftFieldSql, predicate, rightFieldSql);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+		//	return sql;
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

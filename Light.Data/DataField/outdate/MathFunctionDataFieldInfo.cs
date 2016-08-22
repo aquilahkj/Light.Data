@@ -12,9 +12,9 @@ namespace Light.Data
 			_function = function;
 		}
 
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
+		//	string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
 		//	string sql = null;
 		//	switch (_function) {
 		//	case MathFunction.Abs:
@@ -41,36 +41,6 @@ namespace Light.Data
 		//	}
 		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			string sql = null;
-			switch (_function) {
-			case MathFunction.Abs:
-				sql = factory.CreateAbsSql (field);
-				break;
-			case MathFunction.Log:
-				sql = factory.CreateLogSql (field);
-				break;
-			case MathFunction.Exp:
-				sql = factory.CreateExpSql (field);
-				break;
-			case MathFunction.Sin:
-				sql = factory.CreateSinSql (field);
-				break;
-			case MathFunction.Cos:
-				sql = factory.CreateCosSql (field);
-				break;
-			case MathFunction.Tan:
-				sql = factory.CreateTanSql (field);
-				break;
-			case MathFunction.Atan:
-				sql = factory.CreateAtanSql (field);
-				break;
-			}
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

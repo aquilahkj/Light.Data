@@ -322,7 +322,7 @@
     <Compile Include="Expressions\LambdaConditionQueryExpression.cs" />
     <Compile Include="DataField\LambdaQueryDataFieldInfo.cs" />
     <Compile Include="CreateSqlState.cs" />
-    <Compile Include="Expressions\HavingExpression.cs" />
+    <Compile Include="Expressions\_HavingExpression.cs" />
     <Compile Include="Expressions\_SpecialOrderExpression.cs" />
     <Compile Include="Expressions\outdate\SingleParamAggregateExpression.cs" />
     <Compile Include="Expressions\outdate\SingleParamQueryExpression.cs" />
@@ -385,6 +385,8 @@
     <Compile Include="Functions\outdate\CountAllFunction.cs" />
     <Compile Include="Functions\outdate\CountFunction.cs" />
     <Compile Include="Functions\outdate\FieldInfoAggregateData.cs" />
+    <Compile Include="DataField\LambdaConstantDataFieldInfo.cs" />
+    <Compile Include="Model\InsertSelector.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

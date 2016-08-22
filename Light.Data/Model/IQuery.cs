@@ -167,7 +167,9 @@ namespace Light.Data
 		/// Insert this instance.
 		/// </summary>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		int Insert<K> ();
+		int Insert<K> () where K : class, new();
+
+		int Insert<K> (Expression<Func<T, K>> queryExpression) where K : class, new();
 
 		/// <summary>
 		/// Update the values on specified query expression..

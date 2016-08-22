@@ -11,12 +11,12 @@ namespace Light.Data
 			_baseFieldInfo = info;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string sql = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			sql = factory.CreateNotSql (sql);
-			return sql;
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	string sql = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//	sql = factory.CreateNotSql (sql);
+		//	return sql;
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

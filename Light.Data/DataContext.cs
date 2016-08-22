@@ -577,6 +577,28 @@ namespace Light.Data
 			return rInt;
 		}
 
+		internal int SelectInsert (DataTableEntityMapping insertMapping, DataEntityMapping selectMapping, QueryExpression query, OrderExpression order, SafeLevel level)
+		{
+			int rInt;
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, selectMapping, query, order, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
+				rInt = ExecuteNonQuery (command, level);
+			}
+			return rInt;
+		}
+
+		internal int SelectInsert (DataTableEntityMapping insertMapping, DataFieldInfo [] insertFields, DataTableEntityMapping selectMapping, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		{
+			return 0;
+			//int rInt;
+			//CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			//CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, insertFields, selectMapping, selectFields, query, order, state);
+			//using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
+			//	rInt = ExecuteNonQuery (command, SafeLevel.Default);
+			//}
+			//return rInt;
+		}
 
 		/// <summary>
 		/// Selects the single object from key.
@@ -713,9 +735,9 @@ namespace Light.Data
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
 
-		internal IEnumerable QueryMappingData (Type type, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable QueryMappingData (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
+			//DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			RelationMap relationMap = mapping.GetRelationMap ();
 			if (selector == null) {
 				selector = relationMap.GetDefaultSelector ();
@@ -821,7 +843,6 @@ namespace Light.Data
 
 		internal IEnumerable QueryJoinData (DataMapping mapping, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
-			//DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region, state);
 			IDbCommand command = commandData.CreateCommand (_dataBase, state);
@@ -914,7 +935,7 @@ namespace Light.Data
 		{
 			object target = null;
 			Region region = new Region (index, 1);
-			foreach (object obj in QueryMappingData (mapping.ObjectType, null, query, order, region, level)) {
+			foreach (object obj in QueryMappingData (mapping, null, query, order, region, level)) {
 				target = obj;
 				break;
 			}

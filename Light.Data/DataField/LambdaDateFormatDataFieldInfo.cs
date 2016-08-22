@@ -14,11 +14,11 @@ namespace Light.Data
 			_format = format;
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			return factory.CreateDateTimeFormatSql (field, _format);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	string field = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//	return factory.CreateDateTimeFormatSql (field, _format);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

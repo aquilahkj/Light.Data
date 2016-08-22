@@ -105,17 +105,17 @@ namespace Light.Data
 			}
 		}
 
-		internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			dataParameters = null;
-			if (isFullName) {
-				string tableName = this._aliasTableName ?? TableMapping.TableName;
-				return factory.CreateFullDataFieldSql (tableName, FieldName);
-			}
-			else {
-				return factory.CreateDataFieldSql (FieldName);
-			}
-		}
+		//internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	dataParameters = null;
+		//	if (isFullName) {
+		//		string tableName = this._aliasTableName ?? TableMapping.TableName;
+		//		return factory.CreateFullDataFieldSql (tableName, FieldName);
+		//	}
+		//	else {
+		//		return factory.CreateDataFieldSql (FieldName);
+		//	}
+		//}
 
 		internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

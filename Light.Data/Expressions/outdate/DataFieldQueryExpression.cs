@@ -22,23 +22,16 @@ namespace Light.Data
 			_relateFieldInfo = relateFieldInfo;
 			_isReverse = isReverse;
 			_isSameTable = Object.Equals (fieldInfo.TableMapping, relateFieldInfo.TableMapping);
-		}
+		} 
 
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	dataParameters = null;
-		//	return factory.CreateRelationTableSql (_fieldInfo.CreateDataFieldSql (factory, false), _predicate, _isReverse, _relateFieldInfo.CreateDataFieldSql (factory, !_isSameTable));
+		//	DataParameter [] dataParameters1;
+		//	DataParameter [] dataParameters2;
+		//	string sql = factory.CreateRelationTableSql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters1), _predicate, _isReverse, _relateFieldInfo.CreateSqlString (factory, isFullName ? true : !_isSameTable, out dataParameters2));
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			//dataParameters = null;
-			DataParameter [] dataParameters1;
-			DataParameter [] dataParameters2;
-			string sql = factory.CreateRelationTableSql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters1), _predicate, _isReverse, _relateFieldInfo.CreateSqlString (factory, isFullName ? true : !_isSameTable, out dataParameters2));
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

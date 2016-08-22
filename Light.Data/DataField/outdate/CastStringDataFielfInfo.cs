@@ -11,19 +11,11 @@ namespace Light.Data
 			_format = format;
 		}
 
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
-		//	object format = LambdaExpressionExtend.ConvertObject (_format, factory, isFullName, false);
-		//	return factory.CreateCastStringSql (field, (string)format);
+		//	string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//	return factory.CreateCastStringSql (field, _format);
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			//object format = LambdaExpressionExtend.ConvertObject (_format, factory, isFullName, false);
-			return factory.CreateCastStringSql (field, _format);
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

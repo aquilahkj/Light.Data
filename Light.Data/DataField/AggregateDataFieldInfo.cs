@@ -39,21 +39,21 @@ namespace Light.Data
 			}
 		}
 
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			return _fieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-		}
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	return _fieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			return _fieldInfo.CreateSqlString (factory, isFullName, state);
 		}
 
-		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string field = _fieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-			return factory.CreateAliasSql (field, _aggregateName);
-		}
+		//public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
+		//{
+		//	string field = _fieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
+		//	return factory.CreateAliasSql (field, _aggregateName);
+		//}
 
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

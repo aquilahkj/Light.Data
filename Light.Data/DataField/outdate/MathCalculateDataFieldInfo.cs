@@ -18,12 +18,11 @@ namespace Light.Data
 			_value = value;
 		}
 
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	string field = BaseFieldInfo.CreateDataFieldSql (factory, isFullName);
-		//	//object value = _value;
-		//	object value = LambdaExpressionExtend.ConvertObject (_value, factory, isFullName, false);
-
+		//	DataParameter [] dataParameters1 = null;
+		//	string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters1);
+		//	object value = _value;
 		//	string sql = null;
 		//	switch (_opera) {
 		//	case MathOperator.Puls:
@@ -45,38 +44,9 @@ namespace Light.Data
 		//		sql = factory.CreatePowerSql (field, value, _forward);
 		//		break;
 		//	}
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1);
 		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			DataParameter [] dataParameters1 = null;
-			string field = BaseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters1);
-			object value = _value;
-			string sql = null;
-			switch (_opera) {
-			case MathOperator.Puls:
-				sql = factory.CreatePlusSql (field, value, _forward);
-				break;
-			case MathOperator.Minus:
-				sql = factory.CreateMinusSql (field, value, _forward);
-				break;
-			case MathOperator.Multiply:
-				sql = factory.CreateMultiplySql (field, value, _forward);
-				break;
-			case MathOperator.Divided:
-				sql = factory.CreateDividedSql (field, value, _forward);
-				break;
-			case MathOperator.Mod:
-				sql = factory.CreateModSql (field, value, _forward);
-				break;
-			case MathOperator.Power:
-				sql = factory.CreatePowerSql (field, value, _forward);
-				break;
-			}
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

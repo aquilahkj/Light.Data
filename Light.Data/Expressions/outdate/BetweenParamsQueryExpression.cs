@@ -49,30 +49,18 @@ namespace Light.Data
 			_toValue = toValue;
 		}
 
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
 		//	string pn = factory.CreateTempParamName ();
 		//	string pn1 = factory.CreateTempParamName ();
-
 		//	DataParameter fromParam = new DataParameter (pn, _fieldInfo.ToParameter (_fromValue));
 		//	DataParameter toParam = new DataParameter (pn1, _fieldInfo.ToParameter (_toValue));
-		//	dataParameters = new [] { fromParam, toParam };
-		//	return factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateDataFieldSql (factory, fullFieldName), _isNot, fromParam, toParam);
+		//	DataParameter [] dataParameters1 = new [] { fromParam, toParam };
+		//	DataParameter [] dataParameters2 = null;
+		//	string sql = factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters2), _isNot, fromParam.ParameterName, toParam.ParameterName);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+		//	return sql;
 		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			string pn = factory.CreateTempParamName ();
-			string pn1 = factory.CreateTempParamName ();
-
-			DataParameter fromParam = new DataParameter (pn, _fieldInfo.ToParameter (_fromValue));
-			DataParameter toParam = new DataParameter (pn1, _fieldInfo.ToParameter (_toValue));
-			DataParameter [] dataParameters1 = new [] { fromParam, toParam };
-			DataParameter [] dataParameters2 = null;
-			string sql = factory.CreateBetweenParamsQuerySql (_fieldInfo.CreateSqlString (factory, isFullName, out dataParameters2), _isNot, fromParam.ParameterName, toParam.ParameterName);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

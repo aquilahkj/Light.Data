@@ -8,13 +8,20 @@ namespace Light.Data
 	[AttributeUsage (AttributeTargets.Class, Inherited = true)]
 	public class AggregateTableAttribute : Attribute, IAggregateTableConfig
 	{
+		string extendParams;
+
 		/// <summary>
 		/// Gets or sets the extend parameters.
 		/// </summary>
 		/// <value>The extend parameters.</value>
 		public string ExtendParams {
-			get;
-			set;
+			get {
+				return extendParams;
+			}
+
+			set {
+				extendParams = value;
+			}
 		}
 	}
 }

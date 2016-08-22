@@ -15,28 +15,15 @@ namespace Light.Data
 			_fieldinfo = fieldinfo;
 		}
 
-		//internal ConditionMinFunction (DataEntityMapping mapping, QueryExpression expression, DataFieldInfo fieldinfo)
-		//	: base (mapping)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	_expression = expression;
-		//	_fieldinfo = fieldinfo;
+		//	DataParameter [] dataParameters1 = null;
+		//	DataParameter [] dataParameters2 = null;
+		//	string expressionString = _expression.CreateSqlString (factory, isFullName, out dataParameters1);
+		//	string sql = factory.CreateConditionMinSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateSqlString (factory, isFullName, out dataParameters2) : null);
+		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
+		//	return sql;
 		//}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
-		//{
-		//	string sql = _expression.CreateSqlString (factory, fullFieldName, out dataParameters);
-		//	return factory.CreateConditionMinSql (sql, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateDataFieldSql (factory, fullFieldName) : null);
-		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			DataParameter [] dataParameters1 = null;
-			DataParameter [] dataParameters2 = null;
-			string expressionString = _expression.CreateSqlString (factory, isFullName, out dataParameters1);
-			string sql = factory.CreateConditionMinSql (expressionString, !Object.Equals (this._fieldinfo, null) ? _fieldinfo.CreateSqlString (factory, isFullName, out dataParameters2) : null);
-			dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-			return sql;
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

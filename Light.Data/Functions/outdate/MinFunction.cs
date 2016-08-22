@@ -11,22 +11,10 @@ namespace Light.Data
 			_fieldinfo = fieldInfo;
 		}
 
-		//internal MinFunction (DataEntityMapping mapping, DataFieldInfo fieldInfo)
-		//	: base (mapping)
+		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
 		//{
-		//	_fieldinfo = fieldInfo;
+		//	return factory.CreateMinSql (_fieldinfo.CreateSqlString (factory, isFullName, out dataParameters));
 		//}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool fullFieldName, out DataParameter[] dataParameters)
-		//{
-		//	dataParameters = null;
-		//	return factory.CreateMinSql (_fieldinfo.CreateDataFieldSql (factory, fullFieldName));
-		//}
-
-		internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		{
-			return factory.CreateMinSql (_fieldinfo.CreateSqlString (factory, isFullName, out dataParameters));
-		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
