@@ -110,11 +110,11 @@ namespace Light.Data
 		{
 //			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
 
-			if (extendParams ["InnerPager"] != null) {
-				if (extendParams ["InnerPager"].ToLower () == "true") {
-					InnerPager = true;
-				}
-			}
+			//if (extendParams ["InnerPager"] != null) {
+			//	if (extendParams ["InnerPager"].ToLower () == "true") {
+			//		InnerPager = true;
+			//	}
+			//}
 
 			if (extendParams ["TimeOut"] != null) {
 				int timeout;
@@ -131,11 +131,11 @@ namespace Light.Data
 				}
 			}
 
-			if (extendParams ["InnerPager"] != null) {
-				if (extendParams ["InnerPager"].ToLower () == "true") {
-					InnerPager = true;
-				}
-			}
+			//if (extendParams ["InnerPager"] != null) {
+			//	if (extendParams ["InnerPager"].ToLower () == "true") {
+			//		InnerPager = true;
+			//	}
+			//}
 
 			if (extendParams ["OracleIdentityAuto"] != null) {
 				bool oracleIdentityAuto;

@@ -17,13 +17,16 @@ namespace Light.Data
 		//	}
 		//}
 
-		protected Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
+		//protected Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
 
-		public virtual void SetDataField (DataFieldInfo field)
+		protected List<DataFieldInfo> selectList = new List<DataFieldInfo> ();
+
+		public virtual void SetSelectField (DataFieldInfo field)
 		{
 			if (Object.Equals (field, null))
 				throw new ArgumentNullException (nameof (field));
-			this.infoDict [field.FieldName] = field;
+			//this.infoDict [field.FieldName] = field;
+			selectList.Add (field);
 		}
 
 		//public virtual string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters)
@@ -49,24 +52,25 @@ namespace Light.Data
 
 		public virtual string [] GetSelectFiledNames ()
 		{
-			string [] fileds = new string [this.infoDict.Count];
-			int index = 0;
-			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
-				fileds [index] = fieldInfo.FieldName;
-				index++;
+			List<string> list = new List<string> ();
+			foreach (DataFieldInfo fieldInfo in this.selectList) {
+				string name = fieldInfo.FieldName;
+				if (name != null) {
+					list.Add (name);
+				}
 			}
-			return fileds;
+			return list.ToArray ();
 		}
 
-		public string CreateSelectString (CommandFactory factory, CreateSqlState state)
+		public string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string [] selectList = new string [this.infoDict.Count];
+			string [] list = new string [this.selectList.Count];
 			int index = 0;
-			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
-				selectList [index] = fieldInfo.CreateSqlString (factory, true, state);
+			foreach (DataFieldInfo fieldInfo in this.selectList) {
+				list [index] = fieldInfo.CreateSqlString (factory, isFullName, state);
 				index++;
 			}
-			string customSelect = string.Join (",", selectList);
+			string customSelect = string.Join (",", list);
 			return customSelect;
 		}
 
@@ -74,8 +78,8 @@ namespace Light.Data
 		{
 			JoinSelector joinSelector = new JoinSelector ();
 			foreach (KeyValuePair<string, Selector> selector in selectors) {
-				foreach (KeyValuePair<string, DataFieldInfo> kvs in selector.Value.infoDict) {
-					DataFieldInfo info = kvs.Value.Clone () as DataFieldInfo;
+				foreach (DataFieldInfo item in selector.Value.selectList) {
+					DataFieldInfo info = item.Clone () as DataFieldInfo;
 					string aliasName = string.Format ("{0}_{1}", selector.Key, info.FieldName);
 					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
 					alias.AliasTableName = selector.Key;

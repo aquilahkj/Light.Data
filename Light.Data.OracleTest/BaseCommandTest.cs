@@ -6,7 +6,7 @@ using Light.Data.UnitTest;
 namespace Light.Data.OracleTest
 {
 	[TestFixture ()]
-	public class BaseCommandTest:BaseTest
+	public class BaseCommandTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_SaveErase_Single ()
@@ -120,20 +120,20 @@ namespace Light.Data.OracleTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
-			Assert.AreEqual (count, result);
+			Assert.AreEqual (-1, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray (), 20);
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (-1, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray (), 100);
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (-1, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
@@ -156,13 +156,13 @@ namespace Light.Data.OracleTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (-1, result);
 
 			updates = new List<UpdateSetValue> ();
 			DateTime uptime = GetNow ();
 			updates.Add (new UpdateSetValue (TeUser.LastLoginTimeField, uptime));
 			updates.Add (new UpdateSetValue (TeUser.StatusField, 2));
-			result = context.UpdateMass<TeUser> (updates.ToArray ());
+			result = context.LQuery<TeUser> ().Update (updates.ToArray ());
 			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (count, listAc.Count);
@@ -172,7 +172,7 @@ namespace Light.Data.OracleTest
 
 			updates = new List<UpdateSetValue> ();
 			updates.Add (new UpdateSetValue (TeUser.StatusField, 3));
-			result = context.UpdateMass<TeUser> (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1), updates.ToArray ());
+			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Update (updates.ToArray ());
 
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
@@ -229,9 +229,9 @@ namespace Light.Data.OracleTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (-1, result);
 
-			result = context.DeleteMass<TeUser> ();
+			result = context.LQuery<TeUser> ().Delete ();
 			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (0, listAc.Count);
@@ -255,7 +255,7 @@ namespace Light.Data.OracleTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (-1, result);
 
 			result = context.LQuery<TeUser> ().Delete ();
 			Assert.AreEqual (count, result);
@@ -281,9 +281,9 @@ namespace Light.Data.OracleTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (-1, result);
 
-			result = context.DeleteMass<TeUser> (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1));
+			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (count - rdd, listAc.Count);
@@ -307,7 +307,7 @@ namespace Light.Data.OracleTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BulkInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (-1, result);
 
 			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);

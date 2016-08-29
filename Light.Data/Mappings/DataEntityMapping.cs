@@ -359,7 +359,6 @@ namespace Light.Data
 		//public JoinCapsule LoadJoinCapsule (QueryExpression query, OrderExpression order)
 		//{
 		//	if (singleJoinTableRelationFields.Count == 0) {
-		//		//todo add no relate exception
 		//		throw new LightDataException ("");
 		//	}
 		//	if (this.relationMap == null) {

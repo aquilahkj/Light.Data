@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Light.Data
 {
@@ -60,7 +59,7 @@ namespace Light.Data
 
 		Region _region;
 
-		readonly DataContext _context = null;
+		readonly DataContext _context;
 
 		SafeLevel _level = SafeLevel.None;
 
@@ -386,7 +385,7 @@ namespace Light.Data
 		/// <returns>instance.</returns>
 		public T Single ()
 		{
-			return _context.SelectSingle (_mapping, _query, _order, 0, _level) as T;
+			return _context.SelectMappingDataSingle (_mapping, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -396,7 +395,7 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.SelectSingle (_mapping, _query, _order, index, _level) as T;
+			return _context.SelectMappingDataSingle (_mapping, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>
@@ -409,16 +408,16 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// Queries the single field.
-		/// </summary>
-		/// <returns>The single field enumerable.</returns>
-		/// <param name="fieldInfo">Field info.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo)
-		{
-			return QuerySingleField<K> (fieldInfo, false);
-		}
+		///// <summary>
+		///// Queries the single field.
+		///// </summary>
+		///// <returns>The single field enumerable.</returns>
+		///// <param name="fieldInfo">Field info.</param>
+		///// <typeparam name="K">The 1st type parameter.</typeparam>
+		//public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo)
+		//{
+		//	return QuerySingleField<K> (fieldInfo, false);
+		//}
 
 		/// <summary>
 		/// Queries the single field.
@@ -427,24 +426,26 @@ namespace Light.Data
 		/// <param name="fieldInfo">Field info.</param>
 		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo, bool isDistinct)
+		public IEnumerable<K> QuerySingleField<K> (DataFieldInfo fieldInfo, bool isDistinct = false)
 		{
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			return _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level);
+			foreach (K item in _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level)) {
+				yield return item;
+			}
 		}
 
-		/// <summary>
-		/// Queries the single field list.
-		/// </summary>
-		/// <returns>The single field list.</returns>
-		/// <param name="fieldInfo">Field info.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo)
-		{
-			return QuerySingleFieldList<K> (fieldInfo, false);
-		}
+		///// <summary>
+		///// Queries the single field list.
+		///// </summary>
+		///// <returns>The single field list.</returns>
+		///// <param name="fieldInfo">Field info.</param>
+		///// <typeparam name="K">The 1st type parameter.</typeparam>
+		//public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo)
+		//{
+		//	return QuerySingleFieldList<K> (fieldInfo, false);
+		//}
 
 		/// <summary>
 		/// Queries the single field list.
@@ -453,7 +454,7 @@ namespace Light.Data
 		/// <param name="fieldInfo">Field info.</param>
 		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo, bool isDistinct)
+		public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo, bool isDistinct = false)
 		{
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
@@ -766,39 +767,39 @@ namespace Light.Data
 			return JoinTable.CreateJoinTable<T, K> (this._context, JoinType.RightJoin, this, null, null);
 		}
 
-		/// <summary>
-		/// Creates the insertor.
-		/// </summary>
-		/// <returns>The insertor.</returns>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public SelectInsertor CreateInsertor<K> ()
-		{
-			return new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
-		}
+		/////// <summary>
+		/////// Creates the insertor.
+		/////// </summary>
+		/////// <returns>The insertor.</returns>
+		/////// <typeparam name="K">The 1st type parameter.</typeparam>
+		//public SelectInsertor CreateInsertor<K> ()
+		//{
+		//	return new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
+		//}
 
-		/// <summary>
-		/// Insert the specified selectInfos.
-		/// </summary>
-		/// <param name="selectInfos">Select infos.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public int Insert<K> (params SelectFieldInfo [] selectInfos)
-		{
-			SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
-			if (selectInfos != null && selectInfos.Length > 0) {
-				insertor.SetSelectField (selectInfos);
-			}
-			return insertor.Execute ();
-		}
+		///// <summary>
+		///// Insert the specified selectInfos.
+		///// </summary>
+		///// <param name="selectInfos">Select infos.</param>
+		///// <typeparam name="K">The 1st type parameter.</typeparam>
+		//public int Insert<K> (params SelectFieldInfo [] selectInfos)
+		//{
+		//	SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
+		//	if (selectInfos != null && selectInfos.Length > 0) {
+		//		insertor.SetSelectField (selectInfos);
+		//	}
+		//	return insertor.Execute ();
+		//}
 
-		/// <summary>
-		/// Insert this instance.
-		/// </summary>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		public int Insert<K> ()
-		{
-			SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
-			return insertor.Execute ();
-		}
+		///// <summary>
+		///// Insert this instance.
+		///// </summary>
+		///// <typeparam name="K">The 1st type parameter.</typeparam>
+		//public int Insert<K> ()
+		//{
+		//	SelectInsertor insertor = new SelectInsertor (this._context, typeof (K), typeof (T), this._query, this._order);
+		//	return insertor.Execute ();
+		//}
 
 		/// <summary>
 		/// Update the values on specified query expression..
@@ -806,7 +807,19 @@ namespace Light.Data
 		/// <param name="updates">Updates.</param>
 		public int Update (params UpdateSetValue [] updates)
 		{
-			return _context.UpdateMass<T> (this._query, updates);
+			if (updates.Length == 0) {
+				throw new ArgumentNullException (nameof (updates));
+			}
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			MassUpdator updator = new MassUpdator (mapping);
+			foreach (UpdateSetValue usv in updates) {
+				if (usv.DataField.TableMapping != mapping) {
+					throw new LightDataException (RE.UpdateFieldTypeIsError);
+				}
+				DataFieldInfo valueField = new ConstantDataFieldInfo (mapping, usv.Value);
+				updator.SetUpdateData (usv.DataField, valueField);
+			}
+			return this._context.UpdateMass (updator, _query, _level);
 		}
 
 		/// <summary>
@@ -814,7 +827,8 @@ namespace Light.Data
 		/// </summary>
 		public int Delete ()
 		{
-			return _context.DeleteMass<T> (this._query);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return _context.DeleteMass (mapping, this._query, _level);
 		}
 	}
 }

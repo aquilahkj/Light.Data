@@ -115,11 +115,11 @@ namespace Light.Data.OracleAdapter
 		{
 //			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
 
-			if (extendParams ["InnerPager"] != null) {
-				if (extendParams ["InnerPager"].ToLower () == "true") {
-					InnerPager = true;
-				}
-			}
+			//if (extendParams ["InnerPager"] != null) {
+			//	if (extendParams ["InnerPager"].ToLower () == "true") {
+			//		InnerPager = true;
+			//	}
+			//}
 
 			if (extendParams ["TimeOut"] != null) {
 				int timeout;
@@ -136,11 +136,11 @@ namespace Light.Data.OracleAdapter
 				}
 			}
 
-			if (extendParams ["InnerPager"] != null) {
-				if (extendParams ["InnerPager"].ToLower () == "true") {
-					InnerPager = true;
-				}
-			}
+			//if (extendParams ["InnerPager"] != null) {
+			//	if (extendParams ["InnerPager"].ToLower () == "true") {
+			//		InnerPager = true;
+			//	}
+			//}
 
 			if (extendParams ["OracleIdentityAuto"] != null) {
 				bool oracleIdentityAuto;

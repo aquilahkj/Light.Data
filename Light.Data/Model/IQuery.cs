@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -19,7 +20,6 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		IQuery<T> Where (Expression<Func<T, bool>> expression);
-
 
 		/// <summary>
 		/// Catch the specified where expression with and.
@@ -132,7 +132,7 @@ namespace Light.Data
 		/// Get single instance.
 		/// </summary>
 		/// <returns>instance.</returns>
-		T Single ();
+		T First ();
 
 		/// <summary>
 		/// Elements at index.
@@ -169,13 +169,15 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		int Insert<K> () where K : class, new();
 
-		int Insert<K> (Expression<Func<T, K>> queryExpression) where K : class, new();
+		int SelectInsert<K> (Expression<Func<T, K>> queryExpression) where K : class, new();
 
 		/// <summary>
 		/// Update the values on specified query expression..
 		/// </summary>
 		/// <param name="updates">Updates.</param>
-		int Update (params UpdateSetValue [] updates);
+		//int Update (params UpdateSetValue [] updates);
+
+		int Update (Expression<Func<T, T>> queryExpression);
 
 		/// <summary>
 		/// Delete datas on specified query expression.
@@ -197,6 +199,10 @@ namespace Light.Data
 		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
 
 		IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class;
+
+		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
+
+		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
 	}
 }
 

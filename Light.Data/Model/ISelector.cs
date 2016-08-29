@@ -7,7 +7,7 @@ namespace Light.Data
 
 		//string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters);
 
-		string CreateSelectString (CommandFactory factory, CreateSqlState state);
+		string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state);
 	}
 }
 

@@ -118,11 +118,11 @@ namespace Light.Data
 				}
 			}
 
-			if (extendParams ["InnerPager"] != null) {
-				if (extendParams ["InnerPager"].ToLower () == "true") {
-					InnerPager = true;
-				}
-			}
+			//if (extendParams ["InnerPager"] != null) {
+			//	if (extendParams ["InnerPager"].ToLower () == "true") {
+			//		InnerPager = true;
+			//	}
+			//}
 
 			if (extendParams ["TimeOut"] != null) {
 				int timeout;

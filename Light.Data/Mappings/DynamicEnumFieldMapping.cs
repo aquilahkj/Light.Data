@@ -3,12 +3,12 @@ namespace Light.Data
 {
 	class DynamicEnumFieldMapping : DynamicFieldMapping
 	{
-		EnumFieldType _enumType;
+		//EnumFieldType _enumType;
 
-		public DynamicEnumFieldMapping (Type type, string fieldName, DynamicAggregateMapping mapping, EnumFieldType enumType)
+		public DynamicEnumFieldMapping (Type type, string fieldName, DynamicAggregateMapping mapping)
 			: base (type, fieldName, mapping, true)
 		{
-			_enumType = enumType;
+			//_enumType = enumType;
 		}
 
 		public override object ToProperty (object value)
@@ -17,8 +17,9 @@ namespace Light.Data
 				return null;
 			}
 			else {
-				if (_enumType == EnumFieldType.EnumToString) {
-					return Enum.Parse (ObjectType, value.ToString ());
+				string str = value as string;
+				if (str != null) {
+					return Enum.Parse (ObjectType, str);
 				}
 				else {
 					Type type = value.GetType ();

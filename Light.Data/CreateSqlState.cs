@@ -116,6 +116,9 @@ namespace Light.Data
 		/// <param name="direction">Direction.</param>
 		public string AddDataParameter (object paramValue, string dbType, ParameterDirection direction)
 		{
+			if (Object.Equals (paramValue, null)) {
+				return factory.Null;
+			}
 			string paramName = GetNextParameterName ();
 			DataParameter dataParameter = new DataParameter (paramName, paramValue, dbType, direction);
 			parameters.Add (dataParameter);
@@ -159,6 +162,10 @@ namespace Light.Data
 			return parameters.ToArray ();
 		}
 
+		internal string AddDataParameter (object value, string dBType, object input)
+		{
+			throw new NotImplementedException ();
+		}
 	}
 }
 

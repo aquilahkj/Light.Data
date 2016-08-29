@@ -116,7 +116,7 @@ namespace Light.Data
 					DataFieldInfo field = new DataFieldInfo (fieldMapping);
 					fieldInfoDict.Add (string.Format ("{0}.{1}", string.Empty, fieldMapping.IndexName), field);
 					rootInfoList.Add (field);
-					dataSelector.SetDataField (field);
+					dataSelector.SetSelectField (field);
 				}
 			}
 			tableInfoDict.Add (string.Empty, rootInfoList.ToArray ());
@@ -302,10 +302,11 @@ namespace Light.Data
 			return selector;
 		}
 
-		string [] RewritePaths (string [] paths)
+		HashSet<string> RewritePaths (string [] paths)
 		{
+			HashSet<string> ss = new HashSet<string> (paths);
 			if (collectionDict.Count > 0) {
-				HashSet<string> ss = new HashSet<string> (paths);
+
 				foreach (string path in paths) {
 					string [] arr;
 					if (collectionDict.TryGetValue (path, out arr)) {
@@ -314,21 +315,37 @@ namespace Light.Data
 						}
 					}
 				}
-				string [] newpaths = new string [ss.Count];
-				ss.CopyTo (newpaths);
-				return newpaths;
 			}
-			else {
-				return paths;
-			}
+			return ss;
 		}
 
-		public ISelector CreateSpecialSelector (params string [] paths)
+		HashSet<DataFieldInfo> GetInfos (string [] paths)
 		{
-			paths = RewritePaths (paths);
+			HashSet<DataFieldInfo> ss = new HashSet<DataFieldInfo> ();
+			if (collectionDict.Count > 0) {
+
+				foreach (string path in paths) {
+					DataFieldInfo [] arr;
+					if (tableInfoDict.TryGetValue (path, out arr)) {
+						foreach (DataFieldInfo item in arr) {
+							ss.Add (item);
+						}
+					}
+					DataFieldInfo field;
+					if (fieldInfoDict.TryGetValue (path, out field)) {
+						ss.Add (field);
+					}
+				}
+			}
+			return ss;
+		}
+
+		public ISelector CreateSpecialSelector (string [] paths)
+		{
+			HashSet<string> allPaths = RewritePaths (paths);
 			HashSet<DataFieldInfo> hash = new HashSet<DataFieldInfo> ();
 			HashSet<string> stable = new HashSet<string> ();
-			foreach (string path in paths) {
+			foreach (string path in allPaths) {
 				DataFieldInfo info;
 				if (fieldInfoDict.TryGetValue (path, out info)) {
 					if (!hash.Contains (info)) {
@@ -360,8 +377,6 @@ namespace Light.Data
 					}
 					continue;
 				}
-
-
 				throw new LightDataException ("");
 			}
 			if (rootMapping.HasJoinRelateModel) {
@@ -374,12 +389,34 @@ namespace Light.Data
 			else {
 				Selector nselector = new Selector ();
 				foreach (DataFieldInfo finfo in hash) {
-					nselector.SetDataField (finfo);
+					nselector.SetSelectField (finfo);
 				}
 				return nselector;
 			}
 		}
 
+		public ISelector CreateExceptSelector (string [] paths)
+		{
+			HashSet<DataFieldInfo> exceptInfo = GetInfos (paths);
+			if (rootMapping.HasJoinRelateModel) {
+				JoinSelector jselector = new JoinSelector ();
+				foreach (KeyValuePair<string, DataFieldInfo> kvs in fieldInfoDict) {
+					if (!exceptInfo.Contains (kvs.Value)) {
+						jselector.SetAliasDataField (kvs.Value as AliasDataFieldInfo);
+					}
+				}
+				return jselector;
+			}
+			else {
+				Selector nselector = new Selector ();
+				foreach (KeyValuePair<string, DataFieldInfo> kvs in fieldInfoDict) {
+					if (!exceptInfo.Contains (kvs.Value)) {
+						nselector.SetSelectField (kvs.Value);
+					}
+				}
+				return nselector;
+			}
+		}
 	}
 }
 

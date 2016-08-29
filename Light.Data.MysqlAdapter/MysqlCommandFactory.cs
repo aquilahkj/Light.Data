@@ -14,7 +14,7 @@ namespace Light.Data.MysqlAdapter
 
 		public MysqlCommandFactory ()
 		{
-			_canInnerPage = true;
+			//_canInnerPage = true;
 			dateTimeFormater.YearFormat = "%Y";
 			dateTimeFormater.MonthFormat = "%m";
 			dateTimeFormater.DayFormat = "%d";
@@ -24,6 +24,7 @@ namespace Light.Data.MysqlAdapter
 
 			_havingAlias = true;
 			_orderbyAlias = true;
+			//_bulkInsertCompose = true;
 		}
 
 		public override string CreateDataFieldSql (string fieldName)
@@ -51,7 +52,96 @@ namespace Light.Data.MysqlAdapter
 			return command;
 		}
 
-		public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public override CommandData CreateSelectJoinTableBaseCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		{
+			CommandData command = base.CreateSelectJoinTableBaseCommand (customSelect, modelList, query, order, region, state);
+			if (region != null) {
+				if (region.Start == 0) {
+					command.CommandText = string.Format ("{0} limit {1}", command.CommandText, region.Size);
+				}
+				else {
+					command.CommandText = string.Format ("{0} limit {1},{2}", command.CommandText, region.Start, region.Size);
+				}
+				command.InnerPage = true;
+			}
+			return command;
+		}
+
+		public override CommandData CreateAggregateTableCommand (DataEntityMapping mapping, AggregateDataFieldInfo [] fieldInfos, QueryExpression query, QueryExpression having, OrderExpression order, Region region, CreateSqlState state)
+		{
+			CommandData command = base.CreateAggregateTableCommand (mapping, fieldInfos, query, having, order, region, state);
+			if (region != null) {
+				if (region.Start == 0) {
+					command.CommandText = string.Format ("{0} limit {1}", command.CommandText, region.Size);
+				}
+				else {
+					command.CommandText = string.Format ("{0} limit {1},{2}", command.CommandText, region.Start, region.Size);
+				}
+				command.InnerPage = true;
+			}
+			return command;
+		}
+
+		//public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		//{
+		//	if (entitys == null || entitys.Length == 0) {
+		//		throw new ArgumentNullException (nameof (entitys));
+		//	}
+		//	if (batchCount <= 0) {
+		//		batchCount = 10;
+		//	}
+
+		//	int totalCount = entitys.Length;
+		//	List<string> insertList = new List<string> ();
+		//	foreach (DataFieldMapping field in mapping.NoIdentityFields) {
+		//		insertList.Add (CreateDataFieldSql (field.Name));
+		//	}
+
+		//	string insert = string.Join (",", insertList);
+		//	string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
+
+		//	int createCount = 0;
+		//	int totalCreateCount = 0;
+		//	StringBuilder values = new StringBuilder ();
+		//	int paramIndex = 0;
+		//	List<DataParameter> dataParams = new List<DataParameter> ();
+		//	List<CommandData> commands = new List<CommandData> ();
+		//	foreach (object entity in entitys) {
+		//		List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
+		//		string [] valueList = new string [entityParams.Count];
+		//		int index = 0;
+		//		foreach (DataParameter dataParameter in entityParams) {
+		//			string paramName = CreateParamName ("P" + paramIndex);
+		//			valueList [index] = paramName;
+		//			dataParameter.ParameterName = paramName;
+		//			dataParams.Add (dataParameter);
+		//			index++;
+		//			paramIndex++;
+		//		}
+		//		string value = string.Join (",", valueList);
+		//		values.AppendFormat ("({0})", value);
+		//		createCount++;
+		//		totalCreateCount++;
+		//		if (createCount == batchCount || totalCreateCount == totalCount || totalCreateCount == totalCount - 1) {
+		//			CommandData command = new CommandData (string.Format ("{0}values{1};", insertsql, values), dataParams);
+		//			commands.Add (command);
+		//			if (totalCreateCount == totalCount) {
+		//				break;
+		//			}
+		//			dataParams = new List<DataParameter> ();
+		//			createCount = 0;
+		//			paramIndex = 0;
+		//			values = new StringBuilder ();
+		//		}
+		//		else {
+		//			values.Append (",");
+		//		}
+		//	}
+		//	return commands.ToArray ();
+		//}
+
+
+		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
 				throw new ArgumentNullException (nameof (entitys));
@@ -59,55 +149,63 @@ namespace Light.Data.MysqlAdapter
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-
 			int totalCount = entitys.Length;
-			List<string> insertList = new List<string> ();
-			foreach (DataFieldMapping field in mapping.NoIdentityFields) {
-				insertList.Add (CreateDataFieldSql (field.Name));
+			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+			int insertLen = fields.Count;
+			if (insertLen == 0) {
+				throw new LightDataException ("");
 			}
-
+			string [] insertList = new string [insertLen];
+			for (int i = 0; i < insertLen; i++) {
+				DataFieldMapping field = fields [i];
+				insertList [i] = CreateDataFieldSql (field.Name);
+			}
 			string insert = string.Join (",", insertList);
-			string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
+			string insertSql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
 
 			int createCount = 0;
 			int totalCreateCount = 0;
-			StringBuilder values = new StringBuilder ();
-			int paramIndex = 0;
-			List<DataParameter> dataParams = new List<DataParameter> ();
-			List<CommandData> commands = new List<CommandData> ();
+
+			StringBuilder totalSql = new StringBuilder ();
+
+			totalSql.AppendFormat ("{0}values", insertSql);
+
+			CreateSqlState state = new CreateSqlState (this);
+			List<Tuple<CommandData, CreateSqlState>> list = new List<Tuple<CommandData, CreateSqlState>> ();
+
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string [] valueList = new string [entityParams.Count];
-				int index = 0;
-				foreach (DataParameter dataParameter in entityParams) {
-					string paramName = CreateParamName ("P" + paramIndex);
-					valueList [index] = paramName;
-					dataParameter.ParameterName = paramName;
-					dataParams.Add (dataParameter);
-					index++;
-					paramIndex++;
+				string [] valuesList = new string [insertLen];
+				for (int i = 0; i < insertLen; i++) {
+					DataFieldMapping field = fields [i];
+					object obj = field.Handler.Get (entity);
+					object value = field.ToColumn (obj);
+					valuesList [i] = state.AddDataParameter (value, field.DBType, ParameterDirection.Input);
 				}
-				string value = string.Join (",", valueList);
-				values.AppendFormat ("({0})", value);
+				string values = string.Join (",", valuesList);
+
+				totalSql.AppendFormat ("({0})", values);
+
 				createCount++;
 				totalCreateCount++;
 				if (createCount == batchCount || totalCreateCount == totalCount || totalCreateCount == totalCount - 1) {
-					CommandData command = new CommandData (string.Format ("{0}values{1};", insertsql, values), dataParams);
-					commands.Add (command);
+					totalSql.Append (";");
+					CommandData command = new CommandData (totalSql.ToString ());
+					list.Add (new Tuple<CommandData, CreateSqlState> (command, state));
 					if (totalCreateCount == totalCount) {
 						break;
 					}
-					dataParams = new List<DataParameter> ();
+					state = new CreateSqlState (this);
 					createCount = 0;
-					paramIndex = 0;
-					values = new StringBuilder ();
+					totalSql = new StringBuilder ();
+					totalSql.AppendFormat ("{0}values", insertSql);
 				}
 				else {
-					values.Append (",");
+					totalSql.Append (",");
 				}
 			}
-			return commands.ToArray ();
+			return list.ToArray ();
 		}
+
 
 		//public override CommandData CreateDynamicAggregateCommand (DataEntityMapping mapping, List<DataFieldInfo> fields, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order)
 		//{

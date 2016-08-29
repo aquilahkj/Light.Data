@@ -9,7 +9,7 @@ namespace Light.Data
 	{
 		public MssqlCommandFactory_2000 ()
 		{
-			_canInnerPage = false;
+			//_canInnerPage = false;
 		}
 
 		/// <summary>

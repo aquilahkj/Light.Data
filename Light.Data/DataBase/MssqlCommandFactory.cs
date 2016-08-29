@@ -13,7 +13,7 @@ namespace Light.Data
 
 		public MssqlCommandFactory ()
 		{
-			_canInnerPage = true;
+			//_canInnerPage = true;
 			dateTimeFormatDict.Add ("yyyy-MM-dd hh:mm:ss", "CONVERT(char(19), {0}, 120)");
 			dateTimeFormatDict.Add ("yyyy-MM-dd", "CONVERT(char(10), {0}, 23)");
 			dateTimeFormatDict.Add ("MM/dd/yyyy", "CONVERT(char(10), {0}, 101)");
@@ -156,7 +156,7 @@ namespace Light.Data
 					innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
 			}
 			CommandData command = new CommandData (sql.ToString ());
-			command.TransParamName = true;
+			//command.TransParamName = true;
 			return command;
 		}
 

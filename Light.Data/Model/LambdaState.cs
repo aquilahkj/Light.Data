@@ -18,15 +18,15 @@ namespace Light.Data
 			get;
 		}
 
-		bool mutliQuery;
+		bool mutliEntity;
 
-		public bool MutliQuery {
+		public bool MutliEntity {
 			get {
-				return mutliQuery;
+				return mutliEntity;
 			}
 
 			set {
-				mutliQuery = value;
+				mutliEntity = value;
 			}
 		}
 

@@ -131,7 +131,7 @@ namespace Light.Data
 				return null;
 			}
 			else if (type.IsEnum) {
-				EnumFieldMapping enumFieldMapping = new EnumFieldMapping (type, fieldName, indexName, mapping, isNullable, dbType, null);
+				EnumFieldMapping enumFieldMapping = new EnumFieldMapping (type, fieldName, indexName, mapping, isNullable);
 				fieldMapping = enumFieldMapping;
 			}
 			else {

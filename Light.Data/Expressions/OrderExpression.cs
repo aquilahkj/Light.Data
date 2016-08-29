@@ -6,7 +6,7 @@ namespace Light.Data
 	/// <summary>
 	/// Order expression.
 	/// </summary>
-	public class OrderExpression : BaseExpression
+	public class OrderExpression : LightExpression
 	{
 		List<OrderExpression> _orderExpressions;
 

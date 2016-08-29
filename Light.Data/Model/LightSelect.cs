@@ -65,6 +65,11 @@ namespace Light.Data
 			}
 			return list;
 		}
+
+		public K First ()
+		{
+			return _context.SelectMappingDataSingle (_mapping, _query, _order, 0, _level) as K;
+		}
 	}
 }
 

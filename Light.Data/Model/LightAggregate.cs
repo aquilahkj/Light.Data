@@ -51,6 +51,14 @@ namespace Light.Data
 			}
 		}
 
+		Region _region;
+
+		internal Region Region {
+			get {
+				return _region;
+			}
+		}
+
 		DataEntityMapping _mapping;
 
 		public LightAggregate (LightQuery<T> query, Expression<Func<T, K>> expression)
@@ -132,14 +140,110 @@ namespace Light.Data
 		public List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			IEnumerable ie = _context.QueryDynamicAggregateEnumerable (_model, _query, _having, _order, _level);
+			IEnumerable ie = _context.QueryDynamicAggregate (_model, _query, _having, _order, _region, _level);
 			foreach (K item in ie) {
 				list.Add (item);
 			}
 			return list;
 		}
 
+		public K First ()
+		{
+			return _context.SelectDynamicAggregateSingle (_model, _query, _having, _order, 0, _level) as K;
+		}
 
+		/// <summary>
+		/// Take the datas count.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="count">Count.</param>
+		public IAggregate<K> Take (int count)
+		{
+			int start;
+			int size = count;
+			if (_region == null) {
+				start = 0;
+			}
+			else {
+				start = _region.Start;
+			}
+			_region = new Region (start, size);
+			return this;
+		}
+
+		/// <summary>
+		/// Skip the specified index.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="index">Index.</param>
+		public IAggregate<K> Skip (int index)
+		{
+			int start = index;
+			int size;
+			if (_region == null) {
+				size = int.MaxValue;
+			}
+			else {
+				size = _region.Size;
+			}
+			_region = new Region (start, size);
+			return this;
+		}
+
+		/// <summary>
+		/// Range the specified from and to.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="from">From.</param>
+		/// <param name="to">To.</param>
+		public IAggregate<K> Range (int from, int to)
+		{
+			int start = from;
+			int size = to - from;
+			_region = new Region (start, size);
+			return this;
+		}
+
+		/// <summary>
+		/// reset the range
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		public IAggregate<K> RangeReset ()
+		{
+			_region = null;
+			return this;
+		}
+
+		/// <summary>
+		/// Sets page size.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="page">Page.</param>
+		/// <param name="size">Size.</param>
+		public IAggregate<K> PageSize (int page, int size)
+		{
+			if (page < 1) {
+				throw new ArgumentOutOfRangeException (nameof (page));
+			}
+			if (size < 1) {
+				throw new ArgumentOutOfRangeException (nameof (size));
+			}
+			page--;
+			int start = page * size;
+			_region = new Region (start, size);
+			return this;
+		}
+
+		/// <summary>
+		/// Safes the mode.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="level">Level.</param>
+		public IAggregate<K> SafeMode (SafeLevel level)
+		{
+			_level = level;
+			return this;
+		}
 	}
 }
 

@@ -82,6 +82,51 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The list.</returns>
 		List<K> ToList ();
+
+		K First ();
+
+		/// <summary>
+		/// Take the datas count.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="count">Count.</param>
+		IAggregate<K> Take (int count);
+
+		/// <summary>
+		/// Skip the specified index.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="index">Index.</param>
+		IAggregate<K> Skip (int index);
+
+		/// <summary>
+		/// Range the specified from and to.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="from">From.</param>
+		/// <param name="to">To.</param>
+		IAggregate<K> Range (int from, int to);
+
+		/// <summary>
+		/// reset the range
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		IAggregate<K> RangeReset ();
+
+		/// <summary>
+		/// Sets page size.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="page">Page.</param>
+		/// <param name="size">Size.</param>
+		IAggregate<K> PageSize (int page, int size);
+
+		/// <summary>
+		/// Safes the mode.
+		/// </summary>
+		/// <returns>LEnumerable.</returns>
+		/// <param name="level">Level.</param>
+		IAggregate<K> SafeMode (SafeLevel level);
 	}
 }
 

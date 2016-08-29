@@ -7,6 +7,8 @@ namespace Light.Data
 	public interface ISelect<K> : IEnumerable<K> where K : class
 	{
 		List<K> ToList ();
+
+		K First ();
 	}
 }
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -34,7 +36,7 @@ namespace Light.Data.OracleAdapter
 		public OracleCommandFactory ()
 		{
 			_identityAuto = true;
-			_canInnerPage = true;
+			//_canInnerPage = true;
 			_strictMode = true;
 
 			dateTimeFormater.YearFormat = "YYYY";
@@ -103,32 +105,59 @@ namespace Light.Data.OracleAdapter
 		//	return value ? "1" : "0";
 		//}
 
-		public override CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity)
+		public override CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity, CreateSqlState state)
 		{
+			//bool identityAuto = CheckIndentityAuto (mapping);
+
+			//List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
+
+			//string [] insertList = new string [paramList.Count];
+			//string [] valuesList = new string [paramList.Count];
+			//int index = 0;
+			//foreach (DataParameter dataParameter in paramList) {
+			//	string paramName = CreateParamName ("P" + index);
+			//	insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
+			//	valuesList [index] = paramName;
+			//	dataParameter.ParameterName = paramName;
+			//	index++;
+			//}
+			//string insert = string.Join (",", insertList);
+			//string values = string.Join (",", valuesList);
+			//StringBuilder sql = new StringBuilder ();
+			//if (!identityAuto && mapping.IdentityField != null) {
+			//	sql.AppendFormat ("insert into {0}({3},{1})values({4}.nextval,{2})", CreateDataTableSql (mapping.TableName), insert, values, CreateDataFieldSql (mapping.IdentityField.Name), GetIndentitySeq (mapping));
+			//}
+			//else {
+			//	sql.AppendFormat ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
+			//}
+			//CommandData command = new CommandData (sql.ToString (), paramList);
+			//return command;
+
 			bool identityAuto = CheckIndentityAuto (mapping);
-
-			List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
-
-			string [] insertList = new string [paramList.Count];
-			string [] valuesList = new string [paramList.Count];
-			int index = 0;
-			foreach (DataParameter dataParameter in paramList) {
-				string paramName = CreateParamName ("P" + index);
-				insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-				valuesList [index] = paramName;
-				dataParameter.ParameterName = paramName;
-				index++;
+			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+			int insertLen = fields.Count;
+			if (insertLen == 0) {
+				throw new LightDataException ("");
+			}
+			string [] insertList = new string [insertLen];
+			string [] valuesList = new string [insertLen];
+			for (int i = 0; i < insertLen; i++) {
+				DataFieldMapping field = fields [i];
+				object obj = field.Handler.Get (entity);
+				object value = field.ToColumn (obj);
+				insertList [i] = CreateDataFieldSql (field.Name);
+				valuesList [i] = state.AddDataParameter (value, field.DBType, ParameterDirection.Input);
 			}
 			string insert = string.Join (",", insertList);
 			string values = string.Join (",", valuesList);
-			StringBuilder sql = new StringBuilder ();
+			string sql;
 			if (!identityAuto && mapping.IdentityField != null) {
-				sql.AppendFormat ("insert into {0}({3},{1})values({4}.nextval,{2})", CreateDataTableSql (mapping.TableName), insert, values, CreateDataFieldSql (mapping.IdentityField.Name), GetIndentitySeq (mapping));
+				sql = string.Format ("insert into {0}({3},{1})values({4}.nextval,{2})", CreateDataTableSql (mapping.TableName), insert, values, CreateDataFieldSql (mapping.IdentityField.Name), GetIndentitySeq (mapping));
 			}
 			else {
-				sql.AppendFormat ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
+				sql = string.Format ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
 			}
-			CommandData command = new CommandData (sql.ToString (), paramList);
+			CommandData command = new CommandData (sql);
 			return command;
 		}
 
@@ -157,7 +186,8 @@ namespace Light.Data.OracleAdapter
 			return identityAuto;
 		}
 
-		public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+
+		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Length == 0) {
 				throw new ArgumentNullException (nameof (entitys));
@@ -166,66 +196,143 @@ namespace Light.Data.OracleAdapter
 				batchCount = 10;
 			}
 			bool identityAuto = CheckIndentityAuto (mapping);
-			int totalCount = entitys.Length;
-			List<string> insertList = new List<string> ();
-			foreach (DataFieldMapping field in mapping.NoIdentityFields) {
-				insertList.Add (CreateDataFieldSql (field.Name));
-			}
-			string insert = string.Join (",", insertList);
-			string insertsql;
-			if (!identityAuto && mapping.IdentityField != null) {
-				insertsql = string.Format ("insert into {0}({2},{1})", CreateDataTableSql (mapping.TableName), insert, CreateDataFieldSql (mapping.IdentityField.Name));
-			}
-			else {
-				insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
-			}
-
-			int createCount = 0;
-			int totalCreateCount = 0;
 			string identityString = null;
 			if (identityAuto) {
 				identityString = GetIndentitySeq (mapping);
 			}
+			int totalCount = entitys.Length;
+			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
+			int insertLen = fields.Count;
+			if (insertLen == 0) {
+				throw new LightDataException ("");
+			}
+			string [] insertList = new string [insertLen];
+			for (int i = 0; i < insertLen; i++) {
+				DataFieldMapping field = fields [i];
+				insertList [i] = CreateDataFieldSql (field.Name);
+			}
+			string insert = string.Join (",", insertList);
+
+			string insertSql;
+			if (!identityAuto && mapping.IdentityField != null) {
+				insertSql = string.Format ("insert into {0}({2},{1})", CreateDataTableSql (mapping.TableName), insert, CreateDataFieldSql (mapping.IdentityField.Name));
+			}
+			else {
+				insertSql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
+			}
+
+			int createCount = 0;
+			int totalCreateCount = 0;
+
 			StringBuilder totalSql = new StringBuilder ();
-			int paramIndex = 0;
-			List<DataParameter> dataParams = new List<DataParameter> ();
-			List<CommandData> commands = new List<CommandData> ();
+			totalSql.Append ("begin ");
+			CreateSqlState state = new CreateSqlState (this);
+			List<Tuple<CommandData, CreateSqlState>> list = new List<Tuple<CommandData, CreateSqlState>> ();
 
 			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string [] valueList = new string [entityParams.Count];
-				int index = 0;
-				foreach (DataParameter dataParameter in entityParams) {
-					string paramName = CreateParamName ("P" + paramIndex);
-					valueList [index] = paramName;
-					dataParameter.ParameterName = paramName;
-					dataParams.Add (dataParameter);
-					index++;
-					paramIndex++;
+				string [] valuesList = new string [insertLen];
+				for (int i = 0; i < insertLen; i++) {
+					DataFieldMapping field = fields [i];
+					object obj = field.Handler.Get (entity);
+					object value = field.ToColumn (obj);
+					valuesList [i] = state.AddDataParameter (value, field.DBType, ParameterDirection.Input);
 				}
-				string value = string.Join (",", valueList);
+				string values = string.Join (",", valuesList);
+
 				if (!identityAuto && mapping.IdentityField != null) {
-					totalSql.AppendFormat ("{0}values({2}.nextval,{1});", insertsql, value, identityString);
+					totalSql.AppendFormat ("{0}values({2}.nextval,{1});", insertSql, values, identityString);
 				}
 				else {
-					totalSql.AppendFormat ("{0}values({1});", insertsql, value);
+					totalSql.AppendFormat ("{0}values({1});", insertSql, values);
 				}
 				createCount++;
 				totalCreateCount++;
 				if (createCount == batchCount || totalCreateCount == totalCount) {
-					CommandData command = new CommandData (string.Format ("begin {0} end;", totalSql), dataParams);
-					commands.Add (command);
+					totalSql.Append (" end;");
+					CommandData command = new CommandData (totalSql.ToString ());
+					list.Add (new Tuple<CommandData, CreateSqlState> (command, state));
 					if (totalCreateCount == totalCount) {
 						break;
 					}
-					dataParams = new List<DataParameter> ();
+					state = new CreateSqlState (this);
 					createCount = 0;
-					paramIndex = 0;
 					totalSql = new StringBuilder ();
+					totalSql.Append ("begin ");
 				}
 			}
-			return commands.ToArray ();
+			return list.ToArray ();
 		}
+
+
+		//public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		//{
+		//	if (entitys == null || entitys.Length == 0) {
+		//		throw new ArgumentNullException (nameof (entitys));
+		//	}
+		//	if (batchCount <= 0) {
+		//		batchCount = 10;
+		//	}
+		//	bool identityAuto = CheckIndentityAuto (mapping);
+		//	int totalCount = entitys.Length;
+		//	List<string> insertList = new List<string> ();
+		//	foreach (DataFieldMapping field in mapping.NoIdentityFields) {
+		//		insertList.Add (CreateDataFieldSql (field.Name));
+		//	}
+		//	string insert = string.Join (",", insertList);
+		//	string insertsql;
+		//	if (!identityAuto && mapping.IdentityField != null) {
+		//		insertsql = string.Format ("insert into {0}({2},{1})", CreateDataTableSql (mapping.TableName), insert, CreateDataFieldSql (mapping.IdentityField.Name));
+		//	}
+		//	else {
+		//		insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
+		//	}
+
+		//	int createCount = 0;
+		//	int totalCreateCount = 0;
+		//	string identityString = null;
+		//	if (identityAuto) {
+		//		identityString = GetIndentitySeq (mapping);
+		//	}
+		//	StringBuilder totalSql = new StringBuilder ();
+		//	int paramIndex = 0;
+		//	List<DataParameter> dataParams = new List<DataParameter> ();
+		//	List<CommandData> commands = new List<CommandData> ();
+
+		//	foreach (object entity in entitys) {
+		//		List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
+		//		string [] valueList = new string [entityParams.Count];
+		//		int index = 0;
+		//		foreach (DataParameter dataParameter in entityParams) {
+		//			string paramName = CreateParamName ("P" + paramIndex);
+		//			valueList [index] = paramName;
+		//			dataParameter.ParameterName = paramName;
+		//			dataParams.Add (dataParameter);
+		//			index++;
+		//			paramIndex++;
+		//		}
+		//		string value = string.Join (",", valueList);
+		//		if (!identityAuto && mapping.IdentityField != null) {
+		//			totalSql.AppendFormat ("{0}values({2}.nextval,{1});", insertsql, value, identityString);
+		//		}
+		//		else {
+		//			totalSql.AppendFormat ("{0}values({1});", insertsql, value);
+		//		}
+		//		createCount++;
+		//		totalCreateCount++;
+		//		if (createCount == batchCount || totalCreateCount == totalCount) {
+		//			CommandData command = new CommandData (string.Format ("begin {0} end;", totalSql), dataParams);
+		//			commands.Add (command);
+		//			if (totalCreateCount == totalCount) {
+		//				break;
+		//			}
+		//			dataParams = new List<DataParameter> ();
+		//			createCount = 0;
+		//			paramIndex = 0;
+		//			totalSql = new StringBuilder ();
+		//		}
+		//	}
+		//	return commands.ToArray ();
+		//}
 
 		protected override string CreateIdentitySql (DataTableEntityMapping mapping)
 		{
@@ -282,14 +389,14 @@ namespace Light.Data.OracleAdapter
 		//	}
 		//	else {
 		//		/*
-  //              SELECT * FROM 
-  //              (
-  //              SELECT A.*, ROWNUM RN 
-  //              FROM (SELECT * FROM TABLE_NAME) A 
-  //              WHERE ROWNUM <= 40
-  //              )
-  //              WHERE RN > 20
-  //              */
+		//              SELECT * FROM 
+		//              (
+		//              SELECT A.*, ROWNUM RN 
+		//              FROM (SELECT * FROM TABLE_NAME) A 
+		//              WHERE ROWNUM <= 40
+		//              )
+		//              WHERE RN > 20
+		//              */
 		//		StringBuilder innerSQL = new StringBuilder ();
 		//		innerSQL.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
 		//		if (!string.IsNullOrEmpty (queryString)) {
@@ -434,7 +541,7 @@ namespace Light.Data.OracleAdapter
 			}
 			//DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
 			CommandData command = new CommandData (sql.ToString ());
-			command.TransParamName = true;
+			//command.TransParamName = true;
 			return command;
 
 		}

@@ -36,9 +36,14 @@ namespace Light.Data
 		/// Gets the name of the field.
 		/// </summary>
 		/// <value>The name of the field.</value>
-		public string FieldName {
+		public virtual string FieldName {
 			get {
-				return DataField.Name;
+				if (_dataField != null) {
+					return _dataField.Name;
+				}
+				else {
+					return null;
+				}
 			}
 		}
 	}

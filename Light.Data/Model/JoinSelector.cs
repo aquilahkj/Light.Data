@@ -101,7 +101,7 @@ namespace Light.Data
 			return fileds;
 		}
 
-		public string CreateSelectString (CommandFactory factory, CreateSqlState state)
+		public string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			string [] selectList = new string [this.infoDict.Count];
 			int index = 0;

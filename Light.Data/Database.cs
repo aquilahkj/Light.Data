@@ -9,7 +9,7 @@ namespace Light.Data
 
 		protected int _commandTimeOut = 60000;
 
-		protected bool _isInnerPager;
+		//protected bool _isInnerPager;
 
 		/// <summary>
 		/// Creates the connection.
@@ -86,19 +86,19 @@ namespace Light.Data
 		/// Gets or sets a value indicating whether this <see cref="Light.Data.Database"/> inner pager.
 		/// </summary>
 		/// <value><c>true</c> if inner pager; otherwise, <c>false</c>.</value>
-		public bool InnerPager {
-			get {
-				return _isInnerPager;
-			}
-			set {
-				if (value) {
-					_isInnerPager = Factory.CanInnerPager;
-				}
-				else {
-					_isInnerPager = false;
-				}
-			}
-		}
+		//public bool InnerPager {
+		//	get {
+		//		return _isInnerPager;
+		//	}
+		//	set {
+		//		if (value) {
+		//			_isInnerPager = Factory.CanInnerPager;
+		//		}
+		//		else {
+		//			_isInnerPager = false;
+		//		}
+		//	}
+		//}
 
 		/// <summary>
 		/// Formats the stored procedure parameter.

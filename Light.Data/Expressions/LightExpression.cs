@@ -4,7 +4,7 @@ namespace Light.Data
 	/// <summary>
 	/// Base expression.
 	/// </summary>
-	public abstract class BaseExpression
+	public abstract class LightExpression
 	{
 		/// <summary>
 		/// Gets or sets the table mapping.

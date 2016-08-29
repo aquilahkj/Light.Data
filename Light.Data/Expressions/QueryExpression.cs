@@ -6,7 +6,7 @@ namespace Light.Data
 	/// <summary>
 	/// Query expression.
 	/// </summary>
-	public class QueryExpression : BaseExpression
+	public class QueryExpression : LightExpression
 	{
 		QueryExpression _expression1;
 

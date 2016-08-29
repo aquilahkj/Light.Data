@@ -25,35 +25,30 @@ namespace Light.Data
 				throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
 			}
 			else if (type.IsEnum) {
-				DynamicEnumFieldMapping enumFieldMapping = new DynamicEnumFieldMapping (type, fieldName, mapping, EnumFieldType.EnumToNumerics);
+				DynamicEnumFieldMapping enumFieldMapping = new DynamicEnumFieldMapping (type, fieldName, mapping);
 				fieldMapping = enumFieldMapping;
 			}
 			else {
 				TypeCode code = Type.GetTypeCode (type);
-				if (code == TypeCode.DBNull) {
+				switch (code) {
+				case TypeCode.DBNull:
+				case TypeCode.Empty:
+				case TypeCode.Object:
 					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
-				}
-				else if (code == TypeCode.Empty) {
-					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
-				}
-				else if (code == TypeCode.Object) {
-					throw new LightDataException (RE.TheTypeOfDataFieldIsNotRight);
-				}
-				else {
+				default:
 					DynamicPrimitiveFieldMapping primitiveFieldMapping = new DynamicPrimitiveFieldMapping (type, fieldName, mapping);
 					fieldMapping = primitiveFieldMapping;
+					break;
 				}
 			}
 			return fieldMapping;
 		}
 
-		public DynamicFieldMapping (Type type, string fieldName, DynamicAggregateMapping mapping, bool isNullable)
+		protected DynamicFieldMapping (Type type, string fieldName, DynamicAggregateMapping mapping, bool isNullable)
 			: base (type, fieldName, fieldName, mapping, isNullable, null)
 		{
 
 		}
-
-
 	}
 }
 

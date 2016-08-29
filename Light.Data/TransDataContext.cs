@@ -72,21 +72,21 @@ namespace Light.Data
 			_transaction = null;
 		}
 
-		internal override int [] ExecuteBluckInsertCommands (IDbCommand [] insertCommands, IDbCommand indentityCommand, SafeLevel level, out object lastId)
+		internal override int [] ExecuteBulkCommands (IDbCommand [] bulkCommands, IDbCommand lastIdCommand, SafeLevel level, out object lastId)
 		{
 			ChecKStatus (true);
-			int [] rInts = new int [insertCommands.Length];
+			int [] rInts = new int [bulkCommands.Length];
 			int index = 0;
-			foreach (IDbCommand dbcommand in insertCommands) {
+			foreach (IDbCommand dbcommand in bulkCommands) {
 				_transaction.SetupCommand (dbcommand);
-				OutputCommand ("ExecuteMultiCommands[Trans]", dbcommand, _transaction.Level);
+				OutputCommand ("ExecuteBulkCommands[Trans]", dbcommand, _transaction.Level);
 				rInts [index] = dbcommand.ExecuteNonQuery ();
 				index++;
 			}
-			if (indentityCommand != null) {
-				_transaction.SetupCommand (indentityCommand);
-				OutputCommand ("ExecuteInsertCommand_Indentity[Trans]", indentityCommand, _transaction.Level);
-				lastId = indentityCommand.ExecuteScalar ();
+			if (lastIdCommand != null) {
+				_transaction.SetupCommand (lastIdCommand);
+				OutputCommand ("ExecuteBulkCommands_LastId[Trans]", lastIdCommand, _transaction.Level);
+				lastId = lastIdCommand.ExecuteScalar ();
 			}
 			else {
 				lastId = null;
@@ -157,44 +157,44 @@ namespace Light.Data
 			return ds;
 		}
 
-		internal override IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
-		{
-			ChecKStatus (true);
-			int start;
-			int size;
-			if (region != null) {
-				start = region.Start;
-				size = region.Size;
-			}
-			else {
-				start = 0;
-				size = int.MaxValue;
-			}
-			_transaction.SetupCommand (dbcommand);
-			OutputCommand ("QueryDataReader[Trans]", dbcommand, _transaction.Level, start, size);
-			using (IDataReader reader = dbcommand.ExecuteReader ()) {
-				int index = 0;
-				int count = 0;
-				bool over = false;
-				while (reader.Read ()) {
-					if (over) {
-						dbcommand.Cancel ();
-						break;
-					}
-					if (index >= start) {
-						count++;
-						object item = source.LoadData (this, reader, state);
-						if (count >= size) {
-							over = true;
-						}
-						yield return item;
-					}
-					index++;
-				}
-			}
-		}
+		//internal override IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
+		//{
+		//	ChecKStatus (true);
+		//	int start;
+		//	int size;
+		//	if (region != null) {
+		//		start = region.Start;
+		//		size = region.Size;
+		//	}
+		//	else {
+		//		start = 0;
+		//		size = int.MaxValue;
+		//	}
+		//	_transaction.SetupCommand (dbcommand);
+		//	OutputCommand ("QueryDataReader[Trans]", dbcommand, _transaction.Level, start, size);
+		//	using (IDataReader reader = dbcommand.ExecuteReader ()) {
+		//		int index = 0;
+		//		int count = 0;
+		//		bool over = false;
+		//		while (reader.Read ()) {
+		//			if (over) {
+		//				dbcommand.Cancel ();
+		//				break;
+		//			}
+		//			if (index >= start) {
+		//				count++;
+		//				object item = source.LoadData (this, reader, state);
+		//				if (count >= size) {
+		//					over = true;
+		//				}
+		//				yield return item;
+		//			}
+		//			index++;
+		//		}
+		//	}
+		//}
 
-		internal override IEnumerable QueryDataMappingReader (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
+		internal override IEnumerable QueryDataDefineReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			ChecKStatus (true);
 			int start;
@@ -208,7 +208,7 @@ namespace Light.Data
 				size = int.MaxValue;
 			}
 			_transaction.SetupCommand (dbcommand);
-			OutputCommand ("QueryDataMappingReader[Trans]", dbcommand, level, start, size);
+			OutputCommand ("QueryDataDefineReader[Trans]", dbcommand, level, start, size);
 			using (IDataReader reader = dbcommand.ExecuteReader ()) {
 				int index = 0;
 				int count = 0;

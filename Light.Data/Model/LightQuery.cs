@@ -407,9 +407,9 @@ namespace Light.Data
 		/// Get single instance.
 		/// </summary>
 		/// <returns>instance.</returns>
-		public T Single ()
+		public T First ()
 		{
-			return _context.SelectSingle (_mapping, _query, _order, 0, _level) as T;
+			return _context.SelectMappingDataSingle (_mapping, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -419,7 +419,7 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.SelectSingle (_mapping, _query, _order, index, _level) as T;
+			return _context.SelectMappingDataSingle (_mapping, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>
@@ -431,6 +431,7 @@ namespace Light.Data
 				return _context.Exists (_mapping, _query, _level);
 			}
 		}
+
 
 		///// <summary>
 		///// Queries the single field.
@@ -536,7 +537,7 @@ namespace Light.Data
 
 
 		/// <summary>
-		/// Insert this instance.
+		/// Insert.
 		/// </summary>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public int Insert<K> () where K : class, new()
@@ -545,21 +546,22 @@ namespace Light.Data
 			return this._context.SelectInsert (insertMapping, _mapping, _query, _order, _level);
 		}
 
-		public int Insert<K> (Expression<Func<T, K>> queryExpression) where K : class, new()
+		/// <summary>
+		/// Select Insert.
+		/// </summary>
+		/// <returns>The insert.</returns>
+		/// <param name="insertExpression">Insert expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		public int SelectInsert<K> (Expression<Func<T, K>> insertExpression) where K : class, new()
 		{
-
-			DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (typeof (K));
-			return 0;
+			InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector (insertExpression);
+			return this._context.SelectInsert (selector, _query, _order, _level);
 		}
 
-
-		/// <summary>
-		/// Update the values on specified query expression..
-		/// </summary>
-		/// <param name="updates">Updates.</param>
-		public int Update (params UpdateSetValue [] updates)
+		public int Update (Expression<Func<T, T>> expression)
 		{
-			return _context.UpdateMass<T> (this._query, updates);
+			MassUpdator updator = LambdaExpressionExtend.CreateMassUpdator (expression);
+			return this._context.UpdateMass (updator, _query, _level);
 		}
 
 		/// <summary>
@@ -567,7 +569,8 @@ namespace Light.Data
 		/// </summary>
 		public int Delete ()
 		{
-			return _context.DeleteMass<T> (this._query);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return _context.DeleteMass (mapping, this._query, _level);
 		}
 
 		public ISelect<TResult> Select<TResult> (Expression<Func<T, TResult>> expression) where TResult : class
@@ -612,6 +615,30 @@ namespace Light.Data
 		{
 			return new LightAggregate<T, K> (this, expression);
 		}
+
+
+		#region single field
+		public IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression, bool isDistinct = false)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level);
+			foreach (K item in ie) {
+				yield return item;
+			}
+		}
+
+		public List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression, bool isDistinct = false)
+		{
+			List<K> list = new List<K> ();
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level);
+			foreach (K item in ie) {
+				list.Add (item);
+			}
+			return list;
+		}
+
+		#endregion
 	}
 }
 
