@@ -99,6 +99,31 @@ namespace Light.Data
 			_modelList.Add (model);
 		}
 
+		internal LightJoinTable (LightJoinTable<T, T1, T2, T3, T4> query1, JoinType joinType, IAggregate<T5> aggregate, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression)
+		{
+			_query = null;
+			_order = null;
+			_region = query1.Region;
+			_context = query1.Context;
+			_level = query1.Level;
+			_modelList.AddRange (query1.ModelList);
+			_maps.AddRange (query1.Maps);
+			AggregateGroupData data = aggregate.GetGroupData ();
+			_maps.Add (new AggregateMap (data.Model));
+			DataFieldExpression on;
+
+			if (onExpression != null) {
+				on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
+			}
+			else {
+				throw new LightDataException (RE.OnExpressionNotExists);
+			}
+
+			JoinConnect connect = new JoinConnect (joinType, on);
+			AggregateJoinModel model = new AggregateJoinModel (data.Model, "T5", connect, data.Query, data.Having, data.Order);
+			_modelList.Add (model);
+		}
+
 		/// <summary>
 		/// Reset the specified where expression
 		/// </summary>

@@ -97,6 +97,31 @@ namespace Light.Data
 			_modelList.Add (model);
 		}
 
+		internal LightJoinTable (LightJoinTable<T, T1, T2> query1, JoinType joinType, IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression)
+		{
+			_query = null;
+			_order = null;
+			_region = query1.Region;
+			_context = query1.Context;
+			_level = query1.Level;
+			_modelList.AddRange (query1.ModelList);
+			_maps.AddRange (query1.Maps);
+			AggregateGroupData data = aggregate.GetGroupData ();
+			_maps.Add (new AggregateMap (data.Model));
+			DataFieldExpression on;
+
+			if (onExpression != null) {
+				on = LambdaExpressionExtend.ResolvelambdaOnExpression (onExpression, _maps);
+			}
+			else {
+				throw new LightDataException (RE.OnExpressionNotExists);
+			}
+
+			JoinConnect connect = new JoinConnect (joinType, on);
+			AggregateJoinModel model = new AggregateJoinModel (data.Model, "T3", connect, data.Query, data.Having, data.Order);
+			_modelList.Add (model);
+		}
+
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class//, new()
 		{
 			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.InnerJoin, queryExpression, onExpression);
@@ -104,7 +129,8 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class//, new()
 		{
-			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.InnerJoin, null, onExpression);
+			Expression<Func<T4, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.InnerJoin, queryExpression, onExpression);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class//, new()
@@ -114,7 +140,8 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class//, new()
 		{
-			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.LeftJoin, null, onExpression);
+			Expression<Func<T4, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.LeftJoin, queryExpression, onExpression);
 		}
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class//, new()
@@ -124,8 +151,25 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class//, new()
 		{
-			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.RightJoin, null, onExpression);
+			Expression<Func<T4, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.RightJoin, queryExpression, onExpression);
 		}
+
+		public IJoinTable<T, T1, T2, T3, T4> Join<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class
+		{
+			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.InnerJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class
+		{
+			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.LeftJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IAggregate<T4> aggregate, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class
+		{
+			return new LightJoinTable<T, T1, T2, T3, T4> (this, JoinType.RightJoin, aggregate, onExpression);
+		}
+
 
 		/// <summary>
 		/// Reset the specified where expression

@@ -198,17 +198,18 @@ namespace Light.Data
 
 		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 
+		IJoinTable<T, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
+
+		IJoinTable<T, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
+	
+		IJoinTable<T, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
+
 		IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class;
 
 		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
 
 		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
 
-		IJoinTable<T, T1> JoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
-
-		IJoinTable<T, T1> LeftJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
-	
-		IJoinTable<T, T1> RightJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 	}
 }
 

@@ -49,8 +49,9 @@ namespace Light.Data
 			}
 			DataFieldInfo info = _group.GetAggregateData (name);
 			if (!Object.Equals (info, null)) {
-				info = info.Clone () as DataFieldInfo;
-				NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
+				//info = info.Clone () as DataFieldInfo;
+				//NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
+				DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
 				return nameInfo;
 			}
 			else {
@@ -71,7 +72,8 @@ namespace Light.Data
 				}
 				DataFieldInfo info = _group.GetAggregateData (name);
 				if (!Object.Equals (info, null)) {
-					NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
+					//NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
+					DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
 					selector.SetSelectField (nameInfo);
 				}
 				else {

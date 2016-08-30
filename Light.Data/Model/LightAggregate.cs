@@ -13,59 +13,15 @@ namespace Light.Data
 
 		QueryExpression _query;
 
-		//internal QueryExpression Query {
-		//	get {
-		//		return _query;
-		//	}
-		//}
-
 		QueryExpression _having;
-
-		//internal QueryExpression HavingQuery {
-		//	get {
-		//		return _havingQuery;
-		//	}
-		//}
 
 		OrderExpression _order;
 
-		//internal OrderExpression Order {
-		//	get {
-		//		return _order;
-		//	}
-		//}
-
 		DataContext _context;
-
-		//internal DataContext Context {
-		//	get {
-		//		return _context;
-		//	}
-		//}
 
 		SafeLevel _level = SafeLevel.None;
 
-		internal SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
 		Region _region;
-
-		internal Region Region {
-			get {
-				return _region;
-			}
-		}
-
-		//internal AggregateGroup Model {
-		//	get {
-		//		return _model;
-		//	}
-		//}
-
-		DataEntityMapping _mapping;
 
 		public LightAggregate (LightQuery<T> query, Expression<Func<T, K>> expression)
 		{
@@ -73,7 +29,6 @@ namespace Light.Data
 			_query = query.Query;
 			_level = query.Level;
 			_model = LambdaExpressionExtend.CreateAggregateGroup (expression);
-			_mapping = _model.EntityMapping;
 		}
 
 		public IAggregate<K> Having (Expression<Func<K, bool>> expression)
@@ -174,6 +129,12 @@ namespace Light.Data
 				start = _region.Start;
 			}
 			_region = new Region (start, size);
+			//if (_region == null) {
+			//	_region = new Region (0, count);
+			//}
+			//else {
+			//	_region.Size = count;
+			//}
 			return this;
 		}
 
@@ -193,6 +154,12 @@ namespace Light.Data
 				size = _region.Size;
 			}
 			_region = new Region (start, size);
+			//if (_region == null) {
+			//	_region = new Region (index, int.MaxValue);
+			//}
+			//else {
+			//	_region.Start = index;
+			//}
 			return this;
 		}
 
@@ -207,6 +174,13 @@ namespace Light.Data
 			int start = from;
 			int size = to - from;
 			_region = new Region (start, size);
+			//if (_region == null) {
+			//	_region = new Region (start, size);
+			//}
+			//else {
+			//	_region.Start = start;
+			//	_region.Size = size;
+			//}
 			return this;
 		}
 
@@ -237,6 +211,13 @@ namespace Light.Data
 			page--;
 			int start = page * size;
 			_region = new Region (start, size);
+			//if (_region == null) {
+			//	_region = new Region (start, size);
+			//}
+			//else {
+			//	_region.Start = start;
+			//	_region.Size = size;
+			//}
 			return this;
 		}
 
@@ -253,8 +234,56 @@ namespace Light.Data
 
 		public AggregateGroupData GetGroupData ()
 		{
-			AggregateGroupData data = new AggregateGroupData (_model, _query, _having, _order);
+			AggregateGroupData data = new AggregateGroupData (_context, _model, _query, _having, _order, _region, _level);
 			return data;
+		}
+
+		public IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			Expression<Func<T1, bool>> queryExpression = null;
+			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			Expression<Func<T1, bool>> queryExpression = null;
+			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<K, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<K, T1> RightJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			Expression<Func<T1, bool>> queryExpression = null;
+			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<K, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<K, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<K, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, aggregate, onExpression);
 		}
 	}
 }

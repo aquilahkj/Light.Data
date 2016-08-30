@@ -37,7 +37,7 @@ namespace Light.Data
 		/// <param name="info">Info.</param>
 		/// <param name="alias">Alias.</param>
 		internal AliasDataFieldInfo (DataFieldInfo info, string alias)
-			: base (info.DataField)
+			: base (info.TableMapping, info.DataField)
 		{
 			_baseFieldInfo = info;
 			_alias = alias;

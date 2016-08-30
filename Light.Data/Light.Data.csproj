@@ -298,7 +298,6 @@
     <Compile Include="Model\Region.cs" />
     <Compile Include="Model\SafeLevel.cs" />
     <Compile Include="Model\UpdateSetValue.cs" />
-    <Compile Include="Model\_SelectInsertor.cs" />
     <Compile Include="Model\IJoinTable_3.cs" />
     <Compile Include="Model\IJoinTable_4.cs" />
     <Compile Include="Model\IJoinTable_5.cs" />
@@ -391,8 +390,6 @@
     <Compile Include="Model\IJoinModel.cs" />
     <Compile Include="Model\IMap.cs" />
     <Compile Include="Model\AggregateMap.cs" />
-    <Compile Include="Model\AggregateSelector.cs" />
-    <Compile Include="DataField\NameDataFieldInfo.cs" />
     <Compile Include="Model\AggregateJoinModel.cs" />
     <Compile Include="Model\AggregateGroupData.cs" />
   </ItemGroup>

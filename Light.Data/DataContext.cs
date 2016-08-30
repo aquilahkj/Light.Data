@@ -812,17 +812,6 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// LQs the ueryable.
-		/// </summary>
-		/// <returns>The ueryable.</returns>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public IQuery<T> Query<T> ()
-			where T : class, new()
-		{
-			return new LightQuery<T> (this);
-		}
-
-		/// <summary>
 		/// Create Aggregate.
 		/// </summary>
 		/// <returns>The aggregate.</returns>
@@ -834,12 +823,23 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// LQs the ueryable.
+		/// </summary>
+		/// <returns>The ueryable.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public IQuery<T> Query<T> ()
+			where T : class//, new()
+		{
+			return new LightQuery<T> (this);
+		}
+
+		/// <summary>
 		/// Truncates the table.
 		/// </summary>
 		/// <returns>The table.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public int TruncateTable<T> ()
-			where T : class, new()
+			where T : class//, new()
 		{
 			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			CommandData commandData = _dataBase.Factory.CreateTruncateTableCommand (mapping);
@@ -1069,7 +1069,6 @@ namespace Light.Data
 			}
 			return target;
 		}
-
 
 		internal object AggregateCount (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{

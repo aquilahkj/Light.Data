@@ -128,7 +128,8 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class//, new()
 		{
-			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.InnerJoin, null, onExpression);
+			Expression<Func<T3, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.InnerJoin, queryExpression, onExpression);
 		}
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class//, new()
@@ -138,7 +139,8 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class//, new()
 		{
-			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.LeftJoin, null, onExpression);
+			Expression<Func<T3, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.LeftJoin, queryExpression, onExpression);
 		}
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class//, new()
@@ -148,7 +150,23 @@ namespace Light.Data
 
 		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class//, new()
 		{
-			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.RightJoin, null, onExpression);
+			Expression<Func<T3, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.RightJoin, queryExpression, onExpression);
+		}
+
+		public IJoinTable<T, T1, T2, T3> Join<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class
+		{
+			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.InnerJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<T, T1, T2, T3> LeftJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class
+		{
+			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.LeftJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<T, T1, T2, T3> RightJoin<T3> (IAggregate<T3> aggregate, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class
+		{
+			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.RightJoin, aggregate, onExpression);
 		}
 
 		/// <summary>

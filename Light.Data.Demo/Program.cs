@@ -108,20 +108,37 @@ namespace Light.Data.Demo
 
 			var fg1 = context.Query<TeUserWithLevel2> ().QuerySingleFieldList (x => x.Area, true);
 
-			var vc0 = context.Query<TeUser> ().GroupBy (x => new  {
+			var vc0 = context.Query<TeUser> ().GroupBy (x => new {
 				Lid = x.LevelId,
 				Count = Function.Count ()
 			});
 
+			var vc0c = context.Query<TeUser> ().GroupBy (x => new {
+				Lid = x.LevelId,
+				LoginTimes = Function.Sum (x.LoginTimes)
+			});
+
 			var vc1 = context.Query<TeUserLevel> ()
-			                 .LeftJoinAggregate (vc0, (x, y) => x.Id == y.Lid)
-							.Where ((x, y) => y.Count >=1)
+							 .LeftJoin (vc0, (x, y) => x.Id == y.Lid)
+							.Where ((x, y) => y.Count >= 1)
 							.Select ((x, y) => new {
 								Id = x.Id,
-								Name=x.LevelName,
+								Name = x.LevelName,
 								Count = y.Count,
 							}).ToList ();
+			var vc2 = vc0.LeftJoin<TeUserLevel> (x => x.Id > 1, (x, y) => x.Lid == y.Id)
+					   .Select ((x, y) => new {
+						   Id = y.Id,
+						   Name = y.LevelName,
+						   Count = x.Count,
+					   }).ToList ();
 
+			var vc3 = vc0.LeftJoin (vc0c, (x, y) => x.Lid == y.Lid).
+					   Select ((x, y) => new {
+						   Id = x.Lid,
+						   Count = x.Count,
+						   Sum = y.LoginTimes
+					   }).ToList();
 			Console.ReadLine ();
 		}
 
@@ -137,7 +154,7 @@ namespace Light.Data.Demo
 			}
 		}
 
-			                                            class SGroub1
+		class SGroub1
 		{
 			public int Lid {
 				get;

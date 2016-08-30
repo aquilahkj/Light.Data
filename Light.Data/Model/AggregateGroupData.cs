@@ -36,13 +36,39 @@ namespace Light.Data
 		}
 
 
+		Region _region;
 
-		internal AggregateGroupData (AggregateGroup model, QueryExpression query, QueryExpression having, OrderExpression order)
+		internal Region Region {
+			get {
+				return _region;
+			}
+		}
+
+		SafeLevel _level;
+
+		internal SafeLevel Level {
+			get {
+				return _level;
+			}
+		}
+
+		DataContext _context;
+
+		internal DataContext Context {
+			get {
+				return _context;
+			}
+		}
+
+		internal AggregateGroupData (DataContext context, AggregateGroup model, QueryExpression query, QueryExpression having, OrderExpression order, Region region, SafeLevel level)
 		{
 			_model = model;
 			_query = query;
 			_having = having;
 			_order = order;
+			_region = region;
+			_level = level;
+			_context = context;
 		}
 	}
 }

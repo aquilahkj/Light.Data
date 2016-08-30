@@ -310,97 +310,6 @@ namespace Light.Data
 			}
 		}
 
-		//private object Aggregate (BasicFieldInfo field, AggregateType aggregateType, bool isDistinct)
-		//{
-		//	if (!_mapping.Equals (field.TableMapping)) {
-		//		throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-		//	}
-		//	return _context.Aggregate (field.DataField, aggregateType, _query, isDistinct, _level);
-		//}
-
-		///// <summary>
-		///// Get datas count of the field.
-		///// </summary>
-		///// <returns>count value.</returns>
-		///// <param name="field">Field.</param>
-		//public int CountField (BasicFieldInfo field)
-		//{
-		//	return CountField (field, false);
-		//}
-
-		///// <summary>
-		///// Get datas count of the field.
-		///// </summary>
-		///// <returns>count value.</returns>
-		///// <param name="field">Field.</param>
-		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		//public int CountField (BasicFieldInfo field, bool isDistinct)
-		//{
-		//	return Convert.ToInt32 (Aggregate (field, AggregateType.COUNT, isDistinct));
-		//}
-
-		///// <summary>
-		///// Get max value of the field.
-		///// </summary>
-		///// <returns>max value.</returns>
-		///// <param name="field">Field.</param>
-		//public object Max (BasicFieldInfo field)
-		//{
-		//	return Aggregate (field, AggregateType.MAX, false);
-		//}
-
-		///// <summary>
-		///// Get min value of the field.
-		///// </summary>
-		///// <returns>min value.</returns>
-		///// <param name="field">Field.</param>
-		//public object Min (BasicFieldInfo field)
-		//{
-		//	return Aggregate (field, AggregateType.MIN, false);
-		//}
-
-		///// <summary>
-		///// Get avg value of the field.
-		///// </summary>
-		///// <returns>max value.</returns>
-		///// <param name="field">Field.</param>
-		//public object Avg (BasicFieldInfo field)
-		//{
-		//	return Avg (field, false);
-		//}
-
-		///// <summary>
-		///// Get avg value of the field.
-		///// </summary>
-		///// <returns>avg value.</returns>
-		///// <param name="field">Field.</param>
-		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		//public object Avg (BasicFieldInfo field, bool isDistinct)
-		//{
-		//	return Aggregate (field, AggregateType.AVG, isDistinct);
-		//}
-
-		///// <summary>
-		///// Get sum value of the field.
-		///// </summary>
-		///// <returns>sum value.</returns>
-		///// <param name="field">Field.</param>
-		//public object Sum (BasicFieldInfo field)
-		//{
-		//	return Sum (field, false);
-		//}
-
-		///// <summary>
-		///// Get sum value of the field.
-		///// </summary>
-		///// <returns>sum value.</returns>
-		///// <param name="field">Field.</param>
-		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		//public object Sum (BasicFieldInfo field, bool isDistinct)
-		//{
-		//	return Aggregate (field, AggregateType.SUM, isDistinct);
-		//}
-
 		#endregion
 
 		/// <summary>
@@ -431,82 +340,6 @@ namespace Light.Data
 				return _context.Exists (_mapping, _query, _level);
 			}
 		}
-
-
-		///// <summary>
-		///// Queries the single field.
-		///// </summary>
-		///// <returns>The single field enumerable.</returns>
-		///// <param name="fieldInfo">Field info.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo)
-		//{
-		//	return QuerySingleField<K> (fieldInfo, false);
-		//}
-
-		///// <summary>
-		///// Queries the single field.
-		///// </summary>
-		///// <returns>The single field enumerable.</returns>
-		///// <param name="fieldInfo">Field info.</param>
-		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public IEnumerable QuerySingleField<K> (DataFieldInfo fieldInfo, bool isDistinct)
-		//{
-		//	if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
-		//		throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-		//	}
-		//	return _context.QueryColumeEnumerable (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level);
-		//}
-
-		///// <summary>
-		///// Queries the single field list.
-		///// </summary>
-		///// <returns>The single field list.</returns>
-		///// <param name="fieldInfo">Field info.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo)
-		//{
-		//	return QuerySingleFieldList<K> (fieldInfo, false);
-		//}
-
-		///// <summary>
-		///// Queries the single field list.
-		///// </summary>
-		///// <returns>The single field list.</returns>
-		///// <param name="fieldInfo">Field info.</param>
-		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public List<K> QuerySingleFieldList<K> (DataFieldInfo fieldInfo, bool isDistinct)
-		//{
-		//	if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
-		//		throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-		//	}
-		//	return _context.QueryColumeList<K> (fieldInfo, _query, _order, _region, isDistinct, _level);
-		//}
-
-		///// <summary>
-		///// Queries the single field array.
-		///// </summary>
-		///// <returns>The single field array.</returns>
-		///// <param name="fieldInfo">Field info.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public K [] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo)
-		//{
-		//	return QuerySingleFieldList<K> (fieldInfo, false).ToArray ();
-		//}
-
-		///// <summary>
-		///// Queries the single field array.
-		///// </summary>
-		///// <returns>The single field array.</returns>
-		///// <param name="fieldInfo">Field info.</param>
-		///// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
-		///// <typeparam name="K">The 1st type parameter.</typeparam>
-		//public K [] QuerySingleFieldArray<K> (DataFieldInfo fieldInfo, bool isDistinct)
-		//{
-		//	return QuerySingleFieldList<K> (fieldInfo, isDistinct).ToArray ();
-		//}
 
 		/// <summary>
 		/// To the list.
@@ -620,17 +453,17 @@ namespace Light.Data
 		}
 
 
-		public IJoinTable<T, T1> JoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new();
+		public IJoinTable<T, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new();
 		{
 			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, aggregate, onExpression);
 		}
 
-		public IJoinTable<T, T1> LeftJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
+		public IJoinTable<T, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
 		{
 			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, aggregate, onExpression);
 		}
 
-		public IJoinTable<T, T1> RightJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new();
+		public IJoinTable<T, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new();
 		{
 			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, aggregate, onExpression);
 		}
