@@ -4,21 +4,21 @@ using System.Linq.Expressions;
 namespace Light.Data
 {
 	public interface IJoinTable<T, T1, T2>
-		where T : class, new()
-		where T1 : class, new()
-		where T2 : class, new()
+		where T : class//, new()
+		where T1 : class//, new()
+		where T2 : class//, new()
 	{
-		IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class, new();
+		IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class, new();
+		IJoinTable<T, T1, T2, T3> Join<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class, new();
+		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class, new();
+		IJoinTable<T, T1, T2, T3> LeftJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class, new();
+		IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T3, bool>> queryExpression, Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class, new();
+		IJoinTable<T, T1, T2, T3> RightJoin<T3> (Expression<Func<T, T1, T2, T3, bool>> onExpression) where T3 : class;//, new();
 
 		/// <summary>
 		/// Reset the specified where expression
@@ -86,7 +86,7 @@ namespace Light.Data
 		/// Set order by random.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
-		IJoinTable<T, T1, T2> OrderByRandom ();
+		//IJoinTable<T, T1, T2> OrderByRandom ();
 
 		/// <summary>
 		/// Take the datas count.

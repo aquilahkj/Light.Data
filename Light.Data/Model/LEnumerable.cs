@@ -17,7 +17,7 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			foreach (T item in _context.QueryMappingData (_mapping, null, _query, _order, _region, _level)) {
+			foreach (T item in _context.QueryEntityData (_mapping, null, _query, _order, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -28,7 +28,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryMappingData (_mapping, null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryEntityData (_mapping, null, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -385,7 +385,7 @@ namespace Light.Data
 		/// <returns>instance.</returns>
 		public T Single ()
 		{
-			return _context.SelectMappingDataSingle (_mapping, _query, _order, 0, _level) as T;
+			return _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -395,7 +395,7 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.SelectMappingDataSingle (_mapping, _query, _order, index, _level) as T;
+			return _context.SelectEntityDataSingle (_mapping, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>
@@ -497,7 +497,7 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable ie = _context.QueryMappingData (_mapping, null, _query, _order, _region, _level);
+			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, _region, _level);
 			foreach (T item in ie) {
 				list.Add (item);
 			}

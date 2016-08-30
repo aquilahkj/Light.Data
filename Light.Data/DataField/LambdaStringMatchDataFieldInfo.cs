@@ -90,7 +90,7 @@ namespace Light.Data
 				left = state.AddDataParameter (leftObject);
 			}
 			else {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.UnsupportBothConstantValue);
 			}
 			sql = factory.CreateLikeMatchQuerySql (left, right, _starts, _ends, _isNot);
 			state.SetDataSql (this, isFullName, sql);

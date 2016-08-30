@@ -12,16 +12,6 @@ namespace Light.Data
 
 	class RelationLink
 	{
-
-
-		//SingleRelationFieldMapping rootRelationMapping;
-
-		//public SingleRelationFieldMapping RootRelationMapping {
-		//	get {
-		//		return rootRelationMapping;
-		//	}
-		//}
-
 		public string LastFieldPath {
 			get {
 				return lastFieldPath;
@@ -70,37 +60,10 @@ namespace Light.Data
 			}
 		}
 
-
 		private RelationLink ()
 		{
 
 		}
-
-		//public RelationLink (SingleRelationFieldMapping rootRelationMapping, RelationItem prevItem)
-		//{
-		//	if (rootRelationMapping == null)
-		//		throw new ArgumentNullException (nameof (rootRelationMapping));
-		//	RelationKey [] keys = rootRelationMapping.GetKeyPairs ();
-		//	this.keyCount = keys.Length;
-		//	string [] masters = new string [this.keyCount];
-		//	string [] relates = new string [this.keyCount];
-		//	for (int i = 0; i < this.keyCount; i++) {
-		//		masters [i] = keys [i].MasterKey;
-		//		relates [i] = keys [i].RelateKey;
-		//	}
-		//	lastFieldPath = string.Format ("{0}.{1}", prevItem.FieldPath, rootRelationMapping.FieldName);
-
-
-		//	RelationItem relateItem = new RelationItem () {
-		//		DataMapping = rootRelationMapping.RelateMapping,
-		//		FieldMapping = rootRelationMapping,
-		//		FieldPath = lastFieldPath,
-		//		Keys = relates
-		//	};
-
-		//	items.Add (prevItem);
-		//	items.Add (relateItem);
-		//}
 
 		public RelationLink (SingleRelationFieldMapping rootRelationMapping, string fieldPath)
 		{
@@ -158,11 +121,11 @@ namespace Light.Data
 		{
 			RelationItem last = items [items.Count - 1];
 			if (!Object.Equals (relateMapping.MasterMapping, last.DataMapping)) {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.RelationLinkEntityMappingError);
 			}
-			if (Object.Equals (last.CurrentFieldPath, relateMapping)) {
-				throw new LightDataException ("");
-			}
+			//if (Object.Equals (last.CurrentFieldPath, relateMapping)) {
+			//	throw new LightDataException ("");
+			//}
 			RelationKey [] keys = relateMapping.GetKeyPairs ();
 			if (keys.Length != keyCount) {
 				return RelationLinkType.NoMatch;
@@ -187,7 +150,7 @@ namespace Light.Data
 						return RelationLinkType.Cycle;
 					}
 					else {
-						throw new LightDataException ("");
+						throw new LightDataException (RE.RelationLinkCalculateError);
 					}
 				}
 			}

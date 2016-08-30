@@ -4,22 +4,22 @@ using System.Linq.Expressions;
 namespace Light.Data
 {
 	public interface IJoinTable<T, T1, T2, T3>
-		where T : class, new()
-		where T1 : class, new()
-		where T2 : class, new()
-		where T3 : class, new()
+		where T : class//, new()
+		where T1 : class//, new()
+		where T2 : class//, new()
+		where T3 : class//, new()
 	{
-		IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class, new();
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class, new();
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class, new();
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class, new();
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class, new();
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T4, bool>> queryExpression, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;//, new();
 
-		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class, new();
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;//, new();
 
 		/// <summary>
 		/// Reset the specified where expression
@@ -87,7 +87,7 @@ namespace Light.Data
 		/// Set order by random.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
-		IJoinTable<T, T1, T2, T3> OrderByRandom ();
+		//IJoinTable<T, T1, T2, T3> OrderByRandom ();
 
 		/// <summary>
 		/// Take the datas count.

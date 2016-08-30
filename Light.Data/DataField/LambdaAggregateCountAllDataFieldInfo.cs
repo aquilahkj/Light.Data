@@ -3,8 +3,8 @@ namespace Light.Data
 {
 	class LambdaAggregateCountAllDataFieldInfo : LambdaDataFieldInfo
 	{
-		public LambdaAggregateCountAllDataFieldInfo (DataEntityMapping mapping)
-			: base (mapping)
+		public LambdaAggregateCountAllDataFieldInfo ()
+			: base (DataEntityMapping.Default)
 		{
 		}
 

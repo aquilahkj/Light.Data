@@ -22,37 +22,13 @@ namespace Light.Data.Demo
 			context.SetCommanfOutput (output);
 
 
-			//			MqDeviceInfo info = context.CreateNew<MqDeviceInfo> ();
-			//			info.Imei = "00";
-			//			info.Flag = "ww";
-			//			info.RegisterTime = DateTime.Now;
-			//			info.Status = 0;
-			//			info.Valid = 1;
-			//			info.Save ();
+			List<TeUser> users = context.LQuery<TeUser> ().Where (x => x.Address + 1 == "dd").ToList ();
 
-			//List<TeUser> users = context.LQuery<TeUser> ().Where (x => x.Address + 1 == "dd").ToList ();
-
-			//string d = string.Concat (null);
-
-			//List<TeUser> users = context.LQuery<TeUser> ().Where (x => x.Gender == GenderType.Female && Math.Abs (x.Id) * 2 + TestInt () + 2 + x.Id + 1 >= x.Id + 2 && x.CheckPoint < 8 && x.Address + 1 == "dd" && x.DeleteFlag && x.Email.StartsWith ("aaa") && x.NickName.Substring (1, 3) == "rr").ToList ();
-			//DateTimeFormater formater = new DateTimeFormater ();
-			//formater.YearFormat = "%y";
-			//formater.MonthFormat = "%M";
-			//formater.DayFormat = "%d";
-			//formater.HourFormat = "%H";
-			//formater.MinuteFormat = "%m";
-			//formater.SecondFormat = "%s";
-			//string result = formater.FormatData ("MM/yyyy/dd HH:mm:ss");
 
 			string [] arr = new [] { "1", "2", "3" };
 			List<string> dd = new List<string> ();
 			dd.AddRange (arr);
 			DateTime dt = DateTime.Now;
-
-			//double i = 1.2;
-			//dt.ToString("
-			//List<TeUser> users2 = context.LQuery<TeUser> ()
-			//.Where (x =>  x.RegTime.ToString () == "" && dd.Contains (x.Account) && !dd.Contains (x.Address) && string.Concat (x.RegTime.Year, x.Account, "00", 11) == "" && x.Address.IndexOf ('a') == 2).ToList ();
 
 			List<TeUserLevelWithUserRefer> lus = context.Query<TeUserLevelWithUserRefer> ().ToList ();
 			var ff = lus [0].Users;
@@ -61,76 +37,90 @@ namespace Light.Data.Demo
 				Console.WriteLine (f);
 			}
 
-			//TeUserWithLevel2 s = new TeUserWithLevel2 ();
+			TeUserWithLevel2 s = new TeUserWithLevel2 ();
 
-			//var ll = context.Query<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address & (x.Area > 1 ? x.Account : x.Address).Length > 10 & (x.Email.Length > 0 ?
-			//												   x.DeleteFlag :
-			//												   x.Area > 0 & x.Email.Length > 0
-			//														 ? x.Account.Length > 0
-			//														 ? x.DeleteFlag :
-			//											 !x.DeleteFlag : x.CheckPoint > 0)).OrderBy (x => x.Address)
-			//			  .Select (x => new {
-			//				  x.Id,
-			//				  x.Account,
-			//				  AC = x.UserLevel != null ? x.UserLevel.LevelName : string.Empty,
-			//				  CD = x.UserLevel2
-			//			  }).ToList ();
+			var ll = context.Query<TeUserWithLevel2> ().Where (x => x.UserLevel.Remark == s.Address & (x.Area > 1 ? x.Account : x.Address).Length > 10 & (x.Email.Length > 0 ?
+															   x.DeleteFlag :
+															   x.Area > 0 & x.Email.Length > 0
+																	 ? x.Account.Length > 0
+																	 ? x.DeleteFlag :
+														 !x.DeleteFlag : x.CheckPoint > 0)).OrderBy (x => x.Address)
+						  .Select (x => new {
+							  x.Id,
+							  x.Account,
+							  AC = x.UserLevel != null ? x.UserLevel.LevelName : string.Empty,
+							  CD = x.UserLevel2
+						  }).ToList ();
 
 
 
-			//var vc = context.Query<TeUser> ().Where (x => x.Id > 2 && x.Gender == GenderType.Male)
-			//				.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
-			//				.Where ((x, y) => y.Remark == "")
-			//				.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
-			//				.WhereWithAnd ((x, y, z) => x.CheckPoint > 0 && y.LevelName != null)
-			//				//.Select ((x, y, z) => new SGroub {
-			//				//	Date = x.RegTime.Date,
-			//				//	Count = 10
-			//				//}).ToList ();
-			//				.Select ((x, y, z) => new {
-			//					User = x,
-			//					LevelName = y.LevelName,
-			//					E1 = z.Extend1,
-			//					E2 = z.Extend2
-			//				}).ToList ();
+			var vc = context.Query<TeUser> ().Where (x => x.Id > 2 && x.Gender == GenderType.Male)
+							.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
+							.Where ((x, y) => y.Remark == "")
+							.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
+							.WhereWithAnd ((x, y, z) => x.CheckPoint > 0 && y.LevelName != null)
+							//.Select ((x, y, z) => new SGroub {
+							//	Date = x.RegTime.Date,
+							//	Count = 10
+							//}).ToList ();
+							.Select ((x, y, z) => new {
+								User = x,
+								LevelName = y.LevelName,
+								E1 = z.Extend1,
+								E2 = z.Extend2
+							}).ToList ();
 
-			//var df = context.Query<TeUser> ().GroupBy (x => new SGroub {
-			//	Date = x.RegTime.Date,
-			//	Count = Function.Count (x.Address + "1111", x.Gender == GenderType.Female)
-			//}).Having (x => x.Count + 10 > 11).OrderBy (x => x.Count).ToList ();
+			var df = context.Query<TeUser> ().GroupBy (x => new SGroub {
+				Date = x.RegTime.Date,
+				Count = Function.Count (x.Address + "1111", x.Gender == GenderType.Female)
+			}).Having (x => x.Count + 10 > 11).OrderBy (x => x.Count).ToList ();
 
-			//var dg1 = context.Query<TeDataLog> ().Insert<TeDataLogHistory> ();
+			var dg1 = context.Query<TeDataLog> ().Insert<TeDataLogHistory> ();
 
-			//var dg2 = context.Query<TeDataLog> ()
-			//				.Where (x => x.Id > 10)
-			//				.SelectInsert (x => new TeDataLogHistory {
-			//					Id = x.Id,
-			//					UserId = x.UserId,
-			//					ArticleId = x.ArticleId,
-			//					RequestUrl = string.Concat ("[", x.RequestUrl, "]"),
-			//					Action = x.Action,
-			//					CheckId = x.CheckId,
-			//					RecordTime = DateTime.Now,
-			//					Status = 0
-			//				});
-			//var dg3 = context.Query<TeUserWithLevel2> ()
-			//				.Where (x => x.Id > 10)
-			//				.SelectInsert (x => new TeDataLogHistory {
-			//					Id = x.Id,
-			//					UserId = x.Id,
-			//					ArticleId = x.UserLevel.Id,
-			//					RequestUrl = x.Address,
-			//					Action = x.Mark,
-			//					RecordTime = DateTime.Now,
-			//					Status = 0
-			//				});
-			//var up1 = context.Query<TeUser> ().Where (x => x.Id > 10).Update (x => new TeUser {
-			//	Area = null,
-			//	Address = "address:" + x.Address,
-			//	DeleteFlag = false
-			//});
+			var dg2 = context.Query<TeDataLog> ()
+							.Where (x => x.Id > 10)
+							.SelectInsert (x => new TeDataLogHistory {
+								Id = x.Id,
+								UserId = x.UserId,
+								ArticleId = x.ArticleId,
+								RequestUrl = string.Concat ("[", x.RequestUrl, "]"),
+								Action = x.Action,
+								CheckId = x.CheckId,
+								RecordTime = DateTime.Now,
+								Status = 0
+							});
+			var dg3 = context.Query<TeUserWithLevel2> ()
+							.Where (x => x.Id > 10)
+							.SelectInsert (x => new TeDataLogHistory {
+								Id = x.Id,
+								UserId = x.Id,
+								ArticleId = x.UserLevel.Id,
+								RequestUrl = x.Address,
+								Action = x.Mark,
+								RecordTime = DateTime.Now,
+								Status = 0
+							});
+			var up1 = context.Query<TeUser> ().Where (x => x.Id > 10).Update (x => new TeUser {
+				Area = null,
+				Address = "address:" + x.Address,
+				DeleteFlag = false
+			});
 
-			//var fg1 = context.Query<TeUserWithLevel2> ().QuerySingleFieldList (x => x.Area, true);
+			var fg1 = context.Query<TeUserWithLevel2> ().QuerySingleFieldList (x => x.Area, true);
+
+			var vc0 = context.Query<TeUser> ().GroupBy (x => new  {
+				Lid = x.LevelId,
+				Count = Function.Count ()
+			});
+
+			var vc1 = context.Query<TeUserLevel> ()
+			                 .LeftJoinAggregate (vc0, (x, y) => x.Id == y.Lid)
+							.Where ((x, y) => y.Count >=1)
+							.Select ((x, y) => new {
+								Id = x.Id,
+								Name=x.LevelName,
+								Count = y.Count,
+							}).ToList ();
 
 			Console.ReadLine ();
 		}
@@ -138,6 +128,18 @@ namespace Light.Data.Demo
 		class SGroub
 		{
 			public DateTime Date {
+				get;
+				set;
+			}
+			public int Count {
+				get;
+				set;
+			}
+		}
+
+			                                            class SGroub1
+		{
+			public int Lid {
 				get;
 				set;
 			}

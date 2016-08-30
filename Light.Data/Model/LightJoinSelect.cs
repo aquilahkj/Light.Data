@@ -18,15 +18,15 @@ namespace Light.Data
 
 		readonly Delegate _dele;
 
-		readonly JoinSelector _selector;
+		readonly ISelector _selector;
 
-		readonly List<JoinModel> _models;
+		readonly IJoinModel[] _models;
 
 		readonly DynamicMultiDataMapping _mappping;
 
 		//readonly DynamicMultiDataMapping _mapping;
 
-		internal LightJoinSelect (DataContext context, Delegate dele, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal LightJoinSelect (DataContext context, Delegate dele, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			_models = models;
 			_context = context;

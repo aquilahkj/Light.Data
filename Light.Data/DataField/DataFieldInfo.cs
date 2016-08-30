@@ -60,8 +60,10 @@ namespace Light.Data
 
 		internal DataFieldInfo (DataFieldMapping fieldMapping)
 		{
-			TableMapping = fieldMapping.EntityMapping;
-			DataField = fieldMapping;
+			if (fieldMapping != null) {
+				TableMapping = fieldMapping.EntityMapping;
+				DataField = fieldMapping;
+			}
 		}
 
 		internal DataFieldInfo (DataEntityMapping mapping)

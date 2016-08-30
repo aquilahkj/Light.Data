@@ -8,7 +8,7 @@ namespace Light.Data
 	/// <summary>
 	/// Lenumerable.
 	/// </summary>
-	public class LightQuery<T> : IQuery<T> where T : class, new()
+	public class LightQuery<T> : IQuery<T> where T : class//, new()
 	{
 		#region IEnumerable implementation
 
@@ -18,7 +18,7 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			foreach (T item in _context.QueryMappingData (_mapping, null, _query, _order, _region, _level)) {
+			foreach (T item in _context.QueryEntityData (_mapping, null, _query, _order, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -29,7 +29,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryMappingData (_mapping, null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryEntityData (_mapping, null, _query, _order, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -409,7 +409,7 @@ namespace Light.Data
 		/// <returns>instance.</returns>
 		public T First ()
 		{
-			return _context.SelectMappingDataSingle (_mapping, _query, _order, 0, _level) as T;
+			return _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -419,7 +419,7 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.SelectMappingDataSingle (_mapping, _query, _order, index, _level) as T;
+			return _context.SelectEntityDataSingle (_mapping, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>
@@ -515,7 +515,7 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable ie = _context.QueryMappingData (_mapping, null, _query, _order, _region, _level);
+			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, _region, _level);
 			foreach (T item in ie) {
 				list.Add (item);
 			}
@@ -581,39 +581,58 @@ namespace Light.Data
 			return selectable;
 		}
 
-		public IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		public IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
 		{
 			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, queryExpression, onExpression);
 		}
 
-		public IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		public IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
 		{
-			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, null, onExpression);
+			Expression<Func<T1, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, queryExpression, onExpression);
 		}
 
-		public IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		public IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
 		{
 			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, queryExpression, onExpression);
 		}
 
-		public IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		public IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
 		{
-			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, null, onExpression);
+			Expression<Func<T1, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, queryExpression, onExpression);
 		}
 
-		public IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		public IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
 		{
 			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, queryExpression, onExpression);
 		}
 
-		public IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new()
+		public IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
 		{
-			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, null, onExpression);
+			Expression<Func<T1, bool>> queryExpression = null;
+			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, queryExpression, onExpression);
 		}
 
 		public IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class
 		{
 			return new LightAggregate<T, K> (this, expression);
+		}
+
+
+		public IJoinTable<T, T1> JoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new();
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<T, T1> LeftJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new()
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, aggregate, onExpression);
+		}
+
+		public IJoinTable<T, T1> RightJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class//, new();
+		{
+			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, aggregate, onExpression);
 		}
 
 

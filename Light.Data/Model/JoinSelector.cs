@@ -80,25 +80,25 @@ namespace Light.Data
 		/// Gets the select filed names.
 		/// </summary>
 		/// <returns>The select filed names.</returns>
-		public string [] GetSelectFiledNames ()
+		public string [] GetSelectFieldNames ()
 		{
-			string [] fileds = new string [this.infoDict.Count + aliasTableHash.Count];
+			string [] fields = new string [this.infoDict.Count + aliasTableHash.Count];
 			int index = 0;
 			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
 				if (!Object.Equals (aliasInfo, null)) {
-					fileds [index] = aliasInfo.Alias;
+					fields [index] = aliasInfo.Alias;
 				}
 				else {
-					fileds [index] = fieldInfo.FieldName;
+					fields [index] = fieldInfo.FieldName;
 				}
 				index++;
 			}
 			foreach (string alias in aliasTableHash) {
-				fileds [index] = alias;
+				fields [index] = alias;
 				index++;
 			}
-			return fileds;
+			return fields;
 		}
 
 		public string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)

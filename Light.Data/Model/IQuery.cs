@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	public interface IQuery<T> : IEnumerable<T> where T : class, new()
+	public interface IQuery<T> : IEnumerable<T> where T : class//, new()
 	{
 		#region LQuery<T> 成员
 
@@ -186,23 +186,29 @@ namespace Light.Data
 
 		ISelect<TResult> Select<TResult> (Expression<Func<T, TResult>> expression) where TResult : class;
 
-		IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
+		IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 
-		IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
+		IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 
-		IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
+		IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 
-		IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
+		IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 
-		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
+		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 
-		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class, new();
+		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 
 		IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class;
 
 		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
 
 		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
+
+		IJoinTable<T, T1> JoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
+
+		IJoinTable<T, T1> LeftJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
+	
+		IJoinTable<T, T1> RightJoinAggregate<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;//, new();
 	}
 }
 

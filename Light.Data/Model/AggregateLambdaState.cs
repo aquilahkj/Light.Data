@@ -21,7 +21,7 @@ namespace Light.Data
 			entityMapping = group.EntityMapping;
 		}
 
-		public override DataEntityMapping MainMapping {
+		public DataEntityMapping MainMapping {
 			get {
 				return entityMapping;
 			}
@@ -34,19 +34,19 @@ namespace Light.Data
 
 		public override ISelector CreateSelector (string [] fullPaths)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException ();
 		}
 
-		public override DataFieldInfo GetDataFileInfo (string fullPath)
+		public override DataFieldInfo GetDataFieldInfo (string fullPath)
 		{
 			int index = fullPath.IndexOf (".", StringComparison.Ordinal);
 			if (index < 0) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 			}
 			string name = fullPath.Substring (0, index);
 			string path = fullPath.Substring (index + 1);
 			if (aggregateName != name) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
 			DataFieldInfo info = aggregateGroup.GetAggregateData (path);
 			return info;
@@ -60,13 +60,13 @@ namespace Light.Data
 					return LambdaPathType.Parameter;
 				}
 				else {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 				}
 			}
 			string name = fullPath.Substring (0, index);
 			string path = fullPath.Substring (index + 1);
 			if (aggregateName != name) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
 			if (aggregateGroup.CheckName (path)) {
 				return LambdaPathType.Field;

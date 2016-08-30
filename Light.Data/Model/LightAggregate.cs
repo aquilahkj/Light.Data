@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 namespace Light.Data
 {
 	public class LightAggregate<T, K> : IAggregate<K>
-		where T : class, new()
+		where T : class//, new()
 		where K : class
 	{
 		AggregateGroup _model;
@@ -21,9 +21,9 @@ namespace Light.Data
 
 		QueryExpression _having;
 
-		//internal QueryExpression Having {
+		//internal QueryExpression HavingQuery {
 		//	get {
-		//		return _having;
+		//		return _havingQuery;
 		//	}
 		//}
 
@@ -37,11 +37,11 @@ namespace Light.Data
 
 		DataContext _context;
 
-		internal DataContext Context {
-			get {
-				return _context;
-			}
-		}
+		//internal DataContext Context {
+		//	get {
+		//		return _context;
+		//	}
+		//}
 
 		SafeLevel _level = SafeLevel.None;
 
@@ -58,6 +58,12 @@ namespace Light.Data
 				return _region;
 			}
 		}
+
+		//internal AggregateGroup Model {
+		//	get {
+		//		return _model;
+		//	}
+		//}
 
 		DataEntityMapping _mapping;
 
@@ -99,28 +105,28 @@ namespace Light.Data
 
 		public IAggregate<K> OrderBy<TKey> (Expression<Func<K, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.ASC, _model);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.ASC, _model);
 			_order = orderExpression;
 			return this;
 		}
 
 		public IAggregate<K> OrderByCatch<TKey> (Expression<Func<K, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.ASC, _model);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.ASC, _model);
 			_order = OrderExpression.Catch (_order, orderExpression);
 			return this;
 		}
 
 		public IAggregate<K> OrderByDescending<TKey> (Expression<Func<K, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.DESC, _model);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.DESC, _model);
 			_order = orderExpression;
 			return this;
 		}
 
 		public IAggregate<K> OrderByDescendingCatch<TKey> (Expression<Func<K, TKey>> expression)
 		{
-			var orderExpression = LambdaExpressionExtend.ResolveLambdaOrderByExpression (expression, OrderType.DESC, _model);
+			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.DESC, _model);
 			_order = OrderExpression.Catch (_order, orderExpression);
 			return this;
 		}
@@ -243,6 +249,12 @@ namespace Light.Data
 		{
 			_level = level;
 			return this;
+		}
+
+		public AggregateGroupData GetGroupData ()
+		{
+			AggregateGroupData data = new AggregateGroupData (_model, _query, _having, _order);
+			return data;
 		}
 	}
 }

@@ -15,19 +15,19 @@ namespace Light.Data
 			JoinTable table = new JoinTable (dataContext);
 			JoinConnect connect = new JoinConnect (joinType, on);
 
-			JoinModel model1;
+			EntityJoinModel model1;
 			if (left != null) {
-				model1 = new JoinModel (left.Mapping, null, null, left.Query, left.Order);
+				model1 = new EntityJoinModel (left.Mapping, null, null, left.Query, left.Order);
 			}
 			else {
-				model1 = new JoinModel (DataEntityMapping.GetEntityMapping (typeof (T)), null, null, null, null);
+				model1 = new EntityJoinModel (DataEntityMapping.GetEntityMapping (typeof (T)), null, null, null, null);
 			}
-			JoinModel model2;
+			EntityJoinModel model2;
 			if (right != null) {
-				model2 = new JoinModel (right.Mapping, null, connect, right.Query, right.Order);
+				model2 = new EntityJoinModel (right.Mapping, null, connect, right.Query, right.Order);
 			}
 			else {
-				model2 = new JoinModel (DataEntityMapping.GetEntityMapping (typeof (K)), null, connect, null, null);
+				model2 = new EntityJoinModel (DataEntityMapping.GetEntityMapping (typeof (K)), null, connect, null, null);
 			}
 
 			if (model1.Mapping.Equals (model2.Mapping)) {
@@ -57,7 +57,7 @@ namespace Light.Data
 
 		SafeLevel _level = SafeLevel.None;
 
-		List<JoinModel> _modelList = new List<JoinModel> ();
+		List<IJoinModel> _modelList = new List<IJoinModel> ();
 
 		/// <summary>
 		/// Inner join table.
@@ -311,14 +311,14 @@ namespace Light.Data
 		private JoinTable InternalJoin<K> (JoinType joinType, LEnumerable<K> right, DataFieldExpression on) where K : class, new()
 		{
 			JoinConnect connect = new JoinConnect (joinType, on);
-			JoinModel model2;
+			EntityJoinModel model2;
 			if (right != null) {
-				model2 = new JoinModel (right.Mapping, null, connect, right.Query, right.Order);
+				model2 = new EntityJoinModel (right.Mapping, null, connect, right.Query, right.Order);
 			}
 			else {
-				model2 = new JoinModel (DataEntityMapping.GetEntityMapping (typeof (K)), null, connect, null, null);
+				model2 = new EntityJoinModel (DataEntityMapping.GetEntityMapping (typeof (K)), null, connect, null, null);
 			}
-			foreach (JoinModel model in this._modelList) {
+			foreach (EntityJoinModel model in this._modelList) {
 				if (model.Mapping.Equals (model2.Mapping)) {
 					throw new LightDataException (RE.CanNotJoinTheSameTable);
 				}
@@ -336,7 +336,7 @@ namespace Light.Data
 		{
 			if (expression == null)
 				throw new ArgumentNullException (nameof (expression));
-			JoinModel model = this._modelList [this._modelList.Count - 1];
+			IJoinModel model = this._modelList [this._modelList.Count - 1];
 			JoinConnect connect = model.Connect;
 			connect.On = expression;
 			return this;
@@ -351,7 +351,7 @@ namespace Light.Data
 		{
 			if (expression == null)
 				throw new ArgumentNullException (nameof (expression));
-			JoinModel model = this._modelList [this._modelList.Count - 1];
+			IJoinModel model = this._modelList [this._modelList.Count - 1];
 			JoinConnect connect = model.Connect;
 			connect.On = DataFieldExpression.And (connect.On, expression);
 			return this;
@@ -364,7 +364,7 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		public JoinTable OnWithOr (DataFieldExpression expression)
 		{
-			JoinModel model = this._modelList [this._modelList.Count - 1];
+			IJoinModel model = this._modelList [this._modelList.Count - 1];
 			JoinConnect connect = model.Connect;
 			connect.On = DataFieldExpression.Or (connect.On, expression);
 			return this;
@@ -377,7 +377,7 @@ namespace Light.Data
 		/// <returns>The join.</returns>
 		public JoinTable OnReset ()
 		{
-			JoinModel model = this._modelList [this._modelList.Count - 1];
+			IJoinModel model = this._modelList [this._modelList.Count - 1];
 			JoinConnect connect = model.Connect;
 			connect.On = null;
 			return this;
@@ -391,8 +391,8 @@ namespace Light.Data
 		public JoinTable Select (params DataFieldInfo [] fields)
 		{
 			foreach (DataFieldInfo field in fields) {
-				JoinModel m = null;
-				foreach (JoinModel model in this._modelList) {
+				EntityJoinModel m = null;
+				foreach (EntityJoinModel model in this._modelList) {
 					if (model.Mapping.Equals (field.TableMapping)) {
 						m = model;
 						break;
@@ -402,7 +402,7 @@ namespace Light.Data
 					_selector.SetDataField (field);
 				}
 				else {
-					throw new LightDataException (RE.SelectFiledsNotInJoinTables);
+					throw new LightDataException (RE.SelectFieldsNotInJoinTables);
 				}
 			}
 			return this;
@@ -420,8 +420,8 @@ namespace Light.Data
 				throw new ArgumentNullException (nameof (field));
 			if (string.IsNullOrEmpty (alias))
 				throw new ArgumentNullException (nameof (alias));
-			JoinModel m = null;
-			foreach (JoinModel model in this._modelList) {
+			EntityJoinModel m = null;
+			foreach (EntityJoinModel model in this._modelList) {
 				if (model.Mapping.Equals (field.TableMapping)) {
 					m = model;
 					break;
@@ -432,7 +432,7 @@ namespace Light.Data
 				_selector.SetAliasDataField (aliasField);
 			}
 			else {
-				throw new LightDataException (RE.SelectFiledsNotInJoinTables);
+				throw new LightDataException (RE.SelectFieldsNotInJoinTables);
 			}
 
 			return this;
@@ -446,8 +446,8 @@ namespace Light.Data
 		public JoinTable SelectAll<K> ()
 		{
 			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (typeof (K));
-			JoinModel m = null;
-			foreach (JoinModel model in _modelList) {
+			EntityJoinModel m = null;
+			foreach (EntityJoinModel model in _modelList) {
 				if (model.Mapping.Equals (mapping)) {
 					m = model;
 					break;
@@ -457,7 +457,7 @@ namespace Light.Data
 				_selector.SetDataEntity (mapping);
 			}
 			else {
-				throw new LightDataException (RE.SelectFiledsNotInJoinTables);
+				throw new LightDataException (RE.SelectFieldsNotInJoinTables);
 			}
 			return this;
 		}
@@ -531,11 +531,11 @@ namespace Light.Data
 		/// Set order by random.
 		/// </summary>
 		/// <returns>The join.</returns>
-		public JoinTable OrderByRandom ()
-		{
-			_order = new RandomOrderExpression (this._modelList [0].Mapping);
-			return this;
-		}
+		//public JoinTable OrderByRandom ()
+		//{
+		//	_order = new RandomOrderExpression (this._modelList [0].Mapping);
+		//	return this;
+		//}
 
 		/// <summary>
 		/// Reset the specified order by expression.
@@ -699,7 +699,7 @@ namespace Light.Data
 			List<K> list = new List<K> ();
 
 			DataEntityMapping _mapping = DataEntityMapping.GetEntityMapping (typeof (K));
-			foreach (K item in _context.QueryJoinData (_mapping, _selector, _modelList, _query, _order, _region, _level)) {
+			foreach (K item in _context.QueryJoinData (_mapping, _selector, _modelList.ToArray(), _query, _order, _region, _level)) {
 				list.Add (item);
 			}
 			return list;

@@ -8,15 +8,15 @@ namespace Light.Data
 	{
 		public abstract bool CheckPamramter (string name, Type type);
 
-		public abstract DataFieldInfo GetDataFileInfo (string fullPath);
+		public abstract DataFieldInfo GetDataFieldInfo (string fullPath);
 
 		public abstract LambdaPathType ParsePath (string fullPath);
 
 		public abstract ISelector CreateSelector (string[] fullPaths);
 
-		public abstract DataEntityMapping MainMapping {
-			get;
-		}
+		//public abstract DataEntityMapping MainMapping {
+		//	get;
+		//}
 
 		bool mutliEntity;
 

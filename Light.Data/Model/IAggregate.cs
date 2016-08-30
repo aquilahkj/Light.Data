@@ -127,6 +127,8 @@ namespace Light.Data
 		/// <returns>LEnumerable.</returns>
 		/// <param name="level">Level.</param>
 		IAggregate<K> SafeMode (SafeLevel level);
+
+		AggregateGroupData GetGroupData ();
 	}
 }
 

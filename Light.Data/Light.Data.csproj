@@ -164,7 +164,6 @@
     <Compile Include="Config\RelationFieldConfig.cs" />
     <Compile Include="Config\RelationKey.cs" />
     <Compile Include="Config\TableConfig.cs" />
-    <Compile Include="_DataTableAlias.cs" />
     <Compile Include="Handler\TypeHelper.cs" />
     <Compile Include="Expressions\RandomOrderExpression.cs" />
     <Compile Include="Attributes\AggregateFieldAttribute.cs" />
@@ -242,7 +241,6 @@
     <Compile Include="DataBase\OracleCommandFactory.cs" />
     <Compile Include="Mappings\ErrorDataMapping.cs" />
     <Compile Include="Expressions\QueryPredicate.cs" />
-    <Compile Include="_RelationCycle.cs" />
     <Compile Include="Mappings\DataFieldInfoRelation.cs" />
     <Compile Include="Config\ConnectionExtendManager.cs" />
     <Compile Include="Attributes\ExtendParamAttribute.cs" />
@@ -285,17 +283,17 @@
     <Compile Include="Model\LightSelect.cs" />
     <Compile Include="Model\JoinCapsule.cs" />
     <Compile Include="Model\JoinConnect.cs" />
-    <Compile Include="Model\JoinModel.cs" />
+    <Compile Include="Model\EntityJoinModel.cs" />
     <Compile Include="Model\JoinTable.cs" />
     <Compile Include="Model\JoinType.cs" />
-    <Compile Include="Model\SingleEntityLambdaState.cs" />
+    <Compile Include="Model\SingleParameterLambdaState.cs" />
     <Compile Include="Model\AggregateTable.cs" />
     <Compile Include="Model\AggregateType.cs" />
     <Compile Include="Model\LCollection.cs" />
     <Compile Include="Model\LEnumerable.cs" />
     <Compile Include="Model\ISupportNotDefine.cs" />
     <Compile Include="Model\LambdaState.cs" />
-    <Compile Include="Model\MutliEntityLambdaState.cs" />
+    <Compile Include="Model\MutliParameterLambdaState.cs" />
     <Compile Include="Model\QueryState.cs" />
     <Compile Include="Model\Region.cs" />
     <Compile Include="Model\SafeLevel.cs" />
@@ -310,7 +308,6 @@
     <Compile Include="Model\IAggregate.cs" />
     <Compile Include="Functions\Function.cs" />
     <Compile Include="Model\LightAggregate.cs" />
-    <Compile Include="Model\_AggregateModel.cs" />
     <Compile Include="Mappings\AggregateMapping.cs" />
     <Compile Include="Mappings\DynamicAggregateMapping.cs" />
     <Compile Include="Mappings\SpecialAggregateMapping.cs" />
@@ -389,6 +386,15 @@
     <Compile Include="Model\InsertSelector.cs" />
     <Compile Include="Model\MassUpdator.cs" />
     <Compile Include="DataField\outdate\ConstantDataFieldInfo.cs" />
+    <Compile Include="LambdaParseMessage.cs" />
+    <Compile Include="Mappings\IJoinTableMapping.cs" />
+    <Compile Include="Model\IJoinModel.cs" />
+    <Compile Include="Model\IMap.cs" />
+    <Compile Include="Model\AggregateMap.cs" />
+    <Compile Include="Model\AggregateSelector.cs" />
+    <Compile Include="DataField\NameDataFieldInfo.cs" />
+    <Compile Include="Model\AggregateJoinModel.cs" />
+    <Compile Include="Model\AggregateGroupData.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

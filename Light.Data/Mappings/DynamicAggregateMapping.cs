@@ -95,6 +95,28 @@ namespace Light.Data
 			object item = Activator.CreateInstance (ObjectType, args);
 			return item;
 		}
+
+		public override object CreateJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+		{
+			object [] args = new object [this._fieldList.Count];
+			int index = 0;
+			foreach (DynamicFieldMapping field in this._fieldList) {
+				string name = string.Format ("{0}_{1}", aliasName, field.Name);
+				if (queryState == null) {
+					object obj = datareader [name];
+					object value = field.ToProperty (obj);
+					args [index] = value;
+				}
+				else if (queryState.CheckSelectField (name)) {
+					object obj = datareader [name];
+					object value = field.ToProperty (obj);
+					args [index] = value;
+				}
+				index++;
+			}
+			object item = Activator.CreateInstance (ObjectType, args);
+			return item;
+		}
 	}
 }
 

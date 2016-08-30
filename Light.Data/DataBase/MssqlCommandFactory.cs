@@ -115,50 +115,49 @@ namespace Light.Data
 		//	return command;
 		//}
 
-		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
-		{
-			if (region == null) {
-				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null, state);
-			}
+		//public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		//{
+		//	if (region == null) {
+		//		return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null, state);
+		//	}
 
-			StringBuilder sql = new StringBuilder ();
-			//List<DataParameter> parameters = new List<DataParameter> ();
-			//DataParameter [] queryparameters;
-			//DataParameter [] orderparameters;
-			//string queryString = GetQueryString (query, out queryparameters);
-			//string orderString = GetOrderString (order, out orderparameters);
-			bool distinct = false;
-			if (customSelect.StartsWith ("distinct ", StringComparison.OrdinalIgnoreCase)) {
-				distinct = true;
-				customSelect = customSelect.Substring (9);
-			}
-			if (region.Start == 0) {
-				sql.AppendFormat ("select {3}top {2} {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Size, distinct ? "distinct " : string.Empty);
-				if (query != null) {
-					sql.Append (GetQueryString (query, false, state));
-				}
-				if (order != null) {
-					sql.Append (GetOrderString (order, false, state));
-				}
-			}
-			else {
-				StringBuilder innerSQL = new StringBuilder ();
-				string tempCount = CreateCustomFiledName ();
-				string tempRowNumber = CreateCustomFiledName ();
-				innerSQL.AppendFormat ("select {4}top {2} {0},0 {3} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Start + region.Size, tempCount, distinct ? "distinct " : string.Empty);
-				if (query != null) {
-					sql.Append (GetQueryString (query, false, state));
-				}
-				if (order != null) {
-					sql.Append (GetOrderString (order, false, state));
-				}
-				sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
-					innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
-			}
-			CommandData command = new CommandData (sql.ToString ());
-			//command.TransParamName = true;
-			return command;
-		}
+		//	StringBuilder sql = new StringBuilder ();
+		//	//List<DataParameter> parameters = new List<DataParameter> ();
+		//	//DataParameter [] queryparameters;
+		//	//DataParameter [] orderparameters;
+		//	//string queryString = GetQueryString (query, out queryparameters);
+		//	//string orderString = GetOrderString (order, out orderparameters);
+		//	bool distinct = false;
+		//	if (customSelect.StartsWith ("distinct ", StringComparison.OrdinalIgnoreCase)) {
+		//		distinct = true;
+		//		customSelect = customSelect.Substring (9);
+		//	}
+		//	if (region.Start == 0) {
+		//		sql.AppendFormat ("select {3}top {2} {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Size, distinct ? "distinct " : string.Empty);
+		//		if (query != null) {
+		//			sql.Append (GetQueryString (query, false, state));
+		//		}
+		//		if (order != null) {
+		//			sql.Append (GetOrderString (order, false, state));
+		//		}
+		//	}
+		//	else {
+		//		StringBuilder innerSQL = new StringBuilder ();
+		//		string tempCount = CreateCustomFiledName ();
+		//		string tempRowNumber = CreateCustomFiledName ();
+		//		innerSQL.AppendFormat ("select {4}top {2} {0},0 {3} from {1}", customSelect, CreateDataTableSql (mapping.TableName), region.Start + region.Size, tempCount, distinct ? "distinct " : string.Empty);
+		//		if (query != null) {
+		//			sql.Append (GetQueryString (query, false, state));
+		//		}
+		//		if (order != null) {
+		//			sql.Append (GetOrderString (order, false, state));
+		//		}
+		//		sql.AppendFormat ("select {1} from (select a.*,row_number()over(order by {3}) {4} from ({0})a )b where {4}>{2}",
+		//			innerSQL, customSelect, region.Start, tempCount, tempRowNumber);
+		//	}
+		//	CommandData command = new CommandData (sql.ToString ());
+		//	return command;
+		//}
 
 		//public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
 		//{

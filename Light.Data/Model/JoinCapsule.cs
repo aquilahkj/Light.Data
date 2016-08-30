@@ -5,9 +5,9 @@ namespace Light.Data
 {
 	class JoinCapsule
 	{
-		List<JoinModel> models;
+		List<EntityJoinModel> models;
 
-		public List<JoinModel> Models {
+		public List<EntityJoinModel> Models {
 			get {
 				return models;
 			}
@@ -29,7 +29,7 @@ namespace Light.Data
 		//	}
 		//}
 
-		public JoinCapsule (JoinSelector slector, List<JoinModel> models)
+		public JoinCapsule (JoinSelector slector, List<EntityJoinModel> models)
 		{
 			if (slector == null)
 				throw new ArgumentNullException (nameof (slector));

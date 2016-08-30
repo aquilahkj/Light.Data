@@ -5,8 +5,8 @@ namespace Light.Data
 	{
 		object _value;
 
-		public LambdaConstantDataFieldInfo (DataEntityMapping mapping, object value)
-			:base(mapping)
+		public LambdaConstantDataFieldInfo (object value)
+			:base(DataEntityMapping.Default)
 		{
 			_value = value;
 		}

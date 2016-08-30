@@ -50,7 +50,7 @@ namespace Light.Data
 		//	return customSelect;
 		//}
 
-		public virtual string [] GetSelectFiledNames ()
+		public virtual string [] GetSelectFieldNames ()
 		{
 			List<string> list = new List<string> ();
 			foreach (DataFieldInfo fieldInfo in this.selectList) {

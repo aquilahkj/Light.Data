@@ -99,7 +99,7 @@ namespace Light.Data
 				left = state.AddDataParameter (leftObject);
 			}
 			else {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.UnsupportBothConstantValue);
 			}
 
 			switch (_opera) {

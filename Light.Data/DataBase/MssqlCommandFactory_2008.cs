@@ -24,7 +24,7 @@ namespace Light.Data
 			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
 			int insertLen = fields.Count;
 			if (insertLen == 0) {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.NoFieldInsert);
 			}
 			string [] insertList = new string [insertLen];
 			for (int i = 0; i < insertLen; i++) {

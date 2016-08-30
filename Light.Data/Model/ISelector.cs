@@ -3,7 +3,7 @@ namespace Light.Data
 {
 	interface ISelector
 	{
-		string [] GetSelectFiledNames ();
+		string [] GetSelectFieldNames ();
 
 		//string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters);
 

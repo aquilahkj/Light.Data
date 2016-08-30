@@ -4,67 +4,74 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	class MutliEntityLambdaState : LambdaState
+	class MutliParameterLambdaState : LambdaState
 	{
-		readonly Dictionary<string, RelationMap> mapDict = new Dictionary<string, RelationMap> ();
+		readonly Dictionary<string, IMap> mapDict = new Dictionary<string, IMap> ();
 
 		readonly Dictionary<string, string> aliasDict = new Dictionary<string, string> ();
 
-		//readonly Dictionary<string, DataFieldInfo> infoDict = new Dictionary<string, DataFieldInfo> ();
+		//readonly DataEntityMapping firstMapping = null;
 
-		readonly DataEntityMapping firstMapping = null;
-
-		public MutliEntityLambdaState (ICollection<ParameterExpression> paramters)
+		public MutliParameterLambdaState (ICollection<ParameterExpression> paramters, List<IMap> maps)
 		{
+			if (paramters.Count != maps.Count) {
+				throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+			}
 			int index = 0;
 			foreach (ParameterExpression parameter in paramters) {
 				string name = parameter.Name;
 				Type type = parameter.Type;
-				DataEntityMapping entityMapping = DataEntityMapping.GetEntityMapping (type);
-				if (firstMapping != null) {
-					firstMapping = entityMapping;
+				//DataEntityMapping entityMapping = DataEntityMapping.GetEntityMapping (type);
+				//if (firstMapping != null) {
+				//	firstMapping = entityMapping;
+				//}
+				IMap map = maps [index];
+				if (type != map.Type) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterTypeError, name, type);
 				}
-				mapDict [name] = entityMapping.GetRelationMap ();
+				mapDict [name] = map;
 				aliasDict [name] = "T" + index;
 				index++;
 			}
-
 		}
 
-		public override DataEntityMapping MainMapping {
-			get {
-				return firstMapping;
-			}
-		}
+		//public override DataEntityMapping MainMapping {
+		//	get {
+		//		return firstMapping;
+		//	}
+		//}
 
 		public override bool CheckPamramter (string name, Type type)
 		{
-			RelationMap map;
+			IMap map;
 			if (mapDict.TryGetValue (name, out map)) {
-				return map.RootMapping.ObjectType == type;
+				return map.Type == type;
 			}
 			else {
 				return false;
 			}
 		}
 
-		public override DataFieldInfo GetDataFileInfo (string fullPath)
+		public override DataFieldInfo GetDataFieldInfo (string fullPath)
 		{
 			int index = fullPath.IndexOf (".", StringComparison.Ordinal);
 			if (index < 0) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 			}
 			string name = fullPath.Substring (0, index);
 			string path = fullPath.Substring (index);
-			RelationMap map;
+			IMap map;
 			if (mapDict.TryGetValue (name, out map)) {
-				DataFieldInfo info = map.CreateFieldInfoForField (path);
+				DataFieldInfo info = map.CreateFieldInfoForPath (path);
+				//if (Object.Equals (info, null)) {
+				//throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, fullPath);
+				//}
 				string aliasTableName = aliasDict [name];
 				info.AliasTableName = aliasTableName;
 				return info;
 			}
 			else {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
 		}
 
@@ -76,12 +83,12 @@ namespace Light.Data
 					return LambdaPathType.Parameter;
 				}
 				else {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 				}
 			}
 			string name = fullPath.Substring (0, index);
 			string path = fullPath.Substring (index);
-			RelationMap map;
+			IMap map;
 			if (mapDict.TryGetValue (name, out map)) {
 				if (map.CheckIsField (path)) {
 					return LambdaPathType.Field;
@@ -97,7 +104,7 @@ namespace Light.Data
 				}
 			}
 			else {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
 		}
 
@@ -118,7 +125,7 @@ namespace Light.Data
 						}
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 					}
 				}
 				else {
@@ -135,17 +142,17 @@ namespace Light.Data
 						}
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 					}
 				}
 			}
 			Dictionary<string, Selector> selectDict = new Dictionary<string, Selector> ();
 			foreach (KeyValuePair<string, List<string>> kvs in dict) {
-				RelationMap map = mapDict [kvs.Key];
+				IMap map = mapDict [kvs.Key];
 				string alias = aliasDict [kvs.Key];
 				Selector selector = map.CreateSpecialSelector (kvs.Value.ToArray ()) as Selector;
 				if (selector == null) {
-					throw new LightDataException ("");
+					throw new LambdaParseException (LambdaParseMessage.NotSupportRelateEnityJoinSelect);
 				}
 				selectDict.Add (alias, selector);
 			}

@@ -93,7 +93,7 @@ namespace Light.Data.PostgreAdapter
 			return command;
 		}
 
-		public override CommandData CreateSelectJoinTableBaseCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		public override CommandData CreateSelectJoinTableBaseCommand (string customSelect, IJoinModel [] modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
 		{
 			CommandData command = base.CreateSelectJoinTableBaseCommand (customSelect, modelList, query, order, region, state);
 			if (region != null) {

@@ -9,8 +9,16 @@ namespace Light.Data
 	/// <summary>
 	/// Data entity mapping.
 	/// </summary>
-	class DataEntityMapping : DataMapping
+	class DataEntityMapping : DataMapping, IJoinTableMapping
 	{
+		static DataEntityMapping defaultMapping = new DataEntityMapping (typeof (DataEntityMapping));
+
+		public static DataEntityMapping Default {
+			get {
+				return defaultMapping;
+			}
+		}
+
 		#region static
 
 		static object _synobj = new object ();
@@ -135,6 +143,12 @@ namespace Light.Data
 		//protected List<SingleRelationFieldMapping> singleMultiQueryRelationFields = new List<SingleRelationFieldMapping> ();
 
 		protected ReadOnlyCollection<SingleRelationFieldMapping> _singleRelationFields;// = new ReadOnlyCollection<SingleRelationFieldMapping> ();
+
+		private DataEntityMapping (Type type)
+			: base (type)
+		{
+
+		}
 
 		internal DataEntityMapping (Type type, string tableName, bool isDataEntity)
 			: base (type)
@@ -390,28 +404,12 @@ namespace Light.Data
 			}
 		}
 
-		//public bool HasMultiRelateModel {
-		//	get {
-		//		return singleMultiQueryRelationFields.Count > 0;
-		//	}
-		//}
-
 		public void LoadJoinTableData (DataContext context, IDataReader datareader, object item, QueryState queryState, string fieldPath)
 		{
 			string aliasName = queryState.GetAliasName (fieldPath);
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
-
-				//IFieldCollection fieldCollection = field as IFieldCollection;
-				//if (fieldCollection != null) {
-				//	IFieldCollection ifc = fieldCollection;
-				//	object obj = ifc.LoadData (context, datareader, queryState);
-				//	if (!Object.Equals (obj, null)) {
-				//		field.Handler.Set (item, obj);
-				//	}
-				//}
-				//else {
 				string name = string.Format ("{0}_{1}", aliasName, field.Name);
 				if (queryState.CheckSelectField (name)) {
 					object obj = datareader [name];
@@ -420,21 +418,12 @@ namespace Light.Data
 						field.Handler.Set (item, value);
 					}
 				}
-				//}
 			}
 			if (_collectionRelationFields.Count > 0) {
 				foreach (CollectionRelationFieldMapping mapping in _collectionRelationFields) {
 					mapping.Handler.Set (item, mapping.ToProperty (context, item, true));
 				}
 			}
-			//if (singleMultiQueryRelationFields.Count > 0) {
-			//	foreach (SingleRelationFieldMapping mapping in singleMultiQueryRelationFields) {
-			//		object value = mapping.ToProperty (context, item, datas);
-			//		if (!Object.Equals (value, null)) {
-			//			mapping.Handler.Set (item, value);
-			//		}
-			//	}
-			//}
 
 			foreach (SingleRelationFieldMapping mapping in _singleRelationFields) {
 				string fpath = string.Format ("{0}.{1}", fieldPath, mapping.FieldName);
@@ -464,16 +453,6 @@ namespace Light.Data
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
-
-				//IFieldCollection fieldCollection = field as IFieldCollection;
-				//if (fieldCollection != null) {
-				//	IFieldCollection ifc = fieldCollection;
-				//	object obj = ifc.LoadData (context, datareader, state);
-				//	if (!Object.Equals (obj, null)) {
-				//		field.Handler.Set (item, obj);
-				//	}
-				//}
-				//else {
 				if (queryState == null) {
 					object obj = datareader [field.Name];
 					object value = field.ToProperty (obj);
@@ -488,7 +467,6 @@ namespace Light.Data
 						field.Handler.Set (item, value);
 					}
 				}
-				//}
 			}
 			if (_collectionRelationFields.Count > 0) {
 				foreach (CollectionRelationFieldMapping mapping in _collectionRelationFields) {
@@ -512,23 +490,13 @@ namespace Light.Data
 			return item;
 		}
 
-		public object LoadJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+		public object CreateJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
 		{
 			object item = Activator.CreateInstance (ObjectType);
 
 			foreach (DataFieldMapping field in this._fieldList) {
 				if (field == null)
 					continue;
-
-				//IFieldCollection fieldCollection = field as IFieldCollection;
-				//if (fieldCollection != null) {
-				//	IFieldCollection ifc = fieldCollection;
-				//	object obj = ifc.LoadData (context, datareader, queryState);
-				//	if (!Object.Equals (obj, null)) {
-				//		field.Handler.Set (item, obj);
-				//	}
-				//}
-				//else {
 				string name = string.Format ("{0}_{1}", aliasName, field.Name);
 				if (queryState == null) {
 					object obj = datareader [name];
@@ -544,7 +512,6 @@ namespace Light.Data
 						field.Handler.Set (item, value);
 					}
 				}
-				//}
 			}
 			if (_collectionRelationFields.Count > 0) {
 				foreach (CollectionRelationFieldMapping mapping in _collectionRelationFields) {

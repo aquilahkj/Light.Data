@@ -4,13 +4,13 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	class SingleEntityLambdaState : LambdaState
+	class SingleParameterLambdaState : LambdaState
 	{
 		readonly string singleEntityName;
 
 		readonly RelationMap singleEntityMap;
 
-		public SingleEntityLambdaState (ParameterExpression parameter)
+		public SingleParameterLambdaState (ParameterExpression parameter)
 		{
 			singleEntityName = parameter.Name;
 			Type type = parameter.Type;
@@ -18,7 +18,7 @@ namespace Light.Data
 			singleEntityMap = entityMapping.GetRelationMap ();
 		}
 
-		public override DataEntityMapping MainMapping {
+		public DataEntityMapping MainMapping {
 			get {
 				return singleEntityMap.RootMapping;
 			}
@@ -29,18 +29,21 @@ namespace Light.Data
 			return singleEntityName == name && singleEntityMap.RootMapping.ObjectType == type;
 		}
 
-		public override DataFieldInfo GetDataFileInfo (string fullPath)
+		public override DataFieldInfo GetDataFieldInfo (string fullPath)
 		{
 			int index = fullPath.IndexOf (".", StringComparison.Ordinal);
 			if (index < 0) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 			}
 			string name = fullPath.Substring (0, index);
 			string path = fullPath.Substring (index);
 			if (singleEntityName != name) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
-			DataFieldInfo info = singleEntityMap.CreateFieldInfoForField (path);
+			DataFieldInfo info = singleEntityMap.CreateFieldInfoForPath (path);
+			//if (Object.Equals (info, null)) {
+			//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, fullPath);
+			//}
 			return info;
 		}
 
@@ -52,13 +55,13 @@ namespace Light.Data
 					return LambdaPathType.Parameter;
 				}
 				else {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 				}
 			}
 			string name = fullPath.Substring (0, index);
 			string path = fullPath.Substring (index);
 			if (singleEntityName != name) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
 			if (singleEntityMap.CheckIsField (path)) {
 				return LambdaPathType.Field;
@@ -86,7 +89,7 @@ namespace Light.Data
 						}
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathError, fullPath);
 					}
 				}
 				else {
@@ -98,7 +101,7 @@ namespace Light.Data
 						}
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 					}
 				}
 			}

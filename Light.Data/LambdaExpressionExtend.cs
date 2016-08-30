@@ -42,10 +42,9 @@ namespace Light.Data
 		{
 			try {
 				if (expression.Parameters.Count != 1) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
 				}
-
-				SingleEntityLambdaState state = new SingleEntityLambdaState (expression.Parameters [0]);
+				SingleParameterLambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 				AggregateGroup group = null;
 				MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
 				if (memberInitObj != null) {
@@ -61,19 +60,22 @@ namespace Light.Data
 					return group;
 				}
 				else {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 				}
 
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse group by expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "group by", expression, ex.Message), ex);
 			}
 		}
 
 		public static ISelector CreateSelector (LambdaExpression expression)
 		{
 			try {
-				LambdaState state = CreateLambdaState (expression);
+				if (expression.Parameters.Count != 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 				Expression bodyExpression = expression.Body;
 				if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression) {
 					List<string> list;
@@ -81,23 +83,52 @@ namespace Light.Data
 						return state.CreateSelector (list.ToArray ());
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 					}
 				}
 				else {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 				}
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse select expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
 			}
+		}
+
+		public static ISelector CreateMutliSelector (LambdaExpression expression, List<IMap> maps)
+		{
+			//try {
+				if (expression.Parameters.Count <= 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
+				Expression bodyExpression = expression.Body;
+				if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression) {
+					List<string> list;
+					if (ParseNewArguments (bodyExpression, state, out list)) {
+						return state.CreateSelector (list.ToArray ());
+					}
+					else {
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+					}
+				}
+				else {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
+				}
+			//}
+			//catch (Exception ex) {
+			//	throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
+			//}
 		}
 
 		public static OrderExpression ResolveLambdaOrderByExpression (LambdaExpression expression, OrderType orderType)
 		{
 			try {
+				if (expression.Parameters.Count != 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 				DataFieldInfo dataFieldInfo;
-				LambdaState state = CreateLambdaState (expression);
 				if (ParseDataFieldInfo (expression.Body, state, out dataFieldInfo)) {
 					CheckFieldInfo (dataFieldInfo);
 					OrderExpression exp = new DataFieldOrderExpression (dataFieldInfo, orderType);
@@ -105,24 +136,66 @@ namespace Light.Data
 					return exp;
 				}
 				else {
-					throw new LambdaParseException ("not valid field in order expression");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 				}
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse order expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "order", expression, ex.Message), ex);
+			}
+		}
+
+		public static OrderExpression ResolveLambdaMutliOrderByExpression (LambdaExpression expression, OrderType orderType, List<IMap> maps)
+		{
+			try {
+				if (expression.Parameters.Count <= 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
+				DataFieldInfo dataFieldInfo;
+				if (ParseDataFieldInfo (expression.Body, state, out dataFieldInfo)) {
+					CheckFieldInfo (dataFieldInfo);
+					OrderExpression exp = new DataFieldOrderExpression (dataFieldInfo, orderType);
+					exp.MutliOrder = true;
+					return exp;
+				}
+				else {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+				}
+			}
+			catch (Exception ex) {
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "order", expression, ex.Message), ex);
 			}
 		}
 
 		public static QueryExpression ResolveLambdaQueryExpression (LambdaExpression expression)
 		{
 			try {
-				LambdaState state = CreateLambdaState (expression);
+				if (expression.Parameters.Count != 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 				QueryExpression query = ResolveQueryExpression (expression.Body, state);
 				query.MutliQuery = state.MutliEntity;
 				return query;
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse query expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "query", expression, ex.Message), ex);
+			}
+		}
+
+		public static QueryExpression ResolveLambdaMutliQueryExpression (LambdaExpression expression, List<IMap> maps)
+		{
+			try {
+				if (expression.Parameters.Count <= 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
+				QueryExpression query = ResolveQueryExpression (expression.Body, state);
+				query.MutliQuery = state.MutliEntity;
+				return query;
+			}
+			catch (Exception ex) {
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "query", expression, ex.Message), ex);
 			}
 		}
 
@@ -130,7 +203,7 @@ namespace Light.Data
 		{
 			try {
 				if (expression.Parameters.Count != 1) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
 				}
 				LambdaState state = new AggregateLambdaState (expression.Parameters [0], group);
 				QueryExpression query = ResolveQueryExpression (expression.Body, state);
@@ -138,13 +211,16 @@ namespace Light.Data
 				return query;
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse having expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "having", expression, ex.Message), ex);
 			}
 		}
 
-		public static OrderExpression ResolveLambdaOrderByExpression (LambdaExpression expression, OrderType orderType, AggregateGroup group)
+		public static OrderExpression ResolveLambdaAggregateOrderByExpression (LambdaExpression expression, OrderType orderType, AggregateGroup group)
 		{
 			try {
+				if (expression.Parameters.Count != 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
 				DataFieldInfo dataFieldInfo;
 				LambdaState state = new AggregateLambdaState (expression.Parameters [0], group);
 				if (ParseDataFieldInfo (expression.Body, state, out dataFieldInfo)) {
@@ -154,26 +230,26 @@ namespace Light.Data
 					return exp;
 				}
 				else {
-					throw new LambdaParseException ("not valid field in order expression");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 				}
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse order expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "aggregate order", expression, ex.Message), ex);
 			}
 		}
 
-		public static DataFieldExpression ResolvelambdaOnExpression (LambdaExpression expression)
+		public static DataFieldExpression ResolvelambdaOnExpression (LambdaExpression expression, List<IMap> maps)
 		{
 			try {
 				if (expression.Parameters.Count <= 1) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
 				}
-				LambdaState state = new MutliEntityLambdaState (expression.Parameters);
+				LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
 				DataFieldExpression on = ResolveOnExpression (expression.Body, state);
 				return on;
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse on expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "on", expression, ex.Message), ex);
 			}
 		}
 
@@ -181,9 +257,9 @@ namespace Light.Data
 		{
 			try {
 				if (expression.Parameters.Count != 1) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
 				}
-				SingleEntityLambdaState state = new SingleEntityLambdaState (expression.Parameters [0]);
+				SingleParameterLambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 
 				MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
 				if (memberInitObj != null) {
@@ -191,34 +267,39 @@ namespace Light.Data
 					RelationMap map = insertMapping.GetRelationMap ();
 					InsertSelector selector = new InsertSelector (insertMapping, state.MainMapping);
 					if (memberInitObj.Bindings != null) {
-						foreach (MemberAssignment ass in memberInitObj.Bindings) {
+						foreach (MemberBinding binding in memberInitObj.Bindings) {
+							MemberAssignment ass = binding as MemberAssignment;
 							if (ass != null) {
 								Expression innerExpression = ass.Expression;
 								DataFieldInfo selectField;
 								if (!ParseDataFieldInfo (innerExpression, state, out selectField)) {
 									object obj = ConvertObject (innerExpression);
-									selectField = new LambdaConstantDataFieldInfo (state.MainMapping, obj);
+									selectField = new LambdaConstantDataFieldInfo (obj);
 								}
-								DataFieldInfo insertField = map.CreateFieldInfoForField ("." + ass.Member.Name);
+								string mypath = "." + ass.Member.Name;
+								DataFieldInfo insertField = map.CreateFieldInfoForPath (mypath);
+								//if (Object.Equals (insertField, null)) {
+								//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, mypath);
+								//}
 								selector.SetInsertField (insertField);
 								selector.SetSelectField (selectField);
 							}
 							else {
-								throw new LambdaParseException ("");
+								throw new LambdaParseException (LambdaParseMessage.ExpressionBindingError, binding.Member);
 							}
 						}
 					}
 					else {
-						throw new LambdaParseException ("no initial member");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNoMember);
 					}
 					return selector;
 				}
 				else {
-					throw new LambdaParseException ("unsupport expression");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 				}
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse insert select expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "insert", expression, ex.Message), ex);
 			}
 		}
 
@@ -226,46 +307,51 @@ namespace Light.Data
 		{
 			try {
 				if (expression.Parameters.Count != 1) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
 				}
-				SingleEntityLambdaState state = new SingleEntityLambdaState (expression.Parameters [0]);
+				SingleParameterLambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 
 				MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
 				if (memberInitObj != null) {
 					DataTableEntityMapping updateMapping = DataEntityMapping.GetTableMapping (memberInitObj.Type);
 					RelationMap map = updateMapping.GetRelationMap ();
 					MassUpdator updator = new MassUpdator (updateMapping);
-					if (memberInitObj.Bindings != null) {
-						foreach (MemberAssignment ass in memberInitObj.Bindings) {
+					if (memberInitObj.Bindings != null && memberInitObj.Bindings.Count > 0) {
+						foreach (MemberBinding binding in memberInitObj.Bindings) {
+							MemberAssignment ass = binding as MemberAssignment;
 							if (ass != null) {
 								Expression innerExpression = ass.Expression;
 								DataFieldInfo valueField;
 								if (!ParseDataFieldInfo (innerExpression, state, out valueField)) {
 									object obj = ConvertObject (innerExpression);
-									valueField = new LambdaConstantDataFieldInfo (state.MainMapping, obj);
+									valueField = new LambdaConstantDataFieldInfo (obj);
 								}
 								else if (state.MutliEntity) {
-									throw new LambdaParseException ("");
+									throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 								}
-								DataFieldInfo keyField = map.CreateFieldInfoForField ("." + ass.Member.Name);
+								string mypath = "." + ass.Member.Name;
+								DataFieldInfo keyField = map.CreateFieldInfoForPath (mypath);
+								//if (Object.Equals (keyField, null)) {
+								//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, mypath);
+								//}
 								updator.SetUpdateData (keyField, valueField);
 							}
 							else {
-								throw new LambdaParseException ("");
+								throw new LambdaParseException (LambdaParseMessage.ExpressionBindingError, binding.Member);
 							}
 						}
 					}
 					else {
-						throw new LambdaParseException ("no initial member");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNoMember);
 					}
 					return updator;
 				}
 				else {
-					throw new LambdaParseException ("unsupport expression");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 				}
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse insert select expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "updator", expression, ex.Message), ex);
 			}
 		}
 
@@ -273,37 +359,37 @@ namespace Light.Data
 		{
 			try {
 				if (expression.Parameters.Count != 1) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
 				}
-				SingleEntityLambdaState state = new SingleEntityLambdaState (expression.Parameters [0]);
+				SingleParameterLambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 				DataFieldInfo fieldInfo;
 				if (ParseDataFieldInfo (expression.Body, state, out fieldInfo)) {
 					if (state.MutliEntity) {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 					}
 					return fieldInfo;
 				}
 				else {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 				}
 			}
 			catch (Exception ex) {
-				throw new LightDataException (string.Format ("parse field expression \"{0}\" error,message:{1}", expression, ex.Message), ex);
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "single field", expression, ex.Message), ex);
 			}
 		}
 
-		private static LambdaState CreateLambdaState (LambdaExpression expression)
-		{
-			if (expression.Parameters.Count == 0) {
-				throw new LambdaParseException ("");
-			}
-			else if (expression.Parameters.Count == 1) {
-				return new SingleEntityLambdaState (expression.Parameters [0]);
-			}
-			else {
-				return new MutliEntityLambdaState (expression.Parameters);
-			}
-		}
+		//private static LambdaState CreateLambdaState (LambdaExpression expression)
+		//{
+		//	if (expression.Parameters.Count == 0) {
+		//		throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+		//	}
+		//	else if (expression.Parameters.Count == 1) {
+		//		return new SingleParameterLambdaState (expression.Parameters [0]);
+		//	}
+		//	else {
+		//		return new MutliParameterLambdaState (expression.Parameters);
+		//	}
+		//}
 
 		private static bool ParseNewArguments (Expression expression, LambdaState state, out List<string> pathList)
 		{
@@ -334,7 +420,7 @@ namespace Light.Data
 								pathList.Add (fullPath);
 								return true;
 							case LambdaPathType.Parameter:
-								throw new LambdaParseException ("");
+								throw new LambdaParseException (LambdaParseMessage.ExpressionMemberInvalid);
 							default:
 								pathList = new List<string> ();
 								pathList.Add (param.Name);
@@ -342,35 +428,8 @@ namespace Light.Data
 							}
 						}
 						else {
-							throw new LambdaParseException (string.Format ("parameter not correct,name:{0},type:{1}", param.Name, param.Type));
+							throw new LambdaParseException (LambdaParseMessage.ExpressionParameterTypeError, param.Name, param.Type);
 						}
-
-						//RelationMap relationMap;
-						//if (state.TryGetRelationMap (param.Name, out relationMap) && param.Type == relationMap.RootMapping.ObjectType) {
-						//	string path = "." + memberObj.Member.Name;
-						//	if (relationMap.CheckIsField (path)) {
-						//		pathList = new List<string> ();
-						//		pathList.Add (memberObj.ToString ());
-						//		return true;
-						//	}
-						//	else if (relationMap.CheckIsRelateEntity (path)) {
-						//		pathList = null;
-						//		return true;
-						//	}
-						//	else if (relationMap.CheckIsEntityCollection (path)) {
-						//		pathList = new List<string> ();
-						//		pathList.Add (memberObj.ToString ());
-						//		return true;
-						//	}
-						//	else {
-						//		pathList = new List<string> ();
-						//		pathList.Add (param.Name);
-						//		return true;
-						//	}
-						//}
-						//else {
-						//	throw new LambdaParseException (string.Format ("parameter not correct,name:{0},type:{1}", param.Name, param.Type));
-						//}
 					}
 					List<string> memberList = null;
 					if (ParseNewArguments (memberObj.Expression, state, out memberList)) {
@@ -394,31 +453,6 @@ namespace Light.Data
 								pathList.Add (memberObj.Expression.ToString ());
 								return true;
 							}
-
-							//int index = fullPath.IndexOf (".", StringComparison.Ordinal);
-							//string paramName = fullPath.Substring (0, index);
-							//string path = fullPath.Substring (index);
-							//RelationMap relationMap;
-							//state.TryGetRelationMap (paramName, out relationMap);
-							//if (relationMap.CheckIsField (path)) {
-							//	pathList = new List<string> ();
-							//	pathList.Add (memberObj.ToString ());
-							//	return true;
-							//}
-							//else if (relationMap.CheckIsRelateEntity (path)) {
-							//	pathList = null;
-							//	return true;
-							//}
-							//else if (relationMap.CheckIsEntityCollection (path)) {
-							//	pathList = new List<string> ();
-							//	pathList.Add (memberObj.ToString ());
-							//	return true;
-							//}
-							//else {
-							//	pathList = new List<string> ();
-							//	pathList.Add (memberObj.Expression.ToString ());
-							//	return true;
-							//}
 						}
 						else {
 							pathList = memberList;
@@ -516,7 +550,7 @@ namespace Light.Data
 				bool ret = false;
 				List<string> memberInitList = new List<string> ();
 
-				if (memberInitObj.Bindings != null) {
+				if (memberInitObj.Bindings != null && memberInitObj.Bindings.Count > 0) {
 					foreach (MemberAssignment ass in memberInitObj.Bindings) {
 						if (ass != null) {
 							List<string> argList = null;
@@ -786,30 +820,31 @@ namespace Light.Data
 					return false;
 				}
 			}
-			throw new LambdaParseException (string.Format ("lambda expression [{0}] not support", expression));
+			throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 		}
 
 		private static void CheckFieldInfo (DataFieldInfo fieldInfo)
 		{
 			if (Object.Equals (fieldInfo, null)) {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionParseFieldFailed);
 			}
 		}
 
-		private static AggregateGroup ParseAggregateGroup (MemberInitExpression expression, SingleEntityLambdaState state)
+		private static AggregateGroup ParseAggregateGroup (MemberInitExpression expression, SingleParameterLambdaState state)
 		{
 			DataEntityMapping entityMapping = state.MainMapping;
 			SpecialAggregateMapping arrgregateMapping = SpecialAggregateMapping.GetAggregateMapping (expression.Type);
 			AggregateGroup model = new AggregateGroup (entityMapping, arrgregateMapping);
-			if (expression.Bindings != null) {
-				foreach (MemberAssignment ass in expression.Bindings) {
+			if (expression.Bindings != null && expression.Bindings.Count > 0) {
+				foreach (MemberBinding binding in expression.Bindings) {
+					MemberAssignment ass = binding as MemberAssignment;
 					if (ass != null) {
 						Expression innerExpression = ass.Expression;
 						DataFieldInfo fieldInfo;
 						state.AggregateField = false;
 						if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
 							if (state.MutliEntity) {
-								throw new LambdaParseException ("not support relate filed entity aggregate");
+								throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 							}
 							if (state.AggregateField) {
 								model.AddAggregateField (ass.Member.Name, fieldInfo);
@@ -819,26 +854,26 @@ namespace Light.Data
 							}
 						}
 						else {
-							throw new LambdaParseException ("");
+							throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 						}
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionBindingError, binding.Member);
 					}
 				}
 			}
 			else {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionNoMember);
 			}
 			return model;
 		}
 
-		private static AggregateGroup ParseAggregateGroup (NewExpression expression, SingleEntityLambdaState state)
+		private static AggregateGroup ParseAggregateGroup (NewExpression expression, SingleParameterLambdaState state)
 		{
 			DataEntityMapping entityMapping = state.MainMapping;
 			DynamicAggregateMapping arrgregateMapping = DynamicAggregateMapping.GetAggregateMapping (expression.Type);
 			AggregateGroup model = new AggregateGroup (entityMapping, arrgregateMapping);
-			if (expression.Arguments != null) {
+			if (expression.Arguments != null && expression.Arguments.Count > 0) {
 				int index = 0;
 				foreach (Expression arg in expression.Arguments) {
 					MemberInfo member = expression.Members [index];
@@ -847,7 +882,7 @@ namespace Light.Data
 					state.AggregateField = false;
 					if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
 						if (state.MutliEntity) {
-							throw new LambdaParseException ("not support relate filed entity aggregate");
+							throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 						}
 						if (state.AggregateField) {
 							model.AddAggregateField (member.Name, fieldInfo);
@@ -858,12 +893,12 @@ namespace Light.Data
 						index++;
 					}
 					else {
-						throw new LambdaParseException ("");
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 					}
 				}
 			}
 			else {
-				throw new LambdaParseException ("");
+				throw new LambdaParseException (LambdaParseMessage.ExpressionNoArguments);
 			}
 			return model;
 		}
@@ -946,27 +981,12 @@ namespace Light.Data
 							queryExpression = new LambdaBinaryQueryExpression (rightFieldInfo.TableMapping, queryPredicate, rightFieldInfo, leftValue);
 						}
 						else {
-							throw new LambdaParseException (string.Format ("not allow two constant value in BinaryExpression \"{0}\"", binaryObj));
+							throw new LambdaParseException (LambdaParseMessage.BinaryExpressionNotAllowBothConstantValue);
 						}
 						fieldInfo = new LambdaQueryDataFieldInfo (queryExpression);
 						return true;
 					}
-					//if (binaryObj.NodeType == ExpressionType.Or && (CheckIsEnum (binaryObj.Left) || CheckIsEnum (binaryObj.Right))) {
-					//	if (left && right) {
-					//		fieldInfo = new LambdaMathCalculateDataFieldInfo (leftFieldInfo.TableMapping, MathOperator.Puls, leftFieldInfo, rightFieldInfo);
-					//		return true;
-					//	}
-					//	else if (left && !right) {
-					//		fieldInfo = new LambdaMathCalculateDataFieldInfo (leftFieldInfo.TableMapping, MathOperator.Puls, leftFieldInfo, rightValue);
-					//		return true;
-					//	}
-					//	else if (!left && right) {
-					//		fieldInfo = new LambdaMathCalculateDataFieldInfo (rightFieldInfo.TableMapping, MathOperator.Puls, leftValue, rightFieldInfo);
-					//		return true;
-					//	}
-					//}
-
-					throw new LambdaParseException (string.Format ("not support node type {0}", binaryObj.NodeType));
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNodeTypeUnsuppore, binaryObj.NodeType);
 				}
 			}
 			UnaryExpression unaryObj = expression as UnaryExpression;
@@ -1010,7 +1030,7 @@ namespace Light.Data
 							string fullPath = memberObj.ToString ();
 							LambdaPathType pathType = state.ParsePath (fullPath);
 							if (pathType == LambdaPathType.Field) {
-								DataFieldInfo myinfo = state.GetDataFileInfo (fullPath);
+								DataFieldInfo myinfo = state.GetDataFieldInfo (fullPath);
 								fieldInfo = myinfo;
 								return true;
 							}
@@ -1018,11 +1038,11 @@ namespace Light.Data
 								return true;
 							}
 							else {
-								throw new LambdaParseException ("");
+								throw new LambdaParseException (LambdaParseMessage.ExpressionMemberInvalid);
 							}
 						}
 						else {
-							throw new LambdaParseException (string.Format ("parameter not correct,name:{0},type:{1}", param.Name, param.Type));
+							throw new LambdaParseException (LambdaParseMessage.ExpressionParameterTypeError, param.Name, param.Type);
 						}
 					}
 					if (ParseDataFieldInfo (memberObj.Expression, state, out fieldInfo)) {
@@ -1030,7 +1050,7 @@ namespace Light.Data
 							string fullPath = memberObj.ToString ();
 							LambdaPathType pathType = state.ParsePath (fullPath);
 							if (pathType == LambdaPathType.Field) {
-								DataFieldInfo myinfo = state.GetDataFileInfo (fullPath);
+								DataFieldInfo myinfo = state.GetDataFieldInfo (fullPath);
 								fieldInfo = myinfo;
 								state.MutliEntity = true;
 								return true;
@@ -1039,7 +1059,7 @@ namespace Light.Data
 								return true;
 							}
 							else {
-								throw new LambdaParseException ("");
+								throw new LambdaParseException (LambdaParseMessage.ExpressionMemberInvalid);
 							}
 						}
 						else {
@@ -1052,7 +1072,7 @@ namespace Light.Data
 								return true;
 							}
 							else {
-								throw new LambdaParseException (string.Format ("{0} type not support", memberObj.Expression.Type));
+								throw new LambdaParseException (LambdaParseMessage.MemberExpressionTypeUnsupport, memberObj.Expression.Type);
 							}
 						}
 					}
@@ -1087,7 +1107,7 @@ namespace Light.Data
 							return true;
 						}
 						else {
-							throw new LambdaParseException (string.Format ("{0} type not support", memberObj.Expression.Type));
+							throw new LambdaParseException (LambdaParseMessage.MethodExpressionTypeUnsupport, methodInfo.DeclaringType);
 						}
 					}
 					else {
@@ -1168,7 +1188,7 @@ namespace Light.Data
 				fieldInfo = new LambdaConditionDataFieldInfo (query, ifTrueValue, ifFalseValue);
 				return true;
 			}
-			throw new LambdaParseException (string.Format ("lambda expression [{0}] not support", expression));
+			throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 		}
 
 		private static bool ParseArguments (ReadOnlyCollection<Expression> arguments, LambdaState state, out object [] argObjects, out DataFieldInfo fieldInfo)
@@ -1299,16 +1319,21 @@ namespace Light.Data
 
 		private static DataFieldInfo CreateDateDataFieldInfo (MemberInfo member, DataFieldInfo fieldInfo)
 		{
-			if (member.Name == "Date") {
-				return fieldInfo = new LambdaDateDataFieldInfo (fieldInfo);
-			}
-			else {
+			switch (member.Name) {
+			case "Date":
+				fieldInfo = new LambdaDateDataFieldInfo (fieldInfo);
+				break;
+			default:
 				DatePart datePart;
 				if (Enum.TryParse<DatePart> (member.Name, out datePart)) {
-					return new LambdaDatePartDataFieldInfo (fieldInfo, datePart);
+					fieldInfo = new LambdaDatePartDataFieldInfo (fieldInfo, datePart);
 				}
+				else {
+					throw new LambdaParseException (LambdaParseMessage.MemberExpressionMemberUnsupport, "DateTime", member.Name);
+				}
+				break;
 			}
-			throw new LambdaParseException (string.Format ("DateTime.{0} member not support", member.Name));
+			return fieldInfo;
 		}
 
 		private static DataFieldInfo CreateStringMemberDataFieldInfo (MemberInfo member, DataFieldInfo fieldInfo)
@@ -1318,7 +1343,7 @@ namespace Light.Data
 				fieldInfo = new LambdaStringLengthDataFieldInfo (fieldInfo);
 				break;
 			default:
-				throw new LambdaParseException (string.Format ("String.{0} member not support", member.Name));
+				throw new LambdaParseException (LambdaParseMessage.MemberExpressionMemberUnsupport, "string", member.Name);
 			}
 			return fieldInfo;
 		}
@@ -1329,21 +1354,21 @@ namespace Light.Data
 			MathFunction mathFunction;
 			if (Enum.TryParse<MathFunction> (method.Name, out mathFunction)) {
 				if (parameterInfos == null || parameterInfos.Length == 0) {
-					throw new LambdaParseException (string.Format ("Math.{0} method args error", method.Name));
+					throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "Math", method.Name);
 				}
 				else if (mathFunction == MathFunction.Atan2 || mathFunction == MathFunction.Max || mathFunction == MathFunction.Min || mathFunction == MathFunction.Pow) {
 					if (parameterInfos.Length != 2) {
-						throw new LambdaParseException (string.Format ("Math.{0} method args error", method.Name));
+						throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "Math", method.Name);
 					}
 				}
 				else if (mathFunction == MathFunction.Log || mathFunction == MathFunction.Round) {
 					if (parameterInfos.Length > 2) {
-						throw new LambdaParseException (string.Format ("Math.{0} method args error", method.Name));
+						throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "Math", method.Name);
 					}
 				}
 				return new LambdaMathFunctionDataFieldInfo (mainFieldInfo.TableMapping, mathFunction, argObjects);
 			}
-			throw new LambdaParseException (string.Format ("Math.{0} method not support", method.Name));
+			throw new LambdaParseException (LambdaParseMessage.MethodExpressionMethodUnsupport, "Math", method.Name);
 		}
 
 		private static DataFieldInfo ParseStaticStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, LambdaState state)
@@ -1362,43 +1387,44 @@ namespace Light.Data
 					return new LambdaStringConcatDataFieldInfo (mainFieldInfo.TableMapping, argObjects);
 				}
 			}
-			throw new LambdaParseException (string.Format ("String.{0} method not support", method.Name));
+			throw new LambdaParseException (LambdaParseMessage.MethodExpressionMethodUnsupport, "string", method.Name);
 		}
 
 		private static DataFieldInfo ParseInstanceStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object callObject, object [] argObjects, LambdaState state)
 		{
 			ParameterInfo [] parameterInfos = method.GetParameters ();
-			if (method.Name == "StartsWith") {
+			switch (method.Name) {
+			case "StartsWith":
 				if (parameterInfos.Length != 1) {
-					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+					throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "string", method.Name);
 				}
 				return new LambdaStringMatchDataFieldInfo (mainFieldInfo.TableMapping, true, false, callObject, argObjects [0]);
-			}
-			else if (method.Name == "EndsWith") {
+			case "EndsWith":
 				if (parameterInfos.Length != 1) {
-					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+					throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "string", method.Name);
 				}
 				return new LambdaStringMatchDataFieldInfo (mainFieldInfo.TableMapping, false, true, callObject, argObjects [0]);
-			}
-			else if (method.Name == "Contains") {
+			case "Contains":
 				if (parameterInfos.Length != 1) {
-					throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+					throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "string", method.Name);
 				}
 				return new LambdaStringMatchDataFieldInfo (mainFieldInfo.TableMapping, true, true, callObject, argObjects [0]);
-			}
-			else {
+			default:
 				StringFunction stringFunction;
 				if (Enum.TryParse<StringFunction> (method.Name, out stringFunction)) {
 					if (stringFunction == StringFunction.IndexOf && !(parameterInfos.Length == 1 || (parameterInfos.Length == 2 && parameterInfos [1].ParameterType == typeof (int)))) {
-						throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+						throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "string", method.Name);
 					}
 					else if (stringFunction == StringFunction.Trim && parameterInfos.Length > 0) {
-						throw new LambdaParseException (string.Format ("String.{0} method args error", method.Name));
+						throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "string", method.Name);
 					}
 					return new LambdaStringFunctionDataFieldInfo (mainFieldInfo.TableMapping, stringFunction, callObject, argObjects);
 				}
+
+				break;
 			}
-			throw new LambdaParseException (string.Format ("String.{0} method not support", method.Name));
+
+			throw new LambdaParseException (LambdaParseMessage.MethodExpressionMethodUnsupport, "string", method.Name);
 		}
 
 		private static DataFieldInfo ParseInstanceDateTimeFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object callObject, object [] argObjects, LambdaState state)
@@ -1414,14 +1440,14 @@ namespace Light.Data
 						return new LambdaDateFormatDataFieldInfo (mainFieldInfo, o as string);
 					}
 					else {
-						throw new LambdaParseException (string.Format ("DateTime.{0} method args error", method.Name));
+						throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "DateTime", method.Name);
 					}
 				}
 				else {
-					throw new LambdaParseException (string.Format ("DateTime.{0} method args error", method.Name));
+					throw new LambdaParseException (LambdaParseMessage.MethodExpressionArgumentError, "DateTime", method.Name);
 				}
 			}
-			throw new LambdaParseException (string.Format ("DateTime.{0} method not support", method.Name));
+			throw new LambdaParseException (LambdaParseMessage.MethodExpressionMethodUnsupport, "DateTime", method.Name);
 		}
 
 		private static DataFieldInfo ParseContainsDataFieldInfo (MethodInfo methodInfo, DataFieldInfo mainFieldInfo, object collections, LambdaState state)
@@ -1439,7 +1465,7 @@ namespace Light.Data
 			QueryExpression queryExpression = null;
 			if (paramExpressions.Count >= 1) {
 				if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
-					throw new LambdaParseException ("");
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 				}
 			}
 			if (paramExpressions.Count == 2) {
@@ -1449,118 +1475,140 @@ namespace Light.Data
 			switch (method.Name) {
 			case "Count":
 			case "LongCount":
-				if (paramExpressions.Count == 0) {
-					data = new LambdaAggregateCountAllDataFieldInfo (state.MainMapping);
-				}
-				else if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 0:
+					data = new LambdaAggregateCountAllDataFieldInfo ();
+					break;
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false, queryExpression);
+					break;
 				}
+
 				break;
 			case "DistinctCount":
 			case "DistinctLongCount":
-				if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true, queryExpression);
+					break;
 				}
+
 				break;
 			case "Sum":
 			case "LongSum":
-				if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false, queryExpression);
+					break;
 				}
+
 				break;
 			case "DistinctSum":
 			case "DistinctLongSum":
-				if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true, queryExpression);
+					break;
 				}
+
 				break;
 			case "Avg":
-				if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false, queryExpression);
+					break;
 				}
+
 				break;
 			case "DistinctAvg":
-				if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true, queryExpression);
+					break;
 				}
+
 				break;
 			case "Max":
-				if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false, queryExpression);
+					break;
 				}
+
 				break;
 			case "Min":
-				if (paramExpressions.Count == 1) {
+				switch (paramExpressions.Count) {
+				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false, null);
-				}
-				else if (paramExpressions.Count == 2) {
+					break;
+				case 2:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false, queryExpression);
+					break;
 				}
+
 				break;
 			}
-			if (Object.Equals (data, null)) {
-				throw new LambdaParseException ("");
-			}
+			CheckFieldInfo (data);
 			state.AggregateField = true;
 			return data;
 		}
 
 		private static QueryExpression ResolveQueryExpression (Expression expression, LambdaState state)
 		{
-			BinaryExpression binary = expression as BinaryExpression;
-			if (binary != null) {
+			BinaryExpression binaryObj = expression as BinaryExpression;
+			if (binaryObj != null) {
 				CatchOperatorsType catchType;
-				if (CheckCatchOperatorsType (binary.NodeType, out catchType)) {
-					var left = ResolveQueryExpression (binary.Left, state);
-					var right = ResolveQueryExpression (binary.Right, state);
+				if (CheckCatchOperatorsType (binaryObj.NodeType, out catchType)) {
+					var left = ResolveQueryExpression (binaryObj.Left, state);
+					var right = ResolveQueryExpression (binaryObj.Right, state);
 					return QueryExpression.Catch (left, catchType, right);
 				}
 				else {
 					QueryPredicate queryPredicate;
-					if (CheckQueryPredicate (binary.NodeType, out queryPredicate)) {
+					if (CheckQueryPredicate (binaryObj.NodeType, out queryPredicate)) {
 						DataFieldInfo leftFieldInfo;
 						object leftValue = null;
 						bool left;
-						if (ParseDataFieldInfo (binary.Left, state, out leftFieldInfo)) {
+						if (ParseDataFieldInfo (binaryObj.Left, state, out leftFieldInfo)) {
 							left = true;
 							CheckFieldInfo (leftFieldInfo);
 						}
 						else {
 							left = false;
-							leftValue = ConvertObject (binary.Left);
+							leftValue = ConvertObject (binaryObj.Left);
 						}
 
 						DataFieldInfo rightFieldInfo;
 						object rightValue = null;
 						bool right;
-						if (ParseDataFieldInfo (binary.Right, state, out rightFieldInfo)) {
+						if (ParseDataFieldInfo (binaryObj.Right, state, out rightFieldInfo)) {
 							right = true;
 							CheckFieldInfo (rightFieldInfo);
 						}
 						else {
 							right = false;
-							rightValue = ConvertObject (binary.Right);
+							rightValue = ConvertObject (binaryObj.Right);
 						}
 
 						if (left && right) {
@@ -1573,15 +1621,15 @@ namespace Light.Data
 							return new LambdaBinaryQueryExpression (rightFieldInfo.TableMapping, queryPredicate, rightFieldInfo, leftValue);
 						}
 						else {
-							throw new LambdaParseException (string.Format ("not allow two constant value in BinaryExpression \"{0}\"", binary));
+							throw new LambdaParseException (LambdaParseMessage.BinaryExpressionNotAllowBothConstantValue);
 						}
 					}
 				}
 			}
-			UnaryExpression unary = expression as UnaryExpression;
-			if (unary != null) {
-				if (unary.NodeType == ExpressionType.Not) {
-					QueryExpression queryExpression = ResolveQueryExpression (unary.Operand, state);
+			UnaryExpression unaryObj = expression as UnaryExpression;
+			if (unaryObj != null) {
+				if (unaryObj.NodeType == ExpressionType.Not) {
+					QueryExpression queryExpression = ResolveQueryExpression (unaryObj.Operand, state);
 					ISupportNotDefine notDefine = queryExpression as ISupportNotDefine;
 					if (notDefine != null) {
 						notDefine.SetNot ();
@@ -1592,25 +1640,25 @@ namespace Light.Data
 					}
 				}
 			}
-			MemberExpression member = expression as MemberExpression;
-			if (member != null) {
+			MemberExpression memberObj = expression as MemberExpression;
+			if (memberObj != null) {
 				DataFieldInfo fieldInfo;
 				if (!ParseDataFieldInfo (expression, state, out fieldInfo)) {
-					throw new LambdaParseException (string.Format ("not allow constant member in MemberExpression \"{0}\"", member));
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotAllowNoDataField, memberObj);
 				}
 				CheckFieldInfo (fieldInfo);
 				return new LambdaBinaryQueryExpression (fieldInfo.TableMapping, QueryPredicate.Eq, fieldInfo, true);
 			}
-			MethodCallExpression methodcall = expression as MethodCallExpression;
-			if (methodcall != null) {
+			MethodCallExpression methodcallObj = expression as MethodCallExpression;
+			if (methodcallObj != null) {
 				DataFieldInfo fieldInfo;
 				if (!ParseDataFieldInfo (expression, state, out fieldInfo)) {
-					throw new LambdaParseException (string.Format ("not allow constant method in MethodCallExpression \"{0}\"", methodcall));
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotAllowNoDataField, methodcallObj);
 				}
 				CheckFieldInfo (fieldInfo);
 				IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
 				if (Object.Equals (convertFieldInfo, null)) {
-					throw new LambdaParseException (string.Format ("not allow special method in MethodCallExpression \"{0}\"", methodcall));
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotAllowNoDataField, methodcallObj);
 				}
 				else {
 					return convertFieldInfo.ConvertToExpression ();
@@ -1620,18 +1668,18 @@ namespace Light.Data
 			if (conditionObj != null) {
 				DataFieldInfo fieldInfo;
 				if (!ParseDataFieldInfo (expression, state, out fieldInfo)) {
-					throw new LambdaParseException (string.Format ("not allow constant condition in ConditionalExpression \"{0}\"", methodcall));
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotAllowNoDataField, methodcallObj);
 				}
 				CheckFieldInfo (fieldInfo);
 				IDataFieldInfoConvert convertFieldInfo = fieldInfo as IDataFieldInfoConvert;
 				if (Object.Equals (convertFieldInfo, null)) {
-					throw new LambdaParseException (string.Format ("not allow special condition in ConditionalExpression \"{0}\"", methodcall));
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotAllowNoDataField, methodcallObj);
 				}
 				else {
 					return convertFieldInfo.ConvertToExpression ();
 				}
 			}
-			throw new LambdaParseException (string.Format ("lambda query expression [{0}] not support", expression));
+			throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 		}
 
 		private static DataFieldExpression ResolveOnExpression (Expression expression, LambdaState state)
@@ -1671,13 +1719,13 @@ namespace Light.Data
 							return new DataFieldMatchExpression (leftFieldInfo, rightFieldInfo, queryPredicate);
 						}
 						else {
-							throw new LambdaParseException (string.Format ("not allow one side constant value in BinaryExpression \"{0}\"", binary));
+							throw new LambdaParseException (LambdaParseMessage.BinaryExpressionNotAllowBothConstantValue);
 						}
 					}
 				}
 			}
 
-			throw new LambdaParseException (string.Format ("lambda on expression [{0}] not support", expression));
+			throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 		}
 	}
 }

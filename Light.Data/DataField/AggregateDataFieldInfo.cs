@@ -58,7 +58,7 @@ namespace Light.Data
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			string fieldSql = _fieldInfo.CreateSqlString (factory, isFullName, state);
-			string sql = factory.CreateAliasSql (fieldSql, _aggregateName);
+			string sql = factory.CreateAliasFieldSql (fieldSql, _aggregateName);
 			return sql;
 		}
 	}

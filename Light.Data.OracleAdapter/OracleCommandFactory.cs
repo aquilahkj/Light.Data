@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Light.Data.OracleAdapter
 {
@@ -79,6 +77,10 @@ namespace Light.Data.OracleAdapter
 			}
 		}
 
+		public override string CreateAliasTableSql (string field, string alias)
+		{
+			return string.Format ("{0} {1}", field, CreateDataFieldSql (alias));
+		}
 
 		public override CommandData CreateTruncateTableCommand (DataTableEntityMapping mapping)
 		{
@@ -495,112 +497,112 @@ namespace Light.Data.OracleAdapter
 		//	return command;
 		//}
 
-		public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)//, bool distinct)
-		{
-			if (region == null) {
-				return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null, state);
-			}
+		//public override CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)//, bool distinct)
+		//{
+		//	if (region == null) {
+		//		return base.CreateSelectBaseCommand (mapping, customSelect, query, order, null, state);
+		//	}
 
-			StringBuilder sql = new StringBuilder ();
-			//DataParameter [] queryparameters;
-			//DataParameter [] orderparameters;
-			//string queryString = GetQueryString (query, out queryparameters);
-			//string orderString = GetOrderString (order, out orderparameters);
+		//	StringBuilder sql = new StringBuilder ();
+		//	//DataParameter [] queryparameters;
+		//	//DataParameter [] orderparameters;
+		//	//string queryString = GetQueryString (query, out queryparameters);
+		//	//string orderString = GetOrderString (order, out orderparameters);
 
-			if (region.Start == 0 && order == null) {
-				sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
-				if (query != null) {
-					sql.Append (GetQueryString (query, false, state));
-					sql.AppendFormat (" and ROWNUM<={0}", region.Size);
-				}
-				else {
-					sql.AppendFormat (" where ROWNUM<={0}", region.Size);
-				}
-			}
-			else {
-				/*
-                SELECT * FROM 
-                (
-                SELECT A.*, ROWNUM RN 
-                FROM (SELECT * FROM TABLE_NAME) A 
-                WHERE ROWNUM <= 40
-                )
-                WHERE RN > 20
-                */
-				StringBuilder innerSQL = new StringBuilder ();
-				innerSQL.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
-				if (query != null) {
-					sql.Append (GetQueryString (query, false, state));
-				}
-				if (order != null) {
-					sql.Append (GetOrderString (order, false, state));
-				}
-				string tempRowNumber = CreateCustomFiledName ();
-				sql.AppendFormat ("select {4} from (select a.*,ROWNUM {3} from ({0})a where ROWNUM<={2})b where {3}>{1}",
-					innerSQL, region.Start, region.Start + region.Size, tempRowNumber, customSelect);
-			}
-			//DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString ());
-			//command.TransParamName = true;
-			return command;
+		//	if (region.Start == 0 && order == null) {
+		//		sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
+		//		if (query != null) {
+		//			sql.Append (GetQueryString (query, false, state));
+		//			sql.AppendFormat (" and ROWNUM<={0}", region.Size);
+		//		}
+		//		else {
+		//			sql.AppendFormat (" where ROWNUM<={0}", region.Size);
+		//		}
+		//	}
+		//	else {
+		//		/*
+  //              SELECT * FROM 
+  //              (
+  //              SELECT A.*, ROWNUM RN 
+  //              FROM (SELECT * FROM TABLE_NAME) A 
+  //              WHERE ROWNUM <= 40
+  //              )
+  //              WHERE RN > 20
+  //              */
+		//		StringBuilder innerSQL = new StringBuilder ();
+		//		innerSQL.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));//, distinct ? "distinct " : string.Empty);
+		//		if (query != null) {
+		//			sql.Append (GetQueryString (query, false, state));
+		//		}
+		//		if (order != null) {
+		//			sql.Append (GetOrderString (order, false, state));
+		//		}
+		//		string tempRowNumber = CreateCustomFiledName ();
+		//		sql.AppendFormat ("select {4} from (select a.*,ROWNUM {3} from ({0})a where ROWNUM<={2})b where {3}>{1}",
+		//			innerSQL, region.Start, region.Start + region.Size, tempRowNumber, customSelect);
+		//	}
+		//	//DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
+		//	CommandData command = new CommandData (sql.ToString ());
+		//	//command.TransParamName = true;
+		//	return command;
 
-		}
+		//}
 
 		//
 
-		public override CommandData CreateSelectJoinTableBaseCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
-		{
-			StringBuilder tables = new StringBuilder ();
-			OrderExpression totalOrder = null;
-			QueryExpression totalQuery = null;
-			foreach (JoinModel model in modelList) {
-				if (model.Connect != null) {
-					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
-				}
+		//public override CommandData CreateSelectJoinTableBaseCommand (string customSelect, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		//{
+		//	StringBuilder tables = new StringBuilder ();
+		//	OrderExpression totalOrder = null;
+		//	QueryExpression totalQuery = null;
+		//	foreach (JoinModel model in modelList) {
+		//		if (model.Connect != null) {
+		//			tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
+		//		}
 
-				if (model.Query != null) {
-					string mqueryString = GetQueryString (model.Query, false, state);
-					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
-					tables.Append (GetQueryString (model.Query, false, state));
-					string aliseName = model.AliasTableName;
-					if (aliseName != null) {
-						tables.AppendFormat (") {0}", CreateDataTableSql (aliseName));
-					}
-					else {
-						tables.AppendFormat (") {0}", CreateDataTableSql (model.Mapping.TableName));
-					}
-				}
-				else {
-					string aliseName = model.AliasTableName;
-					if (aliseName != null) {
-						tables.AppendFormat ("{0} {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
-					}
-					else {
-						tables.Append (CreateDataTableSql (model.Mapping.TableName));
-					}
-				}
-				if (model.Order != null) {
-					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
-				}
-				if (model.Connect != null && model.Connect.On != null) {
-					tables.Append (GetOnString (model.Connect.On, state));
-				}
-			}
-			totalQuery &= query;
-			totalOrder &= order;
-			StringBuilder sql = new StringBuilder ();
+		//		if (model.Query != null) {
+		//			string mqueryString = GetQueryString (model.Query, false, state);
+		//			tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
+		//			tables.Append (GetQueryString (model.Query, false, state));
+		//			string aliseName = model.AliasTableName;
+		//			if (aliseName != null) {
+		//				tables.AppendFormat (") {0}", CreateDataTableSql (aliseName));
+		//			}
+		//			else {
+		//				tables.AppendFormat (") {0}", CreateDataTableSql (model.Mapping.TableName));
+		//			}
+		//		}
+		//		else {
+		//			string aliseName = model.AliasTableName;
+		//			if (aliseName != null) {
+		//				tables.AppendFormat ("{0} {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
+		//			}
+		//			else {
+		//				tables.Append (CreateDataTableSql (model.Mapping.TableName));
+		//			}
+		//		}
+		//		if (model.Order != null) {
+		//			totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
+		//		}
+		//		if (model.Connect != null && model.Connect.On != null) {
+		//			tables.Append (GetOnString (model.Connect.On, state));
+		//		}
+		//	}
+		//	totalQuery &= query;
+		//	totalOrder &= order;
+		//	StringBuilder sql = new StringBuilder ();
 
 
-			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
-			if (totalQuery != null) {
-				sql.AppendFormat (GetQueryString (totalQuery, true, state));
-			}
-			if (totalOrder != null) {
-				sql.AppendFormat (GetOrderString (totalOrder, true, state));
-			}
-			CommandData command = new CommandData (sql.ToString ());
-			return command;
-		}
+		//	sql.AppendFormat ("select {0} from {1}", customSelect, tables);
+		//	if (totalQuery != null) {
+		//		sql.AppendFormat (GetQueryString (totalQuery, true, state));
+		//	}
+		//	if (totalOrder != null) {
+		//		sql.AppendFormat (GetOrderString (totalOrder, true, state));
+		//	}
+		//	CommandData command = new CommandData (sql.ToString ());
+		//	return command;
+		//}
 
 		public override string CreateAvgSql (object fieldName, bool isDistinct)
 		{

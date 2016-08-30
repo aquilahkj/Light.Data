@@ -92,7 +92,7 @@ namespace Light.Data
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
-			return factory.CreateAliasSql (field, this._alias);
+			return factory.CreateAliasFieldSql (field, this._alias);
 		}
 
 		///// <summary>

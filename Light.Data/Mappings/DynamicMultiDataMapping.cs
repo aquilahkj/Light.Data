@@ -6,26 +6,26 @@ namespace Light.Data
 {
 	class DynamicMultiDataMapping : DataMapping
 	{
-		public static DynamicMultiDataMapping CreateDynamicMultiDataMapping (Type type, List<JoinModel> models)
+		public static DynamicMultiDataMapping CreateDynamicMultiDataMapping (Type type, IJoinModel [] models)
 		{
-			Tuple<string, DataEntityMapping> [] array = new Tuple<string, DataEntityMapping> [models.Count];
-			for (int i = 0; i < models.Count; i++) {
-				JoinModel model = models [i];
-				Tuple<string, DataEntityMapping> tuple = new Tuple<string, DataEntityMapping> (model.AliasTableName, model.Mapping);
+			Tuple<string, IJoinTableMapping> [] array = new Tuple<string, IJoinTableMapping> [models.Length];
+			for (int i = 0; i < models.Length; i++) {
+				IJoinModel model = models [i];
+				Tuple<string, IJoinTableMapping> tuple = new Tuple<string, IJoinTableMapping> (model.AliasTableName, model.JoinMapping);
 				array [i] = tuple;
 			}
 			DynamicMultiDataMapping mapping = new DynamicMultiDataMapping (type, array);
 			return mapping;
 		}
 
-		DataEntityMapping [] mappings;
+		IJoinTableMapping [] mappings;
 
 		string [] aliasNames;
 
-		public DynamicMultiDataMapping (Type type, Tuple<string, DataEntityMapping> [] targetMappings)
+		public DynamicMultiDataMapping (Type type, Tuple<string, IJoinTableMapping> [] targetMappings)
 			: base (type)
 		{
-			mappings = new DataEntityMapping [targetMappings.Length];
+			mappings = new IJoinTableMapping [targetMappings.Length];
 			aliasNames = new string [targetMappings.Length];
 			for (int i = 0; i < targetMappings.Length; i++) {
 				aliasNames [i] = targetMappings [i].Item1;
@@ -46,12 +46,12 @@ namespace Light.Data
 		{
 			QueryState queryState = state as QueryState;
 			if (queryState == null) {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.QueryStateError);
 			}
 			object [] objects = new object [mappings.Length];
 			for (int i = 0; i < mappings.Length; i++) {
 				string aliasName = aliasNames [i];
-				objects [i] = mappings [i].LoadJoinTableData (context, datareader, queryState, aliasName);
+				objects [i] = mappings [i].CreateJoinTableData (context, datareader, queryState, aliasName);
 			}
 			return objects;
 		}

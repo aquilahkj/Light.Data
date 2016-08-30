@@ -81,6 +81,32 @@ namespace Light.Data
 			return item;
 		}
 
+		public override object CreateJoinTableData (DataContext context, IDataReader datareader, QueryState queryState, string aliasName)
+		{
+			object item = Activator.CreateInstance (ObjectType);
+			foreach (DataFieldMapping field in this._fieldList) {
+				if (field == null)
+					continue;
+				string name = string.Format ("{0}_{1}", aliasName, field.Name);
+	
+				if (queryState == null) {
+					object obj = datareader [name];
+					object value = field.ToProperty (obj);
+					if (!Object.Equals (value, null)) {
+						field.Handler.Set (item, value);
+					}
+				}
+				else if (queryState.CheckSelectField (name)) {
+					object obj = datareader [name];
+					object value = field.ToProperty (obj);
+					if (!Object.Equals (value, null)) {
+						field.Handler.Set (item, value);
+					}
+				}
+			}
+			return item;
+		}
+
 		public override object InitialData ()
 		{
 			object item = Activator.CreateInstance (ObjectType);

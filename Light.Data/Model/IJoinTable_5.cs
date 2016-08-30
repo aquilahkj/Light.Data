@@ -4,12 +4,12 @@ using System.Linq.Expressions;
 namespace Light.Data
 {
 	public interface IJoinTable<T, T1, T2, T3, T4, T5>
-		where T : class, new()
-		where T1 : class, new()
-		where T2 : class, new()
-		where T3 : class, new()
-		where T4 : class, new()
-		where T5 : class, new()
+		where T : class//, new()
+		where T1 : class//, new()
+		where T2 : class//, new()
+		where T3 : class//, new()
+		where T4 : class//, new()
+		where T5 : class//, new()
 	{
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace Light.Data
 		/// Set order by random.
 		/// </summary>
 		/// <returns>LEnumerable.</returns>
-		IJoinTable<T, T1, T2, T3, T4, T5> OrderByRandom ();
+		//IJoinTable<T, T1, T2, T3, T4, T5> OrderByRandom ();
 
 		/// <summary>
 		/// Take the datas count.

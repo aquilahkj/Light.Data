@@ -135,7 +135,7 @@ namespace Light.Data
 						predicate = false;
 					}
 					else {
-						throw new LightDataException ("");
+						throw new LightDataException (string.Format (RE.UnsupportQueryPredicate, _predicate));
 					}
 					sql = factory.CreateNullQuerySql (leftSql, predicate);
 				}
@@ -148,7 +148,7 @@ namespace Light.Data
 						predicate = false;
 					}
 					else {
-						throw new LightDataException ("");
+						throw new LightDataException (string.Format (RE.UnsupportQueryPredicate, _predicate));
 					}
 					bool ret = (bool)right;
 					sql = factory.CreateBooleanQuerySql (leftSql, ret, predicate, false);
@@ -170,7 +170,7 @@ namespace Light.Data
 						predicate = false;
 					}
 					else {
-						throw new LightDataException ("");
+						throw new LightDataException (string.Format (RE.UnsupportQueryPredicate, _predicate));
 					}
 					sql = factory.CreateNullQuerySql (rightSql, predicate);
 				}
@@ -183,7 +183,7 @@ namespace Light.Data
 						predicate = false;
 					}
 					else {
-						throw new LightDataException ("");
+						throw new LightDataException (string.Format (RE.UnsupportQueryPredicate, _predicate));
 					}
 					bool ret = (bool)left;
 					sql = factory.CreateBooleanQuerySql (rightSql, ret, predicate, true);
@@ -194,7 +194,7 @@ namespace Light.Data
 				}
 			}
 			else {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.UnsupportBothConstantValue);
 			}
 
 			return sql;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class RelationMap
+	class RelationMap : IMap
 	{
 		readonly DataEntityMapping rootMapping;
 
@@ -13,9 +13,15 @@ namespace Light.Data
 			}
 		}
 
+		public Type Type {
+			get {
+				return rootMapping.ObjectType;
+			}
+		}
+
 		ISelector selector;
 
-		readonly List<JoinModel> models = new List<JoinModel> ();
+		readonly List<EntityJoinModel> models = new List<EntityJoinModel> ();
 
 		readonly Dictionary<string, RelationItem> mapDict = new Dictionary<string, RelationItem> ();
 
@@ -53,7 +59,7 @@ namespace Light.Data
 				}
 			}
 			if (this.rootMapping != items [0].DataMapping) {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.RelationMapEntityMappingError);
 			}
 
 			RelationItem rootItem = items [0];
@@ -101,7 +107,7 @@ namespace Light.Data
 				tableInfoDict.Add (mitem.CurrentFieldPath, infoList.ToArray ());
 
 				JoinConnect connect = new JoinConnect (JoinType.LeftJoin, expression);
-				JoinModel model = new JoinModel (mapping, ralias, connect, null, null);
+				EntityJoinModel model = new EntityJoinModel (mapping, ralias, connect, null, null);
 				this.selector = joinSelector;
 				this.models.Add (model);
 			}
@@ -144,16 +150,16 @@ namespace Light.Data
 			}
 		}
 
-		public List<JoinModel> CreateJoinModels (QueryExpression query, OrderExpression order)
+		public EntityJoinModel [] CreateJoinModels (QueryExpression query, OrderExpression order)
 		{
-			if (!rootMapping.HasJoinRelateModel) {
-				throw new LightDataException ("");
-			}
-			List<JoinModel> joinModels = new List<JoinModel> ();
-			JoinModel model1 = new JoinModel (rootMapping, "T0", null, query, order);
+			//if (!rootMapping.HasJoinRelateModel) {
+			//	throw new LightDataException ("");
+			//}
+			List<EntityJoinModel> joinModels = new List<EntityJoinModel> ();
+			EntityJoinModel model1 = new EntityJoinModel (rootMapping, "T0", null, query, order);
 			joinModels.Add (model1);
 			joinModels.AddRange (this.models);
-			return joinModels;
+			return joinModels.ToArray ();
 		}
 
 		void LoadEntityMapping (DataEntityMapping mapping, RelationLink link)
@@ -244,14 +250,15 @@ namespace Light.Data
 			return collectionDict.ContainsKey (path);
 		}
 
-		public DataFieldInfo CreateFieldInfoForField (string path)
+		public DataFieldInfo CreateFieldInfoForPath (string path)
 		{
 			DataFieldInfo info;
 			if (fieldInfoDict.TryGetValue (path, out info)) {
 				return info.Clone () as DataFieldInfo;
 			}
 			else {
-				throw new LightDataException ("");
+				//return null;
+				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
 			}
 		}
 
@@ -262,7 +269,7 @@ namespace Light.Data
 				return info;
 			}
 			else {
-				throw new LightDataException ("");
+				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
 			}
 		}
 
@@ -293,7 +300,7 @@ namespace Light.Data
 				return infos;
 			}
 			else {
-				throw new LightDataException ("");
+				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
 			}
 		}
 
@@ -366,7 +373,6 @@ namespace Light.Data
 					}
 					continue;
 				}
-
 				DataFieldInfo [] tinfos;
 				if (tableInfoDict.TryGetValue (path, out tinfos)) {
 					foreach (DataFieldInfo tinfo in tinfos) {
@@ -377,7 +383,7 @@ namespace Light.Data
 					}
 					continue;
 				}
-				throw new LightDataException ("");
+				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
 			}
 			if (rootMapping.HasJoinRelateModel) {
 				JoinSelector jselector = new JoinSelector ();

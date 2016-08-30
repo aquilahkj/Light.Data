@@ -28,15 +28,12 @@ namespace Light.Data
 			this.relationMap = relationMap;
 		}
 
-		//ISelector selector;
 
 		public void SetSelector (ISelector selector)
 		{
 			if (selector != null) {
-				//this.hasSelectField = true;
-				this.fieldHash = new HashSet<string> (selector.GetSelectFiledNames ());
+				this.fieldHash = new HashSet<string> (selector.GetSelectFieldNames ());
 			}
-			//this.selector = selector;
 		}
 
 		public void SetExtendData (string fieldPath, object value)
@@ -67,7 +64,7 @@ namespace Light.Data
 				return alias;
 			}
 			else {
-				throw new LightDataException ("");
+				throw new LightDataException (string.Format (RE.CanNotFindAliasNameViaSpecialPath, fieldPath));
 			}
 		}
 
@@ -80,7 +77,6 @@ namespace Light.Data
 				return true;
 			}
 		}
-
 	}
 }
 

@@ -148,15 +148,15 @@ namespace Light.Data
 		/// </summary>
 		public const string PrimaryKeyIsNotExist = "primary key is not exist";
 		/// <summary>
-		/// select fileds count not equid insert filed count
+		/// select fields count not equid insert fields count
 		/// </summary>
-		public const string SelectFiledsCountNotEquidInsertFiledCount = "select fileds count not equid insert filed count";
+		public const string SelectFieldsCountNotEquidInsertFieldCount = "select fields count not equid insert field count";
 		/// <summary>
-		/// select fileds not in join tables.
+		/// select fields not in join tables.
 		/// </summary>
-		public const string SelectFiledsNotInJoinTables = "select fileds not in join tables";
+		public const string SelectFieldsNotInJoinTables = "select fields not in join tables";
 		/// <summary>
-		/// insert field is not data field info.
+		/// insert fields is not data field info.
 		/// </summary>
 		public const string InsertFieldIsNotDataFieldInfo = "insert field is not datafield info";
 		/// <summary>
@@ -215,11 +215,35 @@ namespace Light.Data
 		/// the relation field {0} is exists.
 		/// </summary>
 		public const string TheRelationFieldIsExists = "the relation field {0} is exists";
-	
 		/// <summary>
 		/// the data field {0} is not exists.
 		/// </summary>
 		public const string DataFieldIsNotExists = "the data field {0} is not exists";
+
+		public const string NoFieldInsert = "no field insert";
+
+		public const string QueryStateError = "the QueryState Error";
+
+		public const string UnsupportQueryPredicate = "unsupport QueryPredicate {0}";
+
+		public const string UnsupportBothConstantValue = "unsupport both constant values";
+
+		public const string NoContainValues = "no contain values";
+
+		public const string OnExpressionNotExists = "OnExpression is not exists";
+
+		public const string CanNotFindAliasNameViaSpecialPath = "can't find alias name via special path {0}";
+
+		public const string RelationLinkEntityMappingError = "RelationLink entity mapping error";
+
+		public const string RelationLinkCalculateError = "RelationLink calculate error";
+
+		public const string RelationMapEntityMappingError = "RelationMap entity mapping error";
+
+		public const string CanNotFindFieldInfoViaSpecialPath = "can't find field info via special path {0}";
+
+		public const string ParseExpressionError = "parse {0} expression \"{1}\" error,message:{2}";
+
 	}
 }
 

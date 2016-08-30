@@ -23,9 +23,9 @@ namespace Light.Data
 		//	return this.CreateSelectBaseCommand (mapping, "top 1 1", null, query, null, null);
 		//}
 
-		public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query, CreateSqlState state)
-		{
-			return this.CreateSelectBaseCommand (mapping, "top 1 1", query, null, null, state);
-		}
+		//public override CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query, CreateSqlState state)
+		//{
+		//	return this.CreateSelectBaseCommand (mapping, "top 1 1", query, null, null, state);
+		//}
 	}
 }

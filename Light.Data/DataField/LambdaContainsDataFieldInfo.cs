@@ -59,7 +59,7 @@ namespace Light.Data
 
 			IEnumerable values = LambdaExpressionExtend.ConvertLambdaObject (_collection) as IEnumerable;
 			if (values == null) {
-				throw new LightDataException ("");
+				throw new LightDataException (RE.NoContainValues);
 			}
 			List<string> list = new List<string> ();
 			foreach (object item in values) {
