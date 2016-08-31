@@ -134,12 +134,13 @@ namespace Light.Data
 		public override object ToProperty (object value)
 		{
 			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
-				if (this._typeCode == TypeCode.String && !IsNullable) {
-					return string.Empty;
-				}
-				else {
-					return null;
-				}
+				//if (this._typeCode == TypeCode.String && !IsNullable) {
+				//	return string.Empty;
+				//}
+				//else {
+				//	return null;
+				//}
+				return null;
 			}
 			else {
 				if (ObjectType != null && value.GetType () != ObjectType) {

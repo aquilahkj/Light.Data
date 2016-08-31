@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class JoinTableBaseTest:BaseTest
+	public class JoinTableBaseTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_LeftJoin ()
@@ -27,7 +27,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				});
 			}
@@ -42,7 +42,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				});
 			}
@@ -80,7 +80,7 @@ namespace Light.Data.MysqlTest
 					});
 				}
 				else {
-					return x.LevelStatus == 0 && x.LevelName == string.Empty && x.Remark == null;
+					return x.LevelStatus == 0 && x.LevelName == null && x.Remark == null;
 				}
 			}
 			));
@@ -108,7 +108,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				});
 			}
@@ -123,7 +123,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				});
 			}
@@ -184,7 +184,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				});
 			}
@@ -199,7 +199,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				});
 			}
@@ -237,7 +237,7 @@ namespace Light.Data.MysqlTest
 					});
 				}
 				else {
-					return x.LevelStatus == 0 && x.LevelName == string.Empty && x.Remark == null;
+					return x.LevelStatus == 0 && x.LevelName == null && x.Remark == null;
 				}
 			}
 			));
@@ -272,7 +272,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelAndAreaModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				})
 				&& listAreaSub.Exists (z => {
@@ -302,7 +302,7 @@ namespace Light.Data.MysqlTest
 				.ToList<TeUserAndLevelAndAreaModel> ();
 			Assert.AreEqual (listEx.Count, listAc.Count);
 			Assert.IsTrue (listAc.TrueForAll (x => {
-				return	listLevelSub.Exists (y => {
+				return listLevelSub.Exists (y => {
 					return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 				})
 				&& listAreaSub.Exists (z => {

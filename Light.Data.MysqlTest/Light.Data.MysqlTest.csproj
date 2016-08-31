@@ -80,6 +80,11 @@
     <Compile Include="Model\RelationSchema3.cs" />
     <Compile Include="Model\RelationSchema4.cs" />
     <Compile Include="Model\DataLogSchema.cs" />
+    <Compile Include="TT_BaseCommandTest.cs" />
+    <Compile Include="TT_BaseCommandTest2.cs" />
+    <Compile Include="TT_ConfigMappingTest.cs" />
+    <Compile Include="TT_DefaultValueTest.cs" />
+    <Compile Include="TT_JoinTableBaseTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
