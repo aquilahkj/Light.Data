@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Runtime.Remoting.Messaging;
 
 namespace Light.Data
 {
 	/// <summary>
 	/// DataContext.
 	/// </summary>
-	public class DataContext
+	public class DataContext : ILogicalThreadAffinative
 	{
 		static Dictionary<string, DataContextSetting> Settings = new Dictionary<string, DataContextSetting> ();
 
@@ -22,6 +23,17 @@ namespace Light.Data
 		public static DataContext Default {
 			get {
 				return CreateDefault ();
+			}
+		}
+
+		const string CONTEXT_KEY = "Light.Data.DataContext";
+
+		public static DataContext Current {
+			get {
+				return CallContext.GetData (CONTEXT_KEY) as DataContext;
+			}
+			set {
+				CallContext.SetData (CONTEXT_KEY, value);
 			}
 		}
 
@@ -180,6 +192,8 @@ namespace Light.Data
 		//	return _dataBase.InnerPager == enable;
 		//}
 
+
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Light.Data.DataContext"/> class.
 		/// </summary>
@@ -191,6 +205,7 @@ namespace Light.Data
 			_connectionString = connectionString;
 			_configName = configName;
 			_dataBase = dataBase;
+			//CallContext.SetData(_configName
 		}
 
 		/// <summary>
@@ -948,7 +963,7 @@ namespace Light.Data
 		//	return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
 		//}
 
-		internal IEnumerable QueryJoinData (DataMapping mapping, ISelector selector, IJoinModel[] models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable QueryJoinData (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region, state);
@@ -1059,7 +1074,7 @@ namespace Light.Data
 			return target;
 		}
 
-		internal object SelectJoinDataSingle (DataMapping mapping, ISelector selector, IJoinModel[] models, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		internal object SelectJoinDataSingle (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, int index, SafeLevel level)
 		{
 			object target = null;
 			Region region = new Region (index, 1);

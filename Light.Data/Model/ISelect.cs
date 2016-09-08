@@ -8,7 +8,9 @@ namespace Light.Data
 	{
 		List<K> ToList ();
 
-		K First ();
+		K First {
+			get;
+		}
 	}
 }
 

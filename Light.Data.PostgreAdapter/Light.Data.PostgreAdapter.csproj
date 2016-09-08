@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Light.Data.PostgreAdapter</RootNamespace>
     <AssemblyName>Light.Data.PostgreAdapter</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

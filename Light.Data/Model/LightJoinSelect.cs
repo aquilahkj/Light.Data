@@ -20,7 +20,7 @@ namespace Light.Data
 
 		readonly ISelector _selector;
 
-		readonly IJoinModel[] _models;
+		readonly IJoinModel [] _models;
 
 		readonly DynamicMultiDataMapping _mappping;
 
@@ -59,8 +59,13 @@ namespace Light.Data
 		{
 			List<K> list = new List<K> ();
 			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _region, _level)) {
-				object obj = _dele.DynamicInvoke (item as object []);
-				list.Add (obj as K);
+				if (item != null) {
+					object obj = _dele.DynamicInvoke (item as object []);
+					list.Add (obj as K);
+				}
+				else {
+					list.Add (null);
+				}
 			}
 			return list;
 		}
@@ -69,9 +74,17 @@ namespace Light.Data
 		/// Get single instance.
 		/// </summary>
 		/// <returns>instance.</returns>
-		public K First ()
-		{
-			return _context.SelectJoinDataSingle (_mappping, _selector, _models, _query, _order, 0, _level) as K;
+		public K First {
+			get {
+				object item = _context.SelectJoinDataSingle (_mappping, _selector, _models, _query, _order, 0, _level);
+				if (item != null) {
+					object obj = _dele.DynamicInvoke (item);
+					return obj as K;
+				}
+				else {
+					return null;
+				}
+			}
 		}
 	}
 }

@@ -316,9 +316,11 @@ namespace Light.Data
 		/// Get single instance.
 		/// </summary>
 		/// <returns>instance.</returns>
-		public T First ()
+		public T First 
 		{
-			return _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level) as T;
+			get {
+				return _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level) as T;
+			}
 		}
 
 		/// <summary>

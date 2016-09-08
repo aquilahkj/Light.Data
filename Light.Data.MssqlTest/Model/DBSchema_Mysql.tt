@@ -1,8 +1,6 @@
 ﻿<#@ template debug="true" hostspecific="true" language="C#"  #>
 <#@ output extension=".cs" #>
-<#@ assembly name="System.Core"#>
 <#@ assembly name="System.Data"#>
-<#@ assembly name="System.Xml"#>
 <#@ assembly name="/Developer/ExportLibrary/MySql.Data.dll"  #>
 <#@ import namespace="System"#>
 <#@ import namespace="System.Data"#>

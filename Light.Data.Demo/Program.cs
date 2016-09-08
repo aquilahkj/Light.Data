@@ -21,8 +21,13 @@ namespace Light.Data.Demo
 
 			context.SetCommanfOutput (output);
 
+			var user = context.Query<TeUser> ().Where (x => x.Id == 1)
+										.Select (x => new {
+											x.Id,
+											x.HotRate
+										}).First;
 
-			List<TeUser> users = context.LQuery<TeUser> ().Where (x => x.Address + 1 == "dd").ToList ();
+			List<TeUser> users = context.Query<TeUser> ().Where (x => x.Address + 1 == "dd").ToList ();
 
 
 			string [] arr = new [] { "1", "2", "3" };
@@ -138,7 +143,7 @@ namespace Light.Data.Demo
 						   Id = x.Lid,
 						   Count = x.Count,
 						   Sum = y.LoginTimes
-					   }).ToList();
+					   }).ToList ();
 			Console.ReadLine ();
 		}
 

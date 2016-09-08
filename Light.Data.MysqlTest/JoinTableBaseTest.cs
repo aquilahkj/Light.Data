@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace Light.Data.MysqlTest
 {
-	[TestFixture ()]
+	[TestFixture]
 	public class JoinTableBaseTest : BaseTest
 	{
-		[Test ()]
+		[Test]
 		public void TestCase_LeftJoin ()
 		{
 			List<TeUser> list = InitialUserTable (21);
@@ -88,7 +88,7 @@ namespace Light.Data.MysqlTest
 
 		}
 
-		[Test ()]
+		[Test]
 		public void TestCase_InnerJoin ()
 		{
 			List<TeUser> list = InitialUserTable (21);
@@ -164,7 +164,7 @@ namespace Light.Data.MysqlTest
 
 		}
 
-		[Test ()]
+		[Test]
 		public void TestCase_RightJoin ()
 		{
 			List<TeUser> list = InitialUserTable (21);
@@ -245,7 +245,7 @@ namespace Light.Data.MysqlTest
 
 		}
 
-		[Test ()]
+		[Test]
 		public void TestCase_LeftJoin_Multi ()
 		{
 			List<TeUser> list = InitialUserTable (21);

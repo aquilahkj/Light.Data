@@ -60,15 +60,29 @@ namespace Light.Data
 		{
 			List<K> list = new List<K> ();
 			foreach (object item in _context.QueryEntityData (_mapping, _selector, _query, _order, _region, _level)) {
-				object obj = _dele.DynamicInvoke (item);
-				list.Add (obj as K);
+				if (item != null) {
+					object obj = _dele.DynamicInvoke (item);
+					list.Add (obj as K);
+				}
+				else {
+					list.Add (null);
+				}
+
 			}
 			return list;
 		}
 
-		public K First ()
-		{
-			return _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level) as K;
+		public K First {
+			get {
+				object item = _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level);
+				if (item != null) {
+					object obj = _dele.DynamicInvoke (item);
+					return obj as K;
+				}
+				else {
+					return null;
+				}
+			}
 		}
 	}
 }

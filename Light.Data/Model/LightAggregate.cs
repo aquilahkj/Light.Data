@@ -108,9 +108,11 @@ namespace Light.Data
 			return list;
 		}
 
-		public K First ()
+		public K First 
 		{
-			return _context.SelectDynamicAggregateSingle (_model, _query, _having, _order, 0, _level) as K;
+			get {
+				return _context.SelectDynamicAggregateSingle (_model, _query, _having, _order, 0, _level) as K;
+			}
 		}
 
 		/// <summary>

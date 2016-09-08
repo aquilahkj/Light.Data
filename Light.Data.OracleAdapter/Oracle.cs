@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.Common;
 using Oracle.ManagedDataAccess.Client;
 
 namespace Light.Data.OracleAdapter
@@ -45,7 +46,6 @@ namespace Light.Data.OracleAdapter
 			OracleCommand command = new OracleCommand ();
 			command.CommandTimeout = _commandTimeOut;
 			command.BindByName = true;
-
 			return command;
 		}
 

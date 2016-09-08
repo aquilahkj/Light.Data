@@ -83,7 +83,9 @@ namespace Light.Data
 		/// <returns>The list.</returns>
 		List<K> ToList ();
 
-		K First ();
+		K First {
+			get;
+		}
 
 		/// <summary>
 		/// Take the datas count.

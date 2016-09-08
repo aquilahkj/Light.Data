@@ -31,7 +31,7 @@ namespace Light.Data
 		}
 
 		public override IDbCommand CreateCommand (string sql)
-		{
+		{ 
 			SqlCommand command = new SqlCommand ();
 			command.CommandText = sql;
 			command.CommandTimeout = _commandTimeOut;

@@ -132,7 +132,9 @@ namespace Light.Data
 		/// Get single instance.
 		/// </summary>
 		/// <returns>instance.</returns>
-		T First ();
+		T First {
+			get;
+		}
 
 		/// <summary>
 		/// Elements at index.

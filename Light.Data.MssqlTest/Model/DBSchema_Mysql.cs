@@ -6,7 +6,7 @@ using Light.Data;
 namespace Light.Data.MssqlTest
 {
     [Serializable]
-	[DataTable("Te_AreaInfo")]
+    [DataTable("Te_AreaInfo")]
     public partial class TeAreaInfo : DataTableEntity
     {
     	#region "Static Field"
