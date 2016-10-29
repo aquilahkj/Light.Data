@@ -9,30 +9,6 @@ namespace Light.Data
 	/// </summary>
 	public class DataParameter
 	{
-		public static DataParameter [] ConcatDataParameters (params IEnumerable<DataParameter>[] dataParameters)
-		{
-			if (dataParameters.Length == 0) {
-				return null;
-			}
-			List<DataParameter> list = null;
-			foreach(IEnumerable<DataParameter> item in dataParameters) {
-				if (!object.Equals (item, null)) {
-					if (list == null) {
-						list = new List<DataParameter> (item);
-					}
-					else {
-						list.AddRange (item);
-					}
-				}
-			}
-			if (list == null) {
-				return null;
-			}
-			else {
-				return list.ToArray ();
-			}
-		}
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Light.Data.DataParameter"/> class.
 		/// </summary>

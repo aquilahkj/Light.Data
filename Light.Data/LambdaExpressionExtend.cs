@@ -62,7 +62,6 @@ namespace Light.Data
 				else {
 					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 				}
-
 			}
 			catch (Exception ex) {
 				throw new LightDataException (string.Format (RE.ParseExpressionError, "group by", expression, ex.Message), ex);
@@ -98,23 +97,23 @@ namespace Light.Data
 		public static ISelector CreateMutliSelector (LambdaExpression expression, List<IMap> maps)
 		{
 			//try {
-				if (expression.Parameters.Count <= 1) {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
-				}
-				LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
-				Expression bodyExpression = expression.Body;
-				if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression) {
-					List<string> list;
-					if (ParseNewArguments (bodyExpression, state, out list)) {
-						return state.CreateSelector (list.ToArray ());
-					}
-					else {
-						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
-					}
+			if (expression.Parameters.Count <= 1) {
+				throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+			}
+			LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
+			Expression bodyExpression = expression.Body;
+			if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression) {
+				List<string> list;
+				if (ParseNewArguments (bodyExpression, state, out list)) {
+					return state.CreateSelector (list.ToArray ());
 				}
 				else {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 				}
+			}
+			else {
+				throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
+			}
 			//}
 			//catch (Exception ex) {
 			//	throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
@@ -1063,6 +1062,13 @@ namespace Light.Data
 							}
 						}
 						else {
+							if (memberObj.Expression.Type.IsGenericType) {
+								Type frameType = memberObj.Expression.Type.GetGenericTypeDefinition ();
+								if (frameType.FullName == "System.Nullable`1" && memberObj.Member.Name == "Value") {
+									return true;
+								}
+							}
+
 							if (memberObj.Expression.Type == typeof (DateTime)) {
 								fieldInfo = CreateDateDataFieldInfo (memberObj.Member, fieldInfo);
 								return true;
@@ -1463,22 +1469,45 @@ namespace Light.Data
 			DataFieldInfo data = null;
 			DataFieldInfo fieldInfo = null;
 			QueryExpression queryExpression = null;
-			if (paramExpressions.Count >= 1) {
-				if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+
+			ParameterInfo [] infos = method.GetParameters ();
+
+			for (int i = 0; i < infos.Length; i++) {
+				ParameterInfo info = infos [i];
+				if (info.Name == "field") {
+					if (!ParseDataFieldInfo (paramExpressions [i], state, out fieldInfo)) {
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+					}
+				}
+				else if (info.Name == "expression") {
+					queryExpression = ResolveQueryExpression (paramExpressions [i], state);
 				}
 			}
-			if (paramExpressions.Count == 2) {
-				queryExpression = ResolveQueryExpression (paramExpressions [1], state);
-			}
+
+			//if (paramExpressions.Count >= 1) {
+			//	if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
+			//		throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+			//	}
+			//}
+			//if (paramExpressions.Count == 2) {
+			//	queryExpression = ResolveQueryExpression (paramExpressions [1], state);
+			//}
 
 			switch (method.Name) {
+			case "CountAll":
+			case "LongCountAll":
+				switch (paramExpressions.Count) {
+				case 0:
+					data = new LambdaAggregateCountAllDataFieldInfo (null);
+					break;
+				case 1:
+					data = new LambdaAggregateCountAllDataFieldInfo (queryExpression);
+					break;
+				}
+				break;
 			case "Count":
 			case "LongCount":
 				switch (paramExpressions.Count) {
-				case 0:
-					data = new LambdaAggregateCountAllDataFieldInfo ();
-					break;
 				case 1:
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false, null);
 					break;
@@ -1486,7 +1515,6 @@ namespace Light.Data
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false, queryExpression);
 					break;
 				}
-
 				break;
 			case "DistinctCount":
 			case "DistinctLongCount":
@@ -1522,7 +1550,6 @@ namespace Light.Data
 					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true, queryExpression);
 					break;
 				}
-
 				break;
 			case "Avg":
 				switch (paramExpressions.Count) {

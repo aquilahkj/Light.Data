@@ -1,6 +1,9 @@
 ﻿using System;
 namespace Light.Data
 {
+	/// <summary>
+	/// Field info aggregate data.
+	/// </summary>
 	public class FieldInfoAggregateData:AggregateData
 	{
 		DataFieldInfo _fieldinfo;

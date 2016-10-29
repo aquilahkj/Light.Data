@@ -22,7 +22,7 @@ namespace Light.Data
 		{
 			if (Context != null) {
 				if (_hasLoadData) {
-					Context.Update (this, GetUpdateFields ());
+					Context.Update (this);
 					Clear ();
 				}
 				else {

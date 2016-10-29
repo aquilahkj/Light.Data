@@ -43,51 +43,10 @@ namespace Light.Data
 			_alias = alias;
 		}
 
-		//internal override string CreateDataFieldSql (CommandFactory factory, bool isFullName)
-		//{
-		//	return _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
-		//}
-
-		/// <summary>
-		/// Creates the data field sql.
-		/// </summary>
-		/// <returns>The data field sql.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
-		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		//{
-		//	return _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-		//}
-
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			return _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 		}
-
-		/// <summary>
-		/// Creates the alias data field sql.
-		/// </summary>
-		/// <returns>The alias data field sql.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
-		//internal string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName)
-		//{
-		//	string field = _baseFieldInfo.CreateDataFieldSql (factory, isFullName);
-		//	return factory.CreateAliasSql (field, this._alias);
-		//}
-
-		/// <summary>
-		/// Creates the alias data field sql.
-		/// </summary>
-		/// <returns>The alias data field sql.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="isFullName">Is full name.</param>
-		/// <param name="dataParameters">Data parameters.</param>
-		//public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		//{
-		//	string field = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters);
-		//	return factory.CreateAliasSql (field, this._alias);
-		//}
 
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

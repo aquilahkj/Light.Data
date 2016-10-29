@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	public class LightJoinSelect<K> : ISelect<K> where K : class
+	class LightJoinSelect<K> : ISelect<K> where K : class
 	{
 		readonly QueryExpression _query;
 
@@ -23,8 +23,6 @@ namespace Light.Data
 		readonly IJoinModel [] _models;
 
 		readonly DynamicMultiDataMapping _mappping;
-
-		//readonly DynamicMultiDataMapping _mapping;
 
 		internal LightJoinSelect (DataContext context, Delegate dele, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
@@ -70,20 +68,15 @@ namespace Light.Data
 			return list;
 		}
 
-		/// <summary>
-		/// Get single instance.
-		/// </summary>
-		/// <returns>instance.</returns>
-		public K First {
-			get {
-				object item = _context.SelectJoinDataSingle (_mappping, _selector, _models, _query, _order, 0, _level);
-				if (item != null) {
-					object obj = _dele.DynamicInvoke (item);
-					return obj as K;
-				}
-				else {
-					return null;
-				}
+		public K First ()
+		{
+			object item = _context.SelectJoinDataSingle (_mappping, _selector, _models, _query, _order, 0, _level);
+			if (item != null) {
+				object obj = _dele.DynamicInvoke (item);
+				return obj as K;
+			}
+			else {
+				return null;
 			}
 		}
 	}

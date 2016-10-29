@@ -819,7 +819,7 @@ namespace Light.Data
 				DataFieldInfo valueField = new ConstantDataFieldInfo (mapping, usv.Value);
 				updator.SetUpdateData (usv.DataField, valueField);
 			}
-			return this._context.UpdateMass (updator, _query, _level);
+			return this._context.Update (updator, _query, _level);
 		}
 
 		/// <summary>
@@ -828,7 +828,7 @@ namespace Light.Data
 		public int Delete ()
 		{
 			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
-			return _context.DeleteMass (mapping, this._query, _level);
+			return _context.Delete (mapping, this._query, _level);
 		}
 	}
 }

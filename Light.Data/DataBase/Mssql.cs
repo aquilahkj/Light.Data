@@ -31,7 +31,7 @@ namespace Light.Data
 		}
 
 		public override IDbCommand CreateCommand (string sql)
-		{ 
+		{
 			SqlCommand command = new SqlCommand ();
 			command.CommandText = sql;
 			command.CommandTimeout = _commandTimeOut;
@@ -104,25 +104,14 @@ namespace Light.Data
 
 		public override void SetExtendParams (ExtendParamCollection extendParams)
 		{
-			//			ExtendParamsCollection extendParams = new ExtendParamsCollection (arguments);
-
 			if (extendParams ["Version"] != null) {
 				int version;
 				if (int.TryParse (extendParams ["Version"], out version)) {
-					if (version == 8) {
-						_factory = new MssqlCommandFactory_2000 ();
-					}
-					else if (version >= 10) {
+					if (version >= 10) {
 						_factory = new MssqlCommandFactory_2008 ();
 					}
 				}
 			}
-
-			//if (extendParams ["InnerPager"] != null) {
-			//	if (extendParams ["InnerPager"].ToLower () == "true") {
-			//		InnerPager = true;
-			//	}
-			//}
 
 			if (extendParams ["TimeOut"] != null) {
 				int timeout;

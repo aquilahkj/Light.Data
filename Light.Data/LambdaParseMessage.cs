@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Light.Data
 {
-	public static class LambdaParseMessage
+	static class LambdaParseMessage
 	{
 		public const string ExpressionParameterCountError = "expression parameter count error";
 

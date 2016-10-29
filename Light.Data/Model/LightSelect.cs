@@ -4,13 +4,8 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	/// <summary>
-	/// LSelectable.
-	/// </summary>
-	public class LightSelect<K> : ISelect<K> where K : class
+	class LightSelect<K> : ISelect<K> where K : class
 	{
-		readonly Type _type;
-
 		readonly QueryExpression _query;
 
 		readonly OrderExpression _order;
@@ -32,7 +27,6 @@ namespace Light.Data
 			_context = context;
 			_dele = dele;
 			_selector = selector;
-			_type = type;
 			_query = query;
 			_order = order;
 			_region = region;
@@ -72,16 +66,15 @@ namespace Light.Data
 			return list;
 		}
 
-		public K First {
-			get {
-				object item = _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level);
-				if (item != null) {
-					object obj = _dele.DynamicInvoke (item);
-					return obj as K;
-				}
-				else {
-					return null;
-				}
+		public K First ()
+		{
+			object item = _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level);
+			if (item != null) {
+				object obj = _dele.DynamicInvoke (item);
+				return obj as K;
+			}
+			else {
+				return null;
 			}
 		}
 	}

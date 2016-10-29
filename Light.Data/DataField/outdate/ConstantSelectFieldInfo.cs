@@ -18,25 +18,6 @@ namespace Light.Data
 		}
 
 		#region implemented abstract members of SelectFieldInfo
-		/// <summary>
-		/// Creates the data field sql.
-		/// </summary>
-		/// <returns>The data field sql.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="dataParameters">Data parameter.</param>
-		//internal override string CreateSqlString (CommandFactory factory, out DataParameter [] dataParameters)
-		//{
-		//	if (_value != null) {
-		//		string pn = factory.CreateTempParamName ();
-		//		DataParameter dataParameter = new DataParameter (pn, _value);
-		//		dataParameters = new [] { dataParameter };
-		//		return pn;
-		//	}
-		//	else {
-		//		dataParameters = null;
-		//		return factory.CreateNullSql ();
-		//	}
-		//}
 
 		internal override string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{

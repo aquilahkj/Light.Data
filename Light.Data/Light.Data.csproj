@@ -170,7 +170,6 @@
     <Compile Include="Attributes\AggregateFieldAttribute.cs" />
     <Compile Include="Attributes\AggregateTableAttribute.cs" />
     <Compile Include="Attributes\DataFieldAttribute.cs" />
-    <Compile Include="Attributes\RelationPropertyAttribute.cs" />
     <Compile Include="Expressions\CatchOperatorType.cs" />
     <Compile Include="CommandFactory.cs" />
     <Compile Include="DataContext.cs" />

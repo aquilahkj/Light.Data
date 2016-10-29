@@ -43,43 +43,6 @@ namespace Light.Data
 			}
 		}
 
-		/// <summary>
-		/// Creates the select string.
-		/// </summary>
-		/// <returns>The select string.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="dataParameters">Data parameters.</param>
-		//public string CreateSelectString (CommandFactory factory, out DataParameter [] dataParameters)
-		//{
-		//	string [] selectList = new string [this.infoDict.Count];
-		//	int index = 0;
-		//	List<DataParameter> innerParameters = null;
-		//	foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
-		//		AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
-		//		DataParameter [] dataParameters1 = null;
-		//		if (!Object.Equals (aliasInfo, null)) {
-		//			selectList [index] = aliasInfo.CreateAliasDataFieldSql (factory, true, out dataParameters1);
-		//		}
-		//		else {
-		//			selectList [index] = fieldInfo.CreateSqlString (factory, true, out dataParameters1);
-		//		}
-		//		if (dataParameters1 != null && dataParameters1.Length > 0) {
-		//			if (innerParameters == null) {
-		//				innerParameters = new List<DataParameter> ();
-		//			}
-		//			innerParameters.AddRange (dataParameters1);
-		//		}
-		//		index++;
-		//	}
-		//	string customSelect = string.Join (",", selectList);
-		//	dataParameters = innerParameters != null ? innerParameters.ToArray () : null;
-		//	return customSelect;
-		//}
-
-		/// <summary>
-		/// Gets the select filed names.
-		/// </summary>
-		/// <returns>The select filed names.</returns>
 		public string [] GetSelectFieldNames ()
 		{
 			string [] fields = new string [this.infoDict.Count + aliasTableHash.Count];

@@ -2286,7 +2286,17 @@ namespace Mono.Data.Sqlite
 		/// <summary>
 		/// Set to true to abort the transaction and trigger a rollback
 		/// </summary>
-		public bool AbortTransaction;
+		private bool abortTransaction;
+
+		public bool AbortTransaction {
+			get {
+				return abortTransaction;
+			}
+
+			set {
+				abortTransaction = value;
+			}
+		}
 	}
 
 }

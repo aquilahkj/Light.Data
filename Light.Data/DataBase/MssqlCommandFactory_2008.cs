@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -12,15 +13,15 @@ namespace Light.Data
 
 		}
 
-		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
-			if (entitys == null || entitys.Length == 0) {
+			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-			int totalCount = entitys.Length;
+			int totalCount = entitys.Count;
 			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
 			int insertLen = fields.Count;
 			if (insertLen == 0) {

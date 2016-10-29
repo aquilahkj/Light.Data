@@ -24,40 +24,14 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The sql string.</returns>
 		/// <param name="factory">Factory.</param>
-		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
-		/// <param name="dataParameters">Data parameters.</param>
-		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		//{
-		//	DataParameter [] dp1;
-		//	string expressionString1 = _expression1.CreateSqlString (factory, isFullName, out dp1);
-		//	DataParameter [] dp2;
-		//	string expressionString2 = _expression2.CreateSqlString (factory, isFullName, out dp2);
-		//	if (dp1 == null && dp2 == null) {
-		//		dataParameters = null;
-		//	}
-		//	else if (dp1 != null && dp2 == null) {
-		//		dataParameters = dp1;
-		//	}
-		//	else if (dp1 == null && dp2 != null) {
-		//		dataParameters = dp2;
-		//	}
-		//	else {
-		//		dataParameters = new DataParameter [dp1.Length + dp2.Length];
-		//		dp1.CopyTo (dataParameters, 0);
-		//		dp2.CopyTo (dataParameters, dp1.Length);
-		//	}
-		//	return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
-		//}
-
+		/// <param name="isFullName">If set to <c>true</c> is full name.</param>
+		/// <param name="state">State.</param>
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			string expressionString1 = _expression1.CreateSqlString (factory, isFullName, state);
-
 			string expressionString2 = _expression2.CreateSqlString (factory, isFullName, state);
-
 			return factory.CreateCatchExpressionSql (expressionString1, expressionString2, _operatorType);
 		}
-
 
 		/// <summary>
 		/// Catch the specified expression1, operatorType and expression2.
@@ -90,8 +64,6 @@ namespace Light.Data
 			newExpression.mutliQuery = expression1.mutliQuery | expression2.mutliQuery;
 			return newExpression;
 		}
-
-
 
 		/// <summary>
 		/// And the specified expression1 and expression2.
@@ -164,44 +136,5 @@ namespace Light.Data
 				mutliQuery = value;
 			}
 		}
-
-
-		///// <summary>
-		///// Determines whether the specified <see cref="Light.Data.QueryExpression"/> is equal to the current <see cref="Light.Data.QueryExpression"/>.
-		///// </summary>
-		///// <param name="target">The <see cref="Light.Data.QueryExpression"/> to compare with the current <see cref="Light.Data.QueryExpression"/>.</param>
-		///// <returns><c>true</c> if the specified <see cref="Light.Data.QueryExpression"/> is equal to the current
-		///// <see cref="Light.Data.QueryExpression"/>; otherwise, <c>false</c>.</returns>
-		//public virtual bool Equals (QueryExpression target)
-		//{
-		//	if (Object.Equals (target, null)) {
-		//		return false;
-		//	}
-		//	if (Object.ReferenceEquals (this, target)) {
-		//		return true;
-		//	}
-		//	else {
-		//		if (this.GetType () == target.GetType ()) {
-		//			return EqualsDetail (target);
-		//		}
-		//		else {
-		//			return false;
-		//		}
-		//	}
-		//}
-		///// <summary>
-		///// Equalses the detail.
-		///// </summary>
-		///// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
-		///// <param name="expression">Expression.</param>
-		//protected virtual bool EqualsDetail (QueryExpression expression)
-		//{
-		//	if (this._expression1 != null) {
-		//		return this._expression1.Equals (expression._expression1) && this._expression2.Equals (expression._expression2) && this._operatorType == expression._operatorType;
-		//	}
-		//	else {
-		//		return Object.Equals (this.TableMapping, expression.TableMapping);
-		//	}
-		//}
 	}
 }

@@ -3,6 +3,9 @@ using System.Text;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Date time formater.
+	/// </summary>
 	public class DateTimeFormater
 	{
 		string yearFormat = "yyyy";
@@ -17,6 +20,10 @@ namespace Light.Data
 
 		string secondFormat = "ss";
 
+		/// <summary>
+		/// Gets or sets the year format.
+		/// </summary>
+		/// <value>The year format.</value>
 		public string YearFormat {
 			get {
 				return yearFormat;
@@ -28,6 +35,10 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the month format.
+		/// </summary>
+		/// <value>The month format.</value>
 		public string MonthFormat {
 			get {
 				return monthFormat;
@@ -39,6 +50,10 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the day format.
+		/// </summary>
+		/// <value>The day format.</value>
 		public string DayFormat {
 			get {
 				return dayFormat;
@@ -50,6 +65,10 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the hour format.
+		/// </summary>
+		/// <value>The hour format.</value>
 		public string HourFormat {
 			get {
 				return hourFormat;
@@ -61,6 +80,10 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the minute format.
+		/// </summary>
+		/// <value>The minute format.</value>
 		public string MinuteFormat {
 			get {
 				return minuteFormat;
@@ -72,6 +95,10 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the second format.
+		/// </summary>
+		/// <value>The second format.</value>
 		public string SecondFormat {
 			get {
 				return secondFormat;
@@ -83,6 +110,11 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// Formats the data.
+		/// </summary>
+		/// <returns>The data.</returns>
+		/// <param name="format">Format.</param>
 		public string FormatData (string format)
 		{
 			StringBuilder sb = new StringBuilder ();
@@ -157,66 +189,6 @@ namespace Light.Data
 			}
 			return max;
 		}
-
-		//int ParseYear (char [] chars, int i, out string value)
-		//{
-		//	value = null;
-		//	if (chars.Length < i + 4) {
-		//		return 0;
-		//	}
-		//	for (int j = i; j < i + 4; j++) {
-		//		if (chars [j] != 'y') {
-		//			return 0;
-		//		}
-		//	}
-		//	value = yearFormat;
-		//	return 4;
-		//}
-
-		//int ParseMonth (char [] chars, int i, out string value)
-		//{
-		//	value = null;
-		//	if (chars.Length < i + 2) {
-		//		return 0;
-		//	}
-		//	for (int j = i; j < i + 2; j++) {
-		//		if (chars [j] != 'M') {
-		//			return 0;
-		//		}
-		//	}
-		//	value = yearFormat;
-		//	return 2;
-		//}
-
-		//int ParseDay (char [] chars, int i, out string value)
-		//{
-		//	value = null;
-		//	if (chars.Length < i + 2) {
-		//		return 0;
-		//	}
-		//	for (int j = i; j < i + 2; j++) {
-		//		if (chars [j] != 'd') {
-		//			return 0;
-		//		}
-		//	}
-		//	value = yearFormat;
-		//	return 2;
-		//}
-
-		//int ParseHour (char [] chars, int i, out string value)
-		//{
-		//	throw new NotImplementedException ();
-		//}
-
-		//int ParseMinute (char [] chars, int i, out string value)
-		//{
-		//	throw new NotImplementedException ();
-		//}
-
-		//int ParseSecond (char [] chars, int i, out string value)
-		//{
-		//	throw new NotImplementedException ();
-		//}
 	}
 }
 

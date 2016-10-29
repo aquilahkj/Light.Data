@@ -46,7 +46,7 @@ namespace Light.Data.OracleTest
 					infos.Add (tag);
 				}
 			}
-			context.BulkInsert (infos.ToArray ());
+			context.BatchInsert (infos.ToArray ());
 			TeTagInfo info;
 
 			info = context.SelectSingleFromKey<TeTagInfo> ("2", "6");

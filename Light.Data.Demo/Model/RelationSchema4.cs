@@ -23,10 +23,10 @@ namespace Light.Data.Demo
 		[RelationField ("Id", "RelateCId")]
 		public TeRelateB_CD RelateB1 {
 			get {
-				return relateB;
+				return relateB1;
 			}
 			set {
-				relateB = value;
+				relateB1 = value;
 			}
 		}
 

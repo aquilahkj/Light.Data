@@ -281,7 +281,7 @@ namespace Light.Data.OracleTest
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
@@ -290,7 +290,7 @@ namespace Light.Data.OracleTest
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 				trans.RollbackTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
@@ -299,7 +299,7 @@ namespace Light.Data.OracleTest
 
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
@@ -308,7 +308,7 @@ namespace Light.Data.OracleTest
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (0, listAc.Count);

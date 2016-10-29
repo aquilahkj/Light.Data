@@ -28,6 +28,10 @@ namespace Light.Data
 
 		const string CONTEXT_KEY = "Light.Data.DataContext";
 
+		/// <summary>
+		/// Gets or sets the current.
+		/// </summary>
+		/// <value>The current.</value>
 		public static DataContext Current {
 			get {
 				return CallContext.GetData (CONTEXT_KEY) as DataContext;
@@ -126,7 +130,7 @@ namespace Light.Data
 		/// </summary>
 		protected string _configName;
 
-		Database _dataBase;
+		readonly Database _dataBase;
 
 		internal Database DataBase {
 			get {
@@ -172,30 +176,7 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether this instance is inner pager.
-		/// </summary>
-		/// <value><c>true</c> if this instance is inner pager; otherwise, <c>false</c>.</value>
-		//public bool IsInnerPager {
-		//	get {
-		//		return _dataBase.InnerPager;
-		//	}
-		//}
-
-		///// <summary>
-		///// Sets the inner pager enable.
-		///// </summary>
-		///// <returns><c>true</c>, if inner pager was set, <c>false</c> otherwise.</returns>
-		///// <param name="enable">If set to <c>true</c> enable.</param>
-		//public bool SetInnerPager (bool enable)
-		//{
-		//	_dataBase.InnerPager = enable;
-		//	return _dataBase.InnerPager == enable;
-		//}
-
-
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Light.Data.DataContext"/> class.
+		/// Initializes a new instance of the <see cref="T:Light.Data.DataContext"/> class.
 		/// </summary>
 		/// <param name="connectionString">Connection string.</param>
 		/// <param name="configName">Config name.</param>
@@ -205,7 +186,6 @@ namespace Light.Data
 			_connectionString = connectionString;
 			_configName = configName;
 			_dataBase = dataBase;
-			//CallContext.SetData(_configName
 		}
 
 		/// <summary>
@@ -311,37 +291,8 @@ namespace Light.Data
 		public int Update (object data)
 		{
 			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
-			//DataTableEntity entity = data as DataTableEntity;
-			//if (entity != null) {
-			//	return Update (mapping, data, entity.GetUpdateFields ());
-			//}
-			//else {
-			return Update (mapping, data);
-			//}
-		}
-
-		/// <summary>
-		/// Update the specified data and updateFields.
-		/// </summary>
-		/// <returns>result.</returns>
-		/// <param name="data">Data.</param>
-		/// <param name="updateFields">Update fields.</param>
-		internal int Update (object data, string [] updateFields)
-		{
-			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
 			return Update (mapping, data);
 		}
-
-		//private int Update (DataTableEntityMapping mapping, object data)
-		//{
-		//	DataTableEntity entity = data as DataTableEntity;
-		//	if (entity != null) {
-		//		return Update (mapping, data, entity.GetUpdateFields ());
-		//	}
-		//	else {
-		//		return Update (mapping, data, null);
-		//	}
-		//}
 
 		private int Update (DataTableEntityMapping mapping, object data)
 		{
@@ -395,124 +346,88 @@ namespace Light.Data
 			return obj as T;
 		}
 
-		///// <summary>
-		///// Mass delete datas which match queryexpression.
-		///// </summary>
-		///// <returns>result.</returns>
-		///// <param name="query">Query.</param>
-		///// <typeparam name="T">The 1st type parameter.</typeparam>
-		//public int DeleteMass<T> (QueryExpression query)
-		//	where T : class, new()
-		//{
-		//	return DeleteMass (typeof (T), query);
-		//}
-
-		///// <summary>
-		///// Mass delete all data.
-		///// </summary>
-		///// <returns>result.</returns>
-		///// <typeparam name="T">The 1st type parameter.</typeparam>
-		//public int DeleteMass<T> ()
-		//	where T : class, new()
-		//{
-		//	return DeleteMass<T> (null);
-		//}
-
-		//internal int DeleteMass (Type type, QueryExpression query)
-		//{
-		//	DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
-		//	return DeleteMass (mapping, query);
-		//}
-
-		/// <summary>
-		/// Mass delete the datas.
-		/// </summary>
-		/// <returns>result.</returns>
-		/// <param name="mapping">Mapping.</param>
-		/// <param name="query">Query.</param>
-		internal int DeleteMass (DataTableEntityMapping mapping, QueryExpression query, SafeLevel level)
+		internal int Delete (DataTableEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
 			int rInt;
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			CommandData commandData = _dataBase.Factory.CreateDeleteMassCommand (mapping, query, state);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
-				rInt = ExecuteNonQuery (command, SafeLevel.Default);
+				rInt = ExecuteNonQuery (command, level);
 			}
 			return rInt;
 		}
 
-		///// <summary>
-		///// Mass updates the daats which match queryexpression..
-		///// </summary>
-		///// <returns>The mass.</returns>
-		///// <param name="updates">Updates.</param>
-		///// <param name="query">Query.</param>
-		///// <typeparam name="T">The 1st type parameter.</typeparam>
-		//public int UpdateMass<T> (QueryExpression query, params UpdateSetValue [] updates)
-		//	where T : class, new()
-		//{
-		//	return UpdateMass (typeof (T), updates, query);
-		//}
-
-		///// <summary>
-		///// 批量更新数据
-		///// </summary>
-		///// <typeparam name="T">更新对象类型</typeparam>
-		///// <param name="updates">更新字段值数组,类型必须和更新对象一致</param>
-		///// <returns>受影响行数</returns>
-		//public int UpdateMass<T> (params UpdateSetValue [] updates)
-		//	where T : class, new()
-		//{
-		//	return UpdateMass<T> (null, updates);
-		//}
-
-		//internal int UpdateMass (Type type, UpdateSetValue [] updates, QueryExpression query)
-		//{
-		//	DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
-		//	return UpdateMass (mapping, updates, query);
-		//}
-
-		//internal int UpdateMass (DataTableEntityMapping mapping, UpdateSetValue [] updates, QueryExpression query)
-		//{
-		//	int rInt;
-		//	CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-		//	CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (mapping, updates, query, state);
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
-		//		rInt = ExecuteNonQuery (command, SafeLevel.Default);
-		//	}
-		//	return rInt;
-		//}
-
-
-		internal int UpdateMass (MassUpdator updator, QueryExpression query, SafeLevel level)
+		internal int Update (MassUpdator updator, QueryExpression query, SafeLevel level)
 		{
 			int rInt;
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (updator, query, state);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
-				rInt = ExecuteNonQuery (command, SafeLevel.Default);
+				rInt = ExecuteNonQuery (command, level);
 			}
 			return rInt;
 		}
 
 		/// <summary>
-		/// Bulk insert the datas.
+		/// Batch insert data.
 		/// </summary>
-		/// <returns>result.</returns>
+		/// <returns>The insert rows.</returns>
 		/// <param name="datas">Datas.</param>
 		/// <param name="batchCount">Batch count.</param>
-		public int BulkInsert (Array datas, int batchCount = 10)
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public int BatchInsert<T> (IEnumerable<T> datas, int batchCount = 10) where T : class
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
 			}
-			if (datas.Length == 0) {
+
+			List<T> list = new List<T> (datas);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return BatchInsert (mapping, list, batchCount);
+		}
+
+		/// <summary>
+		/// Mass insert data.
+		/// </summary>
+		/// <returns>The insert rows.</returns>
+		/// <param name="datas">Datas.</param>
+		/// <param name="index">Index.</param>
+		/// <param name="count">Count.</param>
+		/// <param name="batchCount">Batch count.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public int BatchInsert<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) where T : class
+		{
+			if (datas == null) {
+				throw new ArgumentNullException (nameof (datas));
+			}
+			if (index < 0) {
+				throw new ArgumentOutOfRangeException (nameof (index));
+			}
+			if (count < 0) {
+				throw new ArgumentOutOfRangeException (nameof (count));
+			}
+			if (batchCount < 1) {
+				throw new ArgumentOutOfRangeException (nameof (batchCount));
+			}
+			if (count == 0) {
 				return 0;
 			}
-			Type arrayType = datas.GetType ();
-			Type type = arrayType.GetElementType ();
-			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
-			//CommandData [] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (mapping, datas, batchCount);
+
+			List<T> list = new List<T> (count);
+			int mindex = 0;
+			int max = index + count;
+			foreach (T item in datas) {
+				if (mindex >= index && mindex < max) {
+					list.Add (item);
+				}
+				mindex++;
+			}
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return BatchInsert (mapping, list, batchCount);
+		}
+
+		private int BatchInsert (DataTableEntityMapping mapping, IList datas, int batchCount)
+		{
 			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (mapping, datas, batchCount);
 			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
@@ -531,11 +446,11 @@ namespace Light.Data
 			}
 			if (!Object.Equals (obj, null)) {
 				object id = Convert.ChangeType (obj, mapping.IdentityField.ObjectType);
-				int len = datas.Length;
+				int len = datas.Count;
 				object [] ids = CreateObjectList (id, len);
 
 				for (int i = 0; i < len; i++) {
-					object data = datas.GetValue (i);
+					object data = datas [i];
 					object value = ids [i];
 					mapping.IdentityField.Handler.Set (data, value);
 				}
@@ -553,17 +468,66 @@ namespace Light.Data
 			}
 		}
 
-		public int BulkUpdate (Array datas, int batchCount = 10)
+		/// <summary>
+		/// Batch update datas.
+		/// </summary>
+		/// <returns>The update rows.</returns>
+		/// <param name="datas">Datas.</param>
+		/// <param name="batchCount">Batch count.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public int BatchUpdate<T> (IEnumerable<T> datas, int batchCount = 10) where T : class
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
 			}
-			if (datas.Length == 0) {
+
+			List<T> list = new List<T> (datas);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return BatchUpdate (mapping, list, batchCount);
+		}
+
+		/// <summary>
+		/// Batch update datas.
+		/// </summary>
+		/// <returns>The update rows.</returns>
+		/// <param name="datas">Datas.</param>
+		/// <param name="index">Index.</param>
+		/// <param name="count">Count.</param>
+		/// <param name="batchCount">Batch count.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public int BatchUpdate<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) where T : class
+		{
+			if (datas == null) {
+				throw new ArgumentNullException (nameof (datas));
+			}
+			if (index < 0) {
+				throw new ArgumentOutOfRangeException (nameof (index));
+			}
+			if (count < 0) {
+				throw new ArgumentOutOfRangeException (nameof (count));
+			}
+			if (batchCount < 1) {
+				throw new ArgumentOutOfRangeException (nameof (batchCount));
+			}
+			if (count == 0) {
 				return 0;
 			}
-			Type arrayType = datas.GetType ();
-			Type type = arrayType.GetElementType ();
-			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
+
+			List<T> list = new List<T> (count);
+			int mindex = 0;
+			int max = index + count;
+			foreach (T item in datas) {
+				if (mindex >= index && mindex < max) {
+					list.Add (item);
+				}
+				mindex++;
+			}
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return BatchUpdate (mapping, list, batchCount);
+		}
+
+		private int BatchUpdate (DataTableEntityMapping mapping, IList datas, int batchCount)
+		{
 			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBulkUpdateCommand (mapping, datas, batchCount);
 			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
@@ -586,17 +550,66 @@ namespace Light.Data
 			}
 		}
 
-		public int BulkDelete (Array datas, int batchCount = 10)
+		/// <summary>
+		/// Batchs delete data.
+		/// </summary>
+		/// <returns>The delete rows.</returns>
+		/// <param name="datas">Datas.</param>
+		/// <param name="batchCount">Batch count.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public int BatchDelete<T> (IEnumerable<T> datas, int batchCount = 10) where T : class
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
 			}
-			if (datas.Length == 0) {
+
+			List<T> list = new List<T> (datas);
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return BatchDelete (mapping, list, batchCount);
+		}
+
+		/// <summary>
+		/// Batchs delete datas.
+		/// </summary>
+		/// <returns>The delete rows.</returns>
+		/// <param name="datas">Datas.</param>
+		/// <param name="index">Index.</param>
+		/// <param name="count">Count.</param>
+		/// <param name="batchCount">Batch count.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public int BatchDelete<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) where T : class
+		{
+			if (datas == null) {
+				throw new ArgumentNullException (nameof (datas));
+			}
+			if (index < 0) {
+				throw new ArgumentOutOfRangeException (nameof (index));
+			}
+			if (count < 0) {
+				throw new ArgumentOutOfRangeException (nameof (count));
+			}
+			if (batchCount < 1) {
+				throw new ArgumentOutOfRangeException (nameof (batchCount));
+			}
+			if (count == 0) {
 				return 0;
 			}
-			Type arrayType = datas.GetType ();
-			Type type = arrayType.GetElementType ();
-			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (type);
+
+			List<T> list = new List<T> (count);
+			int mindex = 0;
+			int max = index + count;
+			foreach (T item in datas) {
+				if (mindex >= index && mindex < max) {
+					list.Add (item);
+				}
+				mindex++;
+			}
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			return BatchDelete (mapping, list, batchCount);
+		}
+
+		private int BatchDelete (DataTableEntityMapping mapping, IList datas, int batchCount)
+		{
 			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBulkDeleteCommand (mapping, datas, batchCount);
 			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
@@ -623,58 +636,54 @@ namespace Light.Data
 		{
 			TypeCode code = Type.GetTypeCode (lastId.GetType ());
 			object [] results = new object [len];
-			if (code == TypeCode.Int16) {
-				short id = (short)lastId;
-				for (int i = len - 1; i >= 0; i--) {
-					results [i] = id--;
+			switch (code) {
+			case TypeCode.Int16: {
+					short id = (short)lastId;
+					for (int i = len - 1; i >= 0; i--) {
+						results [i] = id--;
+					}
 				}
-			}
-			else if (code == TypeCode.Int32) {
-				int id = (int)lastId;
-				for (int i = len - 1; i >= 0; i--) {
-					results [i] = id--;
+				break;
+			case TypeCode.Int32: {
+					int id = (int)lastId;
+					for (int i = len - 1; i >= 0; i--) {
+						results [i] = id--;
+					}
 				}
-			}
-			else if (code == TypeCode.Int64) {
-				long id = (long)lastId;
-				for (int i = len - 1; i >= 0; i--) {
-					results [i] = id--;
+				break;
+			case TypeCode.Int64: {
+					long id = (long)lastId;
+					for (int i = len - 1; i >= 0; i--) {
+						results [i] = id--;
+					}
 				}
-			}
-			else if (code == TypeCode.UInt16) {
-				ushort id = (ushort)lastId;
-				for (int i = len - 1; i >= 0; i--) {
-					results [i] = id--;
+				break;
+			case TypeCode.UInt16: {
+					ushort id = (ushort)lastId;
+					for (int i = len - 1; i >= 0; i--) {
+						results [i] = id--;
+					}
 				}
-			}
-			else if (code == TypeCode.UInt32) {
-				uint id = (uint)lastId;
-				for (int i = len - 1; i >= 0; i--) {
-					results [i] = id--;
+				break;
+			case TypeCode.UInt32: {
+					uint id = (uint)lastId;
+					for (int i = len - 1; i >= 0; i--) {
+						results [i] = id--;
+					}
 				}
-			}
-			else if (code == TypeCode.UInt64) {
-				ulong id = (ulong)lastId;
-				id++;
-				for (int i = len - 1; i >= 0; i--) {
-					results [i] = id--;
+				break;
+			case TypeCode.UInt64: {
+					ulong id = (ulong)lastId;
+					id++;
+					for (int i = len - 1; i >= 0; i--) {
+						results [i] = id--;
+					}
 				}
+				break;
 			}
+
 			return results;
 		}
-
-		//internal int SelectInsert (Type insertType, DataFieldInfo [] insertFields, Type selectType, SelectFieldInfo [] selectFields, QueryExpression query, OrderExpression order)
-		//{
-		//	DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (insertType);
-		//	DataTableEntityMapping selectMapping = DataEntityMapping.GetTableMapping (selectType);
-		//	int rInt;
-		//	CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-		//	CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (insertMapping, insertFields, selectMapping, selectFields, query, order, state);
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
-		//		rInt = ExecuteNonQuery (command, SafeLevel.Default);
-		//	}
-		//	return rInt;
-		//}
 
 		internal int SelectInsert (DataTableEntityMapping insertMapping, DataEntityMapping selectMapping, QueryExpression query, OrderExpression order, SafeLevel level)
 		{
@@ -904,65 +913,6 @@ namespace Light.Data
 			return QueryDataDefineReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
 		}
 
-		//internal IEnumerable QueryDynamicJoinData (Type type, JoinSelector selector, List<JoinModel> models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//{
-		//	Tuple<string, DataEntityMapping> [] array = new Tuple<string, DataEntityMapping> [models.Count];
-		//	for (int i = 0; i < models.Count; i++) {
-		//		JoinModel model = models [i];
-		//		Tuple<string, DataEntityMapping> tuple = new Tuple<string, DataEntityMapping> (model.AliasTableName, model.Mapping);
-		//		array [i] = tuple;
-		//	}
-		//	DynamicMultiDataMapping mapping = new DynamicMultiDataMapping (type, array);
-		//	CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-		//	CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region, state);
-		//	IDbCommand command = commandData.CreateCommand (_dataBase, state);
-		//	QueryState queryState = new QueryState ();
-		//	queryState.SetSelector (selector);
-		//	return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
-		//}
-
-		//internal IEnumerable QueryDataMappingEnumerable (Type type, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
-		//{
-		//	DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);
-		//	RelationMap relationMap = mapping.GetRelationMap ();
-		//	if (selector == null) {
-		//		selector = relationMap.GetDefaultSelector ();
-		//	}
-		//	CommandData commandData;
-		//	if (mapping.HasJoinRelateModel) {
-		//		QueryExpression subQuery = null;
-		//		QueryExpression mainQuery = null;
-		//		OrderExpression subOrder = null;
-		//		OrderExpression mainOrder = null;
-		//		if (query != null) {
-		//			if (query.MutliQuery) {
-		//				mainQuery = query;
-		//			}
-		//			else {
-		//				subQuery = query;
-		//			}
-		//		}
-		//		if (order != null) {
-		//			if (order.MutliOrder) {
-		//				mainOrder = order;
-		//			}
-		//			else {
-		//				subOrder = order;
-		//			}
-		//		}
-		//		List<JoinModel> models = relationMap.CreateJoinModels (subQuery, subOrder);
-		//		commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder, region);
-		//	}
-		//	else {
-		//		commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, order, region);
-		//	}
-		//	IDbCommand command = commandData.CreateCommand (_dataBase);
-		//	QueryState state = new QueryState ();
-		//	state.SetRelationMap (relationMap);
-		//	state.SetSelector (selector);
-		//	return QueryDataMappingReader (mapping, command, commandData.InnerPage ? null : region, level, state);
-		//}
-
 		internal IEnumerable QueryJoinData (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
 		{
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
@@ -981,60 +931,6 @@ namespace Light.Data
 			DataDefine define = DataDefine.GetDefine (outputType);
 			return QueryDataDefineReader (define, command, region, level, null);
 		}
-
-		//internal List<K> QueryColumeList<K> (DataFieldInfo fieldInfo, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
-		//{
-		//	Type outputType = typeof (K);
-		//	CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null);
-		//	List<K> list = new List<K> ();
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//		DataDefine define = TransferDataDefine (outputType, fieldInfo.DataField);
-		//		IEnumerable ie = QueryDataReader (define, command, region, level, null);
-		//		foreach (K obj in ie) {
-		//			list.Add (obj);
-		//		}
-		//	}
-		//	return list;
-		//}
-
-		//internal DataTable QueryDynamicAggregateTable (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-		//{
-		//	CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (mapping, groupbys, functions, query, having, order);
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//		return QueryDataTable (command, null, level);
-		//	}
-		//}
-
-		//internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-		//	where T : class, new()
-		//{
-		//	AggregateTableMapping amapping = AggregateTableMapping.GetAggregateMapping (typeof (T));
-		//	CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
-		//	List<T> list = new List<T> ();
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//		IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
-		//		//list.AddRange (ie);
-		//		foreach (T item in ie) {
-		//			list.Add (item);
-		//		}
-		//	}
-		//	return list;
-		//}
-
-		//internal List<T> QueryDynamicAggregateList<T> (DataEntityMapping mapping, AggregateMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-		//	where T : class
-		//{
-		//	CommandData commandData = _dataBase.Factory.CreateDynamicAggregateCommand (mapping, groupbys, functions, query, having, order);
-		//	List<T> list = new List<T> ();
-		//	using (IDbCommand command = commandData.CreateCommand (_dataBase)) {
-		//		IEnumerable ie = QueryDataMappingReader (amapping, command, null, level, commandData.State);
-		//		//list.AddRange (ie);
-		//		foreach (T item in ie) {
-		//			list.Add (item);
-		//		}
-		//	}
-		//	return list;
-		//}
 
 		internal IEnumerable QueryDynamicAggregateEnumerable (DataEntityMapping mapping, DataMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
 		{
@@ -1344,46 +1240,6 @@ namespace Light.Data
 			return ds;
 		}
 
-		//internal virtual IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
-		//{
-		//	int start;
-		//	int size;
-		//	if (region != null) {
-		//		start = region.Start;
-		//		size = region.Size;
-		//	}
-		//	else {
-		//		start = 0;
-		//		size = int.MaxValue;
-		//	}
-		//	using (TransactionConnection transaction = CreateTransactionConnection (level)) {
-		//		transaction.Open ();
-		//		transaction.SetupCommand (dbcommand);
-		//		OutputCommand ("QueryDataReader", dbcommand, level, start, size);
-		//		using (IDataReader reader = dbcommand.ExecuteReader ()) {
-		//			int index = 0;
-		//			int count = 0;
-		//			bool over = false;
-		//			while (reader.Read ()) {
-		//				if (over) {
-		//					dbcommand.Cancel ();
-		//					break;
-		//				}
-		//				if (index >= start) {
-		//					count++;
-		//					object item = source.LoadData (this, reader, state);
-		//					if (count >= size) {
-		//						over = true;
-		//					}
-		//					yield return item;
-		//				}
-		//				index++;
-		//			}
-		//		}
-		//		transaction.Commit ();
-		//	}
-		//}
-
 		internal virtual IEnumerable QueryDataDefineReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			int start;
@@ -1423,48 +1279,6 @@ namespace Light.Data
 				transaction.Commit ();
 			}
 		}
-
-		//internal virtual IEnumerable<T> QueryDataMappingReader<T> (DataMapping source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
-		//	where T : class, new()
-		//{
-		//	int start;
-		//	int size;
-		//	if (region != null) {
-		//		start = region.Start;
-		//		size = region.Size;
-		//	}
-		//	else {
-		//		start = 0;
-		//		size = int.MaxValue;
-		//	}
-		//	using (TransactionConnection transaction = CreateTransactionConnection (level)) {
-		//		transaction.Open ();
-		//		transaction.SetupCommand (dbcommand);
-		//		OutputCommand ("QueryDataMappingReader", dbcommand, level, start, size);
-		//		using (IDataReader reader = dbcommand.ExecuteReader ()) {
-		//			int index = 0;
-		//			int count = 0;
-		//			bool over = false;
-		//			while (reader.Read ()) {
-		//				if (over) {
-		//					dbcommand.Cancel ();
-		//					break;
-		//				}
-		//				if (index >= start) {
-		//					count++;
-		//					object item = source.LoadData (this, reader, state);
-		//					if (count >= size) {
-		//						over = true;
-		//					}
-		//					yield return item as T;
-		//				}
-		//				index++;
-		//			}
-		//		}
-		//		transaction.Commit ();
-		//	}
-		//}
-
 
 		#endregion
 
@@ -1591,47 +1405,8 @@ namespace Light.Data
 
 		#endregion
 
-		#region 静态函数
-
-		//private static DataDefine TransferDataDefine (Type type, DataFieldMapping fieldMapping)
-		//{
-		//	PrimitiveFieldMapping pm = fieldMapping as PrimitiveFieldMapping;
-		//	if (pm != null) {
-		//		PrimitiveDataDefine pd = PrimitiveDataDefine.ParseDefine (type, pm);
-		//		return pd;
-		//	}
-		//	EnumFieldMapping em = fieldMapping as EnumFieldMapping;
-		//	if (em != null) {
-		//		EnumDataDefine ed = EnumDataDefine.ParseDefine (type, em);
-		//		return ed;
-		//	}
-		//	throw new LightDataException (RE.UnsupportDataDefineType);
-		//}
-
-		//private static IList CreateList (Type type)
-		//{
-		//	IList items;
-		//	Type itemstype = Type.GetType ("System.Collections.Generic.List`1");
-		//	itemstype = itemstype.MakeGenericType (type);
-		//	items = (IList)Activator.CreateInstance (itemstype);
-		//	return items;
-		//}
-
-		#endregion
-
-
-
 		#region single relate
 
-		/// <summary>
-		/// Queries the collection relate enumerable.
-		/// </summary>
-		/// <returns>The collection relate enumerable.</returns>
-		/// <param name="type">Type.</param>
-		/// <param name="selector">Selector.</param>
-		/// <param name="query">Query.</param>
-		/// <param name="owner">Owner.</param>
-		/// <param name="fieldPaths">Field paths.</param>
 		internal IEnumerable QueryCollectionRelateData (Type type, QueryExpression query, object owner, string [] fieldPaths)
 		{
 			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (type);

@@ -51,18 +51,34 @@ namespace Light.Data
 		}
 	}
 
+	/// <summary>
+	/// Aggregate extend parameter attribute.
+	/// </summary>
 	[AttributeUsage (AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 	public class AggregateExtendParamAttribute: ExtendParamAttribute
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:Light.Data.AggregateExtendParamAttribute"/> class.
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="value">Value.</param>
 		public AggregateExtendParamAttribute (string name, string value) : base (name, value)
 		{
 		
 		}
 	}
 
+	/// <summary>
+	/// Data table extend parameter attribute.
+	/// </summary>
 	[AttributeUsage (AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 	public class DataTableExtendParamAttribute: ExtendParamAttribute
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:Light.Data.DataTableExtendParamAttribute"/> class.
+		/// </summary>
+		/// <param name="name">Name.</param>
+		/// <param name="value">Value.</param>
 		public DataTableExtendParamAttribute (string name, string value) : base (name, value)
 		{
 		}

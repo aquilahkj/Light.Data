@@ -11,6 +11,11 @@ namespace Light.Data
 
 		OrderType _orderType = OrderType.ASC;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:Light.Data.AggregateOrderExpression"/> class.
+		/// </summary>
+		/// <param name="function">Function.</param>
+		/// <param name="orderType">Order type.</param>
 		public AggregateOrderExpression (AggregateData function, OrderType orderType)
 			: base (function.TableMapping)
 		{

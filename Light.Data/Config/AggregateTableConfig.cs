@@ -27,14 +27,5 @@ namespace Light.Data
 			get;
 			private set;
 		}
-
-		/// <summary>
-		/// Gets or sets the extend parameters.
-		/// </summary>
-		/// <value>The extend parameters.</value>
-		//		public ExtendParamsCollection ExtendParams {
-		//			get;
-		//			set;
-		//		}
 	}
 }

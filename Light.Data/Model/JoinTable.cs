@@ -528,16 +528,6 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Set order by random.
-		/// </summary>
-		/// <returns>The join.</returns>
-		//public JoinTable OrderByRandom ()
-		//{
-		//	_order = new RandomOrderExpression (this._modelList [0].Mapping);
-		//	return this;
-		//}
-
-		/// <summary>
 		/// Reset the specified order by expression.
 		/// </summary>
 		/// <returns>The join.</returns>
@@ -588,12 +578,6 @@ namespace Light.Data
 				size = _region.Size;
 			}
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (index, int.MaxValue);
-			//}
-			//else {
-			//	_region.Start = index;
-			//}
 			return this;
 		}
 
@@ -607,13 +591,7 @@ namespace Light.Data
 		{
 			int start = from;
 			int size = to - from;
-			//if (_region == null) {
-			//	_region = new Region (start, size);
-			//}
-			//else {
-			//	_region.Start = start;
-			//	_region.Size = size;
-			//}
+			_region = new Region (start, size);
 			return this;
 		}
 

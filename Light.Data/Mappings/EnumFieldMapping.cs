@@ -27,7 +27,7 @@ namespace Light.Data
 
 		bool auto = false;
 
-		Regex textRegex = new Regex ("char|text|string", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		//Regex textRegex = new Regex ("char|text|string", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)

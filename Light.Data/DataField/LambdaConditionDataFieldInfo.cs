@@ -92,13 +92,11 @@ namespace Light.Data
 			else if (!Object.Equals (ifTrueInfo, null)) {
 				ifTrue = ifTrueInfo.CreateSqlString (factory, isFullName, state);
 				object ifFalseObject = LambdaExpressionExtend.ConvertLambdaObject (_ifFalse);
-				string pn = factory.CreateTempParamName ();
 				ifFalse = state.AddDataParameter (ifFalseObject);
 			}
 			else if (!Object.Equals (ifFalseInfo, null)) {
 				ifFalse = ifFalseInfo.CreateSqlString (factory, isFullName, state);
 				object ifTrueObject = LambdaExpressionExtend.ConvertLambdaObject (_ifTrue);
-				string pn = factory.CreateTempParamName ();
 				ifTrue = state.AddDataParameter (ifTrueObject);
 			}
 			else {

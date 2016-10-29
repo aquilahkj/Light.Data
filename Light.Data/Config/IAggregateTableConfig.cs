@@ -6,13 +6,6 @@ namespace Light.Data
 	/// </summary>
 	interface IAggregateTableConfig
 	{
-		/// <summary>
-		/// Gets or sets the extend parameters.
-		/// </summary>
-		/// <value>The extend parameters.</value>
-//		ExtendParamsCollection ExtendParams {
-//			get;
-//			set;
-//		}
+
 	}
 }

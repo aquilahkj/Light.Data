@@ -93,7 +93,7 @@ namespace Light.Data.SQLiteTest
 				TeCheckValueMini value = context.CreateNew<TeCheckValueMini> ();
 				list.Add (value);
 			}
-			context.BulkInsert (list.ToArray ());
+			context.BatchInsert (list.ToArray ());
 			List<TeCheckValueMini> listAc = context.LQuery<TeCheckValueMini> ().ToList ();
 			Assert.AreEqual (list.Count, listAc.Count);
 			foreach (TeCheckValueMini valueAc in listAc) {
@@ -116,7 +116,7 @@ namespace Light.Data.SQLiteTest
 				TeCheckValueDefault value = context.CreateNew<TeCheckValueDefault> ();
 				list.Add (value);
 			}
-			context.BulkInsert (list.ToArray ());
+			context.BatchInsert (list.ToArray ());
 			List<TeCheckValueDefault> listAc = context.LQuery<TeCheckValueDefault> ().ToList ();
 			Assert.AreEqual (list.Count, listAc.Count);
 			foreach (TeCheckValueDefault valueAc in listAc) {
@@ -139,7 +139,7 @@ namespace Light.Data.SQLiteTest
 				TeCheckValueDefault2 value = context.CreateNew<TeCheckValueDefault2> ();
 				list.Add (value);
 			}
-			context.BulkInsert (list.ToArray ());
+			context.BatchInsert (list.ToArray ());
 			List<TeCheckValueDefault2> listAc = context.LQuery<TeCheckValueDefault2> ().ToList ();
 			Assert.AreEqual (list.Count, listAc.Count);
 			foreach (TeCheckValueDefault2 valueAc in listAc) {

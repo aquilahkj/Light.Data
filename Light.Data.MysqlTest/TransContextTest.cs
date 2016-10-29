@@ -281,7 +281,7 @@ namespace Light.Data.MysqlTest
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
@@ -290,7 +290,7 @@ namespace Light.Data.MysqlTest
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 				trans.RollbackTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
@@ -299,7 +299,7 @@ namespace Light.Data.MysqlTest
 
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
@@ -308,7 +308,7 @@ namespace Light.Data.MysqlTest
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
-				trans.BulkInsert (list.ToArray ());
+				trans.BatchInsert (list.ToArray ());
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
 			Assert.AreEqual (0, listAc.Count);
@@ -340,7 +340,7 @@ namespace Light.Data.MysqlTest
 				try {
 
 					trans.BeginTrans ();
-					trans.BulkInsert (list.ToArray ());
+					trans.BatchInsert (list.ToArray ());
 					trans.LQuery<TeUser> ().Where (TeUser.IdField == 2).Update (new UpdateSetValue [] { new UpdateSetValue (TeUser.IdField, 3) });
 					trans.CommitTrans ();
 				}
@@ -356,6 +356,7 @@ namespace Light.Data.MysqlTest
 				user.Account = "";
 				int ret = context.Update (user);
 				Assert.AreEqual (1, ret);
+				Console.WriteLine (ex);
 			}
 
 		}

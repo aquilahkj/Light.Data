@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -22,9 +23,9 @@ namespace Light.Data
 
 		protected string _wildcards = "%";
 
-		protected bool _havingAlias;
+		protected bool _havingAlias = false;
 
-		protected bool _orderbyAlias;
+		protected bool _orderbyAlias = false;
 
 		protected Dictionary<QueryPredicate, string> _queryPredicateDict = new Dictionary<QueryPredicate, string> ();
 
@@ -78,14 +79,6 @@ namespace Light.Data
 			}
 		}
 
-		//protected bool _canInnerPage;
-
-		//public bool CanInnerPager {
-		//	get {
-		//		return _canInnerPage;
-		//	}
-		//}
-
 		protected CommandFactory ()
 		{
 			InitialPredicate ();
@@ -99,46 +92,8 @@ namespace Light.Data
 
 		#region 增删改操作命令
 
-		//protected virtual List<DataParameter> CreateColumnParameter (IEnumerable<FieldMapping> mappings, object source)
-		//{
-		//	List<DataParameter> paramList = new List<DataParameter> ();
-		//	foreach (DataFieldMapping field in mappings) {
-		//		object obj = field.Handler.Get (source);
-		//		DataParameter dataParameter = new DataParameter (field.Name, field.ToColumn (obj), field.DBType, ParameterDirection.Input);
-		//		paramList.Add (dataParameter);
-		//	}
-		//	return paramList;
-		//}
-
-		//protected virtual List<DataParameter> CreateExpressionParameter (IEnumerable<FieldMapping> mappings, object source)
-		//{
-		//	List<DataParameter> paramList = new List<DataParameter> ();
-		//	foreach (DataFieldMapping field in mappings) {
-		//		object obj = field.Handler.Get (source);
-		//		DataParameter dataParameter = new DataParameter (field.Name, field.ToParameter (obj), field.DBType, ParameterDirection.Input);
-		//		paramList.Add (dataParameter);
-		//	}
-		//	return paramList;
-		//}
-
 		public virtual CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity, CreateSqlState state)
 		{
-			//List<DataParameter> paramList = CreateColumnParameter (mapping.NoIdentityFields, entity);
-			//string [] insertList = new string [paramList.Count];
-			//string [] valuesList = new string [paramList.Count];
-			//int index = 0;
-			//foreach (DataParameter dataParameter in paramList) {
-			//	insertList [index] = CreateDataFieldSql (dataParameter.ParameterName);
-			//	string paramName = CreateParamName ("P" + index);
-			//	valuesList [index] = paramName;
-			//	dataParameter.ParameterName = paramName;
-			//	index++;
-			//}
-			//string insert = string.Join (",", insertList);
-			//string values = string.Join (",", valuesList);
-			//string sql = string.Format ("insert into {0}({1})values({2})", CreateDataTableSql (mapping.TableName), insert, values);
-			//CommandData command = new CommandData (sql, paramList);
-			//return command;
 			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
 			int insertLen = fields.Count;
 			if (insertLen == 0) {
@@ -160,7 +115,7 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateUpdateCommand (DataTableEntityMapping mapping, object entity,  CreateSqlState state)
+		public virtual CommandData CreateUpdateCommand (DataTableEntityMapping mapping, object entity, CreateSqlState state)
 		{
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
@@ -224,19 +179,6 @@ namespace Light.Data
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
-			//List<DataParameter> primaryList = CreateExpressionParameter (mapping.PrimaryKeyFields, entity);
-			//string [] whereList = new string [primaryList.Count];
-			//int index = 0;
-			//foreach (DataParameter dataParameter in primaryList) {
-			//	string paramName = CreateParamName ("P" + index);
-			//	whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), paramName);
-			//	dataParameter.ParameterName = paramName;
-			//	index++;
-			//}
-			//string where = string.Join (" and ", whereList);
-			//string sql = string.Format ("delete from {0} where {1}", CreateDataTableSql (mapping.TableName), where);
-			//CommandData command = new CommandData (sql, primaryList);
-			//return command;
 			IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
 			int keyLen = keyFields.Count;
 			string [] whereList = new string [keyLen];
@@ -257,19 +199,6 @@ namespace Light.Data
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
-			//List<DataParameter> primaryList = CreateColumnParameter (mapping.PrimaryKeyFields, entity);
-			//string [] whereList = new string [primaryList.Count];
-			//int index = 0;
-			//foreach (DataParameter dataParameter in primaryList) {
-			//	string paramName = CreateParamName ("P" + index);
-			//	whereList [index] = string.Format ("{0}={1}", CreateDataFieldSql (dataParameter.ParameterName), paramName);
-			//	dataParameter.ParameterName = paramName;
-			//	index++;
-			//}
-			//string where = string.Join (" and ", whereList);
-			//string sql = string.Format ("select 1 from {0} where {1}", CreateDataTableSql (mapping.TableName), where);
-			//CommandData command = new CommandData (sql, primaryList);
-			//return command;
 			IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
 			int keyLen = keyFields.Count;
 			string [] whereList = new string [keyLen];
@@ -399,13 +328,13 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateSelectJoinTableCommand (ISelector selector, IJoinModel[] modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		public virtual CommandData CreateSelectJoinTableCommand (ISelector selector, IJoinModel [] modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
 		{
 			string selectString = selector.CreateSelectString (this, true, state);
 			return CreateSelectJoinTableBaseCommand (selectString, modelList, query, order, region, state);
 		}
 
-		public virtual CommandData CreateSelectJoinTableBaseCommand (string customSelect, IJoinModel[] modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		public virtual CommandData CreateSelectJoinTableBaseCommand (string customSelect, IJoinModel [] modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
 		{
 			StringBuilder tables = new StringBuilder ();
 			OrderExpression totalOrder = null;
@@ -417,28 +346,6 @@ namespace Light.Data
 
 				string modelsql = model.CreateSqlString (this, state);
 				tables.Append (modelsql);
-
-				//if (model.Query != null) {
-				//	tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
-				//	tables.Append (GetQueryString (model.Query, false, state));
-				//	string aliseName = model.AliasTableName;
-				//	if (aliseName != null) {
-				//		tables.AppendFormat (") as {0}", CreateDataTableSql (aliseName));
-				//	}
-				//	else {
-				//		tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
-				//	}
-				//}
-				//else {
-				//	string aliseName = model.AliasTableName;
-				//	if (aliseName != null) {
-				//		tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
-				//	}
-				//	else {
-				//		tables.Append (CreateDataTableSql (model.Mapping.TableName));
-				//	}
-				//}
-
 				if (model.Connect != null && model.Connect.On != null) {
 					tables.Append (GetOnString (model.Connect.On, state));
 				}
@@ -589,7 +496,7 @@ namespace Light.Data
 			return CreateSelectBaseCommand (mapping, select, query, null, null, state);
 		}
 
-		public virtual CommandData CreateAggregateJoinCountCommand (IJoinModel[] modelList, QueryExpression query, CreateSqlState state)
+		public virtual CommandData CreateAggregateJoinCountCommand (IJoinModel [] modelList, QueryExpression query, CreateSqlState state)
 		{
 			string select = CreateCountAllSql ();
 			return CreateSelectJoinTableBaseCommand (select, modelList, query, null, null, state);
@@ -696,7 +603,7 @@ namespace Light.Data
 			return selectCommandData;
 		}
 
-		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, IJoinModel[] modelList, QueryExpression query, OrderExpression order, CreateSqlState state)
+		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, IJoinModel [] modelList, QueryExpression query, OrderExpression order, CreateSqlState state)
 		{
 			CommandData selectCommandData = CreateSelectJoinTableCommand (selector, modelList, query, order, null, state);
 			DataFieldInfo [] insertFields = selector.GetInsertFields ();
@@ -710,155 +617,15 @@ namespace Light.Data
 			return selectCommandData;
 		}
 
-		//public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertMapping, DataFieldInfo [] insertFields, DataTableEntityMapping selectMapping, SelectFieldInfo [] selectFields, QueryExpression query, OrderExpression order, CreateSqlState state)
-		//{
-		//	StringBuilder sql = new StringBuilder ();
-		//	string insertString;
-		//	string selectString;
-		//	int insertCount;
-		//	bool noidentity = false;
-		//	DataFieldMapping [] insertFieldMappings;
-		//	//List<DataParameter> isnertparameters = new List<DataParameter> ();
-		//	if (insertFields != null && insertFields.Length > 0) {
-		//		insertFieldMappings = new DataFieldMapping [insertFields.Length];
-		//		string [] fieldNames = new string [insertFields.Length];
-		//		for (int i = 0; i < insertFields.Length; i++) {
-		//			DataFieldInfo info = insertFields [i];
-		//			//DataParameter [] dataParameters = null;
-		//			if (!insertMapping.Equals (info.TableMapping)) {
-		//				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-		//			}
-		//			insertFieldMappings [i] = info.DataField;
-		//			fieldNames [i] = info.CreateSqlString (this, false, state);
-		//			//if (dataParameters != null && dataParameters.Length > 0) {
-		//			//	isnertparameters.AddRange (dataParameters);
-		//			//}
-		//		}
-		//		insertCount = fieldNames.Length;
-		//		insertString = string.Join (",", fieldNames);
-		//	}
-		//	else if (insertMapping.HasIdentity && selectMapping.HasIdentity && insertMapping.IdentityField.PositionOrder == selectMapping.IdentityField.PositionOrder) {
-		//		insertFieldMappings = new DataFieldMapping [insertMapping.FieldCount - 1];
-		//		string [] fieldNames = new string [insertMapping.FieldCount - 1];
-		//		int i = 0;
-		//		foreach (DataFieldMapping field in insertMapping.NoIdentityFields) {
-		//			insertFieldMappings [i] = field;
-		//			fieldNames [i] = CreateDataFieldSql (field.Name);
-		//			i++;
-		//		}
-		//		insertCount = fieldNames.Length;
-		//		insertString = string.Join (",", fieldNames);
-		//		noidentity = true;
-		//	}
-		//	else {
-		//		insertFieldMappings = new DataFieldMapping [insertMapping.FieldCount];
-		//		string [] fieldNames = new string [insertMapping.FieldCount];
-		//		int i = 0;
-		//		foreach (DataFieldMapping field in insertMapping.DataEntityFields) {
-		//			insertFieldMappings [i] = field;
-		//			fieldNames [i] = CreateDataFieldSql (field.Name);
-		//			i++;
-		//		}
-		//		insertCount = fieldNames.Length;
-		//		insertString = string.Join (",", fieldNames);
-		//	}
-		//	//List<DataParameter> selectparameters = new List<DataParameter> ();
-		//	if (selectFields != null && selectFields.Length > 0) {
-		//		if (selectFields.Length != insertCount) {
-		//			throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
-		//		}
-		//		string [] selectFieldNames = new string [selectFields.Length];
-		//		for (int i = 0; i < selectFields.Length; i++) {
-		//			SelectFieldInfo info = selectFields [i];
-		//			if (info.TableMapping != null && !selectMapping.Equals (info.TableMapping)) {
-		//				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-		//			}
-		//			//EnumSelectFieldInfo enuminfo = info as EnumSelectFieldInfo;
-		//			//if (enuminfo != null && enuminfo.EnumType == insertFieldMappings [i].ObjectType) {
-		//			//	EnumFieldMapping enumMapping = insertFieldMappings [i] as EnumFieldMapping;
-		//			//	selectFieldNames [i] = enuminfo.CreateSqlString (this, enumMapping.EnumType, state);
-		//			//}
-		//			//else {
-		//			selectFieldNames [i] = info.CreateSqlString (this, state);
-		//			//}
-		//		}
-		//		selectString = string.Join (",", selectFieldNames);
-		//	}
-		//	else if (noidentity) {
-		//		if (selectMapping.FieldCount - 1 != insertCount) {
-		//			throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
-		//		}
-		//		string [] fieldNames = new string [selectMapping.FieldCount - 1];
-		//		int i = 0;
-		//		foreach (DataFieldMapping field in selectMapping.NoIdentityFields) {
-		//			fieldNames [i] = CreateDataFieldSql (field.Name);
-		//			i++;
-		//		}
-		//		selectString = string.Join (",", fieldNames);
-		//	}
-		//	else {
-		//		if (selectMapping.FieldCount != insertCount) {
-		//			throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
-		//		}
-		//		string [] fieldNames = new string [insertCount];
-		//		int i = 0;
-		//		foreach (DataFieldMapping field in selectMapping.DataEntityFields) {
-		//			fieldNames [i] = CreateDataFieldSql (field.Name);
-		//			i++;
-		//		}
-		//		selectString = string.Join (",", fieldNames);
-		//	}
-		//	//DataParameter [] queryparameters;
-		//	//DataParameter [] orderparameters;
-		//	//string queryString = GetQueryString (query, out queryparameters);
-		//	//string orderString = GetOrderString (order, out orderparameters);
-		//	sql.AppendFormat ("insert into {0}({1})", CreateDataTableSql (insertMapping.TableName), insertString);
-		//	sql.AppendFormat ("select {0} from {1}", selectString, CreateDataTableSql (selectMapping.TableName));
-		//	if (query != null) {
-		//		sql.Append (GetQueryString (query, false, state));
-		//	}
-		//	if (order != null) {
-		//		sql.Append (GetOrderString (order, false, state));
-		//	}
-		//	//DataParameter [] parameters = DataParameter.ConcatDataParameters (isnertparameters, selectparameters, queryparameters, orderparameters);
-		//	CommandData command = new CommandData (sql.ToString ());
-		//	//command.TransParamName = true;
-		//	return command;
-		//}
-
-		//public virtual CommandData CreateUpdateMassCommand (DataTableEntityMapping mapping, UpdateSetValue [] updateSetValues, QueryExpression query, CreateSqlState state)
-		//{
-		//	StringBuilder sql = new StringBuilder ();
-		//	int length = updateSetValues.Length;
-		//	string [] setList = new string [length];
-		//	for (int i = 0; i < length; i++) {
-		//		if (!mapping.Equals (updateSetValues [i].DataField.DataField.EntityMapping)) {
-		//			throw new LightDataException (RE.UpdateFieldTypeIsError);
-		//		}
-		//		UpdateSetValue ups = updateSetValues [i];
-		//		DataFieldInfo fieldInfo = ups.DataField;
-		//		string name = state.AddDataParameter (fieldInfo.DataField.ToColumn (ups.Value), fieldInfo.DBType);
-		//		setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateSqlString (this, false, state), name);
-		//	}
-		//	string setString = string.Join (",", setList);
-		//	sql.AppendFormat ("update {0} set {1}", CreateDataTableSql (mapping.TableName), setString);
-		//	if (query != null) {
-		//		sql.Append (GetQueryString (query, false, state));
-		//	}
-		//	CommandData command = new CommandData (sql.ToString ());
-		//	//command.TransParamName = true;
-		//	return command;
-		//}
-
-		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
-			if (entitys == null || entitys.Length == 0) {
+			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
 				batchCount = 10;
 			}
-			int totalCount = entitys.Length;
+			int totalCount = entitys.Count;
 			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
 			int insertLen = fields.Count;
 			if (insertLen == 0) {
@@ -905,62 +672,9 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
-		//public virtual CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
-		//{
-		//	if (entitys == null || entitys.Length == 0) {
-		//		throw new ArgumentNullException (nameof (entitys));
-		//	}
-		//	if (batchCount <= 0) {
-		//		batchCount = 10;
-		//	}
-		//	int totalCount = entitys.Length;
-		//	List<string> insertList = new List<string> ();
-		//	foreach (DataFieldMapping field in mapping.NoIdentityFields) {
-		//		insertList.Add (CreateDataFieldSql (field.Name));
-		//	}
-		//	string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), string.Join (",", insertList));
-		//	int createCount = 0;
-		//	int totalCreateCount = 0;
-		//	StringBuilder totalSql = new StringBuilder ();
-		//	int paramIndex = 0;
-		//	List<DataParameter> dataParams = new List<DataParameter> ();
-		//	List<CommandData> commands = new List<CommandData> ();
-		//	int i = 0;
-		//	foreach (object entity in entitys) {
-		//		List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-		//		string [] valueList = new string [entityParams.Count];
-		//		int index = 0;
-		//		foreach (DataParameter dataParameter in entityParams) {
-		//			string paramName = CreateParamName ("P" + paramIndex);
-		//			valueList [index] = paramName;
-		//			dataParameter.ParameterName = paramName;
-		//			dataParams.Add (dataParameter);
-		//			index++;
-		//			paramIndex++;
-		//		}
-		//		string value = string.Join (",", valueList);
-		//		totalSql.AppendFormat ("{0}values({1});", insertsql, value);
-		//		createCount++;
-		//		totalCreateCount++;
-		//		if (createCount == batchCount || totalCreateCount == totalCount) {
-		//			CommandData command = new CommandData (totalSql.ToString (), dataParams);
-		//			commands.Add (command);
-		//			if (totalCreateCount == totalCount) {
-		//				break;
-		//			}
-		//			dataParams = new List<DataParameter> ();
-		//			createCount = 0;
-		//			paramIndex = 0;
-		//			totalSql = new StringBuilder ();
-		//		}
-		//		i++;
-		//	}
-		//	return commands.ToArray ();
-		//}
-
-		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkUpdateCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkUpdateCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
-			if (entitys == null || entitys.Length == 0) {
+			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
@@ -973,7 +687,7 @@ namespace Light.Data
 			IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
 			int keyLen = keyFields.Count;
 
-			int totalCount = entitys.Length;
+			int totalCount = entitys.Count;
 			int createCount = 0;
 			int totalCreateCount = 0;
 
@@ -1045,9 +759,9 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
-		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkDeleteCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkDeleteCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
-			if (entitys == null || entitys.Length == 0) {
+			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
@@ -1060,7 +774,7 @@ namespace Light.Data
 			IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
 			int keyLen = keyFields.Count;
 
-			int totalCount = entitys.Length;
+			int totalCount = entitys.Count;
 			int createCount = 0;
 			int totalCreateCount = 0;
 
@@ -1108,568 +822,6 @@ namespace Light.Data
 			}
 		}
 
-
-		#endregion
-
-		#region 主命令语句块 outdate
-		/*
-		public virtual string GetQueryString (QueryExpression query, out DataParameter [] parameters, bool fullFieldName = false)
-		{
-			string queryString = null;
-			parameters = null;
-			if (query != null) {
-				queryString = string.Format ("where {0}", query.CreateSqlString (this, fullFieldName, out parameters));
-			}
-			return queryString;
-		}
-
-		public virtual string GetOrderString (OrderExpression order, out DataParameter [] parameters, bool fullFieldName = false)
-		{
-			string orderString = null;
-			parameters = null;
-			if (order != null) {
-				orderString = string.Format ("order by {0}", order.CreateSqlString (this, fullFieldName, out parameters));
-			}
-			return orderString;
-		}
-
-		public virtual string GetOnString (DataFieldExpression on, out DataParameter [] parameters, bool fullFieldName = true)
-		{
-			string onString = null;
-			parameters = null;
-			if (on != null) {
-				onString = string.Format ("on {0}", on.CreateSqlString (this, fullFieldName, out parameters));
-			}
-			return onString;
-		}
-
-		public virtual string GetHavingString (AggregateHavingExpression query, out DataParameter [] parameters)
-		{
-			string queryString = null;
-			parameters = null;
-			if (query != null) {
-				queryString = string.Format ("having {0}", query.CreateSqlString (this, false, out parameters));
-			}
-			return queryString;
-		}
-
-		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, Region region)
-		{
-			if (region != null && !_canInnerPage) {
-				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
-			}
-			CommandData data;
-			string selectString;
-			DataParameter [] dataParameters = null;
-			if (selector == null) {
-				string [] fieldNames = new string [mapping.FieldCount];
-				int i = 0;
-				foreach (DataFieldMapping field in mapping.DataEntityFields) {
-					fieldNames [i] = CreateDataFieldSql (field.Name);
-					i++;
-				}
-				selectString = string.Join (",", fieldNames);
-			}
-			else {
-				selectString = selector.CreateSelectString (this, out dataParameters);
-			}
-			data = this.CreateSelectBaseCommand (mapping, selectString, dataParameters, query, order, region);
-			return data;
-		}
-
-		public virtual CommandData CreateSelectSingleFieldCommand (DataFieldInfo fieldinfo, QueryExpression query, OrderExpression order, bool distinct, Region region)
-		{
-			if (region != null && !_canInnerPage) {
-				throw new LightDataException (RE.DataBaseNotSupportInnerPage);
-			}
-			DataFieldMapping fieldMapping = fieldinfo.DataField;
-			if (fieldMapping is PrimitiveFieldMapping || fieldMapping is EnumFieldMapping || fieldMapping is CustomFieldMapping) {
-				DataEntityMapping mapping = fieldMapping.EntityMapping;
-				DataParameter [] dataParameters;
-				string select = fieldinfo.CreateSqlString (this, false, out dataParameters);
-				if (distinct) {
-					select = "distinct " + select;
-				}
-				return CreateSelectBaseCommand (mapping, select, dataParameters, query, order, region);
-			}
-			else {
-				throw new LightDataException (RE.OnlyPrimitiveFieldCanSelectSingle);
-			}
-		}
-
-		public virtual CommandData CreateSelectBaseCommand (DataEntityMapping mapping, string customSelect, DataParameter [] dataParameters, QueryExpression query, OrderExpression order, Region region)
-		{
-			StringBuilder sql = new StringBuilder ();
-			DataParameter [] queryparameters;
-			DataParameter [] orderparameters;
-			string queryString = GetQueryString (query, out queryparameters);
-			string orderString = GetOrderString (order, out orderparameters);
-			sql.AppendFormat ("select {0} from {1}", customSelect, CreateDataTableSql (mapping.TableName));
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
-			}
-			if (!string.IsNullOrEmpty (orderString)) {
-				sql.AppendFormat (" {0}", orderString);
-			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, queryparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
-			return command;
-		}
-
-		public virtual CommandData CreateSelectJoinTableCommand (ISelector selector, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region)
-		{
-			DataParameter [] dataParameters;
-			string selectString = selector.CreateSelectString (this, out dataParameters);
-			return CreateSelectJoinTableBaseCommand (selectString, dataParameters, modelList, query, order, region);
-		}
-
-		public virtual CommandData CreateSelectJoinTableBaseCommand (string customSelect, DataParameter [] dataParameters, List<JoinModel> modelList, QueryExpression query, OrderExpression order, Region region)
-		{
-			StringBuilder tables = new StringBuilder ();
-			OrderExpression totalOrder = null;
-			QueryExpression totalQuery = null;
-			List<DataParameter> innerParameters = new List<DataParameter> ();
-			foreach (JoinModel model in modelList) {
-				if (model.Connect != null) {
-					tables.AppendFormat (" {0} ", _joinCollectionPredicateDict [model.Connect.Type]);
-				}
-
-				if (model.Query != null) {
-					DataParameter [] queryparameters_sub;
-					string mqueryString = GetQueryString (model.Query, out queryparameters_sub);
-					tables.AppendFormat ("(select * from {0}", CreateDataTableSql (model.Mapping.TableName));
-					if (!string.IsNullOrEmpty (mqueryString)) {
-						tables.AppendFormat (" {0}", mqueryString);
-						if (queryparameters_sub != null && queryparameters_sub.Length > 0) {
-							innerParameters.AddRange (queryparameters_sub);
-						}
-					}
-					string aliseName = model.AliasTableName;
-					if (aliseName != null) {
-						tables.AppendFormat (") as {0}", CreateDataTableSql (aliseName));
-					}
-					else {
-						tables.AppendFormat (") as {0}", CreateDataTableSql (model.Mapping.TableName));
-					}
-				}
-				else {
-					string aliseName = model.AliasTableName;
-					if (aliseName != null) {
-						tables.AppendFormat ("{0} as {1}", CreateDataTableSql (model.Mapping.TableName), CreateDataTableSql (aliseName));
-					}
-					else {
-						tables.Append (CreateDataTableSql (model.Mapping.TableName));
-					}
-				}
-				if (model.Order != null) {
-					totalOrder &= model.Order.CreateAliasTableNameOrder (model.AliasTableName);
-				}
-				if (model.Connect != null && model.Connect.On != null) {
-					DataParameter [] onparameters;
-					string onString = GetOnString (model.Connect.On, out onparameters);
-					if (!string.IsNullOrEmpty (onString)) {
-						tables.AppendFormat (" {0}", onString);
-						if (onparameters != null && onparameters.Length > 0) {
-							innerParameters.AddRange (onparameters);
-						}
-					}
-				}
-			}
-			totalQuery &= query;
-			totalOrder &= order;
-			StringBuilder sql = new StringBuilder ();
-			DataParameter [] queryparameters;
-			DataParameter [] orderparameters;
-			string queryString = GetQueryString (totalQuery, out queryparameters, true);
-			string orderString = GetOrderString (totalOrder, out orderparameters, true);
-
-			sql.AppendFormat ("select {0} from {1}", customSelect, tables);
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
-			}
-			if (!string.IsNullOrEmpty (orderString)) {
-				sql.AppendFormat (" {0}", orderString);
-			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (dataParameters, innerParameters, queryparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
-			return command;
-		}
-
-		public virtual CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query)
-		{
-			Region region = null;
-			if (_canInnerPage) {
-				region = new Region (0, 1);
-			}
-			return this.CreateSelectBaseCommand (mapping, "1", null, query, null, region);
-		}
-
-		public virtual CommandData CreateAggregateFunctionCommand (DataFieldMapping fieldMapping, AggregateType aggregateType, QueryExpression query, bool distinct)
-		{
-			DataEntityMapping mapping = fieldMapping.EntityMapping;
-			if (aggregateType != AggregateType.COUNT) {
-				TypeCode code = Type.GetTypeCode (fieldMapping.ObjectType);
-				if (aggregateType == AggregateType.MAX || aggregateType == AggregateType.MIN) {
-					if (code == TypeCode.Char || code == TypeCode.DBNull || code == TypeCode.Object || code == TypeCode.String) {
-						throw new LightDataException (RE.TheTypeOfAggregationFieldIsNotRight);
-					}
-				}
-				else {
-					if (code == TypeCode.Char || code == TypeCode.DBNull || code == TypeCode.Object || code == TypeCode.String || code == TypeCode.DateTime) {
-						throw new LightDataException (RE.TheTypeOfAggregationFieldIsNotRight);
-					}
-				}
-			}
-
-			string function = null;
-			switch (aggregateType) {
-			case AggregateType.COUNT:
-				function = CreateCountSql (CreateDataFieldSql (fieldMapping.Name), distinct);
-				break;
-			case AggregateType.SUM:
-				function = CreateSumSql (CreateDataFieldSql (fieldMapping.Name), distinct);
-				break;
-			case AggregateType.AVG:
-				function = CreateAvgSql (CreateDataFieldSql (fieldMapping.Name), distinct);
-				break;
-			case AggregateType.MAX:
-				function = CreateMaxSql (CreateDataFieldSql (fieldMapping.Name));
-				break;
-			case AggregateType.MIN:
-				function = CreateMinSql (CreateDataFieldSql (fieldMapping.Name));
-				break;
-			}
-			return CreateSelectBaseCommand (mapping, function, null, query, null, null);
-		}
-
-		public virtual CommandData CreateAggregateCountCommand (DataEntityMapping mapping, QueryExpression query)
-		{
-			string select = CreateCountAllSql ();
-			return CreateSelectBaseCommand (mapping, select, null, query, null, null);//, false);
-		}
-
-		public virtual CommandData CreateAggregateJoinCountCommand (List<JoinModel> modelList, QueryExpression query)
-		{
-			string select = CreateCountAllSql ();
-			return CreateSelectJoinTableBaseCommand (select, null, modelList, query, null, null);
-		}
-
-		public virtual CommandData CreateDeleteMassCommand (DataTableEntityMapping mapping, QueryExpression query)
-		{
-			StringBuilder sql = new StringBuilder ();
-			DataParameter [] parameters;
-			string queryString = GetQueryString (query, out parameters);
-
-			sql.AppendFormat ("delete from {0}", CreateDataTableSql (mapping.TableName));
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
-			}
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
-			return command;
-		}
-
-		public virtual CommandData CreateSelectInsertCommand (DataTableEntityMapping insertMapping, DataFieldInfo [] insertFields, DataTableEntityMapping selectMapping, SelectFieldInfo [] selectFields, QueryExpression query, OrderExpression order)
-		{
-			StringBuilder sql = new StringBuilder ();
-			string insertString;
-			string selectString;
-			int insertCount;
-			bool noidentity = false;
-			DataFieldMapping [] insertFieldMappings;
-			List<DataParameter> isnertparameters = new List<DataParameter> ();
-			if (insertFields != null && insertFields.Length > 0) {
-				insertFieldMappings = new DataFieldMapping [insertFields.Length];
-				string [] fieldNames = new string [insertFields.Length];
-				for (int i = 0; i < insertFields.Length; i++) {
-					DataFieldInfo info = insertFields [i];
-					DataParameter [] dataParameters = null;
-					if (!insertMapping.Equals (info.TableMapping)) {
-						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-					}
-					insertFieldMappings [i] = info.DataField;
-					fieldNames [i] = info.CreateSqlString (this, false, out dataParameters);
-					if (dataParameters != null && dataParameters.Length > 0) {
-						isnertparameters.AddRange (dataParameters);
-					}
-				}
-				insertCount = fieldNames.Length;
-				insertString = string.Join (",", fieldNames);
-			}
-			else if (insertMapping.HasIdentity && selectMapping.HasIdentity && insertMapping.IdentityField.PositionOrder == selectMapping.IdentityField.PositionOrder) {
-				insertFieldMappings = new DataFieldMapping [insertMapping.FieldCount - 1];
-				string [] fieldNames = new string [insertMapping.FieldCount - 1];
-				int i = 0;
-				foreach (DataFieldMapping field in insertMapping.NoIdentityFields) {
-					insertFieldMappings [i] = field;
-					fieldNames [i] = CreateDataFieldSql (field.Name);
-					i++;
-				}
-				insertCount = fieldNames.Length;
-				insertString = string.Join (",", fieldNames);
-				noidentity = true;
-			}
-			else {
-				insertFieldMappings = new DataFieldMapping [insertMapping.FieldCount];
-				string [] fieldNames = new string [insertMapping.FieldCount];
-				int i = 0;
-				foreach (DataFieldMapping field in insertMapping.DataEntityFields) {
-					insertFieldMappings [i] = field;
-					fieldNames [i] = CreateDataFieldSql (field.Name);
-					i++;
-				}
-				insertCount = fieldNames.Length;
-				insertString = string.Join (",", fieldNames);
-			}
-
-			List<DataParameter> selectparameters = new List<DataParameter> ();
-			if (selectFields != null && selectFields.Length > 0) {
-				if (selectFields.Length != insertCount) {
-					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
-				}
-				string [] selectFieldNames = new string [selectFields.Length];
-
-				for (int i = 0; i < selectFields.Length; i++) {
-					SelectFieldInfo info = selectFields [i];
-					if (info.TableMapping != null && !selectMapping.Equals (info.TableMapping)) {
-						throw new LightDataException (RE.FieldIsNotMatchDataMapping);
-					}
-					DataParameter [] dps;
-					EnumSelectFieldInfo enuminfo = info as EnumSelectFieldInfo;
-					if (enuminfo != null && enuminfo.EnumType == insertFieldMappings [i].ObjectType) {
-						EnumFieldMapping enumMapping = insertFieldMappings [i] as EnumFieldMapping;
-						selectFieldNames [i] = enuminfo.CreateSqlString (this, enumMapping.EnumType, out dps);
-					}
-					else {
-						selectFieldNames [i] = info.CreateSqlString (this, out dps);
-					}
-
-					if (dps != null && dps.Length > 0) {
-						selectparameters.AddRange (dps);
-					}
-				}
-				selectString = string.Join (",", selectFieldNames);
-			}
-			else if (noidentity) {
-				if (selectMapping.FieldCount - 1 != insertCount) {
-					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
-				}
-				string [] fieldNames = new string [selectMapping.FieldCount - 1];
-				int i = 0;
-				foreach (DataFieldMapping field in selectMapping.NoIdentityFields) {
-					fieldNames [i] = CreateDataFieldSql (field.Name);
-					i++;
-				}
-				selectString = string.Join (",", fieldNames);
-			}
-			else {
-				if (selectMapping.FieldCount != insertCount) {
-					throw new LightDataException (RE.SelectFiledsCountNotEquidInsertFiledCount);
-				}
-				string [] fieldNames = new string [insertCount];
-				int i = 0;
-				foreach (DataFieldMapping field in selectMapping.DataEntityFields) {
-					fieldNames [i] = CreateDataFieldSql (field.Name);
-					i++;
-				}
-				selectString = string.Join (",", fieldNames);
-			}
-			DataParameter [] queryparameters;
-			DataParameter [] orderparameters;
-			string queryString = GetQueryString (query, out queryparameters);
-			string orderString = GetOrderString (order, out orderparameters);
-			sql.AppendFormat ("insert into {0}({1})", CreateDataTableSql (insertMapping.TableName), insertString);
-			sql.AppendFormat ("select {0} from {1}", selectString, CreateDataTableSql (selectMapping.TableName));
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
-			}
-			if (!string.IsNullOrEmpty (orderString)) {
-				sql.AppendFormat (" {0}", orderString);
-			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (isnertparameters, selectparameters, queryparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
-			return command;
-		}
-
-		public virtual CommandData CreateUpdateMassCommand (DataTableEntityMapping mapping, UpdateSetValue [] updateSetValues, QueryExpression query)
-		{
-			StringBuilder sql = new StringBuilder ();
-			DataParameter [] queryparameters;
-			string queryString = GetQueryString (query, out queryparameters);
-
-			int length = updateSetValues.Length;
-			DataParameter [] setparameters = new DataParameter [length];
-			List<DataParameter> fieldParameters = new List<DataParameter> ();
-			string [] setList = new string [length];
-
-			for (int i = 0; i < length; i++) {
-				if (!mapping.Equals (updateSetValues [i].DataField.DataField.EntityMapping)) {
-					throw new LightDataException (RE.UpdateFieldTypeIsError);
-				}
-				string pn = CreateTempParamName ();
-				UpdateSetValue ups = updateSetValues [i];
-				DataFieldInfo fieldInfo = ups.DataField;
-				DataParameter dataParameter = new DataParameter (pn, fieldInfo.DataField.ToColumn (ups.Value), fieldInfo.DBType);
-
-				setparameters [i] = dataParameter;
-				DataParameter [] dataParameters = null;
-				setList [i] = string.Format ("{0}={1}", updateSetValues [i].DataField.CreateSqlString (this, false, out dataParameters), setparameters [i].ParameterName);
-				if (dataParameters != null && dataParameters.Length > 0) {
-					fieldParameters.AddRange (dataParameters);
-				}
-			}
-			string setString = string.Join (",", setList);
-			sql.AppendFormat ("update {0} set {1}", CreateDataTableSql (mapping.TableName), setString);
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
-			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (fieldParameters, setparameters, queryparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
-			return command;
-		}
-
-		public virtual CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
-		{
-			if (entitys == null || entitys.Length == 0) {
-				throw new ArgumentNullException (nameof (entitys));
-			}
-			if (batchCount <= 0) {
-				batchCount = 10;
-			}
-			int totalCount = entitys.Length;
-			List<string> insertList = new List<string> ();
-			foreach (DataFieldMapping field in mapping.NoIdentityFields) {
-				insertList.Add (CreateDataFieldSql (field.Name));
-			}
-
-			string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), string.Join (",", insertList));
-
-			int createCount = 0;
-			int totalCreateCount = 0;
-
-			StringBuilder totalSql = new StringBuilder ();
-			int paramIndex = 0;
-			List<DataParameter> dataParams = new List<DataParameter> ();
-			List<CommandData> commands = new List<CommandData> ();
-			int i = 0;
-			foreach (object entity in entitys) {
-				List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-				string [] valueList = new string [entityParams.Count];
-				int index = 0;
-				foreach (DataParameter dataParameter in entityParams) {
-					string paramName = CreateParamName ("P" + paramIndex);
-					valueList [index] = paramName;
-					dataParameter.ParameterName = paramName;
-					dataParams.Add (dataParameter);
-					index++;
-					paramIndex++;
-				}
-				string value = string.Join (",", valueList);
-				totalSql.AppendFormat ("{0}values({1});", insertsql, value);
-				createCount++;
-				totalCreateCount++;
-				if (createCount == batchCount || totalCreateCount == totalCount) {
-					CommandData command = new CommandData (totalSql.ToString (), dataParams);
-					commands.Add (command);
-					if (totalCreateCount == totalCount) {
-						break;
-					}
-					dataParams = new List<DataParameter> ();
-					createCount = 0;
-					paramIndex = 0;
-					totalSql = new StringBuilder ();
-				}
-				i++;
-			}
-			return commands.ToArray ();
-		}
-
-		public virtual CommandData CreateIdentityCommand (DataTableEntityMapping mapping)
-		{
-			string sql = CreateIdentitySql (mapping);
-			if (!string.IsNullOrEmpty (sql)) {
-				CommandData command = new CommandData (sql, null);
-				command.TransParamName = true;
-				return command;
-			}
-			else {
-				return null;
-			}
-		}
-
-		public virtual CommandData CreateAggregateTableCommand (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order)
-		{
-			StringBuilder sql = new StringBuilder ();
-
-			string [] selectList = new string [groupbys.Count + functions.Count];
-			string [] groupbyList = new string [groupbys.Count];
-			int index = 0;
-			List<DataParameter> innerParameters = new List<DataParameter> ();
-			foreach (AggregateDataInfo groupbyInfo in groupbys) {
-				AggregateData data = groupbyInfo.Data;
-				if (!mapping.Equals (data.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
-				}
-				DataParameter [] dataParameters = null;
-				string groupbyField = data.CreateSqlString (this, false, out dataParameters);
-				groupbyList [index] = groupbyField;
-				string selectField = CreateAliasSql (groupbyField, groupbyInfo.Name);
-				selectList [index] = selectField;
-				if (dataParameters != null && dataParameters.Length > 0) {
-					innerParameters.AddRange (dataParameters);
-				}
-				index++;
-			}
-			List<DataParameter> functionParameters = new List<DataParameter> ();
-			foreach (AggregateDataInfo functionInfo in functions) {
-				AggregateData function = functionInfo.Data;
-				if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
-				}
-				DataParameter [] aggparameters;
-				string aggField = function.CreateSqlString (this, false, out aggparameters);
-				string selectField = CreateAliasSql (aggField, functionInfo.Name);
-				selectList [index] = selectField;
-				if (aggparameters != null && aggparameters.Length > 0) {
-					functionParameters.AddRange (aggparameters);
-				}
-				index++;
-			}
-			string select = string.Join (",", selectList);
-			string groupby = string.Join (",", groupbyList);
-			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
-
-			DataParameter [] queryparameters;
-			string queryString = GetQueryString (query, out queryparameters);
-			DataParameter [] havingparameters;
-			string havingString = GetHavingString (having, out havingparameters);
-			DataParameter [] orderparameters;
-			//string orderString = GetOrderString (order, out orderparameters, groupbys, functions);
-			string orderString = GetOrderString (order, out orderparameters);
-			if (!string.IsNullOrEmpty (queryString)) {
-				sql.AppendFormat (" {0}", queryString);
-			}
-
-			sql.AppendFormat (" group by {0}", groupby);
-
-			if (!string.IsNullOrEmpty (havingString)) {
-				sql.AppendFormat (" {0}", havingString);
-			}
-
-			if (!string.IsNullOrEmpty (orderString)) {
-				sql.AppendFormat (" {0}", orderString);
-			}
-			DataParameter [] parameters = DataParameter.ConcatDataParameters (innerParameters, functionParameters, queryparameters, havingparameters, orderparameters);
-			CommandData command = new CommandData (sql.ToString (), parameters);
-			command.TransParamName = true;
-			return command;
-		}
-
-		*/
 
 		#endregion
 
@@ -1878,9 +1030,14 @@ namespace Light.Data
 			return "count(1)";
 		}
 
+		public virtual string CreateCountAllSql (string expressionSql)
+		{
+			return string.Format ("count(case when {0} then 1 else null end)", expressionSql);
+		}
+
 		public virtual string CreateConditionCountSql (string expressionSql, object fieldName, bool isDistinct)
 		{
-			return string.Format ("count({2}case when {0} then {1} else null end)", expressionSql, !Object.Equals (fieldName, null) ? fieldName : "1", isDistinct ? "distinct " : "");
+			return string.Format ("count({2}case when {0} then {1} else null end)", expressionSql, fieldName, isDistinct ? "distinct " : "");
 		}
 
 		public virtual string CreateCountSql (object fieldName, bool isDistinct)

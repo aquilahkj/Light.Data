@@ -1,6 +1,9 @@
 ﻿using System;
 namespace Light.Data
 {
+	/// <summary>
+	/// Aggregate data.
+	/// </summary>
 	public abstract class AggregateData
 	{
 		internal AggregateData (DataEntityMapping tableMapping)
@@ -13,56 +16,14 @@ namespace Light.Data
 			private set;
 		}
 
-
-		/// <summary>
-		/// Creates the sql string.
-		/// </summary>
-		/// <returns>The sql string.</returns>
-		/// <param name="factory">Factory.</param>
-		/// <param name="isFullName">If set to <c>true</c> full field name.</param>
-		/// <param name="dataParameters">Data parameters.</param>
-		//internal abstract string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters);
-
 		internal abstract string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state);
-		//		internal virtual AggregateFunction CreateAliasTableFunction(string aliasTableName)
-		//		{
-		//			return this;
-		//		}
 
 		/// <summary>
-		/// Determines whether the specified <see cref="Light.Data.AggregateFunction"/> is equal to the current <see cref="Light.Data.AggregateFunction"/>.
+		/// Determines whether the specified <see cref="object"/> is equal to the current <see cref="T:Light.Data.AggregateData"/>.
 		/// </summary>
-		/// <param name="target">The <see cref="Light.Data.AggregateFunction"/> to compare with the current <see cref="Light.Data.AggregateFunction"/>.</param>
-		/// <returns><c>true</c> if the specified <see cref="Light.Data.AggregateFunction"/> is equal to the current
-		/// <see cref="Light.Data.AggregateFunction"/>; otherwise, <c>false</c>.</returns>
-		//public virtual bool Equals (AggregateFunction target)
-		//{
-		//	if (Object.Equals (target, null)) {
-		//		return false;
-		//	}
-		//	if (Object.ReferenceEquals (this, target)) {
-		//		return true;
-		//	}
-		//	else {
-		//		if (this.GetType () == target.GetType ()) {
-		//			return EqualsDetail (target);
-		//		}
-		//		else {
-		//			return false;
-		//		}
-		//	}
-		//}
-
-		///// <summary>
-		///// Equalses the detail.
-		///// </summary>
-		///// <returns><c>true</c>, if detail was equalsed, <c>false</c> otherwise.</returns>
-		///// <param name="function">Function.</param>
-		//protected virtual bool EqualsDetail (AggregateFunction function)
-		//{
-		//	return Object.Equals (this.TableMapping, function.TableMapping);
-		//}
-
+		/// <param name="obj">The <see cref="object"/> to compare with the current <see cref="T:Light.Data.AggregateData"/>.</param>
+		/// <returns><c>true</c> if the specified <see cref="object"/> is equal to the current
+		/// <see cref="T:Light.Data.AggregateData"/>; otherwise, <c>false</c>.</returns>
 		public override bool Equals (object obj)
 		{
 			return object.ReferenceEquals (this, obj);

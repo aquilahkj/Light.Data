@@ -16,15 +16,6 @@ namespace Light.Data
 		}
 
 		/// <summary>
-		/// Gets or sets the extend parameters.
-		/// </summary>
-		/// <value>The extend parameters.</value>
-//		string ExtendParams {
-//			get;
-//			set;
-//		}
-
-		/// <summary>
 		/// Gets or sets a value indicating whether this instance is entity table.
 		/// </summary>
 		/// <value><c>true</c> if this instance is entity table; otherwise, <c>false</c>.</value>

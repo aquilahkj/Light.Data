@@ -4,10 +4,10 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	public class LightJoinTable<T, T1, T2> : IJoinTable<T, T1, T2>
-		where T : class//, new()
-		where T1 : class//, new()
-		where T2 : class//, new()
+	class LightJoinTable<T, T1, T2> : IJoinTable<T, T1, T2>
+	   where T : class
+	   where T1 : class
+	   where T2 : class
 	{
 		QueryExpression _query;
 
@@ -33,7 +33,7 @@ namespace Light.Data
 			}
 		}
 
-		DataContext _context;
+		readonly DataContext _context;
 
 		internal DataContext Context {
 			get {
@@ -49,7 +49,7 @@ namespace Light.Data
 			}
 		}
 
-		List<IJoinModel> _modelList = new List<IJoinModel> ();
+		readonly List<IJoinModel> _modelList = new List<IJoinModel> ();
 
 		internal List<IJoinModel> ModelList {
 			get {
@@ -57,7 +57,7 @@ namespace Light.Data
 			}
 		}
 
-		List<IMap> _maps = new List<IMap> ();
+		readonly List<IMap> _maps = new List<IMap> ();
 
 		internal List<IMap> Maps {
 			get {
@@ -169,20 +169,12 @@ namespace Light.Data
 			return new LightJoinTable<T, T1, T2, T3> (this, JoinType.RightJoin, aggregate, onExpression);
 		}
 
-		/// <summary>
-		/// Reset the specified where expression
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
 		public IJoinTable<T, T1, T2> WhereReset ()
 		{
 			_query = null;
 			return this;
 		}
 
-		/// <summary>
-		/// Where the specified expression.
-		/// </summary>T1,
-		/// <param name="expression">Expression.</param>
 		public IJoinTable<T, T1, T2> Where (Expression<Func<T, T1, T2, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
@@ -190,11 +182,6 @@ namespace Light.Data
 			return this;
 		}
 
-		/// <summary>
-		/// Catch the specified where expression with and.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="expression">Expression.</param>
 		public IJoinTable<T, T1, T2> WhereWithAnd (Expression<Func<T, T1, T2, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
@@ -202,11 +189,6 @@ namespace Light.Data
 			return this;
 		}
 
-		/// <summary>
-		/// Catch the specified where expression with or.
-		/// </summary>
-		/// <returns>LEnumerables.</returns>
-		/// <param name="expression">Expression.</param>
 		public IJoinTable<T, T1, T2> WhereWithOr (Expression<Func<T, T1, T2, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaMutliQueryExpression (expression, _maps);
@@ -214,11 +196,6 @@ namespace Light.Data
 			return this;
 		}
 
-		/// <summary>
-		/// Catch the specified order by expression.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="expression">Expression.</param>
 		public IJoinTable<T, T1, T2> OrderByCatch<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
@@ -226,11 +203,6 @@ namespace Light.Data
 			return this;
 		}
 
-		/// <summary>
-		/// Catch the specified order by expression.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="expression">Expression.</param>
 		public IJoinTable<T, T1, T2> OrderByDescendingCatch<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
@@ -238,12 +210,6 @@ namespace Light.Data
 			return this;
 		}
 
-		/// <summary>
-		/// Orders the by.
-		/// </summary>
-		/// <returns>The by.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
 		public IJoinTable<T, T1, T2> OrderBy<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.ASC, _maps);
@@ -251,12 +217,6 @@ namespace Light.Data
 			return this;
 		}
 
-		/// <summary>
-		/// Orders the by.
-		/// </summary>
-		/// <returns>The by.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="TKey">The 1st type parameter.</typeparam>
 		public IJoinTable<T, T1, T2> OrderByDescending<TKey> (Expression<Func<T, T1, T2, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaMutliOrderByExpression (expression, OrderType.DESC, _maps);
@@ -264,31 +224,12 @@ namespace Light.Data
 			return this;
 		}
 
-		/// <summary>
-		/// Reset the specified order by expression.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
 		public IJoinTable<T, T1, T2> OrderByReset ()
 		{
 			_order = null;
 			return this;
 		}
 
-		/// <summary>
-		/// Set order by random.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		//public IJoinTable<T, T1, T2> OrderByRandom ()
-		//{
-		//	_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (typeof (T)));
-		//	return this;
-		//}
-
-		/// <summary>
-		/// Take the datas count.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="count">Count.</param>
 		public IJoinTable<T, T1, T2> Take (int count)
 		{
 			int start;
@@ -300,20 +241,9 @@ namespace Light.Data
 				start = _region.Start;
 			}
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (0, count);
-			//}
-			//else {
-			//	_region.Size = count;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// Skip the specified index.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="index">Index.</param>
 		public IJoinTable<T, T1, T2> Skip (int index)
 		{
 			int start = index;
@@ -325,52 +255,23 @@ namespace Light.Data
 				size = _region.Size;
 			}
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (index, int.MaxValue);
-			//}
-			//else {
-			//	_region.Start = index;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// Range the specified from and to.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="from">From.</param>
-		/// <param name="to">To.</param>
 		public IJoinTable<T, T1, T2> Range (int from, int to)
 		{
 			int start = from;
 			int size = to - from;
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (start, size);
-			//}
-			//else {
-			//	_region.Start = start;
-			//	_region.Size = size;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// reset the range
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
 		public IJoinTable<T, T1, T2> RangeReset ()
 		{
 			_region = null;
 			return this;
 		}
 
-		/// <summary>
-		/// Sets page size.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="page">Page.</param>
-		/// <param name="size">Size.</param>
 		public IJoinTable<T, T1, T2> PageSize (int page, int size)
 		{
 			if (page < 1) {
@@ -382,21 +283,9 @@ namespace Light.Data
 			page--;
 			int start = page * size;
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (start, size);
-			//}
-			//else {
-			//	_region.Start = start;
-			//	_region.Size = size;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// Safes the mode.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="level">Level.</param>
 		public IJoinTable<T, T1, T2> SafeMode (SafeLevel level)
 		{
 			_level = level;

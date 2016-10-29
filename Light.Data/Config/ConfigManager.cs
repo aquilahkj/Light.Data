@@ -214,10 +214,6 @@ namespace Light.Data
 					foreach (RelationFieldAttribute ra in relationAttributes) {
 						rfConfig.AddRelationKeys (ra.MasterKey, ra.RelateKey);
 					}
-					RelationPropertyAttribute[] relationPropertyAttributes = AttributeCore.GetPropertyAttributes<RelationPropertyAttribute> (pi, true);
-					//if (relationPropertyAttributes.Length > 0) {
-					//	rfConfig.RelationMode = relationPropertyAttributes [0].RelationMode;
-					//}
 					config = rfConfig;
 				}
 			}

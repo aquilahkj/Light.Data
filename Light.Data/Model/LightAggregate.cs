@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	public class LightAggregate<T, K> : IAggregate<K>
-		where T : class//, new()
-		where K : class
+	class LightAggregate<T, K> : IAggregate<K>
+	   where T : class
+	   where K : class
 	{
 		AggregateGroup _model;
 
@@ -108,18 +108,11 @@ namespace Light.Data
 			return list;
 		}
 
-		public K First 
+		public K First ()
 		{
-			get {
-				return _context.SelectDynamicAggregateSingle (_model, _query, _having, _order, 0, _level) as K;
-			}
+			return _context.SelectDynamicAggregateSingle (_model, _query, _having, _order, 0, _level) as K;
 		}
 
-		/// <summary>
-		/// Take the datas count.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="count">Count.</param>
 		public IAggregate<K> Take (int count)
 		{
 			int start;
@@ -131,20 +124,9 @@ namespace Light.Data
 				start = _region.Start;
 			}
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (0, count);
-			//}
-			//else {
-			//	_region.Size = count;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// Skip the specified index.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="index">Index.</param>
 		public IAggregate<K> Skip (int index)
 		{
 			int start = index;
@@ -156,52 +138,23 @@ namespace Light.Data
 				size = _region.Size;
 			}
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (index, int.MaxValue);
-			//}
-			//else {
-			//	_region.Start = index;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// Range the specified from and to.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="from">From.</param>
-		/// <param name="to">To.</param>
 		public IAggregate<K> Range (int from, int to)
 		{
 			int start = from;
 			int size = to - from;
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (start, size);
-			//}
-			//else {
-			//	_region.Start = start;
-			//	_region.Size = size;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// reset the range
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
 		public IAggregate<K> RangeReset ()
 		{
 			_region = null;
 			return this;
 		}
 
-		/// <summary>
-		/// Sets page size.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="page">Page.</param>
-		/// <param name="size">Size.</param>
 		public IAggregate<K> PageSize (int page, int size)
 		{
 			if (page < 1) {
@@ -213,21 +166,9 @@ namespace Light.Data
 			page--;
 			int start = page * size;
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (start, size);
-			//}
-			//else {
-			//	_region.Start = start;
-			//	_region.Size = size;
-			//}
 			return this;
 		}
 
-		/// <summary>
-		/// Safes the mode.
-		/// </summary>
-		/// <returns>LEnumerable.</returns>
-		/// <param name="level">Level.</param>
 		public IAggregate<K> SafeMode (SafeLevel level)
 		{
 			_level = level;

@@ -1,6 +1,9 @@
 ﻿using System;
 namespace Light.Data
 {
+	/// <summary>
+	/// Aggregate group data.
+	/// </summary>
 	public class AggregateGroupData
 	{
 		AggregateGroup _model;

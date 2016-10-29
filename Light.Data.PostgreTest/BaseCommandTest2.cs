@@ -70,7 +70,7 @@ namespace Light.Data.PostgreTest
 			List<TeUser2> listAc;
 
 			context.TruncateTable<TeUser2> ();
-			result = context.BulkInsert (listEx.ToArray ());
+			result = context.BatchInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 			listAc = context.LQuery<TeUser2> ().ToList ();
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
@@ -105,7 +105,7 @@ namespace Light.Data.PostgreTest
 			List<UpdateSetValue> updates;
 
 			context.TruncateTable<TeUser2> ();
-			result = context.BulkInsert (listEx.ToArray ());
+			result = context.BatchInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
 			updates = new List<UpdateSetValue> ();
@@ -176,7 +176,7 @@ namespace Light.Data.PostgreTest
 			List<TeUser2> listAc;
 
 			context.TruncateTable<TeUser2> ();
-			result = context.BulkInsert (listEx.ToArray ());
+			result = context.BatchInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
 			result = context.LQuery<TeUser2> ().Delete ();
@@ -201,7 +201,7 @@ namespace Light.Data.PostgreTest
 			List<TeUser2> listAc;
 
 			context.TruncateTable<TeUser2> ();
-			result = context.BulkInsert (listEx.ToArray ());
+			result = context.BatchInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
 			result = context.LQuery<TeUser2> ().Delete ();
@@ -227,7 +227,7 @@ namespace Light.Data.PostgreTest
 			const int rdd = 20;
 
 			context.TruncateTable<TeUser2> ();
-			result = context.BulkInsert (listEx.ToArray ());
+			result = context.BatchInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
 			result = context.LQuery<TeUser2> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
@@ -253,7 +253,7 @@ namespace Light.Data.PostgreTest
 			int rdd = 20;
 
 			context.TruncateTable<TeUser2> ();
-			result = context.BulkInsert (listEx.ToArray ());
+			result = context.BatchInsert (listEx.ToArray ());
 			Assert.AreEqual (result, count);
 
 			result = context.LQuery<TeUser2> ().Where (TeUser2.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();

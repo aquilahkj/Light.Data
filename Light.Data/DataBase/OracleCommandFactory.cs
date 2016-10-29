@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -97,15 +98,7 @@ namespace Light.Data
 
 			CommandData command = new CommandData (sql);
 			return command;
-			//			string sql = string.Format ("truncate table {0}", CreateDataTableSql (mapping));
-			//			CommandData command = new CommandData (sql);
-			//			return command;
 		}
-
-		//public override string CreateBooleanSql (bool value)
-		//{
-		//	return value ? "1" : "0";
-		//}
 
 		public override CommandData CreateInsertCommand (DataTableEntityMapping mapping, object entity, CreateSqlState state)
 		{
@@ -162,9 +155,9 @@ namespace Light.Data
 			return identityAuto;
 		}
 
-		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
+		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
-			if (entitys == null || entitys.Length == 0) {
+			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
 			}
 			if (batchCount <= 0) {
@@ -175,7 +168,7 @@ namespace Light.Data
 			if (identityAuto) {
 				identityString = GetIndentitySeq (mapping);
 			}
-			int totalCount = entitys.Length;
+			int totalCount = entitys.Count;
 			IList<DataFieldMapping> fields = mapping.NoIdentityFields;
 			int insertLen = fields.Count;
 			if (insertLen == 0) {
@@ -238,75 +231,6 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
-		//public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
-		//{
-		//	if (entitys == null || entitys.Length == 0) {
-		//		throw new ArgumentNullException (nameof (entitys));
-		//	}
-		//	if (batchCount <= 0) {
-		//		batchCount = 10;
-		//	}
-		//	bool identityAuto = CheckIndentityAuto (mapping);
-		//	int totalCount = entitys.Length;
-		//	List<string> insertList = new List<string> ();
-		//	foreach (DataFieldMapping field in mapping.NoIdentityFields) {
-		//		insertList.Add (CreateDataFieldSql (field.Name));
-		//	}
-		//	string insert = string.Join (",", insertList);
-		//	string insertsql;
-		//	if (!identityAuto && mapping.IdentityField != null) {
-		//		insertsql = string.Format ("insert into {0}({2},{1})", CreateDataTableSql (mapping.TableName), insert, CreateDataFieldSql (mapping.IdentityField.Name));
-		//	}
-		//	else {
-		//		insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
-		//	}
-
-		//	int createCount = 0;
-		//	int totalCreateCount = 0;
-		//	string identityString = null;
-		//	if (identityAuto) {
-		//		identityString = GetIndentitySeq (mapping);
-		//	}
-		//	StringBuilder totalSql = new StringBuilder ();
-		//	int paramIndex = 0;
-		//	List<DataParameter> dataParams = new List<DataParameter> ();
-		//	List<CommandData> commands = new List<CommandData> ();
-
-		//	foreach (object entity in entitys) {
-		//		List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-		//		string [] valueList = new string [entityParams.Count];
-		//		int index = 0;
-		//		foreach (DataParameter dataParameter in entityParams) {
-		//			string paramName = CreateParamName ("P" + paramIndex);
-		//			valueList [index] = paramName;
-		//			dataParameter.ParameterName = paramName;
-		//			dataParams.Add (dataParameter);
-		//			index++;
-		//			paramIndex++;
-		//		}
-		//		string value = string.Join (",", valueList);
-		//		if (!identityAuto && mapping.IdentityField != null) {
-		//			totalSql.AppendFormat ("{0}values({2}.nextval,{1});", insertsql, value, identityString);
-		//		}
-		//		else {
-		//			totalSql.AppendFormat ("{0}values({1});", insertsql, value);
-		//		}
-		//		createCount++;
-		//		totalCreateCount++;
-		//		if (createCount == batchCount || totalCreateCount == totalCount) {
-		//			CommandData command = new CommandData (string.Format ("begin {0} end;", totalSql), dataParams);
-		//			commands.Add (command);
-		//			if (totalCreateCount == totalCount) {
-		//				break;
-		//			}
-		//			dataParams = new List<DataParameter> ();
-		//			createCount = 0;
-		//			paramIndex = 0;
-		//			totalSql = new StringBuilder ();
-		//		}
-		//	}
-		//	return commands.ToArray ();
-		//}
 
 		protected override string CreateIdentitySql (DataTableEntityMapping mapping)
 		{

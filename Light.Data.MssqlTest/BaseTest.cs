@@ -136,7 +136,7 @@ namespace Light.Data.MssqlTest
 				lists.Add (userInsert);
 			}
 			if (insert) {
-				context.BulkInsert (lists.ToArray ());
+				context.BatchInsert (lists.ToArray ());
 			}
 			output.UseConsoleOutput = true;
 			return lists;
@@ -165,7 +165,7 @@ namespace Light.Data.MssqlTest
 				lists.Add (userInsert);
 			}
 			if (insert) {
-				context.BulkInsert (lists.ToArray ());
+				context.BatchInsert (lists.ToArray ());
 			}
 			output.UseConsoleOutput = true;
 			return lists;
@@ -190,7 +190,7 @@ namespace Light.Data.MssqlTest
 				lists.Add (level);
 			}
 			if (insert) {
-				context.BulkInsert (lists.ToArray ());	
+				context.BatchInsert (lists.ToArray ());	
 			}
 			output.UseConsoleOutput = true;
 			return lists;
@@ -225,7 +225,7 @@ namespace Light.Data.MssqlTest
 				lists.Add (logInsert);
 			}
 			if (insert) {
-				context.BulkInsert (lists.ToArray ());
+				context.BatchInsert (lists.ToArray ());
 			}
 			output.UseConsoleOutput = true;
 			return lists;
@@ -254,7 +254,7 @@ namespace Light.Data.MssqlTest
 				lists.Add (infoInsert);
 			}
 			if (insert) {
-				context.BulkInsert (lists.ToArray ());
+				context.BatchInsert (lists.ToArray ());
 			}
 			output.UseConsoleOutput = true;
 			return lists;
@@ -333,12 +333,12 @@ namespace Light.Data.MssqlTest
 				listf.Add (itemf);
 			}
 
-			context.BulkInsert (lista.ToArray ());
-			context.BulkInsert (listb.ToArray ());
-			context.BulkInsert (listc.ToArray ());
-			context.BulkInsert (listd.ToArray ());
-			context.BulkInsert (liste.ToArray ());
-			context.BulkInsert (listf.ToArray ());
+			context.BatchInsert (lista.ToArray ());
+			context.BatchInsert (listb.ToArray ());
+			context.BatchInsert (listc.ToArray ());
+			context.BatchInsert (listd.ToArray ());
+			context.BatchInsert (liste.ToArray ());
+			context.BatchInsert (listf.ToArray ());
 			output.UseConsoleOutput = true;
 		}
 
