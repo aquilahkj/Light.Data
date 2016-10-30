@@ -299,6 +299,12 @@ namespace Light.Data
 			LightJoinSelect<TResult> selectable = new LightJoinSelect<TResult> (_context, dele, selector, _modelList.ToArray (), _query, _order, _region, _level);
 			return selectable;
 		}
+
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, K>> expression) where K : class, new()
+		{
+			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
+			return this._context.SelectInsertWithJoinTable (selector, _modelList.ToArray (), _query, _order, _level);
+		}
 	}
 }
 

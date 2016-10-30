@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Light.Data
-{	
+{
 	class LightQuery<T> : IQuery<T> where T : class
 	{
 		#region IEnumerable implementation
@@ -265,13 +265,14 @@ namespace Light.Data
 		public int SelectInsert<K> (Expression<Func<T, K>> expression) where K : class, new()
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector (expression);
-			return this._context.SelectInsert (selector, _query, _order, _level);
+			return this._context.SelectInsert (selector, _mapping, _query, _order, _level);
 		}
 
 		public int Update (Expression<Func<T, T>> expression)
 		{
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			MassUpdator updator = LambdaExpressionExtend.CreateMassUpdator (expression);
-			return this._context.Update (updator, _query, _level);
+			return this._context.Update (mapping, updator, _query, _level);
 		}
 
 		public int Delete ()

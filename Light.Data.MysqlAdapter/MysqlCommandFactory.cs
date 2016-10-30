@@ -81,7 +81,7 @@ namespace Light.Data.MysqlAdapter
 			return command;
 		}
 
-		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		public override Tuple<CommandData, CreateSqlState> [] CreateBatchInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));

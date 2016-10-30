@@ -59,7 +59,7 @@ namespace Light.Data
 			}
 		}
 
-		public ISelector CreateSpecialSelector (string [] paths)
+		public ISelector CreateSelector (string [] paths)
 		{
 			Selector selector = new Selector ();
 			foreach (string path in paths) {

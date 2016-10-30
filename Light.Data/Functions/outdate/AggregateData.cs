@@ -176,15 +176,15 @@ namespace Light.Data
 			return NotIn (field, null);
 		}
 
-		/// <summary>
-		/// Greater than all the specified values.
-		/// </summary>
-		/// <returns>The expression</returns>
-		/// <param name="values">Values.</param>
-		public AggregateHavingExpression GtAll (System.Collections.IEnumerable values)
-		{
-			return CollectionParams (QueryCollectionPredicate.GtAll, values);
-		}
+		///// <summary>
+		///// Greater than all the specified values.
+		///// </summary>
+		///// <returns>The expression</returns>
+		///// <param name="values">Values.</param>
+		//public AggregateHavingExpression GtAll (System.Collections.IEnumerable values)
+		//{
+		//	return CollectionParams (QueryCollectionPredicate.GtAll, values);
+		//}
 
 		/// <summary>
 		/// Greater than all the specified field and expression.
@@ -207,15 +207,15 @@ namespace Light.Data
 			return GtAll (field, null);
 		}
 
-		/// <summary>
-		/// Greater than all the specified values.
-		/// </summary>
-		/// <returns>The expression</returns>
-		/// <param name="values">Values.</param>
-		public AggregateHavingExpression LtAll (System.Collections.IEnumerable values)
-		{
-			return CollectionParams (QueryCollectionPredicate.LtAll, values);
-		}
+		///// <summary>
+		///// Greater than all the specified values.
+		///// </summary>
+		///// <returns>The expression</returns>
+		///// <param name="values">Values.</param>
+		//public AggregateHavingExpression LtAll (System.Collections.IEnumerable values)
+		//{
+		//	return CollectionParams (QueryCollectionPredicate.LtAll, values);
+		//}
 
 		/// <summary>
 		/// Less than all the specified field and expression.
@@ -238,15 +238,15 @@ namespace Light.Data
 			return LtAll (field, null);
 		}
 
-		/// <summary>
-		/// Greater than any the specified values.
-		/// </summary>
-		/// <returns>The expression</returns>
-		/// <param name="values">Values.</param>
-		public AggregateHavingExpression GtAny (System.Collections.IEnumerable values)
-		{
-			return CollectionParams (QueryCollectionPredicate.GtAny, values);
-		}
+		///// <summary>
+		///// Greater than any the specified values.
+		///// </summary>
+		///// <returns>The expression</returns>
+		///// <param name="values">Values.</param>
+		//public AggregateHavingExpression GtAny (System.Collections.IEnumerable values)
+		//{
+		//	return CollectionParams (QueryCollectionPredicate.GtAny, values);
+		//}
 
 		/// <summary>
 		/// Greater than any the specified field and expression.
@@ -270,15 +270,15 @@ namespace Light.Data
 			return GtAny (field, null);
 		}
 
-		/// <summary>
-		/// Less than any the specified values.
-		/// </summary>
-		/// <returns>The expression</returns>
-		/// <param name="values">Values.</param>
-		public AggregateHavingExpression LtAny (System.Collections.IEnumerable values)
-		{
-			return CollectionParams (QueryCollectionPredicate.LtAny, values);
-		}
+		///// <summary>
+		///// Less than any the specified values.
+		///// </summary>
+		///// <returns>The expression</returns>
+		///// <param name="values">Values.</param>
+		//public AggregateHavingExpression LtAny (System.Collections.IEnumerable values)
+		//{
+		//	return CollectionParams (QueryCollectionPredicate.LtAny, values);
+		//}
 
 		/// <summary>
 		/// Less than any the specified field and expression.

@@ -124,7 +124,7 @@ namespace Light.Data.PostgreAdapter
 			return command;
 		}
 
-		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		public override Tuple<CommandData, CreateSqlState> [] CreateBatchInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
@@ -188,64 +188,6 @@ namespace Light.Data.PostgreAdapter
 			}
 			return list.ToArray ();
 		}
-
-		//public override CommandData [] CreateBulkInsertCommand (DataTableEntityMapping mapping, Array entitys, int batchCount)
-		//{
-		//	if (entitys == null || entitys.Length == 0) {
-		//		throw new ArgumentNullException (nameof (entitys));
-		//	}
-		//	if (batchCount <= 0) {
-		//		batchCount = 10;
-		//	}
-
-		//	int totalCount = entitys.Length;
-		//	List<string> insertList = new List<string> ();
-		//	foreach (DataFieldMapping field in mapping.NoIdentityFields) {
-		//		insertList.Add (CreateDataFieldSql (field.Name));
-		//	}
-
-		//	string insert = string.Join (",", insertList);
-		//	string insertsql = string.Format ("insert into {0}({1})", CreateDataTableSql (mapping.TableName), insert);
-
-		//	int createCount = 0;
-		//	int totalCreateCount = 0;
-		//	StringBuilder values = new StringBuilder ();
-		//	int paramIndex = 0;
-		//	List<DataParameter> dataParams = new List<DataParameter> ();
-		//	List<CommandData> commands = new List<CommandData> ();
-		//	foreach (object entity in entitys) {
-		//		List<DataParameter> entityParams = CreateColumnParameter (mapping.NoIdentityFields, entity);
-		//		string [] valueList = new string [entityParams.Count];
-		//		int index = 0;
-		//		foreach (DataParameter dataParameter in entityParams) {
-		//			string paramName = CreateParamName ("P" + paramIndex);
-		//			valueList [index] = paramName;
-		//			dataParameter.ParameterName = paramName;
-		//			dataParams.Add (dataParameter);
-		//			index++;
-		//			paramIndex++;
-		//		}
-		//		string value = string.Join (",", valueList);
-		//		values.AppendFormat ("({0})", value);
-		//		createCount++;
-		//		totalCreateCount++;
-		//		if (createCount == batchCount || totalCreateCount == totalCount || totalCreateCount == totalCount - 1) {
-		//			CommandData command = new CommandData (string.Format ("{0}values{1};", insertsql, values), dataParams);
-		//			commands.Add (command);
-		//			if (totalCreateCount == totalCount) {
-		//				break;
-		//			}
-		//			dataParams = new List<DataParameter> ();
-		//			createCount = 0;
-		//			paramIndex = 0;
-		//			values = new StringBuilder ();
-		//		}
-		//		else {
-		//			values.Append (",");
-		//		}
-		//	}
-		//	return commands.ToArray ();
-		//}
 
 		public override string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, IEnumerable<object> list)
 		{

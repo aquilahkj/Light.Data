@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Light.Data.UnitTest;
@@ -58,7 +58,7 @@ namespace Light.Data.MssqlTest
 		public void TestCase_BulkInsert ()
 		{
 			List<TeUser2> listEx = new List<TeUser2> ();
-			const int count = 33;
+			const int count = 35;
 			for (int i = 0; i < count; i++) {
 				TeUser2 userInsert = CreateTestUser2 ();
 				userInsert.Account += i;
@@ -71,22 +71,37 @@ namespace Light.Data.MssqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser2> ().ToList ();
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
+			foreach (TeUser2 item in listEx) {
+				item.Account = "myAccount1";
+			}
+			result = context.BatchUpdate (listEx.ToArray ());
+			listAc = context.LQuery<TeUser2> ().ToList ();
+			AssertExtend.AreEnumerableEqual (listEx, listAc);
+
+
+			result = context.BatchDelete (listEx.ToArray ());
+			listAc = context.LQuery<TeUser2> ().ToList ();
+			Assert.AreEqual (0, listAc.Count);
+
+
 			//context.TruncateTable<TeUser2> ();
 			//result = context.BulkInsert (listEx.ToArray (), 20);
-			//Assert.AreEqual (result, count);
+			//Assert.AreEqual (count, result);
 			//listAc = context.LQuery<TeUser2> ().ToList ();
 			//AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			//context.TruncateTable<TeUser2> ();
 			//result = context.BulkInsert (listEx.ToArray (), 100);
-			//Assert.AreEqual (result, count);
+			//Assert.AreEqual (count, result);
 			//listAc = context.LQuery<TeUser2> ().ToList ();
 			//AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
+
+
 
 		[Test ()]
 		public void TestCase_UpdateMass ()
@@ -106,7 +121,7 @@ namespace Light.Data.MssqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			updates = new List<UpdateSetValue> ();
 			DateTime uptime = GetNow ();
@@ -177,7 +192,7 @@ namespace Light.Data.MssqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser2> ().Delete ();
 			Assert.AreEqual (count, result);
@@ -202,7 +217,7 @@ namespace Light.Data.MssqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser2> ().Delete ();
 			Assert.AreEqual (count, result);
@@ -228,7 +243,7 @@ namespace Light.Data.MssqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser2> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);
@@ -254,7 +269,7 @@ namespace Light.Data.MssqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser2> ().Where (TeUser2.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);

@@ -318,25 +318,25 @@ namespace Light.Data.OracleTest
 			int[] arrayx = new int[]{ 3, 5, 7 };
 			List<int> listx = new List<int> (arrayx);
 
-			listEx = list.FindAll (x => listx.Exists (y => x.Id < y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.LtAny (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.Id < y)));
+			//listEx = list.FindAll (x => listx.Exists (y => x.Id < y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.LtAny (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.Id < y)));
 
-			listEx = list.FindAll (x => listx.Exists (y => x.Id > y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.GtAny (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.Id > y)));
+			//listEx = list.FindAll (x => listx.Exists (y => x.Id > y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.GtAny (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.Id > y)));
 
-			listEx = list.FindAll (x => listx.TrueForAll (y => x.Id < y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.LtAll (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.Id < y)));
+			//listEx = list.FindAll (x => listx.TrueForAll (y => x.Id < y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.LtAll (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.Id < y)));
 
-			listEx = list.FindAll (x => listx.TrueForAll (y => x.Id > y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.GtAll (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.Id > y)));
+			//listEx = list.FindAll (x => listx.TrueForAll (y => x.Id > y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.GtAll (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.Id > y)));
 
 			listEx = list.FindAll (x => listx.Exists (y => x.Id == y));
 			listAc = context.LQuery<TeUser> ().Where (TeUser.IdField.In (arrayx)).ToList ();
@@ -358,25 +358,25 @@ namespace Light.Data.OracleTest
 			double[] arrayx = new double[]{ 1.03, 1.05, 1.07 };
 			List<double> listx = new List<double> (arrayx);
 
-			listEx = list.FindAll (x => listx.Exists (y => x.HotRate < y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.LtAny (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.HotRate < y)));
+			//listEx = list.FindAll (x => listx.Exists (y => x.HotRate < y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.LtAny (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.HotRate < y)));
 
-			listEx = list.FindAll (x => listx.Exists (y => x.HotRate > y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.GtAny (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.HotRate > y)));
+			//listEx = list.FindAll (x => listx.Exists (y => x.HotRate > y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.GtAny (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.HotRate > y)));
 
-			listEx = list.FindAll (x => listx.TrueForAll (y => x.HotRate < y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.LtAll (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.HotRate < y)));
+			//listEx = list.FindAll (x => listx.TrueForAll (y => x.HotRate < y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.LtAll (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.HotRate < y)));
 
-			listEx = list.FindAll (x => listx.TrueForAll (y => x.HotRate > y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.GtAll (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.HotRate > y)));
+			//listEx = list.FindAll (x => listx.TrueForAll (y => x.HotRate > y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.GtAll (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.HotRate > y)));
 
 			listEx = list.FindAll (x => listx.Exists (y => x.HotRate == y));
 			listAc = context.LQuery<TeUser> ().Where (TeUser.HotRateField.In (arrayx)).ToList ();
@@ -402,25 +402,25 @@ namespace Light.Data.OracleTest
 			DateTime[] arrayx = new DateTime[]{ d1, d2, d3 };
 			List<DateTime> listx = new List<DateTime> (arrayx);
 
-			listEx = list.FindAll (x => listx.Exists (y => x.RegTime < y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.LtAny (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.RegTime < y)));
+			//listEx = list.FindAll (x => listx.Exists (y => x.RegTime < y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.LtAny (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.RegTime < y)));
 
-			listEx = list.FindAll (x => listx.Exists (y => x.RegTime > y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.GtAny (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.RegTime > y)));
+			//listEx = list.FindAll (x => listx.Exists (y => x.RegTime > y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.GtAny (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.Exists (y => x.RegTime > y)));
 
-			listEx = list.FindAll (x => listx.TrueForAll (y => x.RegTime < y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.LtAll (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.RegTime < y)));
+			//listEx = list.FindAll (x => listx.TrueForAll (y => x.RegTime < y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.LtAll (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.RegTime < y)));
 
-			listEx = list.FindAll (x => listx.TrueForAll (y => x.RegTime > y));
-			listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.GtAll (arrayx)).ToList ();
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.RegTime > y)));
+			//listEx = list.FindAll (x => listx.TrueForAll (y => x.RegTime > y));
+			//listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.GtAll (arrayx)).ToList ();
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => listx.TrueForAll (y => x.RegTime > y)));
 
 			listEx = list.FindAll (x => listx.Exists (y => x.RegTime == y));
 			listAc = context.LQuery<TeUser> ().Where (TeUser.RegTimeField.In (arrayx)).ToList ();

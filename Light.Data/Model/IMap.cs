@@ -15,7 +15,7 @@ namespace Light.Data
 
 		DataFieldInfo CreateFieldInfoForPath (string path);
 
-		ISelector CreateSpecialSelector (string [] paths);
+		ISelector CreateSelector (string [] paths);
 
 
 	}

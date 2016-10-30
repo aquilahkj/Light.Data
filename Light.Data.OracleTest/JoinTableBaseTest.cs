@@ -80,7 +80,7 @@ namespace Light.Data.OracleTest
 					});
 				}
 				else {
-					return x.LevelStatus == 0 && x.LevelName == string.Empty && x.Remark == null;
+					return x.LevelStatus == 0 && x.LevelName == null && x.Remark == null;
 				}
 			}
 			));
@@ -237,7 +237,7 @@ namespace Light.Data.OracleTest
 					});
 				}
 				else {
-					return x.LevelStatus == 0 && x.LevelName == string.Empty && x.Remark == null;
+					return x.LevelStatus == 0 && x.LevelName == null && x.Remark == null;
 				}
 			}
 			));

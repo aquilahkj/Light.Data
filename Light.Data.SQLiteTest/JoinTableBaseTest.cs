@@ -79,7 +79,7 @@ namespace Light.Data.SQLiteTest
 						return x.LevelId == y.Id && x.LevelStatus == y.Status && x.LevelName == y.LevelName && x.Remark == y.Remark;
 					});
 				} else {
-					return x.LevelStatus == 0 && x.LevelName == string.Empty && x.Remark == null;
+					return x.LevelStatus == 0 && x.LevelName == null && x.Remark == null;
 				}
 			}
 			));

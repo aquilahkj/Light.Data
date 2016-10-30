@@ -105,7 +105,7 @@ namespace Light.Data
 					}
 				}
 			}
-			return singleEntityMap.CreateSpecialSelector (list.ToArray ());
+			return singleEntityMap.CreateSelector (list.ToArray ());
 		}
 
 	}

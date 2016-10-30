@@ -303,7 +303,11 @@ namespace Light.Data
 			return selectable;
 		}
 
-
+		public int SelectInsert<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) where K : class, new()
+		{
+			InsertSelector selector = LambdaExpressionExtend.CreateMutliInsertSelector (expression, _maps);
+			return this._context.SelectInsertWithJoinTable (selector, _modelList.ToArray (), _query, _order, _level);
+		}
 	}
 }
 

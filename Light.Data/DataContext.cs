@@ -357,11 +357,11 @@ namespace Light.Data
 			return rInt;
 		}
 
-		internal int Update (MassUpdator updator, QueryExpression query, SafeLevel level)
+		internal int Update (DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query, SafeLevel level)
 		{
 			int rInt;
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (updator, query, state);
+			CommandData commandData = _dataBase.Factory.CreateUpdateMassCommand (mapping, updator, query, state);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				rInt = ExecuteNonQuery (command, level);
 			}
@@ -428,7 +428,7 @@ namespace Light.Data
 
 		private int BatchInsert (DataTableEntityMapping mapping, IList datas, int batchCount)
 		{
-			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBulkInsertCommand (mapping, datas, batchCount);
+			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBatchInsertCommand (mapping, datas, batchCount);
 			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
 				dbcommands [i] = commandDatas [i].Item1.CreateCommand (_dataBase, commandDatas [i].Item2);
@@ -440,7 +440,7 @@ namespace Light.Data
 			}
 
 			object obj;
-			int [] results = ExecuteBulkCommands (dbcommands, identityCommand, SafeLevel.Default, out obj);
+			int [] results = ExecuteBatchInsert (dbcommands, identityCommand, SafeLevel.Default, out obj);
 			foreach (IDbCommand command in dbcommands) {
 				command.Dispose ();
 			}
@@ -457,15 +457,25 @@ namespace Light.Data
 
 			}
 			int result = 0;
-			foreach (int i in results) {
-				result += i;
+			for (int i = 0; i < results.Length; i++) {
+				if (commandDatas [i].Item1.ReturnRowCount) {
+					result += results [i];
+				}
+				else {
+					result = datas.Count;
+					break;
+				}
 			}
-			if (result >= 0) {
-				return result;
-			}
-			else {
-				return -1;
-			}
+			return result;
+			//foreach (int i in results) {
+			//	result += i;
+			//}
+			//if (result >= 0) {
+			//	return result;
+			//}
+			//else {
+			//	return -1;
+			//}
 		}
 
 		/// <summary>
@@ -528,26 +538,36 @@ namespace Light.Data
 
 		private int BatchUpdate (DataTableEntityMapping mapping, IList datas, int batchCount)
 		{
-			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBulkUpdateCommand (mapping, datas, batchCount);
+			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBatchUpdateCommand (mapping, datas, batchCount);
 			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
 				dbcommands [i] = commandDatas [i].Item1.CreateCommand (_dataBase, commandDatas [i].Item2);
 			}
 
-			int [] results = ExecuteMultiCommands (dbcommands, SafeLevel.Default);
+			int [] results = ExecuteBatchNonQuery (dbcommands, SafeLevel.Default);
 			foreach (IDbCommand command in dbcommands) {
 				command.Dispose ();
 			}
 			int result = 0;
-			foreach (int i in results) {
-				result += i;
+			for (int i = 0; i < results.Length; i++) {
+				if (commandDatas [i].Item1.ReturnRowCount) {
+					result += results [i];
+				}
+				else {
+					result = datas.Count;
+					break;
+				}
 			}
-			if (result >= 0) {
-				return result;
-			}
-			else {
-				return -1;
-			}
+			return result;
+			//foreach (int i in results) {
+			//	result += i;
+			//}
+			//if (result >= 0) {
+			//	return result;
+			//}
+			//else {
+			//	return -1;
+			//}
 		}
 
 		/// <summary>
@@ -610,26 +630,33 @@ namespace Light.Data
 
 		private int BatchDelete (DataTableEntityMapping mapping, IList datas, int batchCount)
 		{
-			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBulkDeleteCommand (mapping, datas, batchCount);
+			Tuple<CommandData, CreateSqlState> [] commandDatas = _dataBase.Factory.CreateBatchDeleteCommand (mapping, datas, batchCount);
 			IDbCommand [] dbcommands = new IDbCommand [commandDatas.Length];
 			for (int i = 0; i < commandDatas.Length; i++) {
 				dbcommands [i] = commandDatas [i].Item1.CreateCommand (_dataBase, commandDatas [i].Item2);
 			}
 
-			int [] results = ExecuteMultiCommands (dbcommands, SafeLevel.Default);
+			int [] results = ExecuteBatchNonQuery (dbcommands, SafeLevel.Default);
 			foreach (IDbCommand command in dbcommands) {
 				command.Dispose ();
 			}
 			int result = 0;
-			foreach (int i in results) {
-				result += i;
+			for (int i = 0; i < results.Length; i++) {
+				if (commandDatas [i].Item1.ReturnRowCount) {
+					result += results [i];
+				}
+				else {
+					result = datas.Count;
+					break;
+				}
 			}
-			if (result >= 0) {
-				return result;
-			}
-			else {
-				return -1;
-			}
+			return result;
+			//if (result >= 0) {
+			//	return result;
+			//}
+			//else {
+			//	return -1;
+			//}
 		}
 
 		static object [] CreateObjectList (object lastId, int len)
@@ -696,9 +723,9 @@ namespace Light.Data
 			return rInt;
 		}
 
-		internal int SelectInsert (InsertSelector selector, QueryExpression query, OrderExpression order, SafeLevel level)
+		internal int SelectInsert (InsertSelector selector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, SafeLevel level)
 		{
-			DataEntityMapping mapping = selector.SelectMapping;
+			//DataEntityMapping mapping = selector.SelectMapping;
 			RelationMap relationMap = mapping.GetRelationMap ();
 			CommandData commandData;
 			int rInt;
@@ -728,8 +755,19 @@ namespace Light.Data
 				commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, models, mainQuery, mainOrder, state);
 			}
 			else {
-				commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, query, order, state);
+				commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, mapping, query, order, state);
 			}
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
+				rInt = ExecuteNonQuery (command, level);
+			}
+			return rInt;
+		}
+
+		internal int SelectInsertWithJoinTable (InsertSelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, SafeLevel level)
+		{
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, models, query, order, state);
+			int rInt;
 			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				rInt = ExecuteNonQuery (command, level);
 			}
@@ -863,7 +901,7 @@ namespace Light.Data
 		/// <returns>The table.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public int TruncateTable<T> ()
-			where T : class//, new()
+			where T : class, new()
 		{
 			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			CommandData commandData = _dataBase.Factory.CreateTruncateTableCommand (mapping);
@@ -1093,25 +1131,25 @@ namespace Light.Data
 			}
 		}
 
-		internal virtual int [] ExecuteBulkCommands (IDbCommand [] bulkCommands, IDbCommand lastIdCommand, SafeLevel level, out object lastId)
+		internal virtual int [] ExecuteBatchInsert (IDbCommand [] batchCommands, IDbCommand lastIdCommand, SafeLevel level, out object lastId)
 		{
 			if (level == SafeLevel.None) {
 				level = SafeLevel.Default;
 			}
-			int [] rInts = new int [bulkCommands.Length];
+			int [] rInts = new int [batchCommands.Length];
 			using (TransactionConnection transaction = CreateTransactionConnection (level)) {
 				transaction.Open ();
 				try {
 					int index = 0;
-					foreach (IDbCommand dbcommand in bulkCommands) {
+					foreach (IDbCommand dbcommand in batchCommands) {
 						transaction.SetupCommand (dbcommand);
-						OutputCommand ("ExecuteMultiCommands", dbcommand, level);
+						OutputCommand ("ExecuteBatchInsert", dbcommand, level);
 						rInts [index] = dbcommand.ExecuteNonQuery ();
 						index++;
 					}
 					if (lastIdCommand != null) {
 						transaction.SetupCommand (lastIdCommand);
-						OutputCommand ("ExecuteBulkCommands_LastId", lastIdCommand, level);
+						OutputCommand ("ExecuteBatchInsert_LastId", lastIdCommand, level);
 						lastId = lastIdCommand.ExecuteScalar ();
 					}
 					else {
@@ -1129,7 +1167,7 @@ namespace Light.Data
 			return rInts;
 		}
 
-		internal virtual int [] ExecuteMultiCommands (IDbCommand [] dbcommands, SafeLevel level)
+		internal virtual int [] ExecuteBatchNonQuery (IDbCommand [] dbcommands, SafeLevel level)
 		{
 			if (level == SafeLevel.None) {
 				level = SafeLevel.Default;
@@ -1141,7 +1179,7 @@ namespace Light.Data
 					int index = 0;
 					foreach (IDbCommand dbcommand in dbcommands) {
 						transaction.SetupCommand (dbcommand);
-						OutputCommand ("ExecuteMultiCommands", dbcommand, level);
+						OutputCommand ("ExecuteMultiNonQuery", dbcommand, level);
 						rInts [index] = dbcommand.ExecuteNonQuery ();
 						index++;
 					}

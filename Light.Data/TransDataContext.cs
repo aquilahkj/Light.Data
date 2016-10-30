@@ -72,20 +72,20 @@ namespace Light.Data
 			_transaction = null;
 		}
 
-		internal override int [] ExecuteBulkCommands (IDbCommand [] bulkCommands, IDbCommand lastIdCommand, SafeLevel level, out object lastId)
+		internal override int [] ExecuteBatchInsert (IDbCommand [] batchCommands, IDbCommand lastIdCommand, SafeLevel level, out object lastId)
 		{
 			ChecKStatus (true);
-			int [] rInts = new int [bulkCommands.Length];
+			int [] rInts = new int [batchCommands.Length];
 			int index = 0;
-			foreach (IDbCommand dbcommand in bulkCommands) {
+			foreach (IDbCommand dbcommand in batchCommands) {
 				_transaction.SetupCommand (dbcommand);
-				OutputCommand ("ExecuteBulkCommands[Trans]", dbcommand, _transaction.Level);
+				OutputCommand ("ExecuteBatchInsert[Trans]", dbcommand, _transaction.Level);
 				rInts [index] = dbcommand.ExecuteNonQuery ();
 				index++;
 			}
 			if (lastIdCommand != null) {
 				_transaction.SetupCommand (lastIdCommand);
-				OutputCommand ("ExecuteBulkCommands_LastId[Trans]", lastIdCommand, _transaction.Level);
+				OutputCommand ("ExecuteBatchInsert[Trans]", lastIdCommand, _transaction.Level);
 				lastId = lastIdCommand.ExecuteScalar ();
 			}
 			else {
@@ -94,14 +94,14 @@ namespace Light.Data
 			return rInts;
 		}
 
-		internal override int [] ExecuteMultiCommands (IDbCommand [] dbcommands, SafeLevel level)
+		internal override int [] ExecuteBatchNonQuery (IDbCommand [] dbcommands, SafeLevel level)
 		{
 			ChecKStatus (true);
 			int [] rInts = new int [dbcommands.Length];
 			int index = 0;
 			foreach (IDbCommand dbcommand in dbcommands) {
 				_transaction.SetupCommand (dbcommand);
-				OutputCommand ("ExecuteMultiCommands[Trans]", dbcommand, _transaction.Level);
+				OutputCommand ("ExecuteBatchNonQuery[Trans]", dbcommand, _transaction.Level);
 				rInts [index] = dbcommand.ExecuteNonQuery ();
 				index++;
 			}

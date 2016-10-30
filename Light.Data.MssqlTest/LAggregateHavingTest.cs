@@ -460,117 +460,117 @@ namespace Light.Data.MssqlTest
 			int[] arrayx = new int[]{ 18, 20 };
 			List<int> listx = new List<int> (arrayx);
 
-			list = context.LQuery<TeUser> ().ToList ();
-			listAc = context.LAggregate<TeUser> ()
-				.GroupBy (TeUser.LevelIdField)
-				.Aggregate (function, "Data")
-				.Having (function.LtAny (arrayx))
-				.GetObjectList<LevelIdAgg> ();
-			dict = new Dictionary<int, LevelIdAgg> ();
-			listEx = new List<LevelIdAgg> ();
-			foreach (TeUser user in list) {
-				LevelIdAgg i;
-				if (!dict.TryGetValue (user.LevelId, out i)) {
-					i = new LevelIdAgg ();
-					i.LevelId = user.LevelId;
-					i.Data = 0;
-				}
-				i.Data += user.LoginTimes;
-				dict [user.LevelId] = i;
-			}
-			foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
-				if (listx.Exists (x => kv.Value.Data < x)) {
-					listEx.Add (kv.Value);
-				}
-			}
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => {
-				return listx.Exists (y => x.Data < y);
-			}));
+			//list = context.LQuery<TeUser> ().ToList ();
+			//listAc = context.LAggregate<TeUser> ()
+			//	.GroupBy (TeUser.LevelIdField)
+			//	.Aggregate (function, "Data")
+			//	.Having (function.LtAny (arrayx))
+			//	.GetObjectList<LevelIdAgg> ();
+			//dict = new Dictionary<int, LevelIdAgg> ();
+			//listEx = new List<LevelIdAgg> ();
+			//foreach (TeUser user in list) {
+			//	LevelIdAgg i;
+			//	if (!dict.TryGetValue (user.LevelId, out i)) {
+			//		i = new LevelIdAgg ();
+			//		i.LevelId = user.LevelId;
+			//		i.Data = 0;
+			//	}
+			//	i.Data += user.LoginTimes;
+			//	dict [user.LevelId] = i;
+			//}
+			//foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
+			//	if (listx.Exists (x => kv.Value.Data < x)) {
+			//		listEx.Add (kv.Value);
+			//	}
+			//}
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => {
+			//	return listx.Exists (y => x.Data < y);
+			//}));
 
-			list = context.LQuery<TeUser> ().ToList ();
-			listAc = context.LAggregate<TeUser> ()
-				.GroupBy (TeUser.LevelIdField)
-				.Aggregate (function, "Data")
-				.Having (function.GtAny (arrayx))
-				.GetObjectList<LevelIdAgg> ();
-			dict = new Dictionary<int, LevelIdAgg> ();
-			listEx = new List<LevelIdAgg> ();
-			foreach (TeUser user in list) {
-				LevelIdAgg i;
-				if (!dict.TryGetValue (user.LevelId, out i)) {
-					i = new LevelIdAgg ();
-					i.LevelId = user.LevelId;
-					i.Data = 0;
-				}
-				i.Data += user.LoginTimes;
-				dict [user.LevelId] = i;
-			}
-			foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
-				if (listx.Exists (x => kv.Value.Data > x)) {
-					listEx.Add (kv.Value);
-				}
-			}
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => {
-				return listx.Exists (y => x.Data > y);
-			}));
+			//list = context.LQuery<TeUser> ().ToList ();
+			//listAc = context.LAggregate<TeUser> ()
+			//	.GroupBy (TeUser.LevelIdField)
+			//	.Aggregate (function, "Data")
+			//	.Having (function.GtAny (arrayx))
+			//	.GetObjectList<LevelIdAgg> ();
+			//dict = new Dictionary<int, LevelIdAgg> ();
+			//listEx = new List<LevelIdAgg> ();
+			//foreach (TeUser user in list) {
+			//	LevelIdAgg i;
+			//	if (!dict.TryGetValue (user.LevelId, out i)) {
+			//		i = new LevelIdAgg ();
+			//		i.LevelId = user.LevelId;
+			//		i.Data = 0;
+			//	}
+			//	i.Data += user.LoginTimes;
+			//	dict [user.LevelId] = i;
+			//}
+			//foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
+			//	if (listx.Exists (x => kv.Value.Data > x)) {
+			//		listEx.Add (kv.Value);
+			//	}
+			//}
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => {
+			//	return listx.Exists (y => x.Data > y);
+			//}));
 
-			list = context.LQuery<TeUser> ().ToList ();
-			listAc = context.LAggregate<TeUser> ()
-				.GroupBy (TeUser.LevelIdField)
-				.Aggregate (function, "Data")
-				.Having (function.LtAll (arrayx))
-				.GetObjectList<LevelIdAgg> ();
-			dict = new Dictionary<int, LevelIdAgg> ();
-			listEx = new List<LevelIdAgg> ();
-			foreach (TeUser user in list) {
-				LevelIdAgg i;
-				if (!dict.TryGetValue (user.LevelId, out i)) {
-					i = new LevelIdAgg ();
-					i.LevelId = user.LevelId;
-					i.Data = 0;
-				}
-				i.Data += user.LoginTimes;
-				dict [user.LevelId] = i;
-			}
-			foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
-				if (listx.TrueForAll (x => kv.Value.Data < x)) {
-					listEx.Add (kv.Value);
-				}
-			}
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => {
-				return listx.TrueForAll (y => x.Data < y);
-			}));
+			//list = context.LQuery<TeUser> ().ToList ();
+			//listAc = context.LAggregate<TeUser> ()
+			//	.GroupBy (TeUser.LevelIdField)
+			//	.Aggregate (function, "Data")
+			//	.Having (function.LtAll (arrayx))
+			//	.GetObjectList<LevelIdAgg> ();
+			//dict = new Dictionary<int, LevelIdAgg> ();
+			//listEx = new List<LevelIdAgg> ();
+			//foreach (TeUser user in list) {
+			//	LevelIdAgg i;
+			//	if (!dict.TryGetValue (user.LevelId, out i)) {
+			//		i = new LevelIdAgg ();
+			//		i.LevelId = user.LevelId;
+			//		i.Data = 0;
+			//	}
+			//	i.Data += user.LoginTimes;
+			//	dict [user.LevelId] = i;
+			//}
+			//foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
+			//	if (listx.TrueForAll (x => kv.Value.Data < x)) {
+			//		listEx.Add (kv.Value);
+			//	}
+			//}
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => {
+			//	return listx.TrueForAll (y => x.Data < y);
+			//}));
 
-			list = context.LQuery<TeUser> ().ToList ();
-			listAc = context.LAggregate<TeUser> ()
-				.GroupBy (TeUser.LevelIdField)
-				.Aggregate (function, "Data")
-				.Having (function.GtAll (arrayx))
-				.GetObjectList<LevelIdAgg> ();
-			dict = new Dictionary<int, LevelIdAgg> ();
-			listEx = new List<LevelIdAgg> ();
-			foreach (TeUser user in list) {
-				LevelIdAgg i;
-				if (!dict.TryGetValue (user.LevelId, out i)) {
-					i = new LevelIdAgg ();
-					i.LevelId = user.LevelId;
-					i.Data = 0;
-				}
-				i.Data += user.LoginTimes;
-				dict [user.LevelId] = i;
-			}
-			foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
-				if (listx.TrueForAll (x => kv.Value.Data > x)) {
-					listEx.Add (kv.Value);
-				}
-			}
-			Assert.AreEqual (listEx.Count, listAc.Count);
-			Assert.IsTrue (listAc.TrueForAll (x => {
-				return listx.TrueForAll (y => x.Data > y);
-			}));
+			//list = context.LQuery<TeUser> ().ToList ();
+			//listAc = context.LAggregate<TeUser> ()
+			//	.GroupBy (TeUser.LevelIdField)
+			//	.Aggregate (function, "Data")
+			//	.Having (function.GtAll (arrayx))
+			//	.GetObjectList<LevelIdAgg> ();
+			//dict = new Dictionary<int, LevelIdAgg> ();
+			//listEx = new List<LevelIdAgg> ();
+			//foreach (TeUser user in list) {
+			//	LevelIdAgg i;
+			//	if (!dict.TryGetValue (user.LevelId, out i)) {
+			//		i = new LevelIdAgg ();
+			//		i.LevelId = user.LevelId;
+			//		i.Data = 0;
+			//	}
+			//	i.Data += user.LoginTimes;
+			//	dict [user.LevelId] = i;
+			//}
+			//foreach (KeyValuePair<int,LevelIdAgg> kv in dict) {
+			//	if (listx.TrueForAll (x => kv.Value.Data > x)) {
+			//		listEx.Add (kv.Value);
+			//	}
+			//}
+			//Assert.AreEqual (listEx.Count, listAc.Count);
+			//Assert.IsTrue (listAc.TrueForAll (x => {
+			//	return listx.TrueForAll (y => x.Data > y);
+			//}));
 
 			list = context.LQuery<TeUser> ().ToList ();
 			listAc = context.LAggregate<TeUser> ()

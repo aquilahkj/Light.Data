@@ -235,7 +235,6 @@
     <Compile Include="DataBase\AccessCommandFactory.cs" />
     <Compile Include="DataBase\Mssql.cs" />
     <Compile Include="DataBase\MssqlCommandFactory.cs" />
-    <Compile Include="DataBase\MssqlCommandFactory_2000.cs" />
     <Compile Include="DataBase\MssqlCommandFactory_2008.cs" />
     <Compile Include="DataBase\Oracle.cs" />
     <Compile Include="DataBase\OracleCommandFactory.cs" />
@@ -392,6 +391,7 @@
     <Compile Include="Model\AggregateMap.cs" />
     <Compile Include="Model\AggregateJoinModel.cs" />
     <Compile Include="Model\AggregateGroupData.cs" />
+    <Compile Include="Model\MutliInsertSelector.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

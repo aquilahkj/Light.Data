@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Light.Data.UnitTest;
@@ -127,13 +127,13 @@ namespace Light.Data.PostgreTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray (), 20);
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray (), 100);
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser> ().ToList ();
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
@@ -156,7 +156,7 @@ namespace Light.Data.PostgreTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			updates = new List<UpdateSetValue> ();
 			DateTime uptime = GetNow ();
@@ -229,7 +229,7 @@ namespace Light.Data.PostgreTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser> ().Delete ();
 			Assert.AreEqual (count, result);
@@ -255,7 +255,7 @@ namespace Light.Data.PostgreTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser> ().Delete ();
 			Assert.AreEqual (count, result);
@@ -281,7 +281,7 @@ namespace Light.Data.PostgreTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);
@@ -307,7 +307,7 @@ namespace Light.Data.PostgreTest
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.LQuery<TeUser> ().Where (TeUser.IdField.Between (listEx [0].Id, listEx [0].Id + rdd - 1)).Delete ();
 			Assert.AreEqual (rdd, result);

@@ -347,7 +347,7 @@ namespace Light.Data
 			return ss;
 		}
 
-		public ISelector CreateSpecialSelector (string [] paths)
+		public ISelector CreateSelector (string [] paths)
 		{
 			HashSet<string> allPaths = RewritePaths (paths);
 			HashSet<DataFieldInfo> hash = new HashSet<DataFieldInfo> ();

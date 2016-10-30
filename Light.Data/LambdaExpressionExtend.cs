@@ -96,28 +96,75 @@ namespace Light.Data
 
 		public static ISelector CreateMutliSelector (LambdaExpression expression, List<IMap> maps)
 		{
-			//try {
-			if (expression.Parameters.Count <= 1) {
-				throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
-			}
-			LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
-			Expression bodyExpression = expression.Body;
-			if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression) {
-				List<string> list;
-				if (ParseNewArguments (bodyExpression, state, out list)) {
-					return state.CreateSelector (list.ToArray ());
+			try {
+				if (expression.Parameters.Count <= 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
+				Expression bodyExpression = expression.Body;
+				if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression) {
+					List<string> list;
+					if (ParseNewArguments (bodyExpression, state, out list)) {
+						return state.CreateSelector (list.ToArray ());
+					}
+					else {
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+					}
 				}
 				else {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 				}
 			}
-			else {
-				throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
+			catch (Exception ex) {
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
 			}
-			//}
-			//catch (Exception ex) {
-			//	throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
-			//}
+		}
+
+		public static InsertSelector CreateMutliInsertSelector (LambdaExpression expression, List<IMap> maps)
+		{
+			try {
+				if (expression.Parameters.Count <= 1) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterCountError);
+				}
+				LambdaState state = new MutliParameterLambdaState (expression.Parameters, maps);
+				MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
+				if (memberInitObj != null) {
+					DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (memberInitObj.Type);
+					RelationMap map = insertMapping.GetRelationMap ();
+					InsertSelector selector = new InsertSelector (insertMapping);
+					if (memberInitObj.Bindings != null) {
+						foreach (MemberBinding binding in memberInitObj.Bindings) {
+							MemberAssignment ass = binding as MemberAssignment;
+							if (ass != null) {
+								Expression innerExpression = ass.Expression;
+								DataFieldInfo selectField;
+								if (!ParseDataFieldInfo (innerExpression, state, out selectField)) {
+									object obj = ConvertObject (innerExpression);
+									selectField = new LambdaConstantDataFieldInfo (obj);
+								}
+								string mypath = "." + ass.Member.Name;
+								DataFieldInfo insertField = map.CreateFieldInfoForPath (mypath);
+
+								selector.SetInsertField (insertField);
+								selector.SetSelectField (selectField);
+							}
+							else {
+								throw new LambdaParseException (LambdaParseMessage.ExpressionBindingError, binding.Member);
+							}
+						}
+					}
+					else {
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNoMember);
+					}
+					return selector;
+				}
+				else {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
+				}
+			}
+			catch (Exception ex) {
+				throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
+			}
 		}
 
 		public static OrderExpression ResolveLambdaOrderByExpression (LambdaExpression expression, OrderType orderType)

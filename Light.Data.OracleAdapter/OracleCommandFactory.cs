@@ -144,8 +144,7 @@ namespace Light.Data.OracleAdapter
 			return identityAuto;
 		}
 
-
-		public override Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		public override Tuple<CommandData, CreateSqlState> [] CreateBatchInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
@@ -208,6 +207,7 @@ namespace Light.Data.OracleAdapter
 				if (createCount == batchCount || totalCreateCount == totalCount) {
 					totalSql.Append (" end;");
 					CommandData command = new CommandData (totalSql.ToString ());
+					command.ReturnRowCount = false;
 					list.Add (new Tuple<CommandData, CreateSqlState> (command, state));
 					if (totalCreateCount == totalCount) {
 						break;
@@ -221,6 +221,149 @@ namespace Light.Data.OracleAdapter
 			return list.ToArray ();
 		}
      
+		public override Tuple<CommandData, CreateSqlState> [] CreateBatchUpdateCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		{
+			if (entitys == null || entitys.Count == 0) {
+				throw new ArgumentNullException (nameof (entitys));
+			}
+			if (batchCount <= 0) {
+				batchCount = 10;
+			}
+			if (mapping.NoPrimaryKeyFields.Count == 0) {
+				throw new LightDataException (RE.UpdateFieldIsNotExists);
+			}
+
+			IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
+			int keyLen = keyFields.Count;
+
+			int totalCount = entitys.Count;
+			int createCount = 0;
+			int totalCreateCount = 0;
+
+			StringBuilder totalSql = new StringBuilder ();
+			totalSql.Append ("begin ");
+			CreateSqlState state = new CreateSqlState (this);
+			List<Tuple<CommandData, CreateSqlState>> list = new List<Tuple<CommandData, CreateSqlState>> ();
+
+			foreach (object entity in entitys) {
+				IList<DataFieldMapping> columnFields;
+				DataTableEntity tableEntity = entity as DataTableEntity;
+				if (tableEntity != null) {
+					string [] updatefieldNames = tableEntity.GetUpdateFields ();
+					if (updatefieldNames != null && updatefieldNames.Length > 0) {
+						List<DataFieldMapping> updateFields = new List<DataFieldMapping> ();
+						foreach (string name in updatefieldNames) {
+							DataFieldMapping fm = mapping.FindDataEntityField (name);
+							if (fm == null) {
+								continue;
+							}
+							PrimitiveFieldMapping pfm = fm as PrimitiveFieldMapping;
+							if (pfm != null && pfm.IsPrimaryKey) {
+								continue;
+							}
+							if (!updateFields.Contains (fm)) {
+								updateFields.Add (fm);
+							}
+						}
+						columnFields = updateFields;
+					}
+					else {
+						columnFields = mapping.NoPrimaryKeyFields;
+					}
+				}
+				else {
+					columnFields = mapping.NoPrimaryKeyFields;
+				}
+
+				int updateLen = columnFields.Count;
+				string [] updateList = new string [updateLen];
+				string [] whereList = new string [keyLen];
+				for (int i = 0; i < updateLen; i++) {
+					DataFieldMapping field = columnFields [i];
+					object obj = field.Handler.Get (entity);
+					object value = field.ToColumn (obj);
+					updateList [i] = string.Format ("{0}={1}", CreateDataFieldSql (field.Name), state.AddDataParameter (value, field.DBType, ParameterDirection.Input));
+				}
+				for (int i = 0; i < keyLen; i++) {
+					DataFieldMapping field = keyFields [i];
+					object obj = field.Handler.Get (entity);
+					object value = field.ToColumn (obj);
+					whereList [i] = string.Format ("{0}={1}", CreateDataFieldSql (field.Name), state.AddDataParameter (value, field.DBType, ParameterDirection.Input));
+				}
+				string update = string.Join (",", updateList);
+				string where = string.Join (" and ", whereList);
+				totalSql.AppendFormat ("update {0} set {1} where {2};", CreateDataTableSql (mapping.TableName), update, where);
+				createCount++;
+				totalCreateCount++;
+				if (createCount == batchCount || totalCreateCount == totalCount) {
+					totalSql.Append (" end;");
+					CommandData command = new CommandData (totalSql.ToString ());
+					command.ReturnRowCount = false;
+					list.Add (new Tuple<CommandData, CreateSqlState> (command, state));
+					if (totalCreateCount == totalCount) {
+						break;
+					}
+					state = new CreateSqlState (this);
+					createCount = 0;
+					totalSql = new StringBuilder ();
+					totalSql.Append ("begin ");
+				}
+			}
+			return list.ToArray ();
+		}
+
+		public override Tuple<CommandData, CreateSqlState> [] CreateBatchDeleteCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		{
+			if (entitys == null || entitys.Count == 0) {
+				throw new ArgumentNullException (nameof (entitys));
+			}
+			if (batchCount <= 0) {
+				batchCount = 10;
+			}
+			if (mapping.NoPrimaryKeyFields.Count == 0) {
+				throw new LightDataException (RE.UpdateFieldIsNotExists);
+			}
+
+			IList<DataFieldMapping> keyFields = mapping.PrimaryKeyFields;
+			int keyLen = keyFields.Count;
+
+			int totalCount = entitys.Count;
+			int createCount = 0;
+			int totalCreateCount = 0;
+
+			StringBuilder totalSql = new StringBuilder ();
+			totalSql.Append ("begin ");
+			CreateSqlState state = new CreateSqlState (this);
+			List<Tuple<CommandData, CreateSqlState>> list = new List<Tuple<CommandData, CreateSqlState>> ();
+
+			foreach (object entity in entitys) {
+				string [] whereList = new string [keyLen];
+				for (int i = 0; i < keyLen; i++) {
+					DataFieldMapping field = keyFields [i];
+					object obj = field.Handler.Get (entity);
+					object value = field.ToColumn (obj);
+					whereList [i] = string.Format ("{0}={1}", CreateDataFieldSql (field.Name), state.AddDataParameter (value, field.DBType, ParameterDirection.Input));
+				}
+				string where = string.Join (" and ", whereList);
+				totalSql.AppendFormat ("delete from {0} where {1};", CreateDataTableSql (mapping.TableName), where);
+				createCount++;
+				totalCreateCount++;
+				if (createCount == batchCount || totalCreateCount == totalCount) {
+					totalSql.Append (" end;");
+					CommandData command = new CommandData (totalSql.ToString ());
+					command.ReturnRowCount = false;
+					list.Add (new Tuple<CommandData, CreateSqlState> (command, state));
+					if (totalCreateCount == totalCount) {
+						break;
+					}
+					state = new CreateSqlState (this);
+					createCount = 0;
+					totalSql = new StringBuilder ();
+					totalSql.Append ("begin ");
+				}
+			}
+			return list.ToArray ();
+		}
 
 		protected override string CreateIdentitySql (DataTableEntityMapping mapping)
 		{

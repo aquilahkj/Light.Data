@@ -515,10 +515,10 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateUpdateMassCommand (MassUpdator updator, QueryExpression query, CreateSqlState state)
+		public virtual CommandData CreateUpdateMassCommand (DataTableEntityMapping mapping, MassUpdator updator, QueryExpression query, CreateSqlState state)
 		{
 			StringBuilder sql = new StringBuilder ();
-			DataTableEntityMapping mapping = updator.Mapping;
+			//DataTableEntityMapping mapping = updator.Mapping;
 			string setString = updator.CreateSqlString (this, false, state);
 			sql.AppendFormat ("update {0} set {1}", CreateDataTableSql (mapping.TableName), setString);
 			if (query != null) {
@@ -589,9 +589,9 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, QueryExpression query, OrderExpression order, CreateSqlState state)
+		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, CreateSqlState state)
 		{
-			CommandData selectCommandData = CreateSelectCommand (selector.SelectMapping, selector, query, order, null, state);
+			CommandData selectCommandData = CreateSelectCommand (mapping, selector, query, order, null, state);
 			DataFieldInfo [] insertFields = selector.GetInsertFields ();
 			string [] insertFieldNames = new string [insertFields.Length];
 			for (int i = 0; i < insertFields.Length; i++) {
@@ -617,7 +617,7 @@ namespace Light.Data
 			return selectCommandData;
 		}
 
-		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		public virtual Tuple<CommandData, CreateSqlState> [] CreateBatchInsertCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
@@ -672,7 +672,7 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
-		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkUpdateCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		public virtual Tuple<CommandData, CreateSqlState> [] CreateBatchUpdateCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
@@ -759,7 +759,7 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
-		public virtual Tuple<CommandData, CreateSqlState> [] CreateBulkDeleteCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
+		public virtual Tuple<CommandData, CreateSqlState> [] CreateBatchDeleteCommand (DataTableEntityMapping mapping, IList entitys, int batchCount)
 		{
 			if (entitys == null || entitys.Count == 0) {
 				throw new ArgumentNullException (nameof (entitys));
@@ -813,7 +813,7 @@ namespace Light.Data
 		{
 			string sql = CreateIdentitySql (mapping);
 			if (!string.IsNullOrEmpty (sql)) {
-				CommandData command = new CommandData (sql, null);
+				CommandData command = new CommandData (sql);
 				//command.TransParamName = true;
 				return command;
 			}
@@ -862,25 +862,6 @@ namespace Light.Data
 			}
 			return sb.ToString ();
 		}
-
-		//public virtual string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, List<DataParameter> dataParameters)
-		//{
-		//	string op = GetQueryCollectionPredicate (predicate);
-		//	if (dataParameters.Count == 0) {
-		//		throw new LightDataException (RE.EnumerableLengthNotAllowIsZero);
-		//	}
-		//	int i = 0;
-		//	StringBuilder sb = new StringBuilder ();
-		//	sb.AppendFormat ("{0} {1} (", fieldName, op);
-		//	foreach (DataParameter dataParameter in dataParameters) {
-		//		if (i > 0)
-		//			sb.Append (",");
-		//		sb.Append (dataParameter.ParameterName);
-		//		i++;
-		//	}
-		//	sb.Append (")");
-		//	return sb.ToString ();
-		//}
 
 		public virtual string CreateCollectionParamsQuerySql (object fieldName, QueryCollectionPredicate predicate, IEnumerable<object> list)
 		{
@@ -1220,17 +1201,6 @@ namespace Light.Data
 			throw new NotSupportedException ();
 		}
 
-		//public virtual string CreateStringSql (string value)
-		//{
-		//	if (value.IndexOf ('\\') >= 0) {
-		//		value = value.Replace ("\\", "\\\\");
-		//	}
-		//	if (value.IndexOf ('\'') >= 0) {
-		//		value = value.Replace ("\'", "\\'");
-		//	}
-		//	return string.Format ("'{0}'", value);
-		//}
-
 		public virtual string CreateNullSql ()
 		{
 			return "null";
@@ -1240,11 +1210,6 @@ namespace Light.Data
 		{
 			return value.ToString ();
 		}
-
-		//public virtual string CreateBooleanSql (bool value)
-		//{
-		//	return value ? "true" : "false";
-		//}
 
 		public virtual string CreateDualConcatSql (object field, object value, bool forward)
 		{
@@ -1315,12 +1280,6 @@ namespace Light.Data
 				return string.Format ("({0}^{1})", value, field);
 			}
 		}
-
-
-		//public virtual string CreateConcatSql (object left, object right)
-		//{
-		//	return string.Format ("({0}+{1})", field, value);
-		//}
 
 		public virtual string CreatePlusSql (object left, object right)
 		{

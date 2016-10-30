@@ -178,6 +178,13 @@ namespace Light.Data
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="TResult">The 1st type parameter.</typeparam>
 		ISelect<TResult> Select<TResult> (Expression<Func<T, T1, T2, T3, TResult>> expression) where TResult : class;
+
+		/// <summary>
+		/// Select fileds data insert to the special table K.
+		/// </summary>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		int SelectInsert<K> (Expression<Func<T, T1, T2, T3, K>> expression) where K : class, new();
 	}
 }
 

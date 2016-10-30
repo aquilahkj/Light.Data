@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Light.Data.UnitTest;
@@ -71,7 +71,7 @@ namespace Light.Data.MysqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 			listAc = context.Query<TeUser2> ().ToList ();
 			AssertExtend.AreEnumerableEqual (listEx, listAc);
 
@@ -90,13 +90,13 @@ namespace Light.Data.MysqlTest
 
 			//context.TruncateTable<TeUser2> ();
 			//result = context.BulkInsert (listEx.ToArray (), 20);
-			//Assert.AreEqual (result, count);
+			//Assert.AreEqual (count, result);
 			//listAc = context.Query<TeUser2> ().ToList ();
 			//AssertExtend.AreEnumerableEqual (listEx, listAc);
 
 			//context.TruncateTable<TeUser2> ();
 			//result = context.BulkInsert (listEx.ToArray (), 100);
-			//Assert.AreEqual (result, count);
+			//Assert.AreEqual (count, result);
 			//listAc = context.Query<TeUser2> ().ToList ();
 			//AssertExtend.AreEnumerableEqual (listEx, listAc);
 		}
@@ -120,7 +120,7 @@ namespace Light.Data.MysqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			DateTime uptime = GetNow ();
 
@@ -193,7 +193,7 @@ namespace Light.Data.MysqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.Query<TeUser2> ().Delete ();
 			Assert.AreEqual (count, result);
@@ -218,7 +218,7 @@ namespace Light.Data.MysqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.Query<TeUser2> ().Delete ();
 			Assert.AreEqual (count, result);
@@ -244,7 +244,7 @@ namespace Light.Data.MysqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.Query<TeUser2> ().Where (x => x.Id >= listEx [0].Id && x.Id <= listEx [0].Id + rdd - 1).Delete ();
 			Assert.AreEqual (rdd, result);
@@ -270,7 +270,7 @@ namespace Light.Data.MysqlTest
 
 			context.TruncateTable<TeUser2> ();
 			result = context.BatchInsert (listEx.ToArray ());
-			Assert.AreEqual (result, count);
+			Assert.AreEqual (count, result);
 
 			result = context.Query<TeUser2> ().Where (x => x.Id >= listEx [0].Id && x.Id <= listEx [0].Id + rdd - 1).Delete ();
 			Assert.AreEqual (rdd, result);

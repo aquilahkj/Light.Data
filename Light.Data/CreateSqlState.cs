@@ -161,11 +161,6 @@ namespace Light.Data
 		{
 			return parameters.ToArray ();
 		}
-
-		internal string AddDataParameter (object value, string dBType, object input)
-		{
-			throw new NotImplementedException ();
-		}
 	}
 }
 

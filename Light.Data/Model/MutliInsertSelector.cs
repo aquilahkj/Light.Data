@@ -3,21 +3,13 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class InsertSelector : Selector
+	class MutliInsertSelector : Selector
 	{
 		readonly DataTableEntityMapping insertMapping;
 
-		readonly DataEntityMapping selectMapping;
-
 		readonly List<DataFieldInfo> insertList = new List<DataFieldInfo> ();
 
-		public InsertSelector (DataTableEntityMapping insertMapping, DataEntityMapping selectMapping)
-		{
-			this.selectMapping = selectMapping;
-			this.insertMapping = insertMapping;
-		}
-
-		public InsertSelector (DataTableEntityMapping insertMapping)
+		public MutliInsertSelector (DataTableEntityMapping insertMapping)
 		{
 			this.insertMapping = insertMapping;
 		}
@@ -25,12 +17,6 @@ namespace Light.Data
 		internal DataTableEntityMapping InsertMapping {
 			get {
 				return insertMapping;
-			}
-		}
-
-		internal DataEntityMapping SelectMapping {
-			get {
-				return selectMapping;
 			}
 		}
 
@@ -47,4 +33,3 @@ namespace Light.Data
 		}
 	}
 }
-

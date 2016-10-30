@@ -819,7 +819,7 @@ namespace Light.Data
 				DataFieldInfo valueField = new ConstantDataFieldInfo (mapping, usv.Value);
 				updator.SetUpdateData (usv.DataField, valueField);
 			}
-			return this._context.Update (updator, _query, _level);
+			return this._context.Update (mapping, updator, _query, _level);
 		}
 
 		/// <summary>

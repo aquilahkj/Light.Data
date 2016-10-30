@@ -150,7 +150,7 @@ namespace Light.Data
 			foreach (KeyValuePair<string, List<string>> kvs in dict) {
 				IMap map = mapDict [kvs.Key];
 				string alias = aliasDict [kvs.Key];
-				Selector selector = map.CreateSpecialSelector (kvs.Value.ToArray ()) as Selector;
+				Selector selector = map.CreateSelector (kvs.Value.ToArray ()) as Selector;
 				if (selector == null) {
 					throw new LambdaParseException (LambdaParseMessage.NotSupportRelateEnityJoinSelect);
 				}
