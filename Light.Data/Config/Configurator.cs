@@ -24,7 +24,8 @@ namespace Light.Data
 			XmlNode node = obj as XmlNode;
 			if (node != null) {
 				return LoadConfiguratorFromXml (node);
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -36,9 +37,8 @@ namespace Light.Data
 		public static Configurator [] LoadConfiguratorFromAppSetting ()
 		{
 			Configurator [] configFiles = null;
-			string configPath;
-			if (ConfigurationManager.AppSettings ["lightDataConfig"] != null) {
-				configPath = ConfigurationManager.AppSettings ["lightDataConfig"];
+			string configPath = ConfigurationManager.AppSettings ["lightDataConfig"];
+			if (!string.IsNullOrEmpty (configPath)) {
 				configFiles = LoadConfiguratorFromPath (configPath);
 			}
 			return configFiles;
@@ -53,29 +53,30 @@ namespace Light.Data
 		{
 			Configurator [] configFiles = null;
 			if (!string.IsNullOrEmpty (configPath)) {
-				if (configPath.EndsWith (".config")) {
-					Configurator configFile = LoadConfiguratorFromFile (configPath);
+				Configurator configFile = LoadConfiguratorFromFile (configPath);
+				if (configFile != null) {
 					configFiles = new [] { configFile };
-				} else {
-					configFiles = LoadConfiguratorFromConfigFileDir (configPath);
+				}
+				else {
+					configFiles = LoadConfiguratorFromDir (configPath);
 				}
 			}
 			return configFiles;
 		}
 
-		/// <summary>
-		/// Loads the configurator from assembly.
-		/// </summary>
-		/// <returns>The configurator from assembly.</returns>
-		public static Configurator [] LoadConfiguratorFromAssembly ()
-		{
-			Assembly assembly;
-			assembly = Assembly.GetEntryAssembly ();
-			if (assembly == null) {
-				assembly = Assembly.GetExecutingAssembly ();
-			}
-			return LoadConfiguratorFromAssembly (assembly);
-		}
+		///// <summary>
+		///// Loads the configurator from assembly.
+		///// </summary>
+		///// <returns>The configurator from assembly.</returns>
+		//public static Configurator [] LoadConfiguratorFromAssembly ()
+		//{
+		//	Assembly assembly;
+		//	assembly = Assembly.GetEntryAssembly ();
+		//	if (assembly == null) {
+		//		assembly = Assembly.GetExecutingAssembly ();
+		//	}
+		//	return LoadConfiguratorFromAssembly (assembly);
+		//}
 
 		/// <summary>
 		/// Loads the configurator from assembly.
@@ -87,13 +88,24 @@ namespace Light.Data
 			if (assembly == null) {
 				return null;
 			}
-			Configurator [] configFiles = null;
-			XmlConfiguratorAttribute [] attribute = AttributeCore.GetAssemblyAttributes<XmlConfiguratorAttribute> (assembly, true);
-			if (attribute.Length > 0) {
-				string configPath = attribute [0].ConfigPath;
-				configFiles = LoadConfiguratorFromPath (configPath);
+			List<Configurator> list = null;
+			XmlConfiguratorAttribute [] attributes = AttributeCore.GetAssemblyAttributes<XmlConfiguratorAttribute> (assembly, true);
+			foreach (XmlConfiguratorAttribute attribute in attributes) {
+				string configPath = attribute.ConfigPath;
+				Configurator [] configFiles = LoadConfiguratorFromPath (configPath);
+				if (configFiles != null) {
+					if (list == null) {
+						list = new List<Configurator> ();
+					}
+					list.AddRange (configFiles);
+				}
 			}
-			return configFiles;
+			if (list != null && list.Count > 0) {
+				return list.ToArray ();
+			}
+			else {
+				return null;
+			}
 		}
 
 		/// <summary>
@@ -101,38 +113,22 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The configurator from config file dir.</returns>
 		/// <param name="directory">Directory.</param>
-		public static Configurator [] LoadConfiguratorFromConfigFileDir (string directory)
+		public static Configurator [] LoadConfiguratorFromDir (string directory)
 		{
 			if (string.IsNullOrEmpty (directory)) {
 				throw new ArgumentNullException (nameof (directory));
 			}
 			List<Configurator> list = new List<Configurator> ();
-			string fullPathConfigDirectory;
-			string applicationBaseDirectory = null;
 
-			applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
-			if (applicationBaseDirectory != null) {
-				fullPathConfigDirectory = Path.Combine (applicationBaseDirectory, directory);
-			} else {
-				fullPathConfigDirectory = directory;
-			}
-			DirectoryInfo dir = new DirectoryInfo (fullPathConfigDirectory);
+			DirectoryInfo dir = new DirectoryInfo (directory);
 			if (dir.Exists) {
 				FileInfo [] infos = dir.GetFiles ();
 				foreach (FileInfo info in infos) {
-					if (info.Extension == ".config") {
-						try {
-							Configurator config = LoadConfiguratorFromFile (info);
-							if (config != null) {
-								list.Add (config);
-							}
-						} catch {
-
-						}
+					Configurator configFile = LoadConfiguratorFromFile (info);
+					if (configFile != null) {
+						list.Add (configFile);
 					}
 				}
-
 			}
 			return list.ToArray ();
 		}
@@ -147,20 +143,8 @@ namespace Light.Data
 			if (string.IsNullOrEmpty (fileName)) {
 				throw new ArgumentNullException (nameof (fileName));
 			}
-			Configurator configFile;
-			string fullPathConfigFile;
-			string applicationBaseDirectory = null;
-			try {
-				applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-			} catch {
-			}
-			if (applicationBaseDirectory != null) {
-				fullPathConfigFile = Path.Combine (applicationBaseDirectory, fileName);
-			} else {
-				fullPathConfigFile = fileName;
-			}
-
-			configFile = LoadConfiguratorFromFile (new FileInfo (fullPathConfigFile));
+			FileInfo fileInfo = new FileInfo (fileName);
+			Configurator configFile = LoadConfiguratorFromFile (fileInfo);
 			return configFile;
 		}
 
@@ -175,19 +159,9 @@ namespace Light.Data
 				throw new ArgumentNullException (nameof (fileInfo));
 			}
 			Configurator configFile = null;
-			if (fileInfo.Exists) {
-				FileStream fs;
-
-				fs = fileInfo.Open (FileMode.Open, FileAccess.Read, FileShare.Read);
-
-				if (fs != null) {
-					try {
-						// Load the configuration from the stream
-						configFile = LoadConfiguratorFromStream (fs);
-					} finally {
-						// Force the file closed whatever happens
-						fs.Close ();
-					}
+			if (fileInfo.Exists && fileInfo.Extension.Equals (".config", StringComparison.OrdinalIgnoreCase)) {
+				using (FileStream fs = fileInfo.Open (FileMode.Open, FileAccess.Read, FileShare.Read)) {
+					configFile = LoadConfiguratorFromStream (fs);
 				}
 			}
 			return configFile;

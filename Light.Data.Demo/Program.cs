@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
+using System.IO;
 
 namespace Light.Data.Demo
 {
@@ -47,6 +48,8 @@ namespace Light.Data.Demo
 			output.OutputFullCommand = true;
 
 			context.SetCommanfOutput (output);
+			string fsasa = Environment.CurrentDirectory;
+			FileInfo file = new FileInfo ("lightdata.config");
 
 			var logdate = context.Query<TeUser> ().GroupBy (x => new DemoData {
 				Date = x.LastLoginTime.Value.Date,

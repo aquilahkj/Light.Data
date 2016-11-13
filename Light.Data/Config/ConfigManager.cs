@@ -29,7 +29,7 @@ namespace Light.Data
 				dataConfig.CombineConfig (config);
 			}
 
-			Configurator[] defaultDirConfiguators = Configurator.LoadConfiguratorFromConfigFileDir ("lightdata");
+			Configurator[] defaultDirConfiguators = Configurator.LoadConfiguratorFromDir ("lightdata");
 			if (defaultDirConfiguators != null && defaultDirConfiguators.Length > 0) {
 				foreach (Configurator configuator in defaultDirConfiguators) {
 					LightDataConfig config = configuator.CreateConfig<LightDataConfig> ();

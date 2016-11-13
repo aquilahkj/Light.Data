@@ -69,9 +69,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Re.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="DBSchema.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

@@ -135,6 +135,8 @@ namespace Light.Data.MysqlTest
 		[Test ()]
 		public void TestCase_ConfigDir1 ()
 		{
+			string ff=TestContext.CurrentContext.TestDirectory;
+			string ffq = TestContext.CurrentContext.WorkDirectory;
 			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(TeCheckValueConfigC2));
 			Assert.NotNull (mapping);
 			Assert.AreEqual ("Te_CheckValue", mapping.TableName);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Diagnostics;
+using System.IO;
 
 namespace Light.Data.MysqlTest
 {
@@ -15,6 +16,7 @@ namespace Light.Data.MysqlTest
 
 		protected BaseTest ()
 		{
+			Directory.SetCurrentDirectory (TestContext.CurrentContext.TestDirectory);
 			context = DataContext.Create ("mysql");
 			output.OutputFullCommand = true;
 			output.UseConsoleOutput = true;
