@@ -298,10 +298,19 @@ namespace Light.Data
 			return onString;
 		}
 
-		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		public virtual CommandData CreateSelectCommand (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
 		{
-			string selectString = selector.CreateSelectString (this, false, state);
-			CommandData data = this.CreateSelectBaseCommand (mapping, selectString, query, order, region, state);
+			string select;
+			if (selector == null) {
+				select = "*"; 
+			}
+			else {
+				select = selector.CreateSelectString (this, false, state);
+			}
+			if (distinct) {
+				select = "distinct " + select;
+			}
+			CommandData data = this.CreateSelectBaseCommand (mapping, select, query, order, region, state);
 			return data;
 		}
 
@@ -328,10 +337,13 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateSelectJoinTableCommand (ISelector selector, IJoinModel [] modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
+		public virtual CommandData CreateSelectJoinTableCommand (ISelector selector, IJoinModel [] modelList, QueryExpression query, OrderExpression order, bool distinct, Region region, CreateSqlState state)
 		{
-			string selectString = selector.CreateSelectString (this, true, state);
-			return CreateSelectJoinTableBaseCommand (selectString, modelList, query, order, region, state);
+			string select = selector.CreateSelectString (this, true, state);
+			if (distinct) {
+				select = "distinct " + select;
+			}
+			return CreateSelectJoinTableBaseCommand (select, modelList, query, order, region, state);
 		}
 
 		public virtual CommandData CreateSelectJoinTableBaseCommand (string customSelect, IJoinModel [] modelList, QueryExpression query, OrderExpression order, Region region, CreateSqlState state)
@@ -589,9 +601,9 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, CreateSqlState state)
+		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, bool distinct, CreateSqlState state)
 		{
-			CommandData selectCommandData = CreateSelectCommand (mapping, selector, query, order, null, state);
+			CommandData selectCommandData = CreateSelectCommand (mapping, selector, query, order, distinct, null, state);
 			DataFieldInfo [] insertFields = selector.GetInsertFields ();
 			string [] insertFieldNames = new string [insertFields.Length];
 			for (int i = 0; i < insertFields.Length; i++) {
@@ -603,9 +615,9 @@ namespace Light.Data
 			return selectCommandData;
 		}
 
-		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, IJoinModel [] modelList, QueryExpression query, OrderExpression order, CreateSqlState state)
+		public virtual CommandData CreateSelectInsertCommand (InsertSelector selector, IJoinModel [] modelList, QueryExpression query, OrderExpression order, bool distinct, CreateSqlState state)
 		{
-			CommandData selectCommandData = CreateSelectJoinTableCommand (selector, modelList, query, order, null, state);
+			CommandData selectCommandData = CreateSelectJoinTableCommand (selector, modelList, query, order, distinct, null, state);
 			DataFieldInfo [] insertFields = selector.GetInsertFields ();
 			string [] insertFieldNames = new string [insertFields.Length];
 			for (int i = 0; i < insertFields.Length; i++) {
@@ -1006,6 +1018,11 @@ namespace Light.Data
 			}
 		}
 
+		public virtual string CreateSelectAllSql ()
+		{
+			return "*";
+		}
+
 		public virtual string CreateCountAllSql ()
 		{
 			return "count(1)";
@@ -1074,6 +1091,11 @@ namespace Light.Data
 		public virtual string CreateAliasTableSql (string field, string alias)
 		{
 			return string.Format ("{0} as {1}", field, CreateDataFieldSql (alias));
+		}
+
+		public virtual string CreateAliasQuerySql (string field, string alias)
+		{
+			return string.Format ("({0}) as {1}", field, CreateDataFieldSql (alias));
 		}
 
 		public virtual string CreateDataFieldSql (string fieldName)

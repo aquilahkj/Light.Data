@@ -375,6 +375,23 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
+
+		private string remark;
+
+		/// <summary>
+		/// Remark
+		/// </summary>
+		/// <value></value>
+		[DataField ("Remark", IsNullable = true)]
+		public string Remark {
+			get {
+				return this.remark;
+			}
+			set {
+				this.remark = value;
+			}
+		}
+
 		private int levelStatus;
 
 		/// <summary>
@@ -391,21 +408,6 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-		private string remark;
-
-		/// <summary>
-		/// Remark
-		/// </summary>
-		/// <value></value>
-		[DataField ("Remark", IsNullable = true)]
-		public string Remark {
-			get { 
-				return this.remark; 
-			}
-			set { 
-				this.remark = value; 
-			}
-		}
 
 		#endregion
 	}

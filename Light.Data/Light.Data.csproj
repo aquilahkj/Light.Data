@@ -392,6 +392,12 @@
     <Compile Include="Model\AggregateJoinModel.cs" />
     <Compile Include="Model\AggregateGroupData.cs" />
     <Compile Include="Model\MutliInsertSelector.cs" />
+    <Compile Include="Model\AggregateBase.cs" />
+    <Compile Include="Model\QueryBase.cs" />
+    <Compile Include="Model\SelectJoinModel.cs" />
+    <Compile Include="Model\SelectBase.cs" />
+    <Compile Include="Model\IJoinSelect.cs" />
+    <Compile Include="Model\AllSelector.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

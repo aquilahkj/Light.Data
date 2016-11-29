@@ -85,6 +85,8 @@
     <Compile Include="TT_ConfigMappingTest.cs" />
     <Compile Include="TT_DefaultValueTest.cs" />
     <Compile Include="TT_JoinTableBaseTest.cs" />
+    <Compile Include="TT_JoinTableOnTest.cs" />
+    <Compile Include="TT_JoinTableOrderByTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

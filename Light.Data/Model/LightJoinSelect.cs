@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LightJoinSelect<K> : ISelect<K> where K : class
+	class LightJoinSelect<K> : IJoinSelect<K> where K : class
 	{
 		readonly QueryExpression _query;
 
 		readonly OrderExpression _order;
+
+		readonly bool _distinct;
 
 		readonly Region _region;
 
@@ -24,7 +26,7 @@ namespace Light.Data
 
 		readonly DynamicMultiDataMapping _mappping;
 
-		internal LightJoinSelect (DataContext context, Delegate dele, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal LightJoinSelect (DataContext context, Delegate dele, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
 		{
 			_models = models;
 			_context = context;
@@ -32,6 +34,7 @@ namespace Light.Data
 			_selector = selector;
 			_query = query;
 			_order = order;
+			_distinct = distinct;
 			_region = region;
 			_level = level;
 			_mappping = DynamicMultiDataMapping.CreateDynamicMultiDataMapping (typeof (K), models);
@@ -39,7 +42,7 @@ namespace Light.Data
 
 		public IEnumerator<K> GetEnumerator ()
 		{
-			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _distinct, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item as object []);
 				yield return obj as K;
 			}
@@ -47,7 +50,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _distinct, _region, _level)) {
 				object obj = _dele.DynamicInvoke (item as object []);
 				yield return obj;
 			}
@@ -56,7 +59,7 @@ namespace Light.Data
 		public List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _region, _level)) {
+			foreach (object item in _context.QueryJoinData (_mappping, _selector, _models, _query, _order, _distinct, _region, _level)) {
 				if (item != null) {
 					object obj = _dele.DynamicInvoke (item as object []);
 					list.Add (obj as K);

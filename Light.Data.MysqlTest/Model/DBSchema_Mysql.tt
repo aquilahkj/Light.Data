@@ -12,7 +12,7 @@
 <#@ import namespace="MySql.Data.MySqlClient"#>
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Text.RegularExpressions"#>
-<#
+<# 
 	var namespaceName="Light.Data.MysqlTest";
 	var connection="Server=localhost;Port=3306;Database=CM_TEST;Uid=root;Pwd=qwerty;";
 	var excludeTable=new HashSet<string>();

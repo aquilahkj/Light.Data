@@ -677,7 +677,7 @@ namespace Light.Data
 			List<K> list = new List<K> ();
 
 			DataEntityMapping _mapping = DataEntityMapping.GetEntityMapping (typeof (K));
-			foreach (K item in _context.QueryJoinData (_mapping, _selector, _modelList.ToArray(), _query, _order, _region, _level)) {
+			foreach (K item in _context.QueryJoinData (_mapping, _selector, _modelList.ToArray (), _query, _order, false, _region, _level)) {
 				list.Add (item);
 			}
 			return list;

@@ -3,16 +3,16 @@ namespace Light.Data
 {
 	class AggregateMap : IMap
 	{
-		readonly AggregateGroup _group;
+		readonly AggregateGroup _model;
 
-		public AggregateMap (AggregateGroup group)
+		public AggregateMap (AggregateGroup model)
 		{
-			this._group = group;
+			this._model = model;
 		}
 
 		public Type Type {
 			get {
-				return _group.AggregateMapping.ObjectType;
+				return _model.AggregateMapping.ObjectType;
 			}
 		}
 
@@ -30,7 +30,7 @@ namespace Light.Data
 			else {
 				name = path;
 			}
-			return _group.CheckName (name);
+			return _model.CheckName (name);
 		}
 
 		public bool CheckIsRelateEntity (string path)
@@ -47,7 +47,7 @@ namespace Light.Data
 			else {
 				name = path;
 			}
-			DataFieldInfo info = _group.GetAggregateData (name);
+			DataFieldInfo info = _model.GetAggregateData (name);
 			if (!Object.Equals (info, null)) {
 				//info = info.Clone () as DataFieldInfo;
 				//NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
@@ -70,7 +70,7 @@ namespace Light.Data
 				else {
 					name = path;
 				}
-				DataFieldInfo info = _group.GetAggregateData (name);
+				DataFieldInfo info = _model.GetAggregateData (name);
 				if (!Object.Equals (info, null)) {
 					//NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
 					DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);

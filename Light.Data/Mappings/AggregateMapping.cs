@@ -5,7 +5,7 @@ namespace Light.Data
 {
 	abstract class AggregateMapping : DataMapping, IJoinTableMapping
 	{
-		public AggregateMapping (Type type)
+		protected AggregateMapping (Type type)
 			: base (type)
 		{
 		}

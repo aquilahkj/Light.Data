@@ -77,9 +77,9 @@ namespace Light.Data
 			StringBuilder sb = new StringBuilder ();
 
 			CommandData command = factory.CreateAggregateTableCommand (_group.EntityMapping, _group.GetAggregateDataFieldInfos (), _query, _having, null, null, state);
-			string sql = string.Concat ("(", command.CommandText, ")");
+			//string sql = string.Concat ("(", command.CommandText, ")");
 			string aliasName = _aliasTableName ?? _group.EntityMapping.TableName;
-			sb.Append (factory.CreateAliasTableSql (sql, aliasName));
+			sb.Append (factory.CreateAliasQuerySql (command.CommandText, aliasName));
 			return sb.ToString ();
 		}
 	}

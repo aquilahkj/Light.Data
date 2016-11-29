@@ -13,7 +13,7 @@ namespace Light.Data
 			}
 		}
 
-		readonly DataEntityMapping _mapping = null;
+		readonly DataEntityMapping _mapping;
 
 		public DataEntityMapping Mapping {
 			get {
@@ -21,7 +21,7 @@ namespace Light.Data
 			}
 		}
 
-		readonly IJoinTableMapping _joinMapping = null;
+		readonly IJoinTableMapping _joinMapping;
 
 		public IJoinTableMapping JoinMapping {
 			get {
@@ -29,23 +29,48 @@ namespace Light.Data
 			}
 		}
 
-		readonly QueryExpression _query = null;
+		QueryExpression _query;
 
 		public QueryExpression Query {
 			get {
 				return _query;
 			}
+			set {
+				_query = value;
+			}
 		}
 
-		readonly OrderExpression _order = null;
+		OrderExpression _order;
 
 		public OrderExpression Order {
 			get {
 				return _order;
 			}
+			set {
+				_order = value;
+			}
 		}
 
-		string _aliasTableName;
+		bool _distinct;
+
+		public bool Distinct {
+			get {
+				return _distinct;
+			}
+			set {
+				_distinct = value;
+			}
+		}
+
+		//readonly ISelector _selector;
+
+		//public ISelector Selector {
+		//	get {
+		//		return _selector;
+		//	}
+		//}
+
+		readonly string _aliasTableName;
 
 		public string AliasTableName {
 			get {
@@ -59,8 +84,18 @@ namespace Light.Data
 		}
 
 		public EntityJoinModel (DataEntityMapping mapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
+			//: this (mapping, AllSelector.Value, aliasTableName, connect, query, order)
 		{
+			//this._mapping = mapping;
+			//this.Selector
+			//this._connect = connect;
+			//this._query = query;
+			//this._order = order;
+			//this._aliasTableName = aliasTableName;
+			//this._joinMapping = mapping;
+
 			this._mapping = mapping;
+			//this._selector = AllSelector.Value;
 			this._connect = connect;
 			this._query = query;
 			this._order = order;
@@ -68,17 +103,24 @@ namespace Light.Data
 			this._joinMapping = mapping;
 		}
 
+		//public EntityJoinModel (DataEntityMapping mapping, ISelector selector, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
+		//{
+		//	this._mapping = mapping;
+		//	this._selector = selector;
+		//	this._connect = connect;
+		//	this._query = query;
+		//	this._order = order;
+		//	this._aliasTableName = aliasTableName;
+		//	this._joinMapping = mapping;
+		//}
+
 		public string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{
 			StringBuilder sb = new StringBuilder ();
-			//if (_connect != null) {
-			//	sb.AppendFormat (" {0} ", factory.GetJoinPredicate (_connect.Type));
-			//}
-			if (_query != null) {
-				CommandData command = factory.CreateSelectBaseCommand (_mapping, "*", _query, null, null, state);
-				string sql = string.Concat ("(", command.CommandText, ")");
+			if (_query != null || _order != null || _distinct) {
+				CommandData command = factory.CreateSelectCommand (_mapping, AllSelector.Value, _query, _order, _distinct, null, state);
 				string aliasName = _aliasTableName ?? _mapping.TableName;
-				sb.Append (factory.CreateAliasTableSql (sql, aliasName));
+				sb.Append (factory.CreateAliasQuerySql (command.CommandText, aliasName));
 			}
 			else {
 				if (_aliasTableName != null) {
@@ -88,10 +130,6 @@ namespace Light.Data
 					sb.Append (factory.CreateDataTableSql (_mapping.TableName));
 				}
 			}
-
-			//if (_connect != null && _connect.On != null) {
-			//	sb.Append (factory.GetOnString (_connect.On, state));
-			//}
 			return sb.ToString ();
 		}
 	}

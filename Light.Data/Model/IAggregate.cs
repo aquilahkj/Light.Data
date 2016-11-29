@@ -117,11 +117,11 @@ namespace Light.Data
 		/// </summary>
 		IAggregate<K> SafeMode (SafeLevel level);
 
-		/// <summary>
-		/// Gets the group data.
-		/// </summary>
-		/// <returns>The group data.</returns>
-		AggregateGroupData GetGroupData ();
+		///// <summary>
+		///// Gets the group data.
+		///// </summary>
+		///// <returns>The group data.</returns>
+		//AggregateGroupData GetGroupData ();
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.

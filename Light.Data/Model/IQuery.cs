@@ -110,6 +110,11 @@ namespace Light.Data
 		IQuery<T> SafeMode (SafeLevel level);
 
 		/// <summary>
+		/// Sets the distinct.
+		/// </summary>
+		IQuery<T> SetDistinct (bool distinct);
+
+		/// <summary>
 		/// Gets the datas count.
 		/// </summary>
 		/// <value>The count.</value>
@@ -229,6 +234,30 @@ namespace Light.Data
 		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> Join<T1> (IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> LeftJoin<T1> (IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> RightJoin<T1> (IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
+
+		/// <summary>
 		/// Inner Join aggregate data with onExpression.
 		/// </summary>
 		/// <param name="aggregate">Aggregate.</param>
@@ -265,18 +294,16 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The single field.</returns>
 		/// <param name="expression">Expression.</param>
-		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
+		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression);
 
 		/// <summary>
 		/// Select special filed data list
 		/// </summary>
 		/// <returns>The single field list.</returns>
 		/// <param name="expression">Expression.</param>
-		/// <param name="isDistinct">If set to <c>true</c> is distinct.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression, bool isDistinct = false);
+		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression);
 
 	}
 }

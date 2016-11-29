@@ -67,7 +67,6 @@ namespace Light.Data
 			}
 			return array;
 		}
-
 	}
 }
 

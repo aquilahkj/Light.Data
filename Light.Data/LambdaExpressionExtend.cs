@@ -48,7 +48,7 @@ namespace Light.Data
 				AggregateGroup group = null;
 				MemberInitExpression memberInitObj = expression.Body as MemberInitExpression;
 				if (memberInitObj != null) {
-					group = ParseAggregateGroup (memberInitObj, state);
+					group = ParseAggregateModel (memberInitObj, state);
 				}
 				else {
 					NewExpression newObj = expression.Body as NewExpression;
@@ -876,7 +876,7 @@ namespace Light.Data
 			}
 		}
 
-		private static AggregateGroup ParseAggregateGroup (MemberInitExpression expression, SingleParameterLambdaState state)
+		private static AggregateGroup ParseAggregateModel (MemberInitExpression expression, SingleParameterLambdaState state)
 		{
 			DataEntityMapping entityMapping = state.MainMapping;
 			SpecialAggregateMapping arrgregateMapping = SpecialAggregateMapping.GetAggregateMapping (expression.Type);

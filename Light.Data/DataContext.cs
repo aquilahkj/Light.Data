@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -723,7 +723,7 @@ namespace Light.Data
 			return rInt;
 		}
 
-		internal int SelectInsert (InsertSelector selector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, SafeLevel level)
+		internal int SelectInsert (InsertSelector selector, DataEntityMapping mapping, QueryExpression query, OrderExpression order, bool distinct, SafeLevel level)
 		{
 			//DataEntityMapping mapping = selector.SelectMapping;
 			RelationMap relationMap = mapping.GetRelationMap ();
@@ -752,10 +752,10 @@ namespace Light.Data
 					}
 				}
 				EntityJoinModel [] models = relationMap.CreateJoinModels (subQuery, subOrder);
-				commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, models, mainQuery, mainOrder, state);
+				commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, models, mainQuery, mainOrder, distinct, state);
 			}
 			else {
-				commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, mapping, query, order, state);
+				commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, mapping, query, order, distinct, state);
 			}
 			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				rInt = ExecuteNonQuery (command, level);
@@ -763,10 +763,10 @@ namespace Light.Data
 			return rInt;
 		}
 
-		internal int SelectInsertWithJoinTable (InsertSelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, SafeLevel level)
+		internal int SelectInsertWithJoinTable (InsertSelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, bool distinct, SafeLevel level)
 		{
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, models, query, order, state);
+			CommandData commandData = _dataBase.Factory.CreateSelectInsertCommand (selector, models, query, order, distinct, state);
 			int rInt;
 			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
 				rInt = ExecuteNonQuery (command, level);
@@ -890,7 +890,7 @@ namespace Light.Data
 		/// <returns>The ueryable.</returns>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public IQuery<T> Query<T> ()
-			where T : class//, new()
+			where T : class
 		{
 			return new LightQuery<T> (this);
 		}
@@ -909,7 +909,7 @@ namespace Light.Data
 			return ExecuteNonQuery (command, SafeLevel.Default);
 		}
 
-		internal IEnumerable QueryEntityData (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable QueryEntityData (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
 		{
 			RelationMap relationMap = mapping.GetRelationMap ();
 			if (selector == null) {
@@ -939,10 +939,10 @@ namespace Light.Data
 					}
 				}
 				EntityJoinModel [] models = relationMap.CreateJoinModels (subQuery, subOrder);
-				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder, region, state);
+				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, mainQuery, mainOrder, distinct, region, state);
 			}
 			else {
-				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, order, region, state);
+				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, order, distinct, region, state);
 			}
 			IDbCommand command = commandData.CreateCommand (_dataBase, state);
 			QueryState queryState = new QueryState ();
@@ -951,17 +951,17 @@ namespace Light.Data
 			return QueryDataDefineReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
 		}
 
-		internal IEnumerable QueryJoinData (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable QueryJoinData (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
 		{
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, region, state);
+			CommandData commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, query, order, distinct, region, state);
 			IDbCommand command = commandData.CreateCommand (_dataBase, state);
 			QueryState queryState = new QueryState ();
 			queryState.SetSelector (selector);
 			return QueryDataDefineReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
 		}
 
-		internal IEnumerable QuerySingleColume (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, Region region, bool distinct, SafeLevel level)
+		internal IEnumerable QuerySingleFiled (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
 		{
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null, state);
@@ -990,7 +990,7 @@ namespace Light.Data
 		{
 			object target = null;
 			Region region = new Region (index, 1);
-			foreach (object obj in QueryEntityData (mapping, null, query, order, region, level)) {
+			foreach (object obj in QueryEntityData (mapping, null, query, order, false, region, level)) {
 				target = obj;
 				break;
 			}
@@ -1012,7 +1012,7 @@ namespace Light.Data
 		{
 			object target = null;
 			Region region = new Region (index, 1);
-			foreach (object obj in QueryJoinData (mapping, selector, models, query, order, region, level)) {
+			foreach (object obj in QueryJoinData (mapping, selector, models, query, order, false, region, level)) {
 				target = obj;
 				break;
 			}
@@ -1457,10 +1457,10 @@ namespace Light.Data
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			if (mapping.HasJoinRelateModel) {
 				EntityJoinModel [] models = relationMap.CreateJoinModels (query, null);
-				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, null, null, null, state);
+				commandData = _dataBase.Factory.CreateSelectJoinTableCommand (selector, models, null, null, false, null, state);
 			}
 			else {
-				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, null, null, state);
+				commandData = _dataBase.Factory.CreateSelectCommand (mapping, selector, query, null, false, null, state);
 			}
 			IDbCommand command = commandData.CreateCommand (_dataBase, state);
 			QueryState queryState = new QueryState ();

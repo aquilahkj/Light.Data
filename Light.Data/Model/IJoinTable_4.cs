@@ -58,6 +58,32 @@ namespace Light.Data
 		/// <typeparam name="T5">The 1st type parameter.</typeparam>
 		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression) where T5 : class;
 
+
+		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T5">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1, T2, T3, T4, T5> Join<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression) where T5 : class;
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T5">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1, T2, T3, T4, T5> LeftJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression) where T5 : class;
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T5">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1, T2, T3, T4, T5> RightJoin<T5> (IQuery<T5> query, Expression<Func<T, T1, T2, T3, T4, T5, bool>> onExpression) where T5 : class;
+
+
 		/// <summary>
 		/// Inner Join aggregate data with onExpression.
 		/// </summary>
@@ -175,11 +201,16 @@ namespace Light.Data
 		IJoinTable<T, T1, T2, T3, T4> SafeMode (SafeLevel level);
 
 		/// <summary>
+		/// Sets the distinct.
+		/// </summary>
+		IJoinTable<T, T1, T2, T3, T4> SetDistinct (bool distinct);
+
+		/// <summary>
 		/// Create Selector.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="TResult">The 1st type parameter.</typeparam>
-		ISelect<TResult> Select<TResult> (Expression<Func<T, T1, T2, T3, T4, TResult>> expression) where TResult : class;
+		IJoinSelect<TResult> Select<TResult> (Expression<Func<T, T1, T2, T3, T4, TResult>> expression) where TResult : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.

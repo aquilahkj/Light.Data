@@ -58,6 +58,31 @@ namespace Light.Data
 		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;
 
 		/// <summary>
+		/// Inner Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T4">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1, T2, T3, T4> Join<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;
+
+		/// <summary>
+		/// Left Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T4">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1, T2, T3, T4> LeftJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;
+
+		/// <summary>
+		/// Right Join query data with onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T4">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1, T2, T3, T4> RightJoin<T4> (IQuery<T4> query, Expression<Func<T, T1, T2, T3, T4, bool>> onExpression) where T4 : class;
+
+
+		/// <summary>
 		/// Inner Join aggregate data with onExpression.
 		/// </summary>
 		/// <param name="aggregate">Aggregate.</param>
@@ -173,11 +198,16 @@ namespace Light.Data
 		IJoinTable<T, T1, T2, T3> SafeMode (SafeLevel level);
 
 		/// <summary>
+		/// Sets the distinct.
+		/// </summary>
+		IJoinTable<T, T1, T2, T3> SetDistinct (bool distinct);
+
+		/// <summary>
 		/// Create Selector.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="TResult">The 1st type parameter.</typeparam>
-		ISelect<TResult> Select<TResult> (Expression<Func<T, T1, T2, T3, TResult>> expression) where TResult : class;
+		IJoinSelect<TResult> Select<TResult> (Expression<Func<T, T1, T2, T3, TResult>> expression) where TResult : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.

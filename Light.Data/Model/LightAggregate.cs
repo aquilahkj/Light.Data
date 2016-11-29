@@ -1,104 +1,105 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	class LightAggregate<T, K> : IAggregate<K>
+	class LightAggregate<T, K> : AggregateBase<K>
 	   where T : class
 	   where K : class
 	{
-		AggregateGroup _model;
+		//AggregateGroup _model;
 
-		QueryExpression _query;
+		//QueryExpression _query;
 
-		QueryExpression _having;
+		//QueryExpression _having;
 
-		OrderExpression _order;
+		//OrderExpression _order;
 
-		DataContext _context;
+		//DataContext _context;
 
-		SafeLevel _level = SafeLevel.None;
+		//SafeLevel _level = SafeLevel.None;
 
-		Region _region;
+		//Region _region;
 
 		public LightAggregate (LightQuery<T> query, Expression<Func<T, K>> expression)
+			: base (query.Context, LambdaExpressionExtend.CreateAggregateGroup (expression))
 		{
-			_context = query.Context;
-			_query = query.Query;
+			//_context = query.Context;
+			_query = query.QueryExpression;
 			_level = query.Level;
-			_model = LambdaExpressionExtend.CreateAggregateGroup (expression);
+			//_model = LambdaExpressionExtend.CreateAggregateGroup (expression);
 		}
 
-		public IAggregate<K> Having (Expression<Func<K, bool>> expression)
+		public override IAggregate<K> Having (Expression<Func<K, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaHavingExpression (expression, _model);
 			_having = queryExpression;
 			return this;
 		}
 
-		public IAggregate<K> HavingReset ()
+		public override IAggregate<K> HavingReset ()
 		{
 			_having = null;
 			return this;
 		}
 
-		public IAggregate<K> HavingWithAnd (Expression<Func<K, bool>> expression)
+		public override IAggregate<K> HavingWithAnd (Expression<Func<K, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaHavingExpression (expression, _model);
 			_having = QueryExpression.And (_having, queryExpression);
 			return this;
 		}
 
-		public IAggregate<K> HavingWithOr (Expression<Func<K, bool>> expression)
+		public override IAggregate<K> HavingWithOr (Expression<Func<K, bool>> expression)
 		{
 			var queryExpression = LambdaExpressionExtend.ResolveLambdaHavingExpression (expression, _model);
 			_having = QueryExpression.Or (_having, queryExpression);
 			return this;
 		}
 
-		public IAggregate<K> OrderBy<TKey> (Expression<Func<K, TKey>> expression)
+		public override IAggregate<K> OrderBy<TKey> (Expression<Func<K, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.ASC, _model);
 			_order = orderExpression;
 			return this;
 		}
 
-		public IAggregate<K> OrderByCatch<TKey> (Expression<Func<K, TKey>> expression)
+		public override IAggregate<K> OrderByCatch<TKey> (Expression<Func<K, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.ASC, _model);
 			_order = OrderExpression.Catch (_order, orderExpression);
 			return this;
 		}
 
-		public IAggregate<K> OrderByDescending<TKey> (Expression<Func<K, TKey>> expression)
+		public override IAggregate<K> OrderByDescending<TKey> (Expression<Func<K, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.DESC, _model);
 			_order = orderExpression;
 			return this;
 		}
 
-		public IAggregate<K> OrderByDescendingCatch<TKey> (Expression<Func<K, TKey>> expression)
+		public override IAggregate<K> OrderByDescendingCatch<TKey> (Expression<Func<K, TKey>> expression)
 		{
 			var orderExpression = LambdaExpressionExtend.ResolveLambdaAggregateOrderByExpression (expression, OrderType.DESC, _model);
 			_order = OrderExpression.Catch (_order, orderExpression);
 			return this;
 		}
 
-		public IAggregate<K> OrderByRandom ()
+		public override IAggregate<K> OrderByRandom ()
 		{
 			_order = new RandomOrderExpression (DataEntityMapping.GetEntityMapping (typeof (T)));
 			return this;
 		}
 
-		public IAggregate<K> OrderByReset ()
+		public override IAggregate<K> OrderByReset ()
 		{
 			_order = null;
 			return this;
 		}
 
-		public List<K> ToList ()
+		public override List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
 			IEnumerable ie = _context.QueryDynamicAggregate (_model, _query, _having, _order, _region, _level);
@@ -108,12 +109,12 @@ namespace Light.Data
 			return list;
 		}
 
-		public K First ()
+		public override K First ()
 		{
 			return _context.SelectDynamicAggregateSingle (_model, _query, _having, _order, 0, _level) as K;
 		}
 
-		public IAggregate<K> Take (int count)
+		public override IAggregate<K> Take (int count)
 		{
 			int start;
 			int size = count;
@@ -127,7 +128,7 @@ namespace Light.Data
 			return this;
 		}
 
-		public IAggregate<K> Skip (int index)
+		public override IAggregate<K> Skip (int index)
 		{
 			int start = index;
 			int size;
@@ -141,7 +142,7 @@ namespace Light.Data
 			return this;
 		}
 
-		public IAggregate<K> Range (int from, int to)
+		public override IAggregate<K> Range (int from, int to)
 		{
 			int start = from;
 			int size = to - from;
@@ -149,13 +150,13 @@ namespace Light.Data
 			return this;
 		}
 
-		public IAggregate<K> RangeReset ()
+		public override IAggregate<K> RangeReset ()
 		{
 			_region = null;
 			return this;
 		}
 
-		public IAggregate<K> PageSize (int page, int size)
+		public override IAggregate<K> PageSize (int page, int size)
 		{
 			if (page < 1) {
 				throw new ArgumentOutOfRangeException (nameof (page));
@@ -169,64 +170,88 @@ namespace Light.Data
 			return this;
 		}
 
-		public IAggregate<K> SafeMode (SafeLevel level)
+		public override IAggregate<K> SafeMode (SafeLevel level)
 		{
 			_level = level;
 			return this;
 		}
 
-		public AggregateGroupData GetGroupData ()
+		//public override AggregateGroupData GetGroupData ()
+		//{
+		//	AggregateGroupData data = new AggregateGroupData (_context, _model, _query, _having, _order, _region, _level);
+		//	return data;
+		//}
+
+		public override IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			AggregateGroupData data = new AggregateGroupData (_context, _model, _query, _having, _order, _region, _level);
-			return data;
+			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
+			if (queryExpression != null) {
+				lightQuery.Where (queryExpression);
+			}
+			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, lightQuery, onExpression);
 		}
 
-		public IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, queryExpression, onExpression);
+			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
+			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, lightQuery, onExpression);
 		}
 
-		public IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			Expression<Func<T1, bool>> queryExpression = null;
-			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, queryExpression, onExpression);
+			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
+			if (queryExpression != null) {
+				lightQuery.Where (queryExpression);
+			}
+			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, lightQuery, onExpression);
 		}
 
-		public IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, queryExpression, onExpression);
+			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
+			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, lightQuery, onExpression);
 		}
 
-		public IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			Expression<Func<T1, bool>> queryExpression = null;
-			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, queryExpression, onExpression);
+			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
+			if (queryExpression != null) {
+				lightQuery.Where (queryExpression);
+			}
+			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, lightQuery, onExpression);
 		}
 
-		public IJoinTable<K, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> RightJoin<T1> (Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, queryExpression, onExpression);
+			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
+			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, lightQuery, onExpression);
 		}
 
-		public IJoinTable<K, T1> RightJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			Expression<Func<T1, bool>> queryExpression = null;
-			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, queryExpression, onExpression);
+			AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+			if (aggregateBase == null) {
+				throw new ArgumentException (nameof (aggregate));
+			}
+			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, aggregateBase, onExpression);
 		}
 
-		public IJoinTable<K, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			return new LightJoinTable<K, T1> (this, JoinType.InnerJoin, aggregate, onExpression);
+			AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+			if (aggregateBase == null) {
+				throw new ArgumentException (nameof (aggregate));
+			}
+			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, aggregateBase, onExpression);
 		}
 
-		public IJoinTable<K, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
+		public override IJoinTable<K, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) //where T1 : class
 		{
-			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, aggregate, onExpression);
-		}
-
-		public IJoinTable<K, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class//, new()
-		{
-			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, aggregate, onExpression);
+			AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
+			if (aggregateBase == null) {
+				throw new ArgumentException (nameof (aggregate));
+			}
+			return new LightJoinTable<K, T1> (this, JoinType.RightJoin, aggregateBase, onExpression);
 		}
 	}
 }

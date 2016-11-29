@@ -17,7 +17,7 @@ namespace Light.Data
 		/// <returns>The enumerator.</returns>
 		public IEnumerator<T> GetEnumerator ()
 		{
-			foreach (T item in _context.QueryEntityData (_mapping, null, _query, _order, _region, _level)) {
+			foreach (T item in _context.QueryEntityData (_mapping, null, _query, _order, false, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -28,7 +28,7 @@ namespace Light.Data
 
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return _context.QueryEntityData (_mapping, null, _query, _order, _region, _level).GetEnumerator ();
+			return _context.QueryEntityData (_mapping, null, _query, _order, false, _region, _level).GetEnumerator ();
 		}
 
 		#endregion
@@ -431,7 +431,7 @@ namespace Light.Data
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			foreach (K item in _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level)) {
+			foreach (K item in _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, isDistinct, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -460,7 +460,7 @@ namespace Light.Data
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
 			List<K> list = new List<K> ();
-			foreach (K item in _context.QuerySingleColume (fieldInfo, typeof (K), _query, _order, _region, isDistinct, _level)) {
+			foreach (K item in _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, isDistinct, _region, _level)) {
 				list.Add (item);
 			}
 			return list;
@@ -497,7 +497,7 @@ namespace Light.Data
 		public List<T> ToList ()
 		{
 			List<T> list = new List<T> ();
-			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, _region, _level);
+			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, false, _region, _level);
 			foreach (T item in ie) {
 				list.Add (item);
 			}
