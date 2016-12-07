@@ -1023,6 +1023,11 @@ namespace Light.Data
 			return "*";
 		}
 
+		public virtual string CreateSelectExistsSql ()
+		{
+			return "1";
+		}
+
 		public virtual string CreateCountAllSql ()
 		{
 			return "count(1)";

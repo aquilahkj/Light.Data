@@ -7,90 +7,70 @@ namespace Light.Data
 {
 	abstract class SelectBase<K> : ISelect<K> where K : class
 	{
-		protected readonly QueryExpression _query;
-
-		internal QueryExpression QueryExpression {
-			get {
-				return _query;
-			}
+		public abstract QueryExpression QueryExpression {
+			get;
 		}
 
-		protected readonly OrderExpression _order;
-
-		internal OrderExpression OrderExpression {
-			get {
-				return _order;
-			}
+		public abstract OrderExpression OrderExpression {
+			get;
 		}
 
-		protected readonly bool _distinct;
-
-		internal bool Distinct {
-			get {
-				return _distinct;
-			}
+		public abstract bool Distinct {
+			get;
 		}
 
-		protected readonly Region _region;
+		public abstract Region Region {
+			get;
+		}
 
-		internal Region Region {
-			get {
-				return _region;
-			}
+		public abstract SafeLevel Level {
+			get;
 		}
 
 		protected readonly DataContext _context;
 
-		internal DataContext Context {
+		public DataContext Context {
 			get {
 				return _context;
 			}
 		}
 
-		protected readonly SafeLevel _level;
-
-		internal SafeLevel Level {
-			get {
-				return _level;
-			}
-		}
-
 		protected readonly ISelector _selector;
 
-		internal ISelector Selector {
+		public ISelector Selector {
 			get {
 				return _selector;
 			}
 		}
 
-
 		protected readonly DataEntityMapping _mapping;
 
-		internal DataEntityMapping Mapping {
+		public DataEntityMapping Mapping {
 			get {
 				return _mapping;
 			}
 		}
 
-		protected readonly AggregateGroup _model;
+		//protected readonly SelectModel _model;
 
-		internal AggregateGroup Model {
+		public SelectModel Model {
 			get {
-				return _model;
+				return LambdaExpressionExtend.CreateSelectModel (_expression);
 			}
 		}
 
-		protected SelectBase (DataContext context, ISelector selector, Type type, AggregateGroup model, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
+		LambdaExpression _expression;
+
+		protected readonly Delegate _dele;
+
+		protected SelectBase (DataContext context, LambdaExpression expression, Type type)
 		{
 			_context = context;
-			_selector = selector;
-			_query = query;
-			_order = order;
-			_distinct = distinct;
-			_region = region;
-			_level = level;
+			_dele = expression.Compile ();
+			_selector = LambdaExpressionExtend.CreateSelector (expression);
+			_expression = expression;
+			//_model = LambdaExpressionExtend.CreateSelectModel (expression);
 			_mapping = DataEntityMapping.GetEntityMapping (type);
-			_model = model;
 		}
 
 		public abstract K First ();
@@ -104,19 +84,34 @@ namespace Light.Data
 			return this.GetEnumerator ();
 		}
 
-		public IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class
-		{
-			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
-			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, lightQuery, onExpression);
-		}
+		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
 
-		public IJoinTable<K, T1> Join<T1> (IQuery<T1> query, Expression<Func<K, T1, bool>> onExpression) where T1 : class
-		{
-			QueryBase<T1> queryBase = query as QueryBase<T1>;
-			if (queryBase == null) {
-				throw new ArgumentException (nameof (query));
-			}
-			return new LightJoinTable<K, T1> (this, JoinType.LeftJoin, queryBase, onExpression);
-		}
+		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> Join<T1> (IQuery<T1> query, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (IQuery<T1> query, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (IQuery<T1> query, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> Join<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
 	}
 }

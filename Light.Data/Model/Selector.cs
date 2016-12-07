@@ -26,7 +26,7 @@ namespace Light.Data
 			return list.ToArray ();
 		}
 
-		public string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)
+		public virtual string CreateSelectString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			string [] list = new string [this.selectList.Count];
 			int index = 0;

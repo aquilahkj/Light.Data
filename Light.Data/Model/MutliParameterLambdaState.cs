@@ -10,8 +10,6 @@ namespace Light.Data
 
 		readonly Dictionary<string, string> aliasDict = new Dictionary<string, string> ();
 
-		//readonly DataEntityMapping firstMapping = null;
-
 		public MutliParameterLambdaState (ICollection<ParameterExpression> paramters, List<IMap> maps)
 		{
 			if (paramters.Count != maps.Count) {
@@ -21,10 +19,6 @@ namespace Light.Data
 			foreach (ParameterExpression parameter in paramters) {
 				string name = parameter.Name;
 				Type type = parameter.Type;
-				//DataEntityMapping entityMapping = DataEntityMapping.GetEntityMapping (type);
-				//if (firstMapping != null) {
-				//	firstMapping = entityMapping;
-				//}
 				IMap map = maps [index];
 				if (type != map.Type) {
 					throw new LambdaParseException (LambdaParseMessage.ExpressionParameterTypeError, name, type);
@@ -64,7 +58,7 @@ namespace Light.Data
 			if (mapDict.TryGetValue (name, out map)) {
 				DataFieldInfo info = map.CreateFieldInfoForPath (path);
 				//if (Object.Equals (info, null)) {
-				//throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, fullPath);
+				//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, fullPath);
 				//}
 				string aliasTableName = aliasDict [name];
 				info.AliasTableName = aliasTableName;

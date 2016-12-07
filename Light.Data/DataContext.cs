@@ -978,12 +978,12 @@ namespace Light.Data
 			return QueryDataDefineReader (amapping, command, null, level, commandData.State);
 		}
 
-		internal IEnumerable QueryDynamicAggregate (AggregateGroup group, QueryExpression query, QueryExpression having, OrderExpression order, Region region, SafeLevel level)
+		internal IEnumerable QueryDynamicAggregate (AggregateModel model, QueryExpression query, QueryExpression having, OrderExpression order, Region region, SafeLevel level)
 		{
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-			CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (group.EntityMapping, group.GetAggregateDataFieldInfos (), query, having, order, region, state);
+			CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (model.EntityMapping, model.GetAggregateDataFieldInfos (), query, having, order, region, state);
 			IDbCommand command = commandData.CreateCommand (_dataBase, state);
-			return QueryDataDefineReader (group.AggregateMapping, command, commandData.InnerPage ? null : region, level, commandData.State);
+			return QueryDataDefineReader (model.OutputMapping, command, commandData.InnerPage ? null : region, level, commandData.State);
 		}
 
 		internal object SelectEntityDataSingle (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
@@ -997,7 +997,7 @@ namespace Light.Data
 			return target;
 		}
 
-		internal object SelectDynamicAggregateSingle (AggregateGroup group, QueryExpression query, QueryExpression having, OrderExpression order, int index, SafeLevel level)
+		internal object SelectDynamicAggregateSingle (AggregateModel group, QueryExpression query, QueryExpression having, OrderExpression order, int index, SafeLevel level)
 		{
 			object target = null;
 			Region region = new Region (index, 1);

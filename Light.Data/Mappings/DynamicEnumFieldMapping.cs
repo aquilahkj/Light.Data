@@ -5,7 +5,7 @@ namespace Light.Data
 	{
 		//EnumFieldType _enumType;
 
-		public DynamicEnumFieldMapping (Type type, string fieldName, DynamicAggregateMapping mapping)
+		public DynamicEnumFieldMapping (Type type, string fieldName, DynamicCustomMapping mapping)
 			: base (type, fieldName, mapping, true)
 		{
 			//_enumType = enumType;

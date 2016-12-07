@@ -26,28 +26,6 @@ namespace Light.Data
 			_isNot = !_isNot;
 		}
 
-		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		//{
-		//	string sql = null;
-		//	DataParameter [] dataParameters1 = null;
-
-		//	object obj = _baseFieldInfo.CreateSqlString (factory, isFullName, out dataParameters1);
-
-		//	IEnumerable values = LambdaExpressionExtend.ConvertLambdaObject (_collection) as IEnumerable;
-		//	List<DataParameter> list = new List<DataParameter> ();
-		//	if (values == null) {
-		//		throw new LightDataException ("");
-		//	}
-		//	foreach (object value in values) {
-		//		string pn = factory.CreateTempParamName ();
-		//		list.Add (new DataParameter (pn, value));
-		//	}
-		//	DataParameter [] dataParameters2 = list.ToArray ();
-		//	sql = factory.CreateCollectionParamsQuerySql (obj, _isNot ? QueryCollectionPredicate.NotIn : QueryCollectionPredicate.In, list);
-		//	dataParameters = DataParameter.ConcatDataParameters (dataParameters1, dataParameters2);
-		//	return sql;
-		//}
-
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			string sql = state.GetDataSql (this, isFullName);

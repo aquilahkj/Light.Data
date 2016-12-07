@@ -13,11 +13,11 @@ namespace Light.Data
 			}
 		}
 
-		readonly AggregateGroup _group = null;
+		readonly AggregateModel _model = null;
 
-		public AggregateGroup Group {
+		public AggregateModel Model {
 			get {
-				return _group;
+				return _model;
 			}
 		}
 
@@ -61,24 +61,24 @@ namespace Light.Data
 			}
 		}
 
-		public AggregateJoinModel (AggregateGroup group, string aliasTableName, JoinConnect connect, QueryExpression query, QueryExpression having, OrderExpression order)
+		public AggregateJoinModel (AggregateModel model, string aliasTableName, JoinConnect connect, QueryExpression query, QueryExpression having, OrderExpression order)
 		{
-			this._group = group;
+			this._model = model;
 			this._connect = connect;
 			this._query = query;
 			this._having = having;
 			this._order = order;
 			this._aliasTableName = aliasTableName;
-			this._joinMapping = group.AggregateMapping;
+			this._joinMapping = model.OutputMapping;
 		}
 
 		public string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{
 			StringBuilder sb = new StringBuilder ();
 
-			CommandData command = factory.CreateAggregateTableCommand (_group.EntityMapping, _group.GetAggregateDataFieldInfos (), _query, _having, null, null, state);
+			CommandData command = factory.CreateAggregateTableCommand (_model.EntityMapping, _model. GetAggregateDataFieldInfos (), _query, _having, null, null, state);
 			//string sql = string.Concat ("(", command.CommandText, ")");
-			string aliasName = _aliasTableName ?? _group.EntityMapping.TableName;
+			string aliasName = _aliasTableName ?? _model.EntityMapping.TableName;
 			sb.Append (factory.CreateAliasQuerySql (command.CommandText, aliasName));
 			return sb.ToString ();
 		}

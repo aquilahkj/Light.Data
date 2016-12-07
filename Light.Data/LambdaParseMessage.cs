@@ -27,6 +27,10 @@ namespace Light.Data
 
 		public const string ExpressionUnsupportRelateField = "expression unsupport relate field";
 
+		public const string ExpressionUnsupportAggregateField = "expression unsupport aggregate field";
+
+		public const string ExtendExpressionError = "extend expression error";
+
 		public const string ExpressionParseFieldFailed = "expression parse field failed";
 
 		public const string ExpressionNodeTypeUnsuppore = "expression node type {0} unsupport";
@@ -44,6 +48,8 @@ namespace Light.Data
 		public const string MethodExpressionMethodUnsupport = "MethodExpression method {0}.{1} unsupport";
 
 		public const string NotSupportRelateEnityJoinSelect = "unsupport RelateEnity join select";
+
+		//public const string CanNotFindFieldInfoViaSpecialPath = "can't find field info via special path {0}";
 
 
 	}

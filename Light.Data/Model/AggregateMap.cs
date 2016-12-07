@@ -3,16 +3,16 @@ namespace Light.Data
 {
 	class AggregateMap : IMap
 	{
-		readonly AggregateGroup _model;
+		readonly AggregateModel _model;
 
-		public AggregateMap (AggregateGroup model)
+		public AggregateMap (AggregateModel model)
 		{
 			this._model = model;
 		}
 
 		public Type Type {
 			get {
-				return _model.AggregateMapping.ObjectType;
+				return _model.OutputMapping.ObjectType;
 			}
 		}
 
@@ -49,12 +49,11 @@ namespace Light.Data
 			}
 			DataFieldInfo info = _model.GetAggregateData (name);
 			if (!Object.Equals (info, null)) {
-				//info = info.Clone () as DataFieldInfo;
-				//NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
 				DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
 				return nameInfo;
 			}
 			else {
+				//return null;
 				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
 			}
 		}
@@ -70,10 +69,18 @@ namespace Light.Data
 				else {
 					name = path;
 				}
-				DataFieldInfo info = _model.GetAggregateData (name);
-				if (!Object.Equals (info, null)) {
-					//NameDataFieldInfo nameInfo = new NameDataFieldInfo (info, name);
-					DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
+				//DataFieldInfo info = _model.GetAggregateData (name);
+				//if (!Object.Equals (info, null)) {
+				//	DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
+				//	selector.SetSelectField (nameInfo);
+				//}
+				//else {
+				//	throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
+				//}
+
+				//DataFieldInfo info = _model.GetAggregateData (name);
+				if (_model.CheckName(name)) {
+					DataFieldInfo nameInfo = new DataFieldInfo (_model.EntityMapping, name);
 					selector.SetSelectField (nameInfo);
 				}
 				else {

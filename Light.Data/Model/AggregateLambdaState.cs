@@ -11,9 +11,9 @@ namespace Light.Data
 
 		readonly DataEntityMapping entityMapping;
 
-		readonly AggregateGroup aggregateGroup;
+		readonly AggregateModel aggregateGroup;
 
-		public AggregateLambdaState (ParameterExpression parameter, AggregateGroup group)
+		public AggregateLambdaState (ParameterExpression parameter, AggregateModel group)
 		{
 			aggregateGroup = group;
 			aggregateName = parameter.Name;

@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class AggregateGroup
+	class AggregateModel
 	{
-		public AggregateGroup (DataEntityMapping entityMapping, AggregateMapping aggregateMapping)
+		public AggregateModel (DataEntityMapping entityMapping, CustomMapping aggregateMapping)
 		{
 			_entityMapping = entityMapping;
-			_aggregateMapping = aggregateMapping;
+			_outputMapping = aggregateMapping;
 		}
 
 		DataEntityMapping _entityMapping;
 
-		AggregateMapping _aggregateMapping;
+		CustomMapping _outputMapping;
 
-		public AggregateMapping AggregateMapping {
+		public CustomMapping OutputMapping {
 			get {
-				return _aggregateMapping;
+				return _outputMapping;
 			}
 		}
 
@@ -27,7 +27,7 @@ namespace Light.Data
 			}
 		}
 
-		Dictionary<string, AggregateDataFieldInfo> _aggregateDict = new Dictionary<string, AggregateDataFieldInfo> ();
+		readonly Dictionary<string, AggregateDataFieldInfo> _aggregateDict = new Dictionary<string, AggregateDataFieldInfo> ();
 
 		public void AddGroupByField (string name, DataFieldInfo fieldInfo)
 		{
@@ -60,11 +60,7 @@ namespace Light.Data
 		public AggregateDataFieldInfo [] GetAggregateDataFieldInfos ()
 		{
 			AggregateDataFieldInfo [] array = new AggregateDataFieldInfo [_aggregateDict.Count];
-			int i = 0;
-			foreach (AggregateDataFieldInfo item in _aggregateDict.Values) {
-				array [i] = item;
-				i++;
-			}
+			_aggregateDict.Values.CopyTo (array, 0);
 			return array;
 		}
 	}

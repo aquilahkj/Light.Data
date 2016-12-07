@@ -12,10 +12,10 @@ namespace Light.Data
 
 		public SingleParameterLambdaState (ParameterExpression parameter)
 		{
-			singleEntityName = parameter.Name;
+			this.singleEntityName = parameter.Name;
 			Type type = parameter.Type;
 			DataEntityMapping entityMapping = DataEntityMapping.GetEntityMapping (type);
-			singleEntityMap = entityMapping.GetRelationMap ();
+			this.singleEntityMap = entityMapping.GetRelationMap ();
 		}
 
 		public DataEntityMapping MainMapping {
@@ -41,9 +41,6 @@ namespace Light.Data
 				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
 			DataFieldInfo info = singleEntityMap.CreateFieldInfoForPath (path);
-			//if (Object.Equals (info, null)) {
-			//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, fullPath);
-			//}
 			return info;
 		}
 

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Light.Data
 {
-	class DynamicAggregateMapping : AggregateMapping
+	class DynamicCustomMapping : CustomMapping
 	{
 		protected Dictionary<string, DynamicFieldMapping> _fieldMappingDictionary = new Dictionary<string, DynamicFieldMapping> ();
 
@@ -16,12 +16,12 @@ namespace Light.Data
 
 		static object _synobj = new object ();
 
-		static Dictionary<Type, DynamicAggregateMapping> _defaultMapping = new Dictionary<Type, DynamicAggregateMapping> ();
+		static Dictionary<Type, DynamicCustomMapping> _defaultMapping = new Dictionary<Type, DynamicCustomMapping> ();
 
-		public static DynamicAggregateMapping GetAggregateMapping (Type type)
+		public static DynamicCustomMapping GetAggregateMapping (Type type)
 		{
-			Dictionary<Type, DynamicAggregateMapping> mappings = _defaultMapping;
-			DynamicAggregateMapping mapping;
+			Dictionary<Type, DynamicCustomMapping> mappings = _defaultMapping;
+			DynamicCustomMapping mapping;
 			if (!mappings.TryGetValue (type, out mapping)) {
 				lock (_synobj) {
 					if (!mappings.ContainsKey (type)) {
@@ -33,16 +33,16 @@ namespace Light.Data
 			return mapping;
 		}
 
-		private static DynamicAggregateMapping CreateMapping (Type type)
+		private static DynamicCustomMapping CreateMapping (Type type)
 		{
-			DynamicAggregateMapping aggregateMapping = new DynamicAggregateMapping (type);
+			DynamicCustomMapping aggregateMapping = new DynamicCustomMapping (type);
 			return aggregateMapping;
 		}
 
 		#endregion
 
 
-		public DynamicAggregateMapping (Type type)
+		public DynamicCustomMapping (Type type)
 			: base (type)
 		{
 			InitialAggregateFieldMapping ();

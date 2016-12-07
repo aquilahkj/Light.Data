@@ -5,6 +5,14 @@ namespace Light.Data
 {
 	class SelectJoinModel : IJoinModel
 	{
+		readonly SelectModel _model = null;
+
+		public SelectModel Model {
+			get {
+				return _model;
+			}
+		}
+
 		readonly JoinConnect _connect;
 
 		public JoinConnect Connect {
@@ -95,33 +103,41 @@ namespace Light.Data
 		//	//this._joinMapping = mapping;
 		//}
 
-		public SelectJoinModel (DataEntityMapping mapping, ISelector selector, IJoinTableMapping joinMapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
+		//public SelectJoinModel (DataEntityMapping mapping, ISelector selector, IJoinTableMapping joinMapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
+		//{
+		//	this._mapping = mapping;
+		//	this._selector = selector;
+		//	this._connect = connect;
+		//	this._query = query;
+		//	this._order = order;
+		//	this._aliasTableName = aliasTableName;
+		//	this._joinMapping = joinMapping;
+		//}
+
+		public SelectJoinModel (SelectModel model, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
 		{
-			this._mapping = mapping;
-			this._selector = selector;
+			this._model = model;
 			this._connect = connect;
 			this._query = query;
 			this._order = order;
 			this._aliasTableName = aliasTableName;
-			this._joinMapping = joinMapping;
+			this._joinMapping = model.OutputMapping;
 		}
+
 
 		public string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{
+			//StringBuilder sb = new StringBuilder ();
+			//CommandData command = factory.CreateSelectCommand (_mapping, _selector, _query, _order, _distinct, null, state);
+			//string aliasName = _aliasTableName ?? _mapping.TableName;
+			//sb.Append (factory.CreateAliasQuerySql (command.CommandText, aliasName));
+			//return sb.ToString ();
+
+
 			StringBuilder sb = new StringBuilder ();
-			//if (_query != null || _order != null || _distinct) {
-			CommandData command = factory.CreateSelectCommand (_mapping, _selector, _query, _order, _distinct, null, state);
-			string aliasName = _aliasTableName ?? _mapping.TableName;
+			CommandData command = factory.CreateSelectCommand (_model.EntityMapping, _model.CreateSelector (), _query, _order, _distinct, null, state);
+			string aliasName = _aliasTableName ?? _model.EntityMapping.TableName;
 			sb.Append (factory.CreateAliasQuerySql (command.CommandText, aliasName));
-			//}
-			//else {
-			//	if (_aliasTableName != null) {
-			//		sb.Append (factory.CreateAliasTableSql (factory.CreateDataTableSql (_mapping.TableName), _aliasTableName));
-			//	}
-			//	else {
-			//		sb.Append (factory.CreateDataTableSql (_mapping.TableName));
-			//	}
-			//}
 			return sb.ToString ();
 		}
 	}

@@ -1,77 +1,62 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	abstract class AggregateBase<K> : IAggregate<K>
-	  where K : class
+	abstract class AggregateBase<K> : IAggregate<K> where K : class
 	{
 		protected readonly DataContext _context;
 
-		internal DataContext Context {
+		public DataContext Context {
 			get {
 				return _context;
 			}
 		}
 
-		protected readonly AggregateGroup _model;
+		protected readonly AggregateModel _model;
 
-		internal AggregateGroup Model {
+		public AggregateModel Model {
 			get {
 				return _model;
 			}
 		}
 
-		protected QueryExpression _query;
-
-		internal QueryExpression QueryExpression {
-			get {
-				return _query;
-			}
+		public abstract QueryExpression QueryExpression {
+			get;
 		}
 
-		protected QueryExpression _having;
-
-		internal QueryExpression HavingExpression {
-			get {
-				return _having;
-			}
+		public abstract QueryExpression HavingExpression {
+			get;
 		}
 
-		protected OrderExpression _order;
-
-		internal OrderExpression OrderExpression {
-			get {
-				return _order;
-			}
+		public abstract OrderExpression OrderExpression {
+			get;
 		}
 
-		protected Region _region;
-
-		internal Region Region {
-			get {
-				return _region;
-			}
+		public abstract Region Region {
+			get;
 		}
 
-		protected SafeLevel _level;
-
-		internal SafeLevel SafeLevel {
-			get {
-				return _level;
-			}
+		public abstract SafeLevel SafeLevel {
+			get;
 		}
 
-		protected AggregateBase (DataContext context, AggregateGroup model)
+		protected AggregateBase (DataContext context, LambdaExpression expression)
 		{
 			_context = context;
-			_model = model;
+			_model = LambdaExpressionExtend.CreateAggregateModel (expression);
+		}
+
+		public abstract IEnumerator<K> GetEnumerator ();
+
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return this.GetEnumerator ();
 		}
 
 		public abstract K First ();
-
-		//public abstract AggregateGroupData GetGroupData ();
 
 		public abstract IAggregate<K> Having (Expression<Func<K, bool>> expression);
 
@@ -80,18 +65,6 @@ namespace Light.Data
 		public abstract IAggregate<K> HavingWithAnd (Expression<Func<K, bool>> expression);
 
 		public abstract IAggregate<K> HavingWithOr (Expression<Func<K, bool>> expression);
-
-		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
-		public abstract IJoinTable<K, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
-		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
-		public abstract IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
-		public abstract IJoinTable<K, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
-		public abstract IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
 
 		public abstract IAggregate<K> OrderBy<TKey> (Expression<Func<K, TKey>> expression);
 
@@ -111,12 +84,6 @@ namespace Light.Data
 
 		public abstract IAggregate<K> RangeReset ();
 
-		public abstract IJoinTable<K, T1> RightJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
-		public abstract IJoinTable<K, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
-		public abstract IJoinTable<K, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
-
 		public abstract IAggregate<K> SafeMode (SafeLevel level);
 
 		public abstract IAggregate<K> Skip (int index);
@@ -124,5 +91,36 @@ namespace Light.Data
 		public abstract IAggregate<K> Take (int count);
 
 		public abstract List<K> ToList ();
+
+		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> Join<T1> (IQuery<T1> query, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (IQuery<T1> query, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (IQuery<T1> query, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> Join<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> Join<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> LeftJoin<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
+		public abstract IJoinTable<K, T1> RightJoin<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
+
 	}
 }

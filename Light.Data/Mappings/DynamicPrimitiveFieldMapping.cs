@@ -3,7 +3,7 @@ namespace Light.Data
 {
 	class DynamicPrimitiveFieldMapping : DynamicFieldMapping
 	{
-		public DynamicPrimitiveFieldMapping (Type type, string fieldName, DynamicAggregateMapping mapping)
+		public DynamicPrimitiveFieldMapping (Type type, string fieldName, DynamicCustomMapping mapping)
 			: base (type, fieldName, mapping, true)
 		{
 		}

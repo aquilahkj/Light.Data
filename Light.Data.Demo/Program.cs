@@ -50,18 +50,43 @@ namespace Light.Data.Demo
 			context.SetCommanfOutput (output);
 			string fsasa = Environment.CurrentDirectory;
 
-			var ter = context.Query<TeUser> ().SetDistinct (true).Select (x => new {
-				x.Id,
-				Accounts = x.Account,
-				x.LevelId
-			}).Join<TeUserLevel> ((x, y) => x.LevelId == y.Id).Select ((x, y) => new {
-				x.Id,
-				x.Accounts,
-				x.LevelId,
-				y.LevelName,
-				Remark = y.Remark + "eee",
-			}).ToList ();
+			//var ter = context.Query<TeUser> ()
+			//				 .Where (x => x.Account.Length == 5)
+			//				 .SetDistinct (true)
+			//				 .Select (x => new {
+			//					 x.Id,
+			//					 Accounts = x.Account,
+			//					 x.LevelId
+			//				 })
+			//				 .Join<TeUserLevel> ((x, y) => x.LevelId == y.Id)
+			//				 .Where ((x, y) => x.Accounts.EndsWith ("1"))
+			//				 .SetDistinct (true)
+			//				 .Select ((x, y) => new {
+			//					 x.Id,
+			//					 x.Accounts,
+			//					 x.LevelId,
+			//					 y.LevelName,
+			//					 Remark = y.Remark + "eee",
+			//				 })
+			//.ToList ();
 
+			//var ter1 = context.Query<TeUser> ()
+			//				 .Where (x => x.Account.Length == 5)
+			//				 .SetDistinct (true)
+			//				 .Select (x => new {
+			//					 x.Id,
+			//					 Accounts = x.Account,
+			//					 x.LevelId
+			//				 })
+			//				 .Join<TeUserLevel> ((x, y) => x.LevelId == y.Id)
+			//				 .Where ((x, y) => x.Accounts.EndsWith ("1"))
+			//				 .SetDistinct (true)
+			//				 .SelectInsert<TeUser> ((x, y) => new TeUser () {
+			//					  Account = x.Accounts,
+			//					  LevelId = x.LevelId,
+			//					  Email = y.LevelName,
+			//					  RegTime = DateTime.Now
+			//				  });
 
 
 			//var logdate = context.Query<TeUser> ().GroupBy (x => new DemoData {
@@ -76,7 +101,18 @@ namespace Light.Data.Demo
 			//								x.HotRate
 			//							}).First ();
 
-			//List<TeUser> users = context.Query<TeUser> ().Where (x => x.Address + 1 == "dd").ToList ();
+			//List<TeUser> users = context.Query<TeUser> ().Where (x => x.Address + 1 == "dd" && SubQuery.Exist<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
+
+			//List<TeUser> users1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
+
+			var users12 = context.Query<TeUser> ().Where (x => x.Id > 2 && x.Gender == GenderType.Male)
+							.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
+							.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
+			                     .Where ((x, y, z) => !ExtendQuery.Exists<TeUserLevel> (u => u.Id == x.LevelId) && ExtendQuery.IsNull (y.Id) && !ExtendQuery.IsNull (z.Id) && x.CheckPoint.HasValue)
+							.Select ((x, y, z) => new SGroub {
+								Date = x.RegTime.Date,
+								Count = 10
+							}).ToList ();
 
 
 			//string [] arr = new [] { "1", "2", "3" };
@@ -123,6 +159,14 @@ namespace Light.Data.Demo
 			//					E1 = z.Extend1,
 			//					E2 = z.Extend2
 			//				}).ToList ();
+
+
+			//var vc3 = context.Query<TeUser> ().Where (x => x.Id > 2 && x.Gender == GenderType.Male)
+			//	.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
+			//	.Where ((x, y) => y.Remark == "")
+			//	.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
+			//	.WhereWithAnd ((x, y, z) => x.CheckPoint > 0 && y.LevelName != null)
+			//	.Select ((x, y, z) => x).ToList ();
 
 			//var df = context.Query<TeUser> ().GroupBy (x => new SGroub {
 			//	Date = x.RegTime.Date,

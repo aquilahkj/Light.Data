@@ -186,7 +186,31 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="TResult">The 1st type parameter.</typeparam>
-		ISelect<TResult> Select<TResult> (Expression<Func<T, TResult>> expression) where TResult : class;
+		ISelect<K> Select<K> (Expression<Func<T, K>> expression) where K : class;
+
+		/// <summary>
+		/// Create group by aggregator
+		/// </summary>
+		/// <returns>The by.</returns>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class;
+
+		/// <summary>
+		/// Select special filed datas
+		/// </summary>
+		/// <returns>The single field.</returns>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression);
+
+		/// <summary>
+		/// Select special filed data list
+		/// </summary>
+		/// <returns>The single field list.</returns>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression);
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -197,11 +221,19 @@ namespace Light.Data
 		IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
-		/// Inner Join table with specified specified onExpression.
+		/// Inner Join table with specified onExpression.
 		/// </summary>
 		/// <param name="onExpression">On expression.</param>
 		/// <typeparam name="T1">The 1st type parameter.</typeparam>
 		IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;
+
+		/// <summary>
+		/// Inner Join table with query and onExpression.
+		/// </summary>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> Join<T1> (IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
 		/// Left Join table with specified queryExpression and onExpression.
@@ -219,6 +251,15 @@ namespace Light.Data
 		IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
+		/// Left Join table with query and onExpression.
+		/// </summary>
+		/// <returns>The join.</returns>
+		/// <param name="query">Query.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> LeftJoin<T1> (IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
+
+		/// <summary>
 		/// Right Join table with specified queryExpression and onExpression.
 		/// </summary>
 		/// <param name="queryExpression">Query expression.</param>
@@ -234,24 +275,9 @@ namespace Light.Data
 		IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
-		/// Inner Join query data with onExpression.
+		/// Right Join table with query and onExpression.
 		/// </summary>
-		/// <param name="query">Query.</param>
-		/// <param name="onExpression">On expression.</param>
-		/// <typeparam name="T1">The 1st type parameter.</typeparam>
-		IJoinTable<T, T1> Join<T1> (IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
-
-		/// <summary>
-		/// Left Join query data with onExpression.
-		/// </summary>
-		/// <param name="query">Query.</param>
-		/// <param name="onExpression">On expression.</param>
-		/// <typeparam name="T1">The 1st type parameter.</typeparam>
-		IJoinTable<T, T1> LeftJoin<T1> (IQuery<T1> query, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
-
-		/// <summary>
-		/// Right Join query data with onExpression.
-		/// </summary>
+		/// <returns>The join.</returns>
 		/// <param name="query">Query.</param>
 		/// <param name="onExpression">On expression.</param>
 		/// <typeparam name="T1">The 1st type parameter.</typeparam>
@@ -282,29 +308,28 @@ namespace Light.Data
 		IJoinTable<T, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
-		/// Create group by aggregator
+		/// Inner Join select data with onExpression.
 		/// </summary>
-		/// <returns>The by.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class;
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> Join<T1> (ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
-		/// Select special filed datas
+		/// Left Join select data with onExpression.
 		/// </summary>
-		/// <returns>The single field.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression);
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> LeftJoin<T1> (ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
 		/// <summary>
-		/// Select special filed data list
+		/// Right Join select data with onExpression.
 		/// </summary>
-		/// <returns>The single field list.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression);
-
+		/// <param name="select">Select.</param>
+		/// <param name="onExpression">On expression.</param>
+		/// <typeparam name="T1">The 1st type parameter.</typeparam>
+		IJoinTable<T, T1> RightJoin<T1> (ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 	}
 }
 

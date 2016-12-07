@@ -300,6 +300,7 @@ namespace Light.Data
 				return infos;
 			}
 			else {
+				//return null;
 				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
 			}
 		}

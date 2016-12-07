@@ -6,9 +6,9 @@ namespace Light.Data
 	/// </summary>
 	public class AggregateGroupData
 	{
-		AggregateGroup _model;
+		AggregateModel _model;
 
-		internal AggregateGroup Model {
+		internal AggregateModel Model {
 			get {
 				return _model;
 			}
@@ -63,7 +63,7 @@ namespace Light.Data
 			}
 		}
 
-		internal AggregateGroupData (DataContext context, AggregateGroup model, QueryExpression query, QueryExpression having, OrderExpression order, Region region, SafeLevel level)
+		internal AggregateGroupData (DataContext context, AggregateModel model, QueryExpression query, QueryExpression having, OrderExpression order, Region region, SafeLevel level)
 		{
 			_model = model;
 			_query = query;

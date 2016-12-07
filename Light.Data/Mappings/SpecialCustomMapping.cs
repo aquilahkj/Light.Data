@@ -6,18 +6,18 @@ using System.Reflection;
 
 namespace Light.Data
 {
-	class SpecialAggregateMapping : AggregateMapping
+	class SpecialCustomMapping : CustomMapping
 	{
 		#region static
 
 		static object _synobj = new object ();
 
-		static Dictionary<Type, SpecialAggregateMapping> _defaultMapping = new Dictionary<Type, SpecialAggregateMapping> ();
+		static Dictionary<Type, SpecialCustomMapping> _defaultMapping = new Dictionary<Type, SpecialCustomMapping> ();
 
-		public static SpecialAggregateMapping GetAggregateMapping (Type type)
+		public static SpecialCustomMapping GetAggregateMapping (Type type)
 		{
-			Dictionary<Type, SpecialAggregateMapping> mappings = _defaultMapping;
-			SpecialAggregateMapping mapping;
+			Dictionary<Type, SpecialCustomMapping> mappings = _defaultMapping;
+			SpecialCustomMapping mapping;
 			if (!mappings.TryGetValue (type, out mapping)) {
 				lock (_synobj) {
 					if (!mappings.ContainsKey (type)) {
@@ -29,9 +29,9 @@ namespace Light.Data
 			return mapping;
 		}
 
-		private static SpecialAggregateMapping CreateMapping (Type type)
+		private static SpecialCustomMapping CreateMapping (Type type)
 		{
-			SpecialAggregateMapping aggregateMapping = new SpecialAggregateMapping (type);
+			SpecialCustomMapping aggregateMapping = new SpecialCustomMapping (type);
 			return aggregateMapping;
 		}
 
@@ -43,7 +43,7 @@ namespace Light.Data
 
 		protected ReadOnlyCollection<DataFieldMapping> _fieldList;
 
-		SpecialAggregateMapping (Type type)
+		SpecialCustomMapping (Type type)
 			: base (type)
 		{
 			InitialDataFieldMapping ();

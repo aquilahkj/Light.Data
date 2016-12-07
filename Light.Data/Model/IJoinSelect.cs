@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
+	/// <summary>
+	/// Join select.
+	/// </summary>
 	public interface IJoinSelect<K> : IEnumerable<K> where K : class
 	{
 		/// <summary>

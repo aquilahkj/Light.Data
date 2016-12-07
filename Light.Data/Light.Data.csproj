@@ -271,54 +271,36 @@
     <Compile Include="Model\RelationMap.cs" />
     <Compile Include="Model\Selector.cs" />
     <Compile Include="Mappings\DynamicMultiDataMapping.cs" />
-    <Compile Include="Model\IJoinTable_1.cs" />
-    <Compile Include="Model\IJoinTable_2.cs" />
     <Compile Include="Model\IQuery.cs" />
     <Compile Include="Model\ISelect.cs" />
     <Compile Include="Model\LightJoinSelect.cs" />
-    <Compile Include="Model\LightJoinTable_1.cs" />
-    <Compile Include="Model\LightJoinTable_2.cs" />
     <Compile Include="Model\LightQuery.cs" />
     <Compile Include="Model\LightSelect.cs" />
-    <Compile Include="Model\JoinCapsule.cs" />
     <Compile Include="Model\JoinConnect.cs" />
     <Compile Include="Model\EntityJoinModel.cs" />
     <Compile Include="Model\JoinTable.cs" />
     <Compile Include="Model\JoinType.cs" />
     <Compile Include="Model\SingleParameterLambdaState.cs" />
-    <Compile Include="Model\AggregateTable.cs" />
     <Compile Include="Model\AggregateType.cs" />
     <Compile Include="Model\LCollection.cs" />
-    <Compile Include="Model\LEnumerable.cs" />
     <Compile Include="Model\ISupportNotDefine.cs" />
     <Compile Include="Model\LambdaState.cs" />
     <Compile Include="Model\MutliParameterLambdaState.cs" />
     <Compile Include="Model\QueryState.cs" />
     <Compile Include="Model\Region.cs" />
     <Compile Include="Model\SafeLevel.cs" />
-    <Compile Include="Model\UpdateSetValue.cs" />
-    <Compile Include="Model\IJoinTable_3.cs" />
-    <Compile Include="Model\IJoinTable_4.cs" />
-    <Compile Include="Model\IJoinTable_5.cs" />
-    <Compile Include="Model\LightJoinTable_3.cs" />
-    <Compile Include="Model\LightJoinTable_4.cs" />
-    <Compile Include="Model\LightJoinTable_5.cs" />
     <Compile Include="Model\IAggregate.cs" />
-    <Compile Include="Functions\Function.cs" />
     <Compile Include="Model\LightAggregate.cs" />
-    <Compile Include="Mappings\AggregateMapping.cs" />
-    <Compile Include="Mappings\DynamicAggregateMapping.cs" />
-    <Compile Include="Mappings\SpecialAggregateMapping.cs" />
+    <Compile Include="Mappings\CustomMapping.cs" />
+    <Compile Include="Mappings\DynamicCustomMapping.cs" />
+    <Compile Include="Mappings\SpecialCustomMapping.cs" />
     <Compile Include="Mappings\DynamicFieldMapping.cs" />
     <Compile Include="Mappings\DynamicPrimitiveFieldMapping.cs" />
     <Compile Include="Mappings\DynamicEnumFieldMapping.cs" />
-    <Compile Include="LambdaNewArrayDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaConditionDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaConditionQueryExpression.cs" />
     <Compile Include="DataField\LambdaQueryDataFieldInfo.cs" />
     <Compile Include="CreateSqlState.cs" />
-    <Compile Include="Expressions\_HavingExpression.cs" />
-    <Compile Include="Expressions\_SpecialOrderExpression.cs" />
     <Compile Include="Expressions\outdate\SingleParamAggregateExpression.cs" />
     <Compile Include="Expressions\outdate\SingleParamQueryExpression.cs" />
     <Compile Include="Expressions\outdate\SubAggregateExpression.cs" />
@@ -362,7 +344,7 @@
     <Compile Include="DataField\EnumDefine\DatePart.cs" />
     <Compile Include="DataField\EnumDefine\MathFunction.cs" />
     <Compile Include="DataField\LambdaAggregateCountAllDataFieldInfo.cs" />
-    <Compile Include="Model\AggregateGroup.cs" />
+    <Compile Include="Model\AggregateModel.cs" />
     <Compile Include="DataField\AggregateDataFieldInfo.cs" />
     <Compile Include="Model\AggregateLambdaState.cs" />
     <Compile Include="DataField\IAliasDataFieldInfo.cs" />
@@ -390,7 +372,6 @@
     <Compile Include="Model\IMap.cs" />
     <Compile Include="Model\AggregateMap.cs" />
     <Compile Include="Model\AggregateJoinModel.cs" />
-    <Compile Include="Model\AggregateGroupData.cs" />
     <Compile Include="Model\MutliInsertSelector.cs" />
     <Compile Include="Model\AggregateBase.cs" />
     <Compile Include="Model\QueryBase.cs" />
@@ -398,6 +379,46 @@
     <Compile Include="Model\SelectBase.cs" />
     <Compile Include="Model\IJoinSelect.cs" />
     <Compile Include="Model\AllSelector.cs" />
+    <Compile Include="Model\SelectModel.cs" />
+    <Compile Include="DataField\SelectDataFieldInfo.cs" />
+    <Compile Include="Model\SelectMap.cs" />
+    <Compile Include="Model\SpecialSelector.cs" />
+    <Compile Include="Model\JoinSelectBase.cs" />
+    <Compile Include="Model\T_LightJoinTable.cs">
+      <DependentUpon>T_LightJoinTable.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\T_IJoinTable.cs">
+      <DependentUpon>T_IJoinTable.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\outdate\UpdateSetValue.cs" />
+    <Compile Include="Model\outdate\IJoinTable_1.cs" />
+    <Compile Include="Model\outdate\IJoinTable_2.cs" />
+    <Compile Include="Model\outdate\IJoinTable_3.cs" />
+    <Compile Include="Model\outdate\IJoinTable_4.cs" />
+    <Compile Include="Model\outdate\IJoinTable_5.cs" />
+    <Compile Include="Model\outdate\LightJoinTable_1.cs" />
+    <Compile Include="Model\outdate\LightJoinTable_2.cs" />
+    <Compile Include="Model\outdate\LightJoinTable_3.cs" />
+    <Compile Include="Model\outdate\LightJoinTable_4.cs" />
+    <Compile Include="Model\outdate\LightJoinTable_5.cs" />
+    <Compile Include="Model\outdate\LEnumerable.cs" />
+    <Compile Include="DataField\LambdaNewArrayDataFieldInfo.cs" />
+    <Compile Include="Model\outdate\AggregateTable.cs" />
+    <Compile Include="Model\outdate\AggregateGroupData.cs" />
+    <Compile Include="Model\outdate\JoinCapsule.cs" />
+    <Compile Include="Model\T_LightJoinSelect.cs">
+      <DependentUpon>T_LightJoinSelect.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Expressions\outdate\_HavingExpression.cs" />
+    <Compile Include="Expressions\outdate\_SpecialOrderExpression.cs" />
+    <Compile Include="Extend\Function.cs" />
+    <Compile Include="Extend\ExtendQuery.cs" />
+    <Compile Include="DataField\LambdaNullDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaNullQueryExpression.cs" />
+    <Compile Include="Model\RelateParameterLambdaState.cs" />
+    <Compile Include="Model\ExistsSelector.cs" />
+    <Compile Include="DataField\LambdaExistsDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaExistsQueryExpression.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -432,5 +453,21 @@
     <Folder Include="DataField\outdate\" />
     <Folder Include="Functions\outdate\" />
     <Folder Include="DataField\EnumDefine\" />
+    <Folder Include="Model\outdate\" />
+    <Folder Include="Extend\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Model\T_LightJoinTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_LightJoinTable.cs</LastGenOutput>
+    </None>
+    <None Include="Model\T_IJoinTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_IJoinTable.cs</LastGenOutput>
+    </None>
+    <None Include="Model\T_LightJoinSelect.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>T_LightJoinSelect.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>
