@@ -3,12 +3,17 @@ namespace Light.Data
 {
 	class LambdaAggregateCountAllDataFieldInfo : LambdaDataFieldInfo
 	{
-		QueryExpression _query;
+		//QueryExpression _query;
 
-		public LambdaAggregateCountAllDataFieldInfo (QueryExpression query)
+		//public LambdaAggregateCountAllDataFieldInfo (QueryExpression query)
+		//	: base (DataEntityMapping.Default)
+		//{
+		//	_query = query;
+		//}
+
+		public LambdaAggregateCountAllDataFieldInfo ()
 			: base (DataEntityMapping.Default)
 		{
-			_query = query;
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
@@ -17,14 +22,16 @@ namespace Light.Data
 			if (sql != null) {
 				return sql;
 			}
-			string expression = null;
-			if (_query != null) {
-				expression = _query.CreateSqlString (factory, isFullName, state);
-				sql = factory.CreateCountAllSql (expression);
-			}
-			else {
-				sql = factory.CreateCountAllSql ();
-			}
+
+			//string expression = null;
+			//if (_query != null) {
+			//	expression = _query.CreateSqlString (factory, isFullName, state);
+			//	sql = factory.CreateCountAllSql (expression);
+			//}
+			//else {
+			//sql = factory.CreateCountAllSql ();
+			//}
+			sql = factory.CreateCountAllSql ();
 
 			state.SetDataSql (this, isFullName, sql);
 			return sql;

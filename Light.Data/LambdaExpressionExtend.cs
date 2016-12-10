@@ -115,9 +115,7 @@ namespace Light.Data
 						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 					}
 				}
-				else {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
-				}
+				throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 			}
 			catch (Exception ex) {
 				throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
@@ -1156,6 +1154,24 @@ namespace Light.Data
 						return false;
 					}
 				}
+				else if (unaryObj.NodeType == ExpressionType.TypeAs) {
+					if (unaryObj.Type.IsGenericType) {
+						Type frameType = unaryObj.Type.GetGenericTypeDefinition ();
+						if (frameType.FullName != "System.Nullable`1") {
+							throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
+						}
+					}
+
+					DataFieldInfo convertfieldInfo;
+					if (ParseDataFieldInfo (unaryObj.Operand, state, out convertfieldInfo)) {
+						CheckFieldInfo (convertfieldInfo);
+						fieldInfo = convertfieldInfo;
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
 			}
 			MemberExpression memberObj = expression as MemberExpression;
 			if (memberObj != null) {
@@ -1657,134 +1673,51 @@ namespace Light.Data
 
 			ReadOnlyCollection<Expression> paramExpressions = expression.Arguments;
 			DataFieldInfo data = null;
-			DataFieldInfo fieldInfo = null;
-			QueryExpression queryExpression = null;
 
-			ParameterInfo [] infos = method.GetParameters ();
-
-			for (int i = 0; i < infos.Length; i++) {
-				ParameterInfo info = infos [i];
-				if (info.Name == "field") {
-					if (!ParseDataFieldInfo (paramExpressions [i], state, out fieldInfo)) {
-						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
-					}
-				}
-				else if (info.Name == "expression") {
-					queryExpression = ResolveQueryExpression (paramExpressions [i], state);
+			if (paramExpressions.Count == 0) {
+				switch (method.Name) {
+				case "Count":
+				case "LongCount":
+					data = new LambdaAggregateCountAllDataFieldInfo ();
+					break;
 				}
 			}
+			else if (paramExpressions.Count == 1) {
+				DataFieldInfo fieldInfo;
+				if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+				}
+				switch (method.Name) {
+				case "Count":
+				case "LongCount":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false);
+					break;
+				case "DistinctCount":
+				case "DistinctLongCount":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true);
+					break;
+				case "Sum":
+				case "LongSum":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false);
+					break;
+				case "DistinctSum":
+				case "DistinctLongSum":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true);
+					break;
+				case "Avg":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false);
+					break;
+				case "DistinctAvg":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true);
+					break;
+				case "Max":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false);
 
-			//if (paramExpressions.Count >= 1) {
-			//	if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
-			//		throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
-			//	}
-			//}
-			//if (paramExpressions.Count == 2) {
-			//	queryExpression = ResolveQueryExpression (paramExpressions [1], state);
-			//}
-
-			switch (method.Name) {
-			case "CountAll":
-			case "LongCountAll":
-				switch (paramExpressions.Count) {
-				case 0:
-					data = new LambdaAggregateCountAllDataFieldInfo (null);
 					break;
-				case 1:
-					data = new LambdaAggregateCountAllDataFieldInfo (queryExpression);
+				case "Min":
+					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false);
 					break;
 				}
-				break;
-			case "Count":
-			case "LongCount":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false, queryExpression);
-					break;
-				}
-				break;
-			case "DistinctCount":
-			case "DistinctLongCount":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true, queryExpression);
-					break;
-				}
-
-				break;
-			case "Sum":
-			case "LongSum":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false, queryExpression);
-					break;
-				}
-
-				break;
-			case "DistinctSum":
-			case "DistinctLongSum":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true, queryExpression);
-					break;
-				}
-				break;
-			case "Avg":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false, queryExpression);
-					break;
-				}
-
-				break;
-			case "DistinctAvg":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true, queryExpression);
-					break;
-				}
-
-				break;
-			case "Max":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false, queryExpression);
-					break;
-				}
-
-				break;
-			case "Min":
-				switch (paramExpressions.Count) {
-				case 1:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false, null);
-					break;
-				case 2:
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false, queryExpression);
-					break;
-				}
-
-				break;
 			}
 			CheckFieldInfo (data);
 			state.AggregateField = true;

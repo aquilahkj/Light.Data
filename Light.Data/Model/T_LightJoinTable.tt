@@ -8,7 +8,7 @@
 <#@ import namespace="System.Collections.Generic"#>
 <#@ import namespace="System.Text"#>
 <# 
-	var MaxCount=5;
+	var MaxCount=9;
 	var InterFaceName="IJoinTable";
 	var ClassFaceName="LightJoinTable";
 

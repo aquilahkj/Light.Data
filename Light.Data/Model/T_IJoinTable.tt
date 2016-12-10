@@ -9,7 +9,7 @@
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Text.RegularExpressions"#>
 <# 
-	var MaxCount=5;
+	var MaxCount=9;
 
 	var InterFaceName="IJoinTable";
 
@@ -33,8 +33,6 @@ namespace Light.Data
 		where <#=GetMax(j) #> : class
 <# } #>
 	{
-
-
 		/// <summary>
 		/// Reset the specified where expression
 		/// </summary>
@@ -230,21 +228,21 @@ namespace Light.Data
 		/// <summary>
 		/// Inner Join select data with onExpression.
 		/// </summary>
-		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> Join<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression) where <#=GetAdd(i) #> : class;
 
 		/// <summary>
 		/// Left Join select data with onExpression.
 		/// </summary>
-		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> LeftJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression) where <#=GetAdd(i) #> : class;
 
 		/// <summary>
 		/// Right Join select data with onExpression.
 		/// </summary>
-		/// <param name="aggregate">Aggregate.</param>
+		/// <param name="select">Select.</param>
 		/// <param name="onExpression">On expression.</param>
 		<#=InterFaceName#><<#=GetNext(i) #>> RightJoin<<#=GetAdd(i) #>> (ISelect<<#=GetAdd(i) #>> select, Expression<Func<<#=GetNext(i) #>, bool>> onExpression) where <#=GetAdd(i) #> : class;
 

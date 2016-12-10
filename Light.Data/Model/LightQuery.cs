@@ -209,6 +209,12 @@ namespace Light.Data
 			}
 		}
 
+		public override long LongCount {
+			get {
+				return Convert.ToInt64 (_context.AggregateCount (_mapping, _query, _level));
+			}
+		}
+
 		#endregion
 
 		public override T First ()
@@ -281,25 +287,25 @@ namespace Light.Data
 			return new LightAggregate<T, K> (this, expression);
 		}
 
-		public override IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression)
-		{
-			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, _distinct, _region, _level);
-			foreach (K item in ie) {
-				yield return item;
-			}
-		}
+		//public override IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression)
+		//{
+		//	DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+		//	IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, _distinct, _region, _level);
+		//	foreach (K item in ie) {
+		//		yield return item;
+		//	}
+		//}
 
-		public override List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression)
-		{
-			List<K> list = new List<K> ();
-			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, _distinct, _region, _level);
-			foreach (K item in ie) {
-				list.Add (item);
-			}
-			return list;
-		}
+		//public override List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression)
+		//{
+		//	List<K> list = new List<K> ();
+		//	DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+		//	IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, _distinct, _region, _level);
+		//	foreach (K item in ie) {
+		//		list.Add (item);
+		//	}
+		//	return list;
+		//}
 
 		public override IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
 		{
@@ -425,6 +431,342 @@ namespace Light.Data
 				throw new ArgumentException (nameof (select));
 			}
 			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, selectBase, onExpression);
+		}
+
+		public override IEnumerable<bool> QueryField (Expression<Func<T, bool>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (bool), _query, _order, _distinct, _region, _level);
+			foreach (bool item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<bool?> QueryField (Expression<Func<T, bool?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (bool?), _query, _order, _distinct, _region, _level);
+			foreach (bool? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<byte> QueryField (Expression<Func<T, byte>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (byte), _query, _order, _distinct, _region, _level);
+			foreach (byte item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<byte?> QueryField (Expression<Func<T, byte?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (byte?), _query, _order, _distinct, _region, _level);
+			foreach (byte? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<sbyte> QueryField (Expression<Func<T, sbyte>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (sbyte), _query, _order, _distinct, _region, _level);
+			foreach (sbyte item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<sbyte?> QueryField (Expression<Func<T, sbyte?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (sbyte?), _query, _order, _distinct, _region, _level);
+			foreach (sbyte? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<short> QueryField (Expression<Func<T, short>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (short), _query, _order, _distinct, _region, _level);
+			foreach (short item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<short?> QueryField (Expression<Func<T, short?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (short?), _query, _order, _distinct, _region, _level);
+			foreach (short? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<int> QueryField (Expression<Func<T, int>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (int), _query, _order, _distinct, _region, _level);
+			foreach (int item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<int?> QueryField (Expression<Func<T, int?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (int?), _query, _order, _distinct, _region, _level);
+			foreach (int? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<long> QueryField (Expression<Func<T, long>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (long), _query, _order, _distinct, _region, _level);
+			foreach (long item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<long?> QueryField (Expression<Func<T, long?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (long?), _query, _order, _distinct, _region, _level);
+			foreach (long? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<float> QueryField (Expression<Func<T, float>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (float), _query, _order, _distinct, _region, _level);
+			foreach (float item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<float?> QueryField (Expression<Func<T, float?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (float?), _query, _order, _distinct, _region, _level);
+			foreach (float? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<double> QueryField (Expression<Func<T, double>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (double), _query, _order, _distinct, _region, _level);
+			foreach (double item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<double?> QueryField (Expression<Func<T, double?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (double?), _query, _order, _distinct, _region, _level);
+			foreach (double? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<decimal> QueryField (Expression<Func<T, decimal>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (decimal), _query, _order, _distinct, _region, _level);
+			foreach (decimal item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<decimal?> QueryField (Expression<Func<T, decimal?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (decimal?), _query, _order, _distinct, _region, _level);
+			foreach (decimal? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<DateTime> QueryField (Expression<Func<T, DateTime>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (DateTime), _query, _order, _distinct, _region, _level);
+			foreach (DateTime item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<DateTime?> QueryField (Expression<Func<T, DateTime?>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (DateTime?), _query, _order, _distinct, _region, _level);
+			foreach (DateTime? item in ie) {
+				yield return item;
+			}
+		}
+
+		public override IEnumerable<string> QueryField (Expression<Func<T, string>> expression)
+		{
+			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
+			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (string), _query, _order, _distinct, _region, _level);
+			foreach (string item in ie) {
+				yield return item;
+			}
+		}
+
+		public override List<bool> QueryFieldList (Expression<Func<T, bool>> expression)
+		{
+			IEnumerable<bool> collection = QueryField (expression);
+			List<bool> list = new List<bool> (collection);
+			return list;
+		}
+
+		public override List<bool?> QueryFieldList (Expression<Func<T, bool?>> expression)
+		{
+			IEnumerable<bool?> collection = QueryField (expression);
+			List<bool?> list = new List<bool?> (collection);
+			return list;
+		}
+
+		public override List<byte> QueryFieldList (Expression<Func<T, byte>> expression)
+		{
+			IEnumerable<byte> collection = QueryField (expression);
+			List<byte> list = new List<byte> (collection);
+			return list;
+		}
+
+		public override List<byte?> QueryFieldList (Expression<Func<T, byte?>> expression)
+		{
+			IEnumerable<byte?> collection = QueryField (expression);
+			List<byte?> list = new List<byte?> (collection);
+			return list;
+		}
+
+		public override List<sbyte> QueryFieldList (Expression<Func<T, sbyte>> expression)
+		{
+			IEnumerable<sbyte> collection = QueryField (expression);
+			List<sbyte> list = new List<sbyte> (collection);
+			return list;
+		}
+
+		public override List<sbyte?> QueryFieldList (Expression<Func<T, sbyte?>> expression)
+		{
+			IEnumerable<sbyte?> collection = QueryField (expression);
+			List<sbyte?> list = new List<sbyte?> (collection);
+			return list;
+		}
+
+		public override List<short> QueryFieldList (Expression<Func<T, short>> expression)
+		{
+			IEnumerable<short> collection = QueryField (expression);
+			List<short> list = new List<short> (collection);
+			return list;
+		}
+
+		public override List<short?> QueryFieldList (Expression<Func<T, short?>> expression)
+		{
+			IEnumerable<short?> collection = QueryField (expression);
+			List<short?> list = new List<short?> (collection);
+			return list;
+		}
+
+		public override List<int> QueryFieldList (Expression<Func<T, int>> expression)
+		{
+			IEnumerable<int> collection = QueryField (expression);
+			List<int> list = new List<int> (collection);
+			return list;
+		}
+
+		public override List<int?> QueryFieldList (Expression<Func<T, int?>> expression)
+		{
+			IEnumerable<int?> collection = QueryField (expression);
+			List<int?> list = new List<int?> (collection);
+			return list;
+		}
+
+		public override List<long> QueryFieldList (Expression<Func<T, long>> expression)
+		{
+			IEnumerable<long> collection = QueryField (expression);
+			List<long> list = new List<long> (collection);
+			return list;
+		}
+
+		public override List<long?> QueryFieldList (Expression<Func<T, long?>> expression)
+		{
+			IEnumerable<long?> collection = QueryField (expression);
+			List<long?> list = new List<long?> (collection);
+			return list;
+		}
+
+		public override List<float> QueryFieldList (Expression<Func<T, float>> expression)
+		{
+			IEnumerable<float> collection = QueryField (expression);
+			List<float> list = new List<float> (collection);
+			return list;
+		}
+
+		public override List<float?> QueryFieldList (Expression<Func<T, float?>> expression)
+		{
+			IEnumerable<float?> collection = QueryField (expression);
+			List<float?> list = new List<float?> (collection);
+			return list;
+		}
+
+		public override List<double> QueryFieldList (Expression<Func<T, double>> expression)
+		{
+			IEnumerable<double> collection = QueryField (expression);
+			List<double> list = new List<double> (collection);
+			return list;
+		}
+
+		public override List<double?> QueryFieldList (Expression<Func<T, double?>> expression)
+		{
+			IEnumerable<double?> collection = QueryField (expression);
+			List<double?> list = new List<double?> (collection);
+			return list;
+		}
+
+		public override List<decimal> QueryFieldList (Expression<Func<T, decimal>> expression)
+		{
+			IEnumerable<decimal> collection = QueryField (expression);
+			List<decimal> list = new List<decimal> (collection);
+			return list;
+		}
+
+		public override List<decimal?> QueryFieldList (Expression<Func<T, decimal?>> expression)
+		{
+			IEnumerable<decimal?> collection = QueryField (expression);
+			List<decimal?> list = new List<decimal?> (collection);
+			return list;
+		}
+
+		public override List<DateTime> QueryFieldList (Expression<Func<T, DateTime>> expression)
+		{
+			IEnumerable<DateTime> collection = QueryField (expression);
+			List<DateTime> list = new List<DateTime> (collection);
+			return list;
+		}
+
+		public override List<DateTime?> QueryFieldList (Expression<Func<T, DateTime?>> expression)
+		{
+			IEnumerable<DateTime?> collection = QueryField (expression);
+			List<DateTime?> list = new List<DateTime?> (collection);
+			return list;
+		}
+
+		public override List<string> QueryFieldList (Expression<Func<T, string>> expression)
+		{
+			IEnumerable<string> collection = QueryField (expression);
+			List<string> list = new List<string> (collection);
+			return list;
 		}
 	}
 }

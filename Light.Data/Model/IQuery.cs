@@ -123,6 +123,14 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Gets the datas long count.
+		/// </summary>
+		/// <value>The long count.</value>
+		long LongCount {
+			get;
+		}
+
+		/// <summary>
 		/// Get single instance.
 		/// </summary>
 		/// <returns>instance.</returns>
@@ -185,7 +193,7 @@ namespace Light.Data
 		/// Create Selector.
 		/// </summary>
 		/// <param name="expression">Expression.</param>
-		/// <typeparam name="TResult">The 1st type parameter.</typeparam>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		ISelect<K> Select<K> (Expression<Func<T, K>> expression) where K : class;
 
 		/// <summary>
@@ -196,21 +204,24 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		IAggregate<K> GroupBy<K> (Expression<Func<T, K>> expression) where K : class;
 
-		/// <summary>
-		/// Select special filed datas
-		/// </summary>
-		/// <returns>The single field.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression);
+		///// <summary>
+		///// Select special filed datas
+		///// </summary>
+		///// <returns>The single field.</returns>
+		///// <param name="expression">Expression.</param>
+		///// <typeparam name="K">The 1st type parameter.</typeparam>
+		//IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression);
 
-		/// <summary>
-		/// Select special filed data list
-		/// </summary>
-		/// <returns>The single field list.</returns>
-		/// <param name="expression">Expression.</param>
-		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression);
+		///// <summary>
+		///// Select special filed data list
+		///// </summary>
+		///// <returns>The single field list.</returns>
+		///// <param name="expression">Expression.</param>
+		///// <typeparam name="K">The 1st type parameter.</typeparam>
+		//List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression);
+
+
+		#region join table
 
 		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
@@ -330,6 +341,305 @@ namespace Light.Data
 		/// <param name="onExpression">On expression.</param>
 		/// <typeparam name="T1">The 1st type parameter.</typeparam>
 		IJoinTable<T, T1> RightJoin<T1> (ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
+
+		#endregion
+
+		#region query field
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<bool> QueryField (Expression<Func<T, bool>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<bool?> QueryField (Expression<Func<T, bool?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<byte> QueryField (Expression<Func<T, byte>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<byte?> QueryField (Expression<Func<T, byte?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<sbyte> QueryField (Expression<Func<T, sbyte>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<sbyte?> QueryField (Expression<Func<T, sbyte?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<short> QueryField (Expression<Func<T, short>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<short?> QueryField (Expression<Func<T, short?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<int> QueryField (Expression<Func<T, int>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<int?> QueryField (Expression<Func<T, int?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<long> QueryField (Expression<Func<T, long>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<long?> QueryField (Expression<Func<T, long?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<float> QueryField (Expression<Func<T, float>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<float?> QueryField (Expression<Func<T, float?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<double> QueryField (Expression<Func<T, double>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<double?> QueryField (Expression<Func<T, double?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<decimal> QueryField (Expression<Func<T, decimal>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<decimal?> QueryField (Expression<Func<T, decimal?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<DateTime> QueryField (Expression<Func<T, DateTime>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<DateTime?> QueryField (Expression<Func<T, DateTime?>> expression);
+
+		/// <summary>
+		/// Queries the field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		IEnumerable<string> QueryField (Expression<Func<T, string>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<bool> QueryFieldList (Expression<Func<T, bool>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<bool?> QueryFieldList (Expression<Func<T, bool?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<byte> QueryFieldList (Expression<Func<T, byte>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<byte?> QueryFieldList (Expression<Func<T, byte?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<sbyte> QueryFieldList (Expression<Func<T, sbyte>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<sbyte?> QueryFieldList (Expression<Func<T, sbyte?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<short> QueryFieldList (Expression<Func<T, short>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<short?> QueryFieldList (Expression<Func<T, short?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<int> QueryFieldList (Expression<Func<T, int>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<int?> QueryFieldList (Expression<Func<T, int?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<long> QueryFieldList (Expression<Func<T, long>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<long?> QueryFieldList (Expression<Func<T, long?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<float> QueryFieldList (Expression<Func<T, float>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<float?> QueryFieldList (Expression<Func<T, float?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<double> QueryFieldList (Expression<Func<T, double>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<double?> QueryFieldList (Expression<Func<T, double?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<decimal> QueryFieldList (Expression<Func<T, decimal>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<decimal?> QueryFieldList (Expression<Func<T, decimal?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<DateTime> QueryFieldList (Expression<Func<T, DateTime>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<DateTime?> QueryFieldList (Expression<Func<T, DateTime?>> expression);
+
+		/// <summary>
+		/// Queries the field list.
+		/// </summary>
+		/// <returns>The field list.</returns>
+		/// <param name="expression">Expression.</param>
+		List<string> QueryFieldList (Expression<Func<T, string>> expression);
+
+		#endregion
 	}
 }
 

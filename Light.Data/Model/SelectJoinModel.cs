@@ -5,7 +5,7 @@ namespace Light.Data
 {
 	class SelectJoinModel : IJoinModel
 	{
-		readonly SelectModel _model = null;
+		readonly SelectModel _model;
 
 		public SelectModel Model {
 			get {
@@ -21,13 +21,13 @@ namespace Light.Data
 			}
 		}
 
-		readonly DataEntityMapping _mapping;
+		//readonly DataEntityMapping _mapping;
 
-		public DataEntityMapping Mapping {
-			get {
-				return _mapping;
-			}
-		}
+		//public DataEntityMapping Mapping {
+		//	get {
+		//		return _mapping;
+		//	}
+		//}
 
 		readonly IJoinTableMapping _joinMapping;
 
@@ -70,13 +70,13 @@ namespace Light.Data
 			}
 		}
 
-		readonly ISelector _selector;
+		//readonly ISelector _selector;
 
-		public ISelector Selector {
-			get {
-				return _selector;
-			}
-		}
+		//public ISelector Selector {
+		//	get {
+		//		return _selector;
+		//	}
+		//}
 
 		readonly string _aliasTableName;
 
@@ -84,35 +84,7 @@ namespace Light.Data
 			get {
 				return _aliasTableName;
 			}
-			//set {
-			//	if (!string.IsNullOrEmpty (value)) {
-			//		aliasTableName = value;
-			//	}
-			//}
 		}
-
-		//public SelectJoinModel (DataEntityMapping mapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
-		//	: this (mapping, AllSelector.Value, aliasTableName, connect, query, order)
-		//{
-		//	//this._mapping = mapping;
-		//	//this.Selector
-		//	//this._connect = connect;
-		//	//this._query = query;
-		//	//this._order = order;
-		//	//this._aliasTableName = aliasTableName;
-		//	//this._joinMapping = mapping;
-		//}
-
-		//public SelectJoinModel (DataEntityMapping mapping, ISelector selector, IJoinTableMapping joinMapping, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
-		//{
-		//	this._mapping = mapping;
-		//	this._selector = selector;
-		//	this._connect = connect;
-		//	this._query = query;
-		//	this._order = order;
-		//	this._aliasTableName = aliasTableName;
-		//	this._joinMapping = joinMapping;
-		//}
 
 		public SelectJoinModel (SelectModel model, string aliasTableName, JoinConnect connect, QueryExpression query, OrderExpression order)
 		{
@@ -127,13 +99,6 @@ namespace Light.Data
 
 		public string CreateSqlString (CommandFactory factory, CreateSqlState state)
 		{
-			//StringBuilder sb = new StringBuilder ();
-			//CommandData command = factory.CreateSelectCommand (_mapping, _selector, _query, _order, _distinct, null, state);
-			//string aliasName = _aliasTableName ?? _mapping.TableName;
-			//sb.Append (factory.CreateAliasQuerySql (command.CommandText, aliasName));
-			//return sb.ToString ();
-
-
 			StringBuilder sb = new StringBuilder ();
 			CommandData command = factory.CreateSelectCommand (_model.EntityMapping, _model.CreateSelector (), _query, _order, _distinct, null, state);
 			string aliasName = _aliasTableName ?? _model.EntityMapping.TableName;
