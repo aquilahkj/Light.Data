@@ -36,7 +36,7 @@ namespace Light.Data.MysqlTest
 				us.AddRange (lu.Users);
 				Assert.AreEqual (kvs.Value.Count, us.Count);
 				for (int i = 0; i < us.Count; i++) {
-					AssertExtend.AreTypeEqual<TeUser> (kvs.Value [i], us [i]);
+					AssertExtend.AreObjectEqual (kvs.Value [i], us [i]);
 					Assert.NotNull (us [i].UserLevel);
 					Assert.AreEqual (lu, us [i].UserLevel);
 				}
@@ -64,11 +64,11 @@ namespace Light.Data.MysqlTest
 			foreach (TeUser user in users) {
 				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
 				TeUserWithExtendRefer refer = list.Find (x => x.Id == user.Id);
-				AssertExtend.AreTypeEqual<TeUser> (user, refer);
+				AssertExtend.AreObjectEqual (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
 				} else {
-					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
+					AssertExtend.AreObjectEqual (extend, refer.UserExtend);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 				}
 			}
@@ -94,16 +94,16 @@ namespace Light.Data.MysqlTest
 			foreach (TeUser user in users) {
 				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
 				TeUserWithExtendRefer1 refer = list.Find (x => x.Id == user.Id);
-				AssertExtend.AreTypeEqual<TeUser> (user, refer);
+				AssertExtend.AreObjectEqual (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
 					Assert.IsNull (refer.UserExtend1);
 				} else {
-					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
+					AssertExtend.AreObjectEqual (extend, refer.UserExtend);
 					Assert.AreNotEqual (refer.UserExtend, refer.UserExtend1);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 					Assert.IsNotNull (refer.UserExtend.User1);
-					AssertExtend.AreTypeEqual<TeUser> (user, refer.UserExtend.User1);
+					AssertExtend.AreObjectEqual (user, refer.UserExtend.User1);
 				}
 				Assert.IsNotNull (refer.UserExtend2);
 			}
@@ -132,17 +132,17 @@ namespace Light.Data.MysqlTest
 				TeUserExtend extend = extends.Find (x => x.UserId == user.Id);
 
 				TeUserWithExtendRefer2 refer = list.Find (x => x.Id == user.Id);
-				AssertExtend.AreTypeEqual<TeUser> (user, refer);
+				AssertExtend.AreObjectEqual (user, refer);
 				if (extend == null) {
 					Assert.IsNull (refer.UserExtend);
 				} else {
-					AssertExtend.AreTypeEqual<TeUserExtend> (extend, refer.UserExtend);
+					AssertExtend.AreObjectEqual (extend, refer.UserExtend);
 					Assert.AreEqual (refer.UserExtend.User, refer);
 					TeAreaInfo areaInfo = areaInfos.Find (x => x.Id == extend.ExtendAreaId);
 					if (areaInfo == null) {
 						Assert.IsNull (refer.UserExtend.AreaInfo);
 					} else {
-						AssertExtend.AreTypeEqual<TeAreaInfo> (areaInfo, refer.UserExtend.AreaInfo);
+						AssertExtend.AreObjectEqual (areaInfo, refer.UserExtend.AreaInfo);
 						Assert.AreEqual (refer.UserExtend, refer.UserExtend.AreaInfo.UserExtend);
 					}
 				}
@@ -160,7 +160,7 @@ namespace Light.Data.MysqlTest
 				Assert.AreEqual (relate, relate.RelateB.RelateC.RelateA);
 				Assert.AreEqual (relate, relate.RelateE.RelateA);
 				Assert.AreNotEqual (relate.RelateE, relate.RelateB.RelateE);
-				AssertExtend.AreObjectsEqual (relate.RelateE, relate.RelateB.RelateE);
+				AssertExtend.AreObjectEqual (relate.RelateE, relate.RelateB.RelateE);
 			}
 		}
 	}

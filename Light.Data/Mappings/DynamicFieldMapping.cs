@@ -5,7 +5,7 @@ namespace Light.Data
 {
 	abstract class DynamicFieldMapping : FieldMapping
 	{
-		public static DynamicFieldMapping CreateAggregateFieldMapping (PropertyInfo property, DynamicCustomMapping mapping)
+		public static DynamicFieldMapping CreateDynmaicFieldMapping (PropertyInfo property, DynamicCustomMapping mapping)
 		{
 			DynamicFieldMapping fieldMapping;
 			Type type = property.PropertyType;

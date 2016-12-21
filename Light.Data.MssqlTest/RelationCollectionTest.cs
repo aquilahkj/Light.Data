@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Light.Data.UnitTest;
@@ -31,7 +31,7 @@ namespace Light.Data.MssqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				AssertExtend.AreEnumerableEqual (kvs.Value, lu.Users);
+				AssertExtend.AreObjectEqual (kvs.Value, lu.Users);
 			}
 		}
 			
@@ -85,7 +85,7 @@ namespace Light.Data.MssqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser2 lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				AssertExtend.AreEnumerableEqual (kvs.Value, lu.Users);
+				AssertExtend.AreObjectEqual (kvs.Value, lu.Users);
 			}
 		}
 			
@@ -139,7 +139,7 @@ namespace Light.Data.MssqlTest
 			foreach (KeyValuePair<int,List<TeUser>> kvs in dict) {
 				TeUserLevelWithUser3 lu = list.Find (x => x.Id == kvs.Key);
 				Assert.NotNull (lu);
-				AssertExtend.AreEnumerableEqual (kvs.Value, lu.Users);
+				AssertExtend.AreObjectEqual (kvs.Value, lu.Users);
 			}
 		}
 

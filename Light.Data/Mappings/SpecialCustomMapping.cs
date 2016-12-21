@@ -39,8 +39,6 @@ namespace Light.Data
 
 		protected Dictionary<string, DataFieldMapping> _fieldMappingDictionary = new Dictionary<string, DataFieldMapping> ();
 
-		//protected List<DataFieldMapping> _fieldList = new List<DataFieldMapping> ();
-
 		protected ReadOnlyCollection<DataFieldMapping> _fieldList;
 
 		SpecialCustomMapping (Type type)
@@ -54,7 +52,7 @@ namespace Light.Data
 			PropertyInfo [] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
 			List<DataFieldMapping> tmepList = new List<DataFieldMapping> ();
 			foreach (PropertyInfo pi in propertys) {
-				DataFieldMapping mapping = DataFieldMapping.CreateAggregateFieldMapping (pi, this);
+				DataFieldMapping mapping = DataFieldMapping.CreateCustomFieldMapping (pi, this);
 				if (mapping != null) {
 					_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 					tmepList.Add (mapping);

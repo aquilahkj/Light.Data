@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Light.Data
 {
@@ -30,50 +29,84 @@ namespace Light.Data
 	/// <summary>
 	/// Data field info.
 	/// </summary>
-	public partial class DataFieldInfo : BasicFieldInfo, ICloneable
+	public partial class DataFieldInfo : BasicFieldInfo
 	{
-		#region ICloneable implementation
-		/// <summary>
-		/// Clone this instance.
-		/// </summary>
-		public object Clone ()
+		public virtual DataFieldInfo CreateAliasTableInfo (string aliasTableName)
 		{
-			return this.MemberwiseClone ();
+			DataFieldInfo info = this.MemberwiseClone () as DataFieldInfo;
+			info._aliasTableName = aliasTableName;
+			return info;
 		}
 
-		#endregion
-
-		internal DataFieldInfo (Type type, string name) :
-			this (DataEntityMapping.GetEntityMapping (type), name)
+		internal DataFieldInfo (Type type, string name)
+			: this (DataEntityMapping.GetEntityMapping (type), false, name)
 		{
 
 		}
 
-		internal DataFieldInfo (DataEntityMapping mapping, string name)
+		internal DataFieldInfo (DataEntityMapping mapping, bool customName, string name)
+			: base (mapping, customName, name)
 		{
-			TableMapping = mapping;
-			DataField = TableMapping.FindDataEntityField (name);
-			if (DataField == null) {
-				DataField = new CustomFieldMapping (name, mapping);
-			}
+			//TableMapping = mapping;
+			//DataField = TableMapping.FindDataEntityField (name);
+			//if (DataField == null) {
+			//	DataField = new CustomFieldMapping (name, mapping);
+			//}
+		}
+
+		internal DataFieldInfo (DataEntityMapping mapping, bool customName, string name, string aliasTableName)
+			: base (mapping, customName, name)
+		{
+			//TableMapping = mapping;
+			//DataField = TableMapping.FindDataEntityField (name);
+			//if (DataField == null) {
+			//	DataField = new CustomFieldMapping (name, mapping);
+			//}
+			_aliasTableName = aliasTableName;
 		}
 
 		internal DataFieldInfo (DataEntityMapping mapping, DataFieldMapping fieldMapping)
+			: base (mapping, fieldMapping)
 		{
-			TableMapping = mapping;
-			DataField = fieldMapping;
+			//TableMapping = mapping;
+			//DataField = fieldMapping;
+			//_aliasTableName = aliasTableName;
+		}
+
+		internal DataFieldInfo (DataEntityMapping mapping, DataFieldMapping fieldMapping, string aliasTableName)
+			: base (mapping, fieldMapping)
+		{
+			//TableMapping = mapping;
+			//DataField = fieldMapping;
+			_aliasTableName = aliasTableName;
 		}
 
 		internal DataFieldInfo (DataFieldMapping fieldMapping)
+			: base (fieldMapping.EntityMapping, fieldMapping)
 		{
-			TableMapping = fieldMapping.EntityMapping;
-			DataField = fieldMapping;
+			//TableMapping = fieldMapping.EntityMapping;
+			//DataField = fieldMapping;
+		}
+
+		internal DataFieldInfo (DataFieldMapping fieldMapping, string aliasTableName)
+			: base (fieldMapping.EntityMapping, fieldMapping)
+		{
+			//TableMapping = fieldMapping.EntityMapping;
+			//DataField = fieldMapping;
+			_aliasTableName = aliasTableName;
 		}
 
 		internal DataFieldInfo (DataEntityMapping mapping)
+			: base (mapping)
 		{
-			TableMapping = mapping;
+			//TableMapping = mapping;
 		}
+
+		//internal DataFieldInfo (DataEntityMapping mapping, string aliasTableName)
+		//{
+		//	TableMapping = mapping;
+		//	_aliasTableName = aliasTableName;
+		//}
 
 		/// <summary>
 		/// Gets the position.
@@ -100,28 +133,16 @@ namespace Light.Data
 			}
 		}
 
-		string _aliasTableName;
+		protected string _aliasTableName;
 
 		internal virtual string AliasTableName {
 			get {
 				return _aliasTableName;
 			}
-			set {
-				_aliasTableName = value;
-			}
+			//set {
+			//	_aliasTableName = value;
+			//}
 		}
-
-		//internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		//{
-		//	dataParameters = null;
-		//	if (isFullName) {
-		//		string tableName = this._aliasTableName ?? TableMapping.TableName;
-		//		return factory.CreateFullDataFieldSql (tableName, FieldName);
-		//	}
-		//	else {
-		//		return factory.CreateDataFieldSql (FieldName);
-		//	}
-		//}
 
 		internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
@@ -142,7 +163,7 @@ namespace Light.Data
 		/// <param name="value">Value.</param>
 		internal virtual object ToParameter (object value)
 		{
-			return base.DataField.ToParameter (value);
+			return DataField.ToParameter (value);
 		}
 	}
 }

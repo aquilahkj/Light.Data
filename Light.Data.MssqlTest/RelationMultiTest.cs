@@ -164,7 +164,7 @@ namespace Light.Data.MssqlTest
 				Assert.AreEqual (relate, relate.RelateB.RelateC.RelateA);
 				Assert.AreEqual (relate, relate.RelateE.RelateA);
 				Assert.AreNotEqual (relate.RelateE, relate.RelateB.RelateE);
-				AssertExtend.AreObjectsEqual (relate.RelateE, relate.RelateB.RelateE);
+				AssertExtend.AreObjectEqual (relate.RelateE, relate.RelateB.RelateE);
 			}
 		}
 	}

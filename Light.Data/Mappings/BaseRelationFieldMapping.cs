@@ -9,17 +9,17 @@ namespace Light.Data
 	{
 		readonly protected PropertyHandler handler;
 
-		readonly protected RelationKey[] keyPairs;
+		readonly protected RelationKey [] keyPairs;
 
 		readonly protected Type relateType;
 
-		readonly protected  string fieldName;
+		readonly protected string fieldName;
 
 		readonly protected DataEntityMapping masterEntityMapping;
 
-		readonly protected DataFieldMapping[] masterFieldMappings;
+		readonly protected DataFieldMapping [] masterFieldMappings;
 
-		readonly protected DataFieldInfo[] masterInfos;
+		readonly protected DataFieldInfo [] masterInfos;
 
 		public PropertyHandler Handler {
 			get {
@@ -49,27 +49,29 @@ namespace Light.Data
 			}
 		}
 
-		protected DataFieldMapping[] relateFieldMappings;
+		protected DataFieldMapping [] relateFieldMappings;
 
-		protected DataFieldInfo[] relateInfos;
+		protected DataFieldInfo [] relateInfos;
 
-		public DataFieldInfoRelation[] GetDataFieldInfoRelations ()
+		public DataFieldInfoRelation [] CreateDataFieldInfoRelations (string masterAlias, string relateAlias)
 		{
 			InitialRelateMapping ();
-			DataFieldInfoRelation[] array = new DataFieldInfoRelation[keyPairs.Length];
+			DataFieldInfoRelation [] array = new DataFieldInfoRelation [keyPairs.Length];
 			for (int i = 0; i < keyPairs.Length; i++) {
-				array [i] = new DataFieldInfoRelation (new DataFieldInfo (this.masterFieldMappings [i]), new DataFieldInfo (this.relateFieldMappings [i]));
+				DataFieldInfo masterField = new DataFieldInfo (this.masterFieldMappings [i], masterAlias);
+				DataFieldInfo relateField = new DataFieldInfo (this.relateFieldMappings [i], relateAlias);
+				array [i] = new DataFieldInfoRelation (masterField, relateField);
 			}
 			return array;
 		}
 
-		public RelationKey[] GetKeyPairs ()
+		public RelationKey [] GetKeyPairs ()
 		{
-			return keyPairs.Clone () as RelationKey[];
+			return keyPairs.Clone () as RelationKey [];
 		}
 
 
-		protected BaseRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey[] keyPairs, PropertyHandler handler)
+		protected BaseRelationFieldMapping (string fieldName, DataEntityMapping mapping, Type relateType, RelationKey [] keyPairs, PropertyHandler handler)
 		{
 			if (fieldName == null)
 				throw new ArgumentNullException (nameof (fieldName));
@@ -86,8 +88,8 @@ namespace Light.Data
 			this.relateType = relateType;
 			this.keyPairs = keyPairs;
 			this.handler = handler;
-			this.masterFieldMappings = new DataFieldMapping[keyPairs.Length];
-			this.masterInfos = new DataFieldInfo[keyPairs.Length];
+			this.masterFieldMappings = new DataFieldMapping [keyPairs.Length];
+			this.masterInfos = new DataFieldInfo [keyPairs.Length];
 			for (int i = 0; i < keyPairs.Length; i++) {
 				DataFieldMapping field = mapping.FindDataEntityField (keyPairs [i].MasterKey);
 				if (field == null) {
@@ -112,8 +114,8 @@ namespace Light.Data
 		protected virtual void InitialRelateMappingInc ()
 		{
 			DataEntityMapping mapping = DataEntityMapping.GetEntityMapping (this.relateType);
-			DataFieldInfo[] infos = new DataFieldInfo[keyPairs.Length];
-			DataFieldMapping[] fields = new DataFieldMapping[keyPairs.Length];
+			DataFieldInfo [] infos = new DataFieldInfo [keyPairs.Length];
+			DataFieldMapping [] fields = new DataFieldMapping [keyPairs.Length];
 			for (int i = 0; i < this.keyPairs.Length; i++) {
 				DataFieldMapping field = mapping.FindDataEntityField (keyPairs [i].RelateKey);
 				if (field == null) {

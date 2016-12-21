@@ -38,7 +38,7 @@ namespace Light.Data
 			return false;
 		}
 
-		public DataFieldInfo CreateFieldInfoForPath (string path)
+		public DataFieldInfo GetFieldInfoForPath (string path)
 		{
 			string name;
 			if (path.StartsWith (".", StringComparison.Ordinal)) {
@@ -49,8 +49,9 @@ namespace Light.Data
 			}
 			DataFieldInfo info = _model.GetFieldData (name);
 			if (!Object.Equals (info, null)) {
-				DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
-				return nameInfo;
+				//DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
+				//return nameInfo;
+				return info;
 			}
 			else {
 				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
@@ -68,13 +69,21 @@ namespace Light.Data
 				else {
 					name = path;
 				}
-				DataFieldInfo info = _model.GetFieldData (name);
-				if (!Object.Equals (info, null)) {
-					DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
-					selector.SetSelectField (nameInfo);
+				if (name == string.Empty) {
+					DataFieldInfo [] nameInfos = _model.GetDataFieldInfos ();
+					foreach (DataFieldInfo fieldInfo in nameInfos) {
+						selector.SetSelectField (fieldInfo);
+					}
 				}
 				else {
-					throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
+					DataFieldInfo info = _model.GetFieldData (name);
+					if (!Object.Equals (info, null)) {
+						DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, false, name);
+						selector.SetSelectField (nameInfo);
+					}
+					else {
+						throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
+				}
 				}
 			}
 			return selector;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 
@@ -348,7 +348,7 @@ namespace Light.Data.PostgreTest
 
 			listEx = new List<StringDataAgg> ();
 			listAc = context.LAggregate<TeUser> ()
-				.GroupBy (TeUser.AccountField.TransformSubString (1, 5), "Name")
+				.GroupBy (TeUser.AccountField.TransformSubString (0, 5), "Name")
 				.Aggregate (AggregateFunction.Count (), "Data")
 				.GetObjectList<StringDataAgg> ();
 			dict = new Dictionary<string, StringDataAgg> ();

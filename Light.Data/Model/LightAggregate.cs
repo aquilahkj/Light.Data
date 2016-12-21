@@ -312,7 +312,7 @@ namespace Light.Data
 
 		public override IJoinTable<K, T1> Join<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression)
 		{
-			AggregateBase<T1> selectBase = select as AggregateBase<T1>;
+			SelectBase<T1> selectBase = select as SelectBase<T1>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -321,7 +321,7 @@ namespace Light.Data
 
 		public override IJoinTable<K, T1> LeftJoin<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression)
 		{
-			AggregateBase<T1> selectBase = select as AggregateBase<T1>;
+			SelectBase<T1> selectBase = select as SelectBase<T1>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}
@@ -330,7 +330,7 @@ namespace Light.Data
 
 		public override IJoinTable<K, T1> RightJoin<T1> (ISelect<T1> select, Expression<Func<K, T1, bool>> onExpression)
 		{
-			AggregateBase<T1> selectBase = select as AggregateBase<T1>;
+			SelectBase<T1> selectBase = select as SelectBase<T1>;
 			if (selectBase == null) {
 				throw new ArgumentException (nameof (select));
 			}

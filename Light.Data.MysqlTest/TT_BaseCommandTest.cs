@@ -68,13 +68,13 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (1, levelInsert.Id);
 			TeUserLevel level1 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
 			Assert.NotNull (level1);
-			AssertExtend.AreObjectsEqual (levelInsert, level1);
+			AssertExtend.AreObjectEqual (levelInsert, level1);
 			level1.Status = 2;
 			context.Update (level1);
 			Assert.AreEqual (1, levelInsert.Id);
 			TeUserLevel level2 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
 			Assert.NotNull (level2);
-			AssertExtend.AreObjectsEqual (level1, level2);
+			AssertExtend.AreObjectEqual (level1, level2);
 			context.Delete (level2);
 			TeUserLevel level3 = context.SelectSingleFromKey<TeUserLevel> (levelInsert.Id);
 			Assert.Null (level3);
@@ -124,19 +124,19 @@ namespace Light.Data.MysqlTest
 			Assert.AreEqual (count, result);
 			listAc = context.Query<TeUser> ().ToList ();
 
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray (), 20);
 			Assert.AreEqual (count, result);
 			listAc = context.Query<TeUser> ().ToList ();
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			context.TruncateTable<TeUser> ();
 			result = context.BatchInsert (listEx.ToArray (), 100);
 			Assert.AreEqual (count, result);
 			listAc = context.Query<TeUser> ().ToList ();
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]

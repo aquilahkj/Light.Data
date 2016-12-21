@@ -29,12 +29,6 @@ namespace Light.Data
 			}
 		}
 
-		//public override DataEntityMapping MainMapping {
-		//	get {
-		//		return firstMapping;
-		//	}
-		//}
-
 		public override bool CheckPamramter (string name, Type type)
 		{
 			IMap map;
@@ -56,12 +50,10 @@ namespace Light.Data
 			string path = fullPath.Substring (index);
 			IMap map;
 			if (mapDict.TryGetValue (name, out map)) {
-				DataFieldInfo info = map.CreateFieldInfoForPath (path);
-				//if (Object.Equals (info, null)) {
-				//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, fullPath);
-				//}
+				DataFieldInfo info = map.GetFieldInfoForPath (path);
 				string aliasTableName = aliasDict [name];
-				info.AliasTableName = aliasTableName;
+				//info.AliasTableName = aliasTableName;
+				info = info.CreateAliasTableInfo (aliasTableName);
 				return info;
 			}
 			else {

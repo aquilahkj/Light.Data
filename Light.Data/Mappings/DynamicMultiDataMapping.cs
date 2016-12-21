@@ -18,9 +18,8 @@ namespace Light.Data
 			return mapping;
 		}
 
-		IJoinTableMapping [] mappings;
-
-		string [] aliasNames;
+		readonly IJoinTableMapping [] mappings;
+		readonly string [] aliasNames;
 
 		public DynamicMultiDataMapping (Type type, Tuple<string, IJoinTableMapping> [] targetMappings)
 			: base (type)

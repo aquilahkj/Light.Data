@@ -13,7 +13,7 @@ namespace Light.Data
 
 		bool CheckIsEntityCollection (string path);
 
-		DataFieldInfo CreateFieldInfoForPath (string path);
+		DataFieldInfo GetFieldInfoForPath (string path);
 
 		ISelector CreateSelector (string [] paths);
 

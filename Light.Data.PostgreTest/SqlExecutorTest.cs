@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -23,19 +23,19 @@ namespace Light.Data.PostgreTest
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">5 and \"Id\"<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">@P1 and \"Id\"<=@P2";
 			ps = new DataParameter[2];
@@ -44,7 +44,7 @@ namespace Light.Data.PostgreTest
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -55,7 +55,7 @@ namespace Light.Data.PostgreTest
 			}
 
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -73,19 +73,19 @@ namespace Light.Data.PostgreTest
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">5 and \"Id\"<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">@P1 and \"Id\"<=@P2";
 			ps = new DataParameter[2];
@@ -94,7 +94,7 @@ namespace Light.Data.PostgreTest
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -105,7 +105,7 @@ namespace Light.Data.PostgreTest
 			}
 
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -225,13 +225,13 @@ namespace Light.Data.PostgreTest
 			executor = context.CreateStoreProcedureExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "sptest1";
 			executor = context.CreateStoreProcedureExecutor (sql);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 
 			sql = "sptest2";
@@ -241,7 +241,7 @@ namespace Light.Data.PostgreTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "sptest1";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -251,7 +251,7 @@ namespace Light.Data.PostgreTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -271,13 +271,13 @@ namespace Light.Data.PostgreTest
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "sptest1";
 			executor = context.CreateStoreProcedureExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "sptest2";
 			ps = new DataParameter[2];
@@ -286,7 +286,7 @@ namespace Light.Data.PostgreTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "sptest1";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -296,7 +296,7 @@ namespace Light.Data.PostgreTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]

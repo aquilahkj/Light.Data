@@ -28,8 +28,56 @@ namespace Light.Data.MysqlTest
 				data = value;
 			}
 		}
+	}
 
+	class LevelIdAgg_T
+	{
+		int levelId;
 
+		public int LevelId {
+			get {
+				return levelId;
+			}
+			set {
+				levelId = value;
+			}
+		}
+
+		int data;
+
+		public int Data {
+			get {
+				return data;
+			}
+			set {
+				data = value;
+			}
+		}
+	}
+
+	class LevelIdAgg_N
+	{
+		int levelId;
+
+		public int LevelId {
+			get {
+				return levelId;
+			}
+			set {
+				levelId = value;
+			}
+		}
+
+		int? data;
+
+		public int? Data {
+			get {
+				return data;
+			}
+			set {
+				data = value;
+			}
+		}
 	}
 
 	[AggregateTable]
@@ -57,8 +105,31 @@ namespace Light.Data.MysqlTest
 				data = value;
 			}
 		}
+	}
 
+	class LevelIdAggAvg_T
+	{
+		int levelId;
 
+		public int LevelId {
+			get {
+				return levelId;
+			}
+			set {
+				levelId = value;
+			}
+		}
+
+		double? data;
+
+		public double? Data {
+			get {
+				return data;
+			}
+			set {
+				data = value;
+			}
+		}
 	}
 
 	class LevelIdAggX

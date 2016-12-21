@@ -553,12 +553,6 @@ namespace Light.Data
 				start = _region.Start;
 			}
 			_region = new Region (start, size);
-			//if (_region == null) {
-			//	_region = new Region (0, count);
-			//}
-			//else {
-			//	_region.Size = count;
-			//}
 			return this;
 		}
 
@@ -670,12 +664,7 @@ namespace Light.Data
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
 		public List<K> ToList<K> () where K : class, new()
 		{
-			//DataMapping mapping = DataEntityMapping.GetEntityMapping (typeof (K));
-			//List<K> list = _context.QueryJoinDataList<K> (mapping, _selector, _modelList, _query, _order, _region, _level);
-			//return list;
-
 			List<K> list = new List<K> ();
-
 			DataEntityMapping _mapping = DataEntityMapping.GetEntityMapping (typeof (K));
 			foreach (K item in _context.QueryJoinData (_mapping, _selector, _modelList.ToArray (), _query, _order, false, _region, _level)) {
 				list.Add (item);

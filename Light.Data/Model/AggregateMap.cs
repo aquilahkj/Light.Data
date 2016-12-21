@@ -38,7 +38,7 @@ namespace Light.Data
 			return false;
 		}
 
-		public DataFieldInfo CreateFieldInfoForPath (string path)
+		public DataFieldInfo GetFieldInfoForPath (string path)
 		{
 			string name;
 			if (path.StartsWith (".", StringComparison.Ordinal)) {
@@ -49,8 +49,9 @@ namespace Light.Data
 			}
 			DataFieldInfo info = _model.GetAggregateData (name);
 			if (!Object.Equals (info, null)) {
-				DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
-				return nameInfo;
+				//DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
+				//return nameInfo;
+				return info;
 			}
 			else {
 				//return null;
@@ -69,22 +70,27 @@ namespace Light.Data
 				else {
 					name = path;
 				}
-				//DataFieldInfo info = _model.GetAggregateData (name);
-				//if (!Object.Equals (info, null)) {
-				//	DataFieldInfo nameInfo = new DataFieldInfo (info.TableMapping, name);
-				//	selector.SetSelectField (nameInfo);
-				//}
-				//else {
-				//	throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
-				//}
-
-				//DataFieldInfo info = _model.GetAggregateData (name);
-				if (_model.CheckName(name)) {
-					DataFieldInfo nameInfo = new DataFieldInfo (_model.EntityMapping, name);
-					selector.SetSelectField (nameInfo);
+				if (name == string.Empty) {
+					DataFieldInfo [] nameInfos = _model.GetAggregateDataFieldInfos();
+					foreach (DataFieldInfo fieldInfo in nameInfos) {
+						selector.SetSelectField (fieldInfo);
+					}
 				}
 				else {
-					throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
+					//if (_model.CheckName (name)) {
+					//	DataFieldInfo nameInfo = new DataFieldInfo (_model.EntityMapping, name);
+					//	selector.SetSelectField (nameInfo);
+					//}
+					//else {
+					//	throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
+					//}
+					DataFieldInfo nameInfo = _model.GetAggregateData (name);
+					if (!Object.Equals (nameInfo, null)) {
+						selector.SetSelectField (nameInfo);
+					}
+					else {
+						throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
+					}
 				}
 			}
 			return selector;

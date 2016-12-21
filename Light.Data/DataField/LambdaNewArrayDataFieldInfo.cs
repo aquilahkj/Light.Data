@@ -13,22 +13,11 @@ namespace Light.Data
 			this._values = values;
 		}
 
-		//public DataFieldInfo BaseDataFieldInfo {
-		//	get {
-		//		return BaseFieldInfo;
-		//	}
-		//}
-
 		public object [] Values {
 			get {
 				return _values;
 			}
 		}
-
-		//internal override string CreateSqlString (CommandFactory factory, bool isFullName, out DataParameter [] dataParameters)
-		//{
-		//	throw new NotImplementedException ();
-		//}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

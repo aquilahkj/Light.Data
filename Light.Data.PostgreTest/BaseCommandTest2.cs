@@ -73,14 +73,14 @@ namespace Light.Data.PostgreTest
 			result = context.BatchInsert (listEx.ToArray ());
 			Assert.AreEqual (count, result);
 			listAc = context.LQuery<TeUser2> ().ToList ();
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			foreach (TeUser2 item in listEx) {
 				item.Account = "myAccount1";
 			}
 			result = context.BatchUpdate (listEx.ToArray ());
 			listAc = context.LQuery<TeUser2> ().ToList ();
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 
 			result = context.BatchDelete (listEx.ToArray ());
@@ -92,13 +92,13 @@ namespace Light.Data.PostgreTest
 			//result = context.BulkInsert (listEx.ToArray (), 20);
 			//Assert.AreEqual (count, result);
 			//listAc = context.LQuery<TeUser2> ().ToList ();
-			//AssertExtend.AreEnumerableEqual (listEx, listAc);
+			//AssertExtend.AreObjectEqual (listEx, listAc);
 
 			//context.TruncateTable<TeUser2> ();
 			//result = context.BulkInsert (listEx.ToArray (), 100);
 			//Assert.AreEqual (count, result);
 			//listAc = context.LQuery<TeUser2> ().ToList ();
-			//AssertExtend.AreEnumerableEqual (listEx, listAc);
+			//AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 

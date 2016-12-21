@@ -106,15 +106,15 @@ namespace Light.Data
 				}
 				LambdaState state = new SingleParameterLambdaState (expression.Parameters [0]);
 				Expression bodyExpression = expression.Body;
-				if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression || bodyExpression is ParameterExpression) {
-					List<string> list;
-					if (ParseNewArguments (bodyExpression, state, out list)) {
-						return state.CreateSelector (list.ToArray ());
-					}
-					else {
-						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
-					}
+				//if (bodyExpression is MemberInitExpression || bodyExpression is NewExpression || bodyExpression is ParameterExpression) {
+				List<string> list;
+				if (ParseNewArguments (bodyExpression, state, out list)) {
+					return state.CreateSelector (list.ToArray ());
 				}
+				else {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+				}
+				//}
 				throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 			}
 			catch (Exception ex) {
@@ -171,7 +171,7 @@ namespace Light.Data
 									selectField = new LambdaConstantDataFieldInfo (obj);
 								}
 								string mypath = "." + ass.Member.Name;
-								DataFieldInfo insertField = map.CreateFieldInfoForPath (mypath);
+								DataFieldInfo insertField = map.GetFieldInfoForPath (mypath);
 
 								selector.SetInsertField (insertField);
 								selector.SetSelectField (selectField);
@@ -351,7 +351,7 @@ namespace Light.Data
 									selectField = new LambdaConstantDataFieldInfo (obj);
 								}
 								string mypath = "." + ass.Member.Name;
-								DataFieldInfo insertField = map.CreateFieldInfoForPath (mypath);
+								DataFieldInfo insertField = map.GetFieldInfoForPath (mypath);
 								//if (Object.Equals (insertField, null)) {
 								//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, mypath);
 								//}
@@ -404,7 +404,7 @@ namespace Light.Data
 									throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 								}
 								string mypath = "." + ass.Member.Name;
-								DataFieldInfo keyField = map.CreateFieldInfoForPath (mypath);
+								DataFieldInfo keyField = map.GetFieldInfoForPath (mypath);
 								//if (Object.Equals (keyField, null)) {
 								//	throw new LambdaParseException (LambdaParseMessage.CanNotFindFieldInfoViaSpecialPath, mypath);
 								//}
@@ -474,7 +474,9 @@ namespace Light.Data
 								pathList.Add (fullPath);
 								return true;
 							case LambdaPathType.RelateEntity:
-								pathList = null;
+								//pathList = null;
+								pathList = new List<string> ();
+								pathList.Add (fullPath);
 								return true;
 							case LambdaPathType.RelateCollection:
 								pathList = new List<string> ();
@@ -1678,45 +1680,51 @@ namespace Light.Data
 				switch (method.Name) {
 				case "Count":
 				case "LongCount":
-					data = new LambdaAggregateCountAllDataFieldInfo ();
+					data = new LambdaAggregateCountDataFieldInfo ();
 					break;
 				}
 			}
 			else if (paramExpressions.Count == 1) {
-				DataFieldInfo fieldInfo;
-				if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
-					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+				if (method.Name == "CountCondition" || method.Name == "LongCountCondition") {
+					QueryExpression queryExpression = ResolveQueryExpression (paramExpressions [0], state);
+					data = new LambdaAggregateCountDataFieldInfo (queryExpression);
 				}
-				switch (method.Name) {
-				case "Count":
-				case "LongCount":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false);
-					break;
-				case "DistinctCount":
-				case "DistinctLongCount":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true);
-					break;
-				case "Sum":
-				case "LongSum":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false);
-					break;
-				case "DistinctSum":
-				case "DistinctLongSum":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true);
-					break;
-				case "Avg":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false);
-					break;
-				case "DistinctAvg":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true);
-					break;
-				case "Max":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false);
+				else {
+					DataFieldInfo fieldInfo;
+					if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+					}
+					switch (method.Name) {
+					case "Count":
+					case "LongCount":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false);
+						break;
+					case "DistinctCount":
+					case "DistinctLongCount":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true);
+						break;
+					case "Sum":
+					case "LongSum":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false);
+						break;
+					case "DistinctSum":
+					case "DistinctLongSum":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true);
+						break;
+					case "Avg":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false);
+						break;
+					case "DistinctAvg":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true);
+						break;
+					case "Max":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false);
 
-					break;
-				case "Min":
-					data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false);
-					break;
+						break;
+					case "Min":
+						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false);
+						break;
+					}
 				}
 			}
 			CheckFieldInfo (data);

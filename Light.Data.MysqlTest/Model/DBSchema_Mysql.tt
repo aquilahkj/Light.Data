@@ -462,10 +462,6 @@ ORDER BY
             Match match=Regex.Match(this._columnComment,"^#EnumType:(?<type>\\w+)#",RegexOptions.Compiled);
           	if (match.Success) {
           		string enumType=match.Groups["type"].Value;
-          		if(this._dataType=="string")
-          		{
-          			this._dbType="varchar";
-          		}
 				this._dataType=enumType;
 			}
 			else if(columnType.Contains("unsigned"))

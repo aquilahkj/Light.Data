@@ -40,27 +40,28 @@ namespace Light.Data
 		{
 			return 0;
 		}
-
-		/// <summary>
-		/// Counts all.
-		/// </summary>
-		/// <returns>The all.</returns>
-		/// <param name="condition">If set to <c>true</c> condition.</param>
-		public static int CountAll (bool condition)
-		{
-			return 0;
-		}
-
-		/// <summary>
-		/// Longs the count all.
-		/// </summary>
-		/// <returns>The count all.</returns>
-		/// <param name="condition">If set to <c>true</c> condition.</param>
-		public static long LongCountAll (bool condition)
-		{
-			return 0;
-		}
 		*/
+
+		/// <summary>
+		/// Counts condition.
+		/// </summary>
+		/// <returns>The condition.</returns>
+		/// <param name="condition">If set to <c>true</c> condition.</param>
+		public static int CountCondition (bool condition)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Longs the count condition.
+		/// </summary>
+		/// <returns>The count condition.</returns>
+		/// <param name="condition">If set to <c>true</c> condition.</param>
+		public static long LongCountCondition (bool condition)
+		{
+			return 0;
+		}
+
 
 		#region count 
 		/// <summary>

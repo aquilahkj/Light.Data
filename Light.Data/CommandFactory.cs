@@ -302,7 +302,7 @@ namespace Light.Data
 		{
 			string select;
 			if (selector == null) {
-				select = "*"; 
+				select = "*";
 			}
 			else {
 				select = selector.CreateSelectString (this, false, state);
@@ -387,7 +387,7 @@ namespace Light.Data
 			List<string> selectList = new List<string> ();
 			List<string> groupbyList = new List<string> ();
 			foreach (AggregateDataFieldInfo info in fieldInfos) {
-				state.SetAliasData (info.FieldInfo, info.AggregateName);
+				state.SetAliasData (info.FieldInfo, CreateDataFieldSql (info.AggregateName));
 				selectList.Add (info.CreateAliasDataFieldSql (this, false, state));
 				if (!info.Aggregate) {
 					groupbyList.Add (info.CreateSqlString (this, false, state));

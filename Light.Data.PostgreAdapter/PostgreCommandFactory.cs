@@ -416,10 +416,10 @@ namespace Light.Data.PostgreAdapter
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
 			if (object.Equals (size, null)) {
-				return string.Format ("substr({0},{1})", field, start);
+				return string.Format ("substr({0},{1}+1)", field, start);
 			}
 			else {
-				return string.Format ("substr({0},{1},{2})", field, start, size);
+				return string.Format ("substr({0},{1}+1,{2})", field, start, size);
 			}
 		}
 

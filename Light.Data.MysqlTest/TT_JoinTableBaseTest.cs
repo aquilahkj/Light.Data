@@ -8,6 +8,35 @@ namespace Light.Data.MysqlTest
 	public class TT_JoinTableBaseTest : BaseTest
 	{
 		[Test ()]
+		public void TestCase_Base ()
+		{
+			List<TeUser> list = InitialUserTable (21);
+			List<TeUserLevel> listLevel = InitialUserLevelTable (12);
+
+			TeUserAndLevelModel listAc;
+			List<TeUserLevel> listLevelSub;
+
+			listLevelSub = listLevel;
+			listAc = context.Query<TeUser> ().LeftJoin<TeUserLevel> ((x, y) => x.LevelId == y.Id)
+							.Select ((x, y) => new TeUserAndLevelModel {
+								Id = x.Id,
+								LevelId = y.Id,
+								LevelStatus = y.Status,
+								LevelName = y.LevelName,
+								Remark = y.Remark
+							}).First ();
+			Assert.NotNull (listAc);
+			Assert.AreEqual (1, listAc.Id);
+			Assert.IsTrue (
+				 listLevelSub.Exists (y => {
+					 return listAc.LevelId == y.Id && listAc.LevelStatus == y.Status && listAc.LevelName == y.LevelName && listAc.Remark == y.Remark;
+				 })
+			);
+
+
+		}
+
+		[Test ()]
 		public void TestCase_LeftJoin ()
 		{
 			List<TeUser> list = InitialUserTable (21);

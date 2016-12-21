@@ -106,7 +106,7 @@ namespace Light.Data
 			return fieldMapping;
 		}
 
-		public static DataFieldMapping CreateAggregateFieldMapping (PropertyInfo property, DataMapping mapping)
+		public static DataFieldMapping CreateCustomFieldMapping (PropertyInfo property, DataMapping mapping)
 		{
 			Type type = property.PropertyType;
 			string indexName = property.Name;

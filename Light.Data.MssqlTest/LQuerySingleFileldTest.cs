@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections;
@@ -15,14 +15,14 @@ namespace Light.Data.MssqlTest
 			const int count = 57;
 			List<TeUser> list1 = InitialUserTable (count);
 			List<TeUser> listReslt = context.LQuery<TeUser> ().ToList ();
-			AssertExtend.AreEnumerableEqual (list1, listReslt);
+			AssertExtend.AreObjectEqual (list1, listReslt);
 
 			TeUser [] arrayResult = context.LQuery<TeUser> ().ToArray ();
-			AssertExtend.AreEnumerableEqual (list1.ToArray (), arrayResult);
+			AssertExtend.AreObjectEqual (list1.ToArray (), arrayResult);
 
 			int index = 0;
 			foreach (TeUser user in context.LQuery<TeUser> ()) {
-				AssertExtend.AreObjectsEqual (list1 [index], user);
+				AssertExtend.AreObjectEqual (list1 [index], user);
 				index++;
 			}
 		}

@@ -40,7 +40,7 @@ namespace Light.Data
 			if (singleEntityName != name) {
 				throw new LambdaParseException (LambdaParseMessage.ExpressionFieldPathNotExists, fullPath);
 			}
-			DataFieldInfo info = singleEntityMap.CreateFieldInfoForPath (path);
+			DataFieldInfo info = singleEntityMap.GetFieldInfoForPath (path);
 			return info;
 		}
 
@@ -81,8 +81,8 @@ namespace Light.Data
 				int index = fullPath.IndexOf (".", StringComparison.Ordinal);
 				if (index < 0) {
 					if (fullPath == singleEntityName) {
-						if (!list.Contains (fullPath)) {
-							list.Add (fullPath);
+						if (!list.Contains (string.Empty)) {
+							list.Add (string.Empty);
 						}
 					}
 					else {

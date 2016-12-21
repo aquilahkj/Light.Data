@@ -8,6 +8,11 @@ namespace Light.Data
 		{
 		}
 
+		public LambdaDataFieldInfo (DataEntityMapping mapping, bool customName, string name)
+			: base (mapping, customName, name)
+		{
+		}
+
 		internal override string DBType {
 			get {
 				return string.Empty;

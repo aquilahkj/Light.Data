@@ -79,7 +79,7 @@
     <Compile Include="RelationMultiTest.cs" />
     <Compile Include="Model\RelationSchema3.cs" />
     <Compile Include="Model\RelationSchema4.cs" />
-    <Compile Include="Model\DataLogSchema.cs" />
+    <Compile Include="Model\SpecialSchema.cs" />
     <Compile Include="TT_BaseCommandTest.cs" />
     <Compile Include="TT_BaseCommandTest2.cs" />
     <Compile Include="TT_ConfigMappingTest.cs" />
@@ -87,6 +87,26 @@
     <Compile Include="TT_JoinTableBaseTest.cs" />
     <Compile Include="TT_JoinTableOnTest.cs" />
     <Compile Include="TT_JoinTableOrderByTest.cs" />
+    <Compile Include="TT_QueryAggregateTest.cs" />
+    <Compile Include="TT_QueryMultiTest.cs" />
+    <Compile Include="TT_QueryWhereTest.cs" />
+    <Compile Include="TT_QueryOrderByTest.cs" />
+    <Compile Include="TT_QueryPageTest.cs" />
+    <Compile Include="TT_QuerySingleFileldTest.cs" />
+    <Compile Include="TT_AggregateWhereTest.cs" />
+    <Compile Include="TT_AggregateGroupByTest.cs" />
+    <Compile Include="TT_AggregateDataFieldTest.cs" />
+    <Compile Include="TT_AggregateHavingTest.cs" />
+    <Compile Include="TT_AggregateOrderByTest.cs" />
+    <Compile Include="TT_RelationCollectionTest.cs" />
+    <Compile Include="TT_RelationMultiTest.cs" />
+    <Compile Include="TT_RelationSingleTest.cs" />
+    <Compile Include="TT_SelectInsertTest.cs" />
+    <Compile Include="TT_JoinTableWhereTest.cs" />
+    <Compile Include="TT_JoinTableWithSelectTest.cs" />
+    <Compile Include="TT_JoinTableWithAggregateTest.cs" />
+    <Compile Include="TT_JoinTableWithAggregateSelectTest.cs" />
+    <Compile Include="TT_BaseSelectTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

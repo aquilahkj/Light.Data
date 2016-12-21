@@ -29,18 +29,28 @@ namespace Light.Data
 
 		readonly Dictionary<string, DataFieldInfo> _selectDict = new Dictionary<string, DataFieldInfo> ();
 
-
 		public void AddSelectField (string name, DataFieldInfo fieldInfo)
 		{
 			if (name != fieldInfo.FieldName) {
-				SelectDataFieldInfo agg = new SelectDataFieldInfo (fieldInfo, name);
-				_selectDict.Add (name, agg);
+				SpecialDataFieldInfo selectInfo = new SpecialDataFieldInfo (fieldInfo, name);
+				_selectDict.Add (name, selectInfo);
 			}
 			else {
 				_selectDict.Add (name, fieldInfo);
 			}
-
 		}
+
+		public virtual DataFieldInfo [] GetDataFieldInfos ()
+		{
+			DataFieldInfo [] infos = new DataFieldInfo [_selectDict.Count];
+			int index = 0;
+			foreach (KeyValuePair<string, DataFieldInfo> kvp in _selectDict) {
+				infos [index] = kvp.Value;
+				index++;
+			}
+			return infos;
+		}
+
 
 		public DataFieldInfo GetFieldData (string name)
 		{

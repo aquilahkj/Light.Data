@@ -276,6 +276,11 @@ namespace Light.Data.MysqlAdapter
 			return string.Format ("date_format({0},'{1}')", field, sqlformat);
 		}
 
+		public override string CreateLogSql (object field)
+		{
+			return string.Format ("ln({0})", field);
+		}
+
 		public override string CreateYearSql (object field)
 		{
 			return string.Format ("year({0})", field);
@@ -329,10 +334,10 @@ namespace Light.Data.MysqlAdapter
 		public override string CreateSubStringSql (object field, object start, object size)
 		{
 			if (object.Equals (size, null)) {
-				return string.Format ("substring({0},{1})", field, start);
+				return string.Format ("substring({0},{1}+1)", field, start);
 			}
 			else {
-				return string.Format ("substring({0},{1},{2})", field, start, size);
+				return string.Format ("substring({0},{1}+1,{2})", field, start, size);
 			}
 		}
 

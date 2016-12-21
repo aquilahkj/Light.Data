@@ -68,8 +68,8 @@ namespace Light.Data
 			foreach (DataFieldMapping field in this.rootMapping.DataEntityFields) {
 				DataFieldInfo info = new DataFieldInfo (field);
 				string aliasName = string.Format ("{0}_{1}", rootItem.AliasName, info.FieldName);
-				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
-				alias.AliasTableName = rootItem.AliasName;
+				AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName, rootItem.AliasName);
+				//alias.AliasTablesName = rootItem.AliasName;
 				joinSelector.SetAliasDataField (alias);
 				rootInfoList.Add (alias);
 				fieldInfoDict.Add (string.Format ("{0}.{1}", items [0].CurrentFieldPath, field.IndexName), alias);
@@ -82,24 +82,26 @@ namespace Light.Data
 				SingleRelationFieldMapping fieldMapping = mitem.FieldMapping;
 				DataEntityMapping mapping = fieldMapping.RelateMapping;
 				DataFieldExpression expression = null;
-				DataFieldInfoRelation [] relations = fieldMapping.GetDataFieldInfoRelations ();
+				//DataFieldInfoRelation [] relations = fieldMapping.GetDataFieldInfoRelations ();
 
 				RelationItem ritem = mapDict [mitem.PrevFieldPath];
 				string malias = ritem.AliasName;
 				string ralias = mitem.AliasName;
+
+				DataFieldInfoRelation [] relations = fieldMapping.CreateDataFieldInfoRelations (malias, ralias);
 				foreach (DataFieldInfoRelation relation in relations) {
 					DataFieldInfo minfo = relation.MasterInfo;
-					minfo.AliasTableName = malias;
+					//minfo.AliasTableName = malias;
 					DataFieldInfo rinfo = relation.RelateInfo;
-					rinfo.AliasTableName = ralias;
+					//rinfo.AliasTableName = ralias;
 					expression = DataFieldExpression.And (expression, minfo == rinfo);
 				}
 				List<DataFieldInfo> infoList = new List<DataFieldInfo> ();
 				foreach (DataFieldMapping field in mapping.DataEntityFields) {
 					DataFieldInfo info = new DataFieldInfo (field);
 					string aliasName = string.Format ("{0}_{1}", ralias, info.FieldName);
-					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
-					alias.AliasTableName = ralias;
+					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName, ralias);
+					//alias.AliasTableName = ralias;
 					joinSelector.SetAliasDataField (alias);
 					infoList.Add (alias);
 					fieldInfoDict.Add (string.Format ("{0}.{1}", mitem.CurrentFieldPath, field.Name), alias);
@@ -250,11 +252,12 @@ namespace Light.Data
 			return collectionDict.ContainsKey (path);
 		}
 
-		public DataFieldInfo CreateFieldInfoForPath (string path)
+		public DataFieldInfo GetFieldInfoForPath (string path)
 		{
 			DataFieldInfo info;
 			if (fieldInfoDict.TryGetValue (path, out info)) {
-				return info.Clone () as DataFieldInfo;
+				//return info.Clone () as DataFieldInfo;
+				return info;
 			}
 			else {
 				//return null;
@@ -272,22 +275,6 @@ namespace Light.Data
 				throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
 			}
 		}
-
-
-		//public DataFieldInfo [] GetFieldInfoForCollectionField (string path)
-		//{
-		//	string [] fields;
-		//	if (collectionDict.TryGetValue (path, out fields)) {
-		//		DataFieldInfo [] infos = new DataFieldInfo [fields.Length];
-		//		for (int i = 0; i < fields.Length; i++) {
-		//			infos [i] = GetFieldInfoForField (fields [i]);
-		//		}
-		//		return infos;
-		//	}
-		//	else {
-		//		throw new LightDataException ("");
-		//	}
-		//}
 
 		DataFieldInfo [] GetFieldInfoForSingleField (string path)
 		{
@@ -331,7 +318,6 @@ namespace Light.Data
 		{
 			HashSet<DataFieldInfo> ss = new HashSet<DataFieldInfo> ();
 			if (collectionDict.Count > 0) {
-
 				foreach (string path in paths) {
 					DataFieldInfo [] arr;
 					if (tableInfoDict.TryGetValue (path, out arr)) {

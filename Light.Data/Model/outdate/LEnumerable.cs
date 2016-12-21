@@ -431,7 +431,7 @@ namespace Light.Data
 			if (!_mapping.Equals (fieldInfo.DataField.TypeMapping)) {
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
-			foreach (K item in _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, isDistinct, _region, _level)) {
+			foreach (K item in _context.QuerySingleField (fieldInfo, typeof (K), _query, _order, isDistinct, _region, _level)) {
 				yield return item;
 			}
 		}
@@ -460,7 +460,7 @@ namespace Light.Data
 				throw new LightDataException (RE.FieldIsNotMatchDataMapping);
 			}
 			List<K> list = new List<K> ();
-			foreach (K item in _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, isDistinct, _region, _level)) {
+			foreach (K item in _context.QuerySingleField (fieldInfo, typeof (K), _query, _order, isDistinct, _region, _level)) {
 				list.Add (item);
 			}
 			return list;

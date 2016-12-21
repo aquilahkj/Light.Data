@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Light.Data.UnitTest;
@@ -19,7 +19,7 @@ namespace Light.Data.SQLiteTest
 
 			listReslt = context.LQuery<TeUser> ().PageSize (1, cnt).RangeReset ().ToList ();
 			Assert.AreEqual (tol, listReslt.Count);
-			AssertExtend.AreEnumerableEqual (list, listReslt);
+			AssertExtend.AreObjectEqual (list, listReslt);
 		}
 
 		[Test ()]
@@ -42,7 +42,7 @@ namespace Light.Data.SQLiteTest
 
 				listEx = list.GetRange (i * cnt, c);
 				Assert.AreEqual (c, listReslt.Count);
-				AssertExtend.AreEnumerableEqual (listEx, listReslt);
+				AssertExtend.AreObjectEqual (listEx, listReslt);
 			}
 
 			listReslt = context.LQuery<TeUser> ().PageSize (times * cnt, cnt).ToList ();
@@ -51,14 +51,14 @@ namespace Light.Data.SQLiteTest
 			listReslt = context.LQuery<TeUser> ().Where (TeUser.IdField > cnt).PageSize (1, cnt).ToList ();
 			Assert.AreEqual (cnt, listReslt.Count);
 			listEx = list.GetRange (cnt, cnt);
-			AssertExtend.AreEnumerableEqual (listEx, listReslt);
+			AssertExtend.AreObjectEqual (listEx, listReslt);
 
 
 			listReslt = context.LQuery<TeUser> ().OrderBy (TeUser.IdField.OrderByDesc ()).PageSize (1, cnt).ToList ();
 			Assert.AreEqual (cnt, listReslt.Count);
 			list.Reverse ();
 			listEx = list.GetRange (0, cnt);
-			AssertExtend.AreEnumerableEqual (listEx, listReslt);
+			AssertExtend.AreObjectEqual (listEx, listReslt);
 
 		}
 
@@ -82,13 +82,13 @@ namespace Light.Data.SQLiteTest
 
 				listEx = list.GetRange (i * cnt, c);
 				Assert.AreEqual (c, listReslt.Count);
-				AssertExtend.AreEnumerableEqual (listEx, listReslt);
+				AssertExtend.AreObjectEqual (listEx, listReslt);
 			}
 
 			listReslt = context.LQuery<TeUser> ().Skip (cnt).ToList ();
 			listEx = list.GetRange (cnt, tol - cnt);
 			Assert.AreEqual (tol-cnt, listReslt.Count);
-			AssertExtend.AreEnumerableEqual (listEx, listReslt);
+			AssertExtend.AreObjectEqual (listEx, listReslt);
 
 			listReslt = context.LQuery<TeUser> ().Skip (times * cnt).Take (cnt).ToList ();
 			Assert.AreEqual (0, listReslt.Count);
@@ -96,13 +96,13 @@ namespace Light.Data.SQLiteTest
 			listReslt = context.LQuery<TeUser> ().Where (TeUser.IdField > cnt).Take (cnt).ToList ();
 			Assert.AreEqual (cnt, listReslt.Count);
 			listEx = list.GetRange (cnt, cnt);
-			AssertExtend.AreEnumerableEqual (listEx, listReslt);
+			AssertExtend.AreObjectEqual (listEx, listReslt);
 
 			listReslt = context.LQuery<TeUser> ().OrderBy (TeUser.IdField.OrderByDesc ()).Take (cnt).ToList ();
 			Assert.AreEqual (cnt, listReslt.Count);
 			list.Reverse ();
 			listEx = list.GetRange (0, cnt);
-			AssertExtend.AreEnumerableEqual (listEx, listReslt);
+			AssertExtend.AreObjectEqual (listEx, listReslt);
 
 		}
 	}

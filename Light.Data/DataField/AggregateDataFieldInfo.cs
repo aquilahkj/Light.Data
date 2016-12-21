@@ -10,7 +10,7 @@ namespace Light.Data
 		bool _aggregate;
 
 		public AggregateDataFieldInfo (DataFieldInfo fieldInfo, string name, bool aggregate)
-			: base (fieldInfo.TableMapping)
+			: base (fieldInfo.TableMapping, true, name)
 		{
 			_fieldInfo = fieldInfo;
 			_aggregateName = name;
@@ -28,9 +28,9 @@ namespace Light.Data
 				return _aggregateName;
 			}
 
-			set {
-				_aggregateName = value;
-			}
+			//set {
+			//	_aggregateName = value;
+			//}
 		}
 
 		public bool Aggregate {
@@ -39,9 +39,24 @@ namespace Light.Data
 			}
 		}
 
+		public override DataFieldInfo CreateAliasTableInfo (string aliasTableName)
+		{
+			DataFieldInfo info = _fieldInfo.CreateAliasTableInfo (aliasTableName);
+			AggregateDataFieldInfo newinfo = new AggregateDataFieldInfo (info, _aggregateName, _aggregate);
+			newinfo._aliasTableName = aliasTableName;
+			return newinfo;
+		}
+
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			return _fieldInfo.CreateSqlString (factory, isFullName, state);
+			//if (isFullName) {
+			//	string tableName = this._aliasTableName ?? TableMapping.TableName;
+			//	return factory.CreateFullDataFieldSql (tableName, FieldName);
+			//}
+			//else {
+			//	return factory.CreateDataFieldSql (FieldName);
+			//}
 		}
 
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)

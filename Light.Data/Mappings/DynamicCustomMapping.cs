@@ -53,7 +53,7 @@ namespace Light.Data
 			PropertyInfo [] propertys = ObjectType.GetProperties (BindingFlags.Public | BindingFlags.Instance);
 			List<DynamicFieldMapping> tmepList = new List<DynamicFieldMapping> ();
 			foreach (PropertyInfo pi in propertys) {
-				DynamicFieldMapping mapping = DynamicFieldMapping.CreateAggregateFieldMapping (pi, this);
+				DynamicFieldMapping mapping = DynamicFieldMapping.CreateDynmaicFieldMapping (pi, this);
 				_fieldMappingDictionary.Add (mapping.IndexName, mapping);
 				tmepList.Add (mapping);
 			}

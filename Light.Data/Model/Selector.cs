@@ -43,10 +43,10 @@ namespace Light.Data
 			JoinSelector joinSelector = new JoinSelector ();
 			foreach (KeyValuePair<string, Selector> selector in selectors) {
 				foreach (DataFieldInfo item in selector.Value.selectList) {
-					DataFieldInfo info = item.Clone () as DataFieldInfo;
+					DataFieldInfo info = item;
 					string aliasName = string.Format ("{0}_{1}", selector.Key, info.FieldName);
-					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName);
-					alias.AliasTableName = selector.Key;
+					AliasDataFieldInfo alias = new AliasDataFieldInfo (info, aliasName, selector.Key);
+					//alias.AliasTableName = selector.Key;
 					joinSelector.SetAliasDataField (alias);
 				}
 			}

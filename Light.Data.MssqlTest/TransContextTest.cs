@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using Light.Data.UnitTest;
@@ -33,7 +33,7 @@ namespace Light.Data.MssqlTest
 			}
 			userAc = context.SelectSingleFromId<TeUser> (user.Id);
 			Assert.NotNull (userAc);
-			AssertExtend.AreObjectsEqual (user, userAc);
+			AssertExtend.AreObjectEqual (user, userAc);
 
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
 				trans.BeginTrans ();
@@ -285,7 +285,7 @@ namespace Light.Data.MssqlTest
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
-			AssertExtend.AreEnumerableEqual (list, listAc);
+			AssertExtend.AreObjectEqual (list, listAc);
 
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -303,7 +303,7 @@ namespace Light.Data.MssqlTest
 				trans.CommitTrans ();
 			}
 			listAc = context.LQuery<TeUser> ().ToList ();
-			AssertExtend.AreEnumerableEqual (list, listAc);
+			AssertExtend.AreObjectEqual (list, listAc);
 
 			context.TruncateTable<TeUser> ();
 			using (TransDataContext trans = context.CreateTransDataContext ()) {

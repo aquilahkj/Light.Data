@@ -961,13 +961,13 @@ namespace Light.Data
 			return QueryDataDefineReader (mapping, command, commandData.InnerPage ? null : region, level, queryState);
 		}
 
-		internal IEnumerable QuerySingleFiled (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
+		internal IEnumerable QuerySingleField (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
 		{
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, null, state);
+			CommandData commandData = _dataBase.Factory.CreateSelectSingleFieldCommand (fieldInfo, query, order, distinct, region, state);
 			IDbCommand command = commandData.CreateCommand (_dataBase, state);
 			DataDefine define = DataDefine.GetDefine (outputType);
-			return QueryDataDefineReader (define, command, region, level, null);
+			return QueryDataDefineReader (define, command, commandData.InnerPage ? null : region, level, null);
 		}
 
 		internal IEnumerable QueryDynamicAggregateEnumerable (DataEntityMapping mapping, DataMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)

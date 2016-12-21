@@ -436,7 +436,7 @@ namespace Light.Data
 		public override IEnumerable<bool> QueryField (Expression<Func<T, bool>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (bool), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (bool), _query, _order, _distinct, _region, _level);
 			foreach (bool item in ie) {
 				yield return item;
 			}
@@ -445,7 +445,7 @@ namespace Light.Data
 		public override IEnumerable<bool?> QueryField (Expression<Func<T, bool?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (bool?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (bool?), _query, _order, _distinct, _region, _level);
 			foreach (bool? item in ie) {
 				yield return item;
 			}
@@ -454,7 +454,7 @@ namespace Light.Data
 		public override IEnumerable<byte> QueryField (Expression<Func<T, byte>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (byte), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (byte), _query, _order, _distinct, _region, _level);
 			foreach (byte item in ie) {
 				yield return item;
 			}
@@ -463,7 +463,7 @@ namespace Light.Data
 		public override IEnumerable<byte?> QueryField (Expression<Func<T, byte?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (byte?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (byte?), _query, _order, _distinct, _region, _level);
 			foreach (byte? item in ie) {
 				yield return item;
 			}
@@ -472,7 +472,7 @@ namespace Light.Data
 		public override IEnumerable<sbyte> QueryField (Expression<Func<T, sbyte>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (sbyte), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (sbyte), _query, _order, _distinct, _region, _level);
 			foreach (sbyte item in ie) {
 				yield return item;
 			}
@@ -481,7 +481,7 @@ namespace Light.Data
 		public override IEnumerable<sbyte?> QueryField (Expression<Func<T, sbyte?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (sbyte?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (sbyte?), _query, _order, _distinct, _region, _level);
 			foreach (sbyte? item in ie) {
 				yield return item;
 			}
@@ -490,7 +490,7 @@ namespace Light.Data
 		public override IEnumerable<short> QueryField (Expression<Func<T, short>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (short), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (short), _query, _order, _distinct, _region, _level);
 			foreach (short item in ie) {
 				yield return item;
 			}
@@ -499,7 +499,7 @@ namespace Light.Data
 		public override IEnumerable<short?> QueryField (Expression<Func<T, short?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (short?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (short?), _query, _order, _distinct, _region, _level);
 			foreach (short? item in ie) {
 				yield return item;
 			}
@@ -508,7 +508,7 @@ namespace Light.Data
 		public override IEnumerable<int> QueryField (Expression<Func<T, int>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (int), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (int), _query, _order, _distinct, _region, _level);
 			foreach (int item in ie) {
 				yield return item;
 			}
@@ -517,7 +517,7 @@ namespace Light.Data
 		public override IEnumerable<int?> QueryField (Expression<Func<T, int?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (int?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (int?), _query, _order, _distinct, _region, _level);
 			foreach (int? item in ie) {
 				yield return item;
 			}
@@ -526,7 +526,7 @@ namespace Light.Data
 		public override IEnumerable<long> QueryField (Expression<Func<T, long>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (long), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (long), _query, _order, _distinct, _region, _level);
 			foreach (long item in ie) {
 				yield return item;
 			}
@@ -535,7 +535,7 @@ namespace Light.Data
 		public override IEnumerable<long?> QueryField (Expression<Func<T, long?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (long?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (long?), _query, _order, _distinct, _region, _level);
 			foreach (long? item in ie) {
 				yield return item;
 			}
@@ -544,7 +544,7 @@ namespace Light.Data
 		public override IEnumerable<float> QueryField (Expression<Func<T, float>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (float), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (float), _query, _order, _distinct, _region, _level);
 			foreach (float item in ie) {
 				yield return item;
 			}
@@ -553,7 +553,7 @@ namespace Light.Data
 		public override IEnumerable<float?> QueryField (Expression<Func<T, float?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (float?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (float?), _query, _order, _distinct, _region, _level);
 			foreach (float? item in ie) {
 				yield return item;
 			}
@@ -562,7 +562,7 @@ namespace Light.Data
 		public override IEnumerable<double> QueryField (Expression<Func<T, double>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (double), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (double), _query, _order, _distinct, _region, _level);
 			foreach (double item in ie) {
 				yield return item;
 			}
@@ -571,7 +571,7 @@ namespace Light.Data
 		public override IEnumerable<double?> QueryField (Expression<Func<T, double?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (double?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (double?), _query, _order, _distinct, _region, _level);
 			foreach (double? item in ie) {
 				yield return item;
 			}
@@ -580,7 +580,7 @@ namespace Light.Data
 		public override IEnumerable<decimal> QueryField (Expression<Func<T, decimal>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (decimal), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (decimal), _query, _order, _distinct, _region, _level);
 			foreach (decimal item in ie) {
 				yield return item;
 			}
@@ -589,7 +589,7 @@ namespace Light.Data
 		public override IEnumerable<decimal?> QueryField (Expression<Func<T, decimal?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (decimal?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (decimal?), _query, _order, _distinct, _region, _level);
 			foreach (decimal? item in ie) {
 				yield return item;
 			}
@@ -598,7 +598,7 @@ namespace Light.Data
 		public override IEnumerable<DateTime> QueryField (Expression<Func<T, DateTime>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (DateTime), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (DateTime), _query, _order, _distinct, _region, _level);
 			foreach (DateTime item in ie) {
 				yield return item;
 			}
@@ -607,7 +607,7 @@ namespace Light.Data
 		public override IEnumerable<DateTime?> QueryField (Expression<Func<T, DateTime?>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (DateTime?), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (DateTime?), _query, _order, _distinct, _region, _level);
 			foreach (DateTime? item in ie) {
 				yield return item;
 			}
@@ -616,7 +616,7 @@ namespace Light.Data
 		public override IEnumerable<string> QueryField (Expression<Func<T, string>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-			IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (string), _query, _order, _distinct, _region, _level);
+			IEnumerable ie = _context.QuerySingleField (fieldInfo, typeof (string), _query, _order, _distinct, _region, _level);
 			foreach (string item in ie) {
 				yield return item;
 			}

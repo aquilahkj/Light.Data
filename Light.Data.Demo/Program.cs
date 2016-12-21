@@ -38,9 +38,21 @@ namespace Light.Data.Demo
 			}
 		}
 
+		[Flags]
+		public enum TESTENUM
+		{
+			TEST1 = 1,
+			TEST2 = 2,
+			TEST3 = 4
+		}
+
 		public static void Main (string [] args)
 		{
 			//Test ();
+			long eqw = 5;
+			object ds = eqw;
+			object pp = Enum.ToObject (typeof (TESTENUM), ds);
+
 
 			DataContext context = DataContext.Create ("mysql");
 			CommandOutput output = new CommandOutput ();

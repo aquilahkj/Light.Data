@@ -17,7 +17,7 @@ namespace Light.Data
 				if (fieldMapping != null) {
 					DataFieldInfo field = new DataFieldInfo (fieldMapping);
 					AliasDataFieldInfo aliasField = new AliasDataFieldInfo (field, field.FieldName);
-					this.infoDict [aliasField.Alias] = aliasField;
+					this.infoDict [aliasField.AliasName] = aliasField;
 				}
 			}
 		}
@@ -27,7 +27,7 @@ namespace Light.Data
 			if (Object.Equals (field, null))
 				throw new ArgumentNullException (nameof (field));
 			AliasDataFieldInfo aliasField = new AliasDataFieldInfo (field, field.FieldName);
-			this.infoDict [aliasField.Alias] = aliasField;
+			this.infoDict [aliasField.AliasName] = aliasField;
 			if (field.AliasTableName != null) {
 				aliasTableHash.Add (field.AliasTableName);
 			}
@@ -37,7 +37,7 @@ namespace Light.Data
 		{
 			if (Object.Equals (aliasField, null))
 				throw new ArgumentNullException (nameof (aliasField));
-			this.infoDict [aliasField.Alias] = aliasField;
+			this.infoDict [aliasField.AliasName] = aliasField;
 			if (aliasField.AliasTableName != null) {
 				aliasTableHash.Add (aliasField.AliasTableName);
 			}
@@ -50,7 +50,7 @@ namespace Light.Data
 			foreach (DataFieldInfo fieldInfo in this.infoDict.Values) {
 				AliasDataFieldInfo aliasInfo = fieldInfo as AliasDataFieldInfo;
 				if (!Object.Equals (aliasInfo, null)) {
-					fields [index] = aliasInfo.Alias;
+					fields [index] = aliasInfo.AliasName;
 				}
 				else {
 					fields [index] = fieldInfo.FieldName;

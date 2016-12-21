@@ -7,18 +7,7 @@ namespace Light.Data
 
 		AggregateType _type;
 
-		//QueryExpression _query;
-
 		bool _distinct;
-
-		//public LambdaAggregateDataFieldInfo (DataFieldInfo fieldInfo, AggregateType type, bool distinct, QueryExpression query)
-		//	: base (fieldInfo.TableMapping)
-		//{
-		//	_baseFieldInfo = fieldInfo;
-		//	_type = type;
-		//	_distinct = distinct;
-		//	_query = query;
-		//}
 
 		public LambdaAggregateDataFieldInfo (DataFieldInfo fieldInfo, AggregateType type, bool distinct)
 			: base (fieldInfo.TableMapping)
@@ -34,54 +23,6 @@ namespace Light.Data
 			if (sql != null) {
 				return sql;
 			}
-			//string expression = null;
-			//if (_query != null) {
-			//	expression = _query.CreateSqlString (factory, isFullName, state);
-			//}
-			//string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
-
-			//switch (_type) {
-			//case AggregateType.COUNT:
-			//	if (expression != null) {
-			//		sql = factory.CreateConditionCountSql (expression, field, _distinct);
-			//	}
-			//	else {
-			//		sql = factory.CreateCountSql (field, _distinct);
-			//	}
-			//	break;
-			//case AggregateType.SUM:
-			//	if (expression != null) {
-			//		sql = factory.CreateConditionSumSql (expression, field, _distinct);
-			//	}
-			//	else {
-			//		sql = factory.CreateSumSql (field, _distinct);
-			//	}
-			//	break;
-			//case AggregateType.AVG:
-			//	if (expression != null) {
-			//		sql = factory.CreateConditionAvgSql (expression, field, _distinct);
-			//	}
-			//	else {
-			//		sql = factory.CreateAvgSql (field, _distinct);
-			//	}
-			//	break;
-			//case AggregateType.MAX:
-			//	if (expression != null) {
-			//		sql = factory.CreateConditionMaxSql (expression, field);
-			//	}
-			//	else {
-			//		sql = factory.CreateMaxSql (field);
-			//	}
-			//	break;
-			//case AggregateType.MIN:
-			//	if (expression != null) {
-			//		sql = factory.CreateConditionMinSql (expression, field);
-			//	}
-			//	else {
-			//		sql = factory.CreateMinSql (field);
-			//	}
-			//	break;
-			//}
 
 			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 

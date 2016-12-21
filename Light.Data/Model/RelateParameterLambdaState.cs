@@ -51,7 +51,7 @@ namespace Light.Data
 			string name = fullPath.Substring (0, index);
 			string path = fullPath.Substring (index);
 			if (singleEntityName == name) {
-				DataFieldInfo info = singleEntityMap.CreateFieldInfoForPath (path);
+				DataFieldInfo info = singleEntityMap.GetFieldInfoForPath (path);
 				return info;
 			}
 			else {

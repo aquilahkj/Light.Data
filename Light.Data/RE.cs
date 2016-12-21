@@ -244,6 +244,7 @@ namespace Light.Data
 
 		public const string ParseExpressionError = "parse {0} expression \"{1}\" error,message:{2}";
 
+		public const string EnumDefaultValueType = "enum field {0} default value \"{1}\" error";
 	}
 }
 

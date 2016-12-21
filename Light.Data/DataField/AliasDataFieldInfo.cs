@@ -9,15 +9,15 @@ namespace Light.Data
 	{
 		DataFieldInfo _baseFieldInfo;
 
-		string _alias;
+		string _aliasName;
 
 		/// <summary>
 		/// Gets the alias.
 		/// </summary>
 		/// <value>The alias.</value>
-		public string Alias {
+		public string AliasName {
 			get {
-				return _alias;
+				return _aliasName;
 			}
 		}
 
@@ -40,44 +40,52 @@ namespace Light.Data
 			: base (info.TableMapping, info.DataField)
 		{
 			_baseFieldInfo = info;
-			_alias = alias;
+			_aliasName = alias;
 		}
+
+		internal AliasDataFieldInfo (DataFieldInfo info, string alias, string aliasTableName)
+			: base (info.TableMapping, info.DataField, aliasTableName)
+		{
+			_baseFieldInfo = info;
+			_aliasName = alias;
+		}
+
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			return _baseFieldInfo.CreateSqlString (factory, isFullName, state);
+			if (isFullName) {
+				string tableName = this._aliasTableName ?? TableMapping.TableName;
+				return factory.CreateFullDataFieldSql (tableName, FieldName);
+			}
+			else {
+				return factory.CreateDataFieldSql (FieldName);
+			}
+			//return _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 		}
 
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
-			return factory.CreateAliasFieldSql (field, this._alias);
+			string field;
+			if (isFullName) {
+				string tableName = this._aliasTableName ?? TableMapping.TableName;
+				field = factory.CreateFullDataFieldSql (tableName, FieldName);
+			}
+			else {
+				field = factory.CreateDataFieldSql (FieldName);
+			}
+
+			//string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
+			return factory.CreateAliasFieldSql (field, this._aliasName);
 		}
 
-		///// <summary>
-		///// 匹配细节内容是否相等
-		///// </summary>
-		///// <param name="info">匹配对象</param>
-		///// <returns></returns>
-		//protected override bool EqualsDetail (DataFieldInfo info)
-		//{
-		//	AliasDataFieldInfo target = info as AliasDataFieldInfo;
-		//	if (!Object.Equals (target, null)) {
-		//		return this._baseFieldInfo.Equals (target._baseFieldInfo) && this.Alias == target.Alias;
+		//internal override string AliasTableName {
+		//	get {
+		//		return this._baseFieldInfo.AliasTableName;
 		//	}
-		//	else {
-		//		return false;
+		//	set {
+		//		this._baseFieldInfo.AliasTableName = value;
 		//	}
 		//}
-
-		internal override string AliasTableName {
-			get {
-				return this._baseFieldInfo.AliasTableName;
-			}
-			set {
-				this._baseFieldInfo.AliasTableName = value;
-			}
-		}
 	}
 }
 

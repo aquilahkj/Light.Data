@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections;
+
 namespace Light.Data
 {
 	class DynamicEnumFieldMapping : DynamicFieldMapping
 	{
-		//EnumFieldType _enumType;
+		//Hashtable hashTable = new Hashtable ();
 
 		public DynamicEnumFieldMapping (Type type, string fieldName, DynamicCustomMapping mapping)
 			: base (type, fieldName, mapping, true)
 		{
-			//_enumType = enumType;
+
 		}
 
 		public override object ToProperty (object value)
@@ -17,18 +19,26 @@ namespace Light.Data
 				return null;
 			}
 			else {
-				string str = value as string;
-				if (str != null) {
-					return Enum.Parse (ObjectType, str);
-				}
-				else {
-					Type type = value.GetType ();
-					TypeCode code = Type.GetTypeCode (type);
-					if (code != this._typeCode) {
-						value = Convert.ChangeType (value, this._typeCode);
-					}
-					return value;
-				}
+				//string str = value as string;
+				//if (str != null) {
+				//	return Enum.Parse (ObjectType, str);
+				//}
+				//else {
+				//	Type type = value.GetType ();
+				//	TypeCode code = Type.GetTypeCode (type);
+				//	if (code != this._typeCode) {
+				//		value = Convert.ChangeType (value, this._typeCode);
+				//	}
+				//	return value;
+				//}
+				//Type type = value.GetType ();
+				//TypeCode code = Type.GetTypeCode (type);
+				//if (code != this._typeCode) {
+				//	value = Convert.ChangeType (value, this._typeCode);
+				//}
+				//value = Convert.ChangeType (value, _objectType);
+				value = Enum.ToObject (_objectType, value);
+				return value;
 			}
 		}
 	}

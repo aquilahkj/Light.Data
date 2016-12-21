@@ -29,8 +29,10 @@ namespace Light.Data
 
 		internal override OrderExpression CreateAliasTableNameOrder (string aliasTableName)
 		{
-			DataFieldInfo info = this._fieldInfo.Clone () as DataFieldInfo;
-			info.AliasTableName = aliasTableName;
+			//DataFieldInfo info = this._fieldInfo.Clone () as DataFieldInfo;
+			//info.AliasTableName = aliasTableName;
+
+			DataFieldInfo info = this._fieldInfo.CreateAliasTableInfo (aliasTableName);
 			return new DataFieldOrderExpression (info, this._orderType);
 		}
 

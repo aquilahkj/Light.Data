@@ -340,7 +340,7 @@
     <Compile Include="DataField\EnumDefine\StringFunction.cs" />
     <Compile Include="DataField\EnumDefine\DatePart.cs" />
     <Compile Include="DataField\EnumDefine\MathFunction.cs" />
-    <Compile Include="DataField\LambdaAggregateCountAllDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaAggregateCountDataFieldInfo.cs" />
     <Compile Include="Model\AggregateModel.cs" />
     <Compile Include="DataField\AggregateDataFieldInfo.cs" />
     <Compile Include="Model\AggregateLambdaState.cs" />
@@ -377,7 +377,7 @@
     <Compile Include="Model\IJoinSelect.cs" />
     <Compile Include="Model\AllSelector.cs" />
     <Compile Include="Model\SelectModel.cs" />
-    <Compile Include="DataField\SelectDataFieldInfo.cs" />
+    <Compile Include="DataField\SpecialDataFieldInfo.cs" />
     <Compile Include="Model\SelectMap.cs" />
     <Compile Include="Model\SpecialSelector.cs" />
     <Compile Include="Model\JoinSelectBase.cs" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -23,20 +23,20 @@ namespace Light.Data.OracleTest
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
 			Assert.AreEqual (listEx.Count, listAc.Count);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">5 and \"Id\"<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">:P1 and \"Id\"<=:P2";
 			ps = new DataParameter[2];
@@ -45,7 +45,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -56,7 +56,7 @@ namespace Light.Data.OracleTest
 			}
 
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -74,19 +74,19 @@ namespace Light.Data.OracleTest
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">5 and \"Id\"<=8";
 			executor = context.CreateSqlStringExecutor (sql);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\" where \"Id\">:P1 and \"Id\"<=:P2";
 			ps = new DataParameter[2];
@@ -95,7 +95,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateSqlStringExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "select * from \"Te_User\"";
 			using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -106,7 +106,7 @@ namespace Light.Data.OracleTest
 			}
 
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -226,7 +226,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -234,7 +234,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> (5, 3);
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest2";
 			ps = new DataParameter[3];
@@ -244,7 +244,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = executor.QueryList<TeUser> ();
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -256,7 +256,7 @@ namespace Light.Data.OracleTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]
@@ -276,7 +276,7 @@ namespace Light.Data.OracleTest
 			listAc = new List<TeUser> ();
 			listAc.AddRange (executor.Query<TeUser> ());
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -284,7 +284,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> (5, 3));
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest2";
 			ps = new DataParameter[3];
@@ -294,7 +294,7 @@ namespace Light.Data.OracleTest
 			executor = context.CreateStoreProcedureExecutor (sql, ps);
 			listAc = new List<TeUser> (executor.QueryList<TeUser> ());
 			listEx = list.FindAll (x => x.Id > 5 && x.Id <= 8);
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 
 			sql = "TestPackage.sptest1";
 			ps = new DataParameter[1];
@@ -306,7 +306,7 @@ namespace Light.Data.OracleTest
 				trans.CommitTrans ();
 			}
 			listEx = list;
-			AssertExtend.AreEnumerableEqual (listEx, listAc);
+			AssertExtend.AreObjectEqual (listEx, listAc);
 		}
 
 		[Test ()]
