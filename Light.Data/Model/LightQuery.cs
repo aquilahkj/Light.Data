@@ -219,12 +219,12 @@ namespace Light.Data
 
 		public override T First ()
 		{
-			return _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level) as T;
+			return _context.QueryEntityDataFirst (_mapping, _query, _order, 0, _level) as T;
 		}
 
 		public override T ElementAt (int index)
 		{
-			return _context.SelectEntityDataSingle (_mapping, _query, _order, index, _level) as T;
+			return _context.QueryEntityDataFirst (_mapping, _query, _order, index, _level) as T;
 		}
 
 		public override bool Exists {
@@ -433,6 +433,12 @@ namespace Light.Data
 			return new LightJoinTable<T, T1> (this, JoinType.RightJoin, selectBase, onExpression);
 		}
 
+		public override ISelectField<K> SelectField<K> (Expression<Func<T, K>> expression)
+		{
+			LightSelectField<K> selectField = new LightSelectField<K> (this.Context, expression, _query, _order, _distinct, _region, _level);
+			return selectField;
+		}
+		/*
 		public override IEnumerable<bool> QueryField (Expression<Func<T, bool>> expression)
 		{
 			DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
@@ -768,6 +774,7 @@ namespace Light.Data
 			List<string> list = new List<string> (collection);
 			return list;
 		}
+		*/
 	}
 }
 

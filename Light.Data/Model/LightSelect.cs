@@ -70,8 +70,6 @@ namespace Light.Data
 			_level = level;
 		}
 
-
-
 		public override List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
@@ -90,7 +88,7 @@ namespace Light.Data
 
 		public override K First ()
 		{
-			object item = _context.SelectEntityDataSingle (_mapping, _query, _order, 0, _level);
+			object item = _context.QueryEntityDataFirst (_mapping, _query, _order, 0, _level);
 			if (item != null) {
 				object obj = _dele.DynamicInvoke (item);
 				return obj as K;

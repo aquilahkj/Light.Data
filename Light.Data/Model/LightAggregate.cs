@@ -146,7 +146,7 @@ namespace Light.Data
 
 		public override K First ()
 		{
-			return _context.SelectDynamicAggregateSingle (_model, _query, _having, _order, 0, _level) as K;
+			return _context.SelectDynamicAggregateFirst (_model, _query, _having, _order, 0, _level) as K;
 		}
 
 		public override IAggregate<K> Take (int count)

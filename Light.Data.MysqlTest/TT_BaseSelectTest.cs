@@ -63,36 +63,6 @@ namespace Light.Data.MysqlTest
 			AssertExtend.AreObjectEqual (users, users2);
 		}
 
-		[Test ()]
-		public void TestCase_Select3 ()
-		{
-			InitialUserTable (50);
-			InitialUserLevelTable (21);
 
-			List<int?> users;
-
-			users = context.Query<TeUser> ().Select (x => x.Area).ToList ();
-			var users1 = context.Query<TeUser> ().Select (x => new {
-				x.Id,
-				x.Account,
-				x.LevelId,
-				x.RegTime
-			}).ToList ();
-			AssertExtend.AreObjectEqual (users, users1);
-
-			users = context.Query<TeUser> ().Where (x => x.Id > 10).Select (x => new TeUserSimple () {
-				Id = x.Id,
-				Account = x.Account,
-				LevelId = x.LevelId,
-				RegTime = x.RegTime
-			}).ToList ();
-			var users2 = context.Query<TeUser> ().Where (x => x.Id > 10).Select (x => new {
-				x.Id,
-				x.Account,
-				x.LevelId,
-				x.RegTime
-			}).ToList ();
-			AssertExtend.AreObjectEqual (users, users2);
-		}
 	}
 }

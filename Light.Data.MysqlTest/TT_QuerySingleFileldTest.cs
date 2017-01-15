@@ -27,7 +27,6 @@ namespace Light.Data.MysqlTest
 			}
 		}
 
-
 		[Test ()]
 		public void TestCase_Field_Int ()
 		{
@@ -37,47 +36,56 @@ namespace Light.Data.MysqlTest
 			List<int> list_s;
 			List<int?> list_null_s;
 
+
+
 			list = context.Query<TeUser> ().ToList ();
-			list_s = context.Query<TeUser> ().QueryFieldList (x => x.Id);
+			list_s = context.Query<TeUser> ().SelectField (x => x.Id).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Id, list_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id > 10).ToList ();
-			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).QueryFieldList (x => x.Id);
+			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).SelectField (x => x.Id).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Id, list_s [i]);
 			}
 
 			list = context.Query<TeUser> ().ToList ();
-			list_s = context.Query<TeUser> ().QueryFieldList (x => x.LevelId);
+			list_s = context.Query<TeUser> ().SelectField (x => x.LevelId).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].LevelId, list_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id <= 5).ToList ();
-			list_s = context.Query<TeUser> ().Where (x => x.Id <= 5).QueryFieldList (x => x.LevelId);
+			list_s = context.Query<TeUser> ().Where (x => x.Id <= 5).SelectField (x => x.LevelId).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].LevelId, list_s [i]);
 			}
 
 			list = context.Query<TeUser> ().ToList ();
-			list_null_s = context.Query<TeUser> ().QueryFieldList (x => x.Area);
+			list_null_s = context.Query<TeUser> ().SelectField (x => x.Area).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Area, list_null_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Area > 5).ToList ();
-			list_null_s = context.Query<TeUser> ().Where (x => x.Area > 5).QueryFieldList (x => x.Area);
+			list_null_s = context.Query<TeUser> ().Where (x => x.Area > 5).SelectField (x => x.Area).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Area, list_null_s [i]);
 			}
+
+			var ex = context.Query<TeUser> ().First ().Id;
+			var ac = context.Query<TeUser> ().SelectField (x => x.Id).First ();
+			Assert.AreEqual (ex, ac);
+			var exn = context.Query<TeUser> ().Where (x => x.Area == null).First ().Area;
+			var acn = context.Query<TeUser> ().Where (x => x.Area == null).SelectField (x => x.Area).First ();
+			Assert.AreEqual (exn, acn);
 		}
 
 
@@ -91,14 +99,14 @@ namespace Light.Data.MysqlTest
 			List<double?> list_null_s;
 
 			list = context.Query<TeUser> ().ToList ();
-			list_s = context.Query<TeUser> ().QueryFieldList (x => x.HotRate);
+			list_s = context.Query<TeUser> ().SelectField (x => x.HotRate).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].HotRate, list_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id > 10).ToList ();
-			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).QueryFieldList (x => x.HotRate);
+			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).SelectField (x => x.HotRate).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].HotRate, list_s [i]);
@@ -106,18 +114,25 @@ namespace Light.Data.MysqlTest
 
 
 			list = context.Query<TeUser> ().ToList ();
-			list_null_s = context.Query<TeUser> ().QueryFieldList (x => x.CheckPoint);
+			list_null_s = context.Query<TeUser> ().SelectField (x => x.CheckPoint).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].CheckPoint, list_null_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id > 10).ToList ();
-			list_null_s = context.Query<TeUser> ().Where (x => x.Id > 10).QueryFieldList (x => x.CheckPoint);
+			list_null_s = context.Query<TeUser> ().Where (x => x.Id > 10).SelectField (x => x.CheckPoint).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].CheckPoint, list_null_s [i]);
 			}
+
+			var ex = context.Query<TeUser> ().First ().HotRate;
+			var ac = context.Query<TeUser> ().SelectField (x => x.HotRate).First ();
+			Assert.AreEqual (ex, ac);
+			var exn = context.Query<TeUser> ().Where (x => x.CheckPoint == null).First ().CheckPoint;
+			var acn = context.Query<TeUser> ().Where (x => x.CheckPoint == null).SelectField (x => x.CheckPoint).First ();
+			Assert.AreEqual (exn, acn);
 		}
 
 		[Test ()]
@@ -130,14 +145,14 @@ namespace Light.Data.MysqlTest
 			List<DateTime?> list_null_s;
 
 			list = context.Query<TeUser> ().ToList ();
-			list_s = context.Query<TeUser> ().QueryFieldList (x => x.RegTime);
+			list_s = context.Query<TeUser> ().SelectField (x => x.RegTime).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].RegTime, list_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id > 10).ToList ();
-			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).QueryFieldList (x => x.RegTime);
+			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).SelectField (x => x.RegTime).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].RegTime, list_s [i]);
@@ -145,18 +160,25 @@ namespace Light.Data.MysqlTest
 
 
 			list = context.Query<TeUser> ().ToList ();
-			list_null_s = context.Query<TeUser> ().QueryFieldList (x => x.LastLoginTime);
+			list_null_s = context.Query<TeUser> ().SelectField (x => x.LastLoginTime).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].LastLoginTime, list_null_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id > 10).ToList ();
-			list_null_s = context.Query<TeUser> ().Where (x => x.Id > 10).QueryFieldList (x => x.LastLoginTime);
+			list_null_s = context.Query<TeUser> ().Where (x => x.Id > 10).SelectField (x => x.LastLoginTime).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].LastLoginTime, list_null_s [i]);
 			}
+
+			var ex = context.Query<TeUser> ().First ().RegTime;
+			var ac = context.Query<TeUser> ().SelectField (x => x.RegTime).First ();
+			Assert.AreEqual (ex, ac);
+			var exn = context.Query<TeUser> ().Where (x => x.CheckPoint == null).First ().CheckPoint;
+			var acn = context.Query<TeUser> ().Where (x => x.LastLoginTime == null).SelectField (x => x.LastLoginTime).First ();
+			Assert.AreEqual (exn, acn);
 		}
 
 
@@ -170,14 +192,14 @@ namespace Light.Data.MysqlTest
 			List<string> list_null_s;
 
 			list = context.Query<TeUser> ().ToList ();
-			list_s = context.Query<TeUser> ().QueryFieldList (x => x.Account);
+			list_s = context.Query<TeUser> ().SelectField (x => x.Account).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Account, list_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id > 10).ToList ();
-			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).QueryFieldList (x => x.Account);
+			list_s = context.Query<TeUser> ().Where (x => x.Id > 10).SelectField (x => x.Account).ToList ();
 			Assert.AreEqual (list.Count, list_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Account, list_s [i]);
@@ -185,18 +207,25 @@ namespace Light.Data.MysqlTest
 
 
 			list = context.Query<TeUser> ().ToList ();
-			list_null_s = context.Query<TeUser> ().QueryFieldList (x => x.Address);
+			list_null_s = context.Query<TeUser> ().SelectField (x => x.Address).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Address, list_null_s [i]);
 			}
 
 			list = context.Query<TeUser> ().Where (x => x.Id > 10).ToList ();
-			list_null_s = context.Query<TeUser> ().Where (x => x.Id > 10).QueryFieldList (x => x.Address);
+			list_null_s = context.Query<TeUser> ().Where (x => x.Id > 10).SelectField (x => x.Address).ToList ();
 			Assert.AreEqual (list.Count, list_null_s.Count);
 			for (int i = 0; i < list.Count; i++) {
 				Assert.AreEqual (list [i].Address, list_null_s [i]);
 			}
+
+			var ex = context.Query<TeUser> ().First ().Account;
+			var ac = context.Query<TeUser> ().SelectField (x => x.Account).First ();
+			Assert.AreEqual (ex, ac);
+			var exn = context.Query<TeUser> ().Where (x => x.Address == null).First ().CheckPoint;
+			var acn = context.Query<TeUser> ().Where (x => x.Address == null).SelectField (x => x.Address).First ();
+			Assert.AreEqual (exn, acn);
 		}
 
 

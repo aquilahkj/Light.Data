@@ -344,6 +344,15 @@ namespace Light.Data
 
 		#endregion
 
+		/// <summary>
+		/// Select special field.
+		/// </summary>
+		/// <returns>The field.</returns>
+		/// <param name="expression">Expression.</param>
+		/// <typeparam name="K">The 1st type parameter.</typeparam>
+		ISelectField<K> SelectField<K> (Expression<Func<T, K>> expression);
+
+		/*
 		#region query field
 		/// <summary>
 		/// Queries the field.
@@ -640,6 +649,8 @@ namespace Light.Data
 		List<string> QueryFieldList (Expression<Func<T, string>> expression);
 
 		#endregion
+		*/
+
 	}
 }
 

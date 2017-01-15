@@ -799,7 +799,7 @@ namespace Light.Data
 				query = QueryExpression.And (query, info == primaryKeys [i]);
 				i++;
 			}
-			return SelectEntityDataSingle (mapping, query, null, 0, SafeLevel.None) as T;
+			return QueryEntityDataFirst (mapping, query, null, 0, SafeLevel.None) as T;
 		}
 
 		/// <summary>
@@ -859,7 +859,7 @@ namespace Light.Data
 			}
 			DataFieldInfo idfield = new DataFieldInfo (dtmapping.IdentityField);
 			QueryExpression query = idfield == id;
-			return SelectEntityDataSingle (dtmapping, query, null, 0, SafeLevel.None) as T;
+			return QueryEntityDataFirst (dtmapping, query, null, 0, SafeLevel.None) as T;
 		}
 
 		/// <summary>
@@ -986,7 +986,18 @@ namespace Light.Data
 			return QueryDataDefineReader (model.OutputMapping, command, commandData.InnerPage ? null : region, level, commandData.State);
 		}
 
-		internal object SelectEntityDataSingle (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		internal object QuerySingleFieldFirst (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, bool distinct, int index, SafeLevel level)
+		{
+			object target = null;
+			Region region = new Region (index, 1);
+			foreach (object obj in QuerySingleField (fieldInfo, outputType, query, order, false, region, level)) {
+				target = obj;
+				break;
+			}
+			return target;
+		}
+
+		internal object QueryEntityDataFirst (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
 		{
 			object target = null;
 			Region region = new Region (index, 1);
@@ -997,7 +1008,7 @@ namespace Light.Data
 			return target;
 		}
 
-		internal object SelectDynamicAggregateSingle (AggregateModel group, QueryExpression query, QueryExpression having, OrderExpression order, int index, SafeLevel level)
+		internal object SelectDynamicAggregateFirst (AggregateModel group, QueryExpression query, QueryExpression having, OrderExpression order, int index, SafeLevel level)
 		{
 			object target = null;
 			Region region = new Region (index, 1);
@@ -1008,7 +1019,7 @@ namespace Light.Data
 			return target;
 		}
 
-		internal object SelectJoinDataSingle (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		internal object SelectJoinDataFirst (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, int index, SafeLevel level)
 		{
 			object target = null;
 			Region region = new Region (index, 1);

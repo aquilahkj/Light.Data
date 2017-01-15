@@ -70,14 +70,14 @@ namespace Light.Data.MysqlTest
 			InitialUserTable (count);
 			List<TeUser> list = context.Query<TeUser> ().ToList ();
 
-			List<int> lists = context.Query<TeUser> ().QueryFieldList (x => x.Id);
+			List<int> lists = context.Query<TeUser> ().SelectField (x => x.Id).ToList ();
 			Assert.AreEqual (list.Count, lists.Count);
 			for (int i = 0; i < count; i++) {
 				Assert.AreEqual (list [i].Id, lists [i]);
 			}
 
 			int index = 0;
-			foreach (int id in context.Query<TeUser> ().QueryField (x => x.Id)) {
+			foreach (int id in context.Query<TeUser> ().SelectField (x => x.Id).ToList ()) {
 				Assert.AreEqual (list [index].Id, id);
 				index++;
 			}

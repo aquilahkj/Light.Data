@@ -112,7 +112,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -334,7 +334,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -557,7 +557,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -781,7 +781,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -1006,7 +1006,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -1232,7 +1232,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -1459,7 +1459,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -1687,7 +1687,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.
@@ -1916,7 +1916,7 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="expression">Expression.</param>
 		/// <typeparam name="K">The 1st type parameter.</typeparam>
-		IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) where K : class;
+		ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) where K : class;
 
 		/// <summary>
 		/// Select fileds data insert to the special table K.

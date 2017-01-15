@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Light.Data
 {
-	abstract class JoinSelectBase<K> : IJoinSelect<K> where K : class
+	abstract class SelectJoinBase<K> : ISelectJoin<K> where K : class
 	{
 		public abstract QueryExpression QueryExpression {
 			get;
@@ -55,7 +55,7 @@ namespace Light.Data
 
 		protected Delegate _dele;
 
-		protected JoinSelectBase (DataContext context, LambdaExpression expression, List<IJoinModel> models, List<IMap> maps)//, QueryExpression query, OrderExpression order, bool distinct, Region region, SafeLevel level)
+		protected SelectJoinBase (DataContext context, LambdaExpression expression, List<IJoinModel> models, List<IMap> maps)
 		{
 			_selector = LambdaExpressionExtend.CreateMutliSelector (expression, maps);
 			_dele = expression.Compile ();

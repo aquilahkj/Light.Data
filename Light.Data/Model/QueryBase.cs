@@ -156,6 +156,10 @@ namespace Light.Data
 
 		public abstract IJoinTable<T, T1> RightJoin<T1> (ISelect<T1> select, Expression<Func<T, T1, bool>> onExpression) where T1 : class;
 
+		public abstract ISelectField<K> SelectField<K> (Expression<Func<T, K>> expression);
+
+		/*
+
 		public abstract IEnumerable<bool> QueryField (Expression<Func<T, bool>> expression);
 
 		public abstract IEnumerable<bool?> QueryField (Expression<Func<T, bool?>> expression);
@@ -239,6 +243,8 @@ namespace Light.Data
 		public abstract List<DateTime?> QueryFieldList (Expression<Func<T, DateTime?>> expression);
 
 		public abstract List<string> QueryFieldList (Expression<Func<T, string>> expression);
+
+		*/
 	}
 
 }

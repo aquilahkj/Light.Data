@@ -340,9 +340,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -727,9 +727,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -1115,9 +1115,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, T3, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, T3, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -1504,9 +1504,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -1894,9 +1894,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -2285,9 +2285,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -2677,9 +2677,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -3070,9 +3070,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 
@@ -3464,9 +3464,9 @@ namespace Light.Data
 			return this;
 		}
 
-		public IJoinSelect<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) where K : class
+		public ISelectJoin<K> Select<K> (Expression<Func<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K>> expression) where K : class
 		{
-			LightJoinSelect<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
+			LightSelectJoin<K> selectable = new LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K> (_context, expression, _modelList, _maps, _query, _order, _distinct, _region, _level);
 			return selectable;
 		}
 

@@ -7,7 +7,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where K : class
@@ -22,7 +22,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class
@@ -38,7 +38,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, T3, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, T3, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class
@@ -55,7 +55,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, T3, T4, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, T3, T4, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class
@@ -73,7 +73,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, T3, T4, T5, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, T3, T4, T5, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class
@@ -92,7 +92,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class
@@ -112,7 +112,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class
@@ -133,7 +133,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class
@@ -155,7 +155,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join table.
 	/// </summary>		
-	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K> : LightJoinSelect<K>
+	class LightJoinSelect<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, K> : LightSelectJoin<K>
 		where T : class
 		where T1 : class
 		where T2 : class

@@ -270,7 +270,7 @@
     <Compile Include="Mappings\DynamicMultiDataMapping.cs" />
     <Compile Include="Model\IQuery.cs" />
     <Compile Include="Model\ISelect.cs" />
-    <Compile Include="Model\LightJoinSelect.cs" />
+    <Compile Include="Model\LightSelectJoin.cs" />
     <Compile Include="Model\LightQuery.cs" />
     <Compile Include="Model\LightSelect.cs" />
     <Compile Include="Model\JoinConnect.cs" />
@@ -374,13 +374,13 @@
     <Compile Include="Model\QueryBase.cs" />
     <Compile Include="Model\SelectJoinModel.cs" />
     <Compile Include="Model\SelectBase.cs" />
-    <Compile Include="Model\IJoinSelect.cs" />
+    <Compile Include="Model\ISelectJoin.cs" />
     <Compile Include="Model\AllSelector.cs" />
     <Compile Include="Model\SelectModel.cs" />
     <Compile Include="DataField\SpecialDataFieldInfo.cs" />
     <Compile Include="Model\SelectMap.cs" />
     <Compile Include="Model\SpecialSelector.cs" />
-    <Compile Include="Model\JoinSelectBase.cs" />
+    <Compile Include="Model\SelectJoinBase.cs" />
     <Compile Include="Model\T_LightJoinTable.cs">
       <DependentUpon>T_LightJoinTable.tt</DependentUpon>
     </Compile>
@@ -416,6 +416,9 @@
     <Compile Include="Model\ExistsSelector.cs" />
     <Compile Include="DataField\LambdaExistsDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaExistsQueryExpression.cs" />
+    <Compile Include="Model\ISelectField.cs" />
+    <Compile Include="Model\SelectFieldBase.cs" />
+    <Compile Include="Model\LightSelectField.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

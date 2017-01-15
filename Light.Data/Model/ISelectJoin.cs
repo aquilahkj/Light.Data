@@ -6,7 +6,7 @@ namespace Light.Data
 	/// <summary>
 	/// Join select.
 	/// </summary>
-	public interface IJoinSelect<K> : IEnumerable<K> where K : class
+	public interface ISelectJoin<K> : IEnumerable<K> where K : class
 	{
 		/// <summary>
 		/// Get data list.

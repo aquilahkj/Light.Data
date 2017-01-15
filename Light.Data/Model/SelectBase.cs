@@ -51,8 +51,6 @@ namespace Light.Data
 			}
 		}
 
-		//protected readonly SelectModel _model;
-
 		public SelectModel Model {
 			get {
 				return LambdaExpressionExtend.CreateSelectModel (_expression);
@@ -69,7 +67,6 @@ namespace Light.Data
 			_dele = expression.Compile ();
 			_selector = LambdaExpressionExtend.CreateSelector (expression);
 			_expression = expression;
-			//_model = LambdaExpressionExtend.CreateSelectModel (expression);
 			_mapping = DataEntityMapping.GetEntityMapping (type);
 		}
 
