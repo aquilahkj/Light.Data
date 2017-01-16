@@ -377,7 +377,7 @@ context.Query<TeUser2> ()
 ```
 ###查询批量删除
 ***
-`IQuery<T>.Delete(lambda)`对查询数据进行批量删除操作
+使用`IQuery<T>.Delete()`对查询数据进行批量删除操作
 
 ```csharp
 context.Query<TeUser> ().Where(x => x.Id > 1).Delete();
