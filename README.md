@@ -1,7 +1,7 @@
 #LightData 使用文档
 
 ##实体类特性
-```cs
+```csharp
  [DataTable("Te_User")]
  public partial class TeUser
  {
@@ -78,14 +78,14 @@ DataField 指定对应数据字段的字段名，其中：
 ##主键／自增字段查询数据
 通过自增ID查数据
 
-```cs
+```csharp
 int id = 1;
 TeUser user = context.SelectSingleFromId<TeUser> (id);
 ```
 
 通过主键查数据
 
-```cs
+```csharp
 int id = 1;
 TeUser user = context.SelectSingleFromKey<TeUser> (id);
 ```
@@ -93,7 +93,7 @@ TeUser user = context.SelectSingleFromKey<TeUser> (id);
 ##增加数据
 自增ID会在Insert后自动赋值
 
-```cs
+```csharp
 TeUser user = new TeUser ();
 user.Account = "test";
 user.Birthday = new DateTime (2001, 10, 20);
@@ -112,11 +112,11 @@ context.Insert (user);
 
 批量新增数据方法
 
-```cs
+```csharp
 BatchInsert<T>(IEnumerable<T> datas, int batchCount = 10)
 ```
 ##更新数据
-```cs
+```csharp
 int id = 1;
 TeUser user = context.SelectSingleFromId<TeUser> (id);
 user.Status = 2;
@@ -124,19 +124,19 @@ context.Update (user);
 ```
 批量更新数据方法
 
-```cs
+```csharp
 BatchUpdate<T>(IEnumerable<T> datas, int batchCount = 10)
 ```
 
 ##删除数据
-```cs
+```csharp
 int id = 1;
 TeUser user = context.SelectSingleFromId<TeUser> (id);
 context.Delete (user);
 ```
 批量删除数据方法
 
-```cs
+```csharp
 BatchDelete<T>(IEnumerable<T> datas, int batchCount = 10)
 ```
 
@@ -163,7 +163,7 @@ IQuery主要查询用方法:
 | Skip(int count)	 	| 设定Query输出结果需要跳过的数量|
 | Range(int from, int to)	 	| 设定Query输出结果的从from位到to位|
 | PageSize(int page, int size)	 	| 设定Query输出结果的分页结果,page:从1开始页数,size:每页数量|
-| RangeReset	 	| 把Query中输出结果范围重置|
+| RangeReset()	 	| 把Query中输出结果范围重置|
 | SetDistinct(bool distinct) | 设定是否使用Distinct方式输出结果|
 | ToList()	| 结果以List<T>的方式输出	|
 | ToArray()	| 结果以T[]的方式输出	|
@@ -176,24 +176,24 @@ IQuery主要查询用方法:
 
 ####全查询
 
-```cs
+```csharp
 List<TeUser> list = context.Query<TeUser> ().ToList ();
 ```
 ####组合查询
 
-```cs
+```csharp
 List<TeUser> list = context.Query<TeUser> ().Where (x => x.Id > 1).OrderBy (x => x.Id).Take(10).ToList ();
 ```
 ###条件查询(Where)
 ***
 使用Where方法加入查询条件，查询参数为Lambda表达式
-```cs
+```csharp
 context.Query<T> ().Where(LambdaExpression)
 ```
 
 ####普通条件查询
 
-```cs
+```csharp
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.Id >= 5 && x.Id <= 10).ToList ();
 List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.Id < 5 || x.Id > 10).ToList ();
 ```
@@ -201,7 +201,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.Id < 5 || x.Id > 10)
 ####In条件查询
 使用List\<T>的Contains方法,not查询在条件前面加"!"号
 
-```cs
+```csharp
 int [] arrayx = new int [] { 3, 5, 7 };
 List<int> listx = new List<int> (arrayx);
 //in
@@ -213,7 +213,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => ！listx.Contains (x.I
 ####Like条件查询
 只支持string类型,使用string类的StartsWith、EndsWith、Contains方法查询,可支持反向查,not查询在条件前面加"!"号
 
-```cs
+```csharp
 //后模糊
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.Account.StartsWith ("test")).ToList ();
 //前模糊
@@ -229,7 +229,7 @@ List<TeUser> list1 = context.Query<TeUser> ().Where (x => !x.Account.StartsWith 
 ####null查询
 查询字段需为可空类型(如int?)或string类型
 
-```cs
+```csharp
 //null查询
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.RefereeId == null).ToList ();
 //非null查询
@@ -238,7 +238,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.RefereeId != null).T
 如非可空类型可用扩展查询方式
 `ExtendQuery.IsNull (x.Id)`
 
-```cs
+```csharp
 //null查询
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.IsNull (x.Id)).ToList ();
 //非null查询
@@ -248,7 +248,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.IsNull (x
 ####布尔值字段查询
 查询字段需为布尔(boolean)类型
 
-```cs
+```csharp
 //是查询
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag).ToList ();
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => x.DeleteFlag == true).ToList ();
@@ -261,7 +261,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.DeleteFlag == false)
 ####跨表Exists查询
 固定条件查询
 
-```cs
+```csharp
 //Exist查询
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Status == 1)).ToList ();
 //Not Exist查询
@@ -269,7 +269,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.Exists<Te
 ```
 关联条件查询
 
-```cs
+```csharp
 //Exist查询
 List<TeUser> list1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
 //Not Exist查询
@@ -280,11 +280,11 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.Exists<Te
 ***
 ####正向排序
 
-```cs
+```csharp
 List<TeUser> list = context.Query<TeUser> ().OrderBy (x => x.Id).ToList ();
 ```
 ####反向排序
 
-```cs
+```csharp
 List<TeUser> list = context.Query<TeUser> ().OrderByDescending (x => x.Id).ToList ();
 ```
