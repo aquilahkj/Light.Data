@@ -7,7 +7,7 @@ using Light.Data.UnitTest;
 namespace Light.Data.MysqlTest
 {
 	[TestFixture ()]
-	public class TT_BaseSelectTest : BaseTest
+	public class TT_SelectTest : BaseTest
 	{
 		[Test ()]
 		public void TestCase_Select1 ()

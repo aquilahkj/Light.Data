@@ -62,9 +62,9 @@ namespace Light.Data.Demo
 			context.SetCommanfOutput (output);
 			string fsasa = Environment.CurrentDirectory;
 
-			var dgg = context.Query<TeUser> ().QueryFieldList (x => x.CheckPoint);
+			//var dgg = context.Query<TeUser> ().QueryFieldList (x => x.CheckPoint);
 
-			var dggs = context.Query<TeUser> ().SetDistinct (true).QueryFieldList (x => x.LevelId);
+			//var dggs = context.Query<TeUser> ().SetDistinct (true).QueryFieldList (x => x.LevelId);
 
 			//var ter = context.Query<TeUser> ()
 			//				 .Where (x => x.Account.Length == 5)

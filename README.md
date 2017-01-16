@@ -64,7 +64,7 @@ DataField 指定对应数据字段的字段名，其中：
 * IsIdentity 字段是否自增
 * IsPrimaryKey 字段是否主键
 * IsNullable 字段是否可为空
-* DefaultValue 默认值，可空类型字段在新增数据时，如果数据为空，自动使用该默认值；如数据类型是datetime，空值或最小值时可使用DefaultTime.Now表示默认值为当前时间、DefaultTime.Today表示默认值为当天
+* DefaultValue 默认值，可空类型字段在新增数据时，如果数据为空，自动使用该默认值；如数据类型是datetime，空值或最小值时可使用`DefaultTime.Now`表示默认值为当前时间、`DefaultTime.Today`表示默认值为当天
 
 ##Truncate Table
  ` 
@@ -140,6 +140,48 @@ context.Delete (user);
 BatchDelete<T>(IEnumerable<T> datas, int batchCount = 10)
 ```
 
+##事务处理
+对增删改多个操作需要在同一事务中做操作,通过`DataContext`的`CreateTransDataContext`方法生成事务`TransDataContext`,并使用其事务方法进行事务操作
+
+* BeginTrans 开始事务,每次事务开始前需执行
+* CommitTrans 提交事务,在using作用域中如果只有一次提交,可不需执行
+* RollbackTrans 回滚事务,在using作用域逻辑上需要回滚才执行,抛异常时会自动回滚
+
+
+```csharp
+//单次提交
+using (TransDataContext trans = context.CreateTransDataContext ()) {
+		trans.BeginTrans ();
+		TeUser user1 = trans.SelectSingleFromId<TeUser> (3);
+		user1.Account = "testmodify";
+		trans.Update(user1);
+		TeUser user2 = trans.SelectSingleFromId<TeUser> (4);
+		trans.Delete(user2);
+}
+//多次提交
+using (TransDataContext trans = context.CreateTransDataContext ()) {
+		trans.BeginTrans ();
+		TeUser user1 = trans.SelectSingleFromId<TeUser> (1);
+		user1.Account = "testmodify";
+		trans.Update(user1);
+		trans.CommitTrans ();
+		trans.BeginTrans ();
+		TeUser user2 = trans.SelectSingleFromId<TeUser> (2);
+		trans.Delete(user2);
+		trans.CommitTrans ();
+}
+//回滚
+using (TransDataContext trans = context.CreateTransDataContext ()) {
+		trans.BeginTrans ();
+		TeUser user1 = new <TeUser> ();
+		user1.Account = "testmodify";
+		trans.Insert (user1);
+		if(user1.Id > 5){
+			trans.RollbackTrans ();
+		}
+}
+```
+
 ##查询数据
 使用context的Query方法生成IQuery对象,范型T为查询表的映射类
 `IQuery query = context.Query<T>()`
@@ -151,7 +193,7 @@ IQuery主要查询用方法:
 |:----------------	|:-----	|
 | Where(Expression\<Func\<T, bool>> expression)| 把Query中查询条件置为当前查询条件,如Where(x=>x.Id>1)|
 | WhereWithAnd(Expression\<Func\<T, bool>> expression)| 把Query中查询条件以And方式连接当前查询条件 |
-| WhereWithOr(Expression\<Func\<T, bool>> expression)	| 把Query中查询条件以And方式连接当前查询条件 |
+| WhereWithOr(Expression\<Func\<T, bool>> expression)	| 把Query中查询条件以Or方式连接当前查询条件 |
 | WhereReset ()	 	|把Query中查询条件重置|
 | OrderBy\<TKey> (Expression\<Func\<T, TKey>> expression)	 	|把Query中排序替换为当前字段正序排序,如OrderBy(x=>x.Id)|
 | OrderByDescending\<TKey> (Expression\<Func\<T, TKey>> expression)	 	| 把Query中排序置为当前字段正序排序,如OrderByDescending(x=>x.Id)	|
@@ -186,9 +228,9 @@ List<TeUser> list = context.Query<TeUser> ().Where (x => x.Id > 1).OrderBy (x =>
 ```
 ###条件查询(Where)
 ***
-使用Where方法加入查询条件，查询参数为Lambda表达式
+使用`IQuery<T>.Where(lambda)`方法加入查询条件,查询参数为Lambda表达式,有Where,WhereWithAnd,WhereWithOr,WhereReset四个方法
 ```csharp
-context.Query<T> ().Where(LambdaExpression)
+context.Query<T> ().Where(x => x.Id > 1)
 ```
 
 ####普通条件查询
@@ -199,7 +241,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => x.Id < 5 || x.Id > 10)
 ```
 
 ####In条件查询
-使用List\<T>的Contains方法,not查询在条件前面加"!"号
+使用`List<T>.Contains`方法,not查询在条件前面加"!"号
 
 ```csharp
 int [] arrayx = new int [] { 3, 5, 7 };
@@ -211,7 +253,7 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => ！listx.Contains (x.I
 ```
 
 ####Like条件查询
-只支持string类型,使用string类的StartsWith、EndsWith、Contains方法查询,可支持反向查,not查询在条件前面加"!"号
+只支持string类型,使用`string.StartsWith`、`string.EndsWith`、`string.Contains`方法查询,可支持反向查,not查询在条件前面加"!"号
 
 ```csharp
 //后模糊
@@ -278,6 +320,11 @@ List<TeUser> list2 = context.Query<TeUser> ().Where (x => !ExtendQuery.Exists<Te
 
 ###排序(OrderBy)
 ***
+使用`IQuery.OrderBy(lambda)`方法加入查询条件,查询参数为Lambda表达式,有OrderBy, OrderByDescending,OrderByCatch,OrderByDescendingCatch, OrderByReset,OrderByRandom六个方法
+
+```csharp
+context.Query<T> ().OrderBy(x => x.Id)
+```
 ####正向排序
 
 ```csharp
@@ -287,4 +334,77 @@ List<TeUser> list = context.Query<TeUser> ().OrderBy (x => x.Id).ToList ();
 
 ```csharp
 List<TeUser> list = context.Query<TeUser> ().OrderByDescending (x => x.Id).ToList ();
+```
+
+###选择指定字段(Select)
+***
+使用`IQuery<T>.Select(lambda)`查询时指定字段输出新的结构类,支持匿名类输出,使用Lambda表达式中的new方式定义新结构类.
+
+```csharp
+List<TeUserSimple> users = context.Query<TeUser> ()
+				.Select (x => new TeUserSimple () {
+					Id = x.Id,
+					Account = x.Account,
+					LevelId = x.LevelId,
+					RegTime = x.RegTime})
+				.ToList ();
+//匿名类
+var users2 = context.Query<TeUser> ()
+				.Select (x => new {
+					x.Id,
+					x.Account,
+					x.LevelId,
+					x.RegTime})
+				.ToList ();
+```
+
+###查询批量更新
+***
+使用`IQuery<T>.Update(lambda)`对查询数据进行批量更新操作,以lambda表达式中的new方式定义数据的更新字段与更新内容,左侧为更新字段名,右侧为更新内容,内容可为原字段.
+
+```csharp
+context.Query<TeUser> ()
+		.Update (x => new TeUser {
+				LastLoginTime = DateTime.Now,
+				Status = 2
+		});
+//更新内容为原字段
+context.Query<TeUser2> ()
+		.Update (x => new TeUser2 {
+				LastLoginTime = x.RecordTime,
+				Status = x.Status + 1
+			});
+```
+###查询批量删除
+***
+`IQuery<T>.Delete(lambda)`对查询数据进行批量删除操作
+
+```csharp
+context.Query<TeUser> ().Where(x => x.Id > 1).Delete();
+```
+
+###查询批量插入
+***
+对查询数据进行全字段或指定字段插入指定的数据表,直接通过数据库的`insert into t1(x1,x2,x3...)select y1,y2,y3 from t2`方式直接插入数据
+####全字段插入
+使用`IQuery<T>.Insert<K>()`全数据插入,查询表T的字段必须与插入表K的字段一一对应,如果T与K有同位字段是自增字段,则插入时,K的自增字段数据为自增.
+
+```csharp
+context.Query<TeDataLog> ().Where (x => x.Id <= 20).Insert<TeDataLogHistory> ();
+```
+
+####指定字段插入
+使用`IQuery<T>.SelectInsert<K>(lambda)`选择指定字段举行插入,lambda表达式中的new方式定义数据的插入表字段与查询表选择字段,左侧为插入表字段,查询表选择字段,字段可以为常量.
+
+```csharp
+context.Query<TeDataLog> ().SelectInsert (x => new TeDataLogHistory () {
+				Id = x.Id,
+				UserId = x.UserId,
+				ArticleId = x.ArticleId,
+				RecordTime = x.RecordTime,
+				Status = x.Status,
+				Action = x.Action,
+				RequestUrl = x.RequestUrl,
+				CheckId = 3,
+});
 ```

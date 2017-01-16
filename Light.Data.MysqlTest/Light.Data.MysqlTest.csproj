@@ -106,7 +106,7 @@
     <Compile Include="TT_JoinTableWithSelectTest.cs" />
     <Compile Include="TT_JoinTableWithAggregateTest.cs" />
     <Compile Include="TT_JoinTableWithAggregateSelectTest.cs" />
-    <Compile Include="TT_BaseSelectTest.cs" />
+    <Compile Include="TT_SelectTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

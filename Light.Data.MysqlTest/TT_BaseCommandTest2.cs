@@ -177,6 +177,43 @@ namespace Light.Data.MysqlTest
 		}
 
 		[Test ()]
+		public void TestCase_UpdateMass2 ()
+		{
+			List<TeUser2> listEx = new List<TeUser2> ();
+			const int count = 33;
+			for (int i = 0; i < count; i++) {
+				TeUser2 userInsert = CreateTestUser2 ();
+				userInsert.Account += i;
+				userInsert.RegTime = userInsert.RegTime.AddSeconds (i);
+				listEx.Add (userInsert);
+			}
+
+			int result;
+			List<TeUser2> listAc;
+
+			context.TruncateTable<TeUser2> ();
+			result = context.BatchInsert (listEx.ToArray ());
+			Assert.AreEqual (count, result);
+
+			DateTime uptime = GetNow ();
+
+			result = context.Query<TeUser2> ().Update (x => new TeUser2 {
+				LastLoginTime = uptime,
+				Status = 2
+			});
+
+			result = context.Query<TeUser2> ().Update (x => new TeUser2 {
+				LastLoginTime = x.LastLoginTime,
+				Status = x.Status + 1
+			});
+			Assert.AreEqual (count, result);
+			listAc = context.Query<TeUser2> ().ToList ();
+			Assert.AreEqual (count, listAc.Count);
+			Assert.IsTrue (listAc.TrueForAll (x => x.LastLoginTime == uptime && x.Status == 3));
+
+		}
+
+		[Test ()]
 		public void TestCase_DeleteMass1 ()
 		{
 			List<TeUser2> listEx = new List<TeUser2> ();
