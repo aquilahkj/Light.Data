@@ -144,6 +144,11 @@ namespace Light.Data
 			return list;
 		}
 
+		public override K [] ToArray ()
+		{
+			return ToList ().ToArray ();
+		}
+
 		public override K First ()
 		{
 			return _context.SelectDynamicAggregateFirst (_model, _query, _having, _order, 0, _level) as K;

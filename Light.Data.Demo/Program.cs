@@ -186,6 +186,12 @@ namespace Light.Data.Demo
 			//	.WhereWithAnd ((x, y, z) => x.CheckPoint > 0 && y.LevelName != null)
 			//	.Select ((x, y, z) => x).ToList ();
 			//int? r = 1;
+
+			var dfxx = context.Query<TeUser> ().GroupBy (x => new {
+				Count = Function.Sum (x.LoginTimes)
+			}).First ().Count;
+
+
 			var df = context.Query<TeUser> ().GroupBy (x => new {
 				Date = x.RegTime.Date,
 				Count = Function.Count (),

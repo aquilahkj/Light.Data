@@ -92,6 +92,8 @@ namespace Light.Data
 
 		public abstract List<K> ToList ();
 
+		public abstract K[] ToArray ();
+
 		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression) where T1 : class;
 
 		public abstract IJoinTable<K, T1> Join<T1> (Expression<Func<K, T1, bool>> onExpression) where T1 : class;

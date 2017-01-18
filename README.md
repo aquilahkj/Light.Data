@@ -140,7 +140,7 @@ context.Delete (user);
 BatchDelete<T>(IEnumerable<T> datas, int batchCount = 10)
 ```
 
-##事务处理
+<h2 id="transaction">事务处理</h2>
 对增删改多个操作需要在同一事务中做操作,通过`DataContext`的`CreateTransDataContext`方法生成事务`TransDataContext`,并使用其事务方法进行事务操作
 
 * BeginTrans 开始事务,每次事务开始前需执行
@@ -182,7 +182,70 @@ using (TransDataContext trans = context.CreateTransDataContext ()) {
 }
 ```
 
-##查询数据
+<h2 id="field_extend">字段扩展</h2>
+查询或汇总数据时经常需要指定字段里的某部分数据进行提出查询或汇总,例如从时间字段提出日期统计,可以使用预设定的方法或属性进行提出汇总.另外数字型字段支持使用`+`(加)`-`(减)`*`(乘)`/`(除)`%`(求余)与其他数学字段或常量数值做相应数学处理,字符串支持使用`+`(加)做字符串拼接.
+
+####时间字段方法(DateTime)
+
+| 方法         	 					| 说明	|
+|:-------------------------------	|:-----|
+| ToString（format）				   	|格式化的日期字符串,年yyyy,月MM,日dd|
+
+| 属性         	 					| 说明	|
+|:-------------------------------	|:-----|
+| Date									|日期时间格式|
+| Year									|时间中的年部分|
+| Month								|时间中的月部分|
+| Day									|时间中的日部分|
+| Hour									|时间中的时部分|
+| Minute								|时间中的分部分|
+| Second								|时间中的秒部分|
+| Week									|时间中的周部分|
+| DayOfWeek							|时间为当周第几天|
+| DayOfYear							|时间为当年第几天|
+
+####字符串字段方法(String)
+
+| 方法         	 					| 说明	|
+|:-------------------------------	|:-----|
+| Substring（index,length）			|截取字符串|
+| IndexOf（value,index）			|获取字符串位置|
+| Replace（oldString,newString）	|替换字符串|
+| ToLower（）							|转换大写|
+| ToUpper（）							|转换小写|
+| Trim（）								|清空前后空格|
+| Concat（obj1,obj2,obj3...)		|静态函数,连接字符串|	
+
+| 属性         	 					| 说明	|
+|:-------------------------------	|:-----|
+| Length								|字符串长度|
+
+####数学方法(Math静态函数)
+
+| 方法         	 	| 说明		|
+|:----------------	|:-----	|
+| Abs||
+| Sign||
+| Sin||
+| Cos||
+| Tan||
+| Atan||
+| ASin||
+| ACos||
+| Atan2||
+| Ceiling||
+| Floor||
+| Round||
+| Truncate||
+| Log||
+| Log10||
+| Exp||
+| Pow||
+| Sqrt||
+| Max||
+| Min||
+
+<h2 id="query">查询数据</h2>
 使用context的Query方法生成IQuery对象,范型T为查询表的映射类
 `IQuery query = context.Query<T>()`
 `IQuery`通过Builder模式添加查询要素,最终可通过自身枚举方式或ToList()方式输出查询数据.
@@ -191,29 +254,29 @@ IQuery主要查询用方法:
 
 | 方法         	 	| 说明		|
 |:----------------	|:-----	|
-| Where(Expression\<Func\<T, bool>> expression)| 把Query中查询条件置为当前查询条件,如Where(x=>x.Id>1)|
-| WhereWithAnd(Expression\<Func\<T, bool>> expression)| 把Query中查询条件以And方式连接当前查询条件 |
-| WhereWithOr(Expression\<Func\<T, bool>> expression)	| 把Query中查询条件以Or方式连接当前查询条件 |
-| WhereReset ()	 	|把Query中查询条件重置|
-| OrderBy\<TKey> (Expression\<Func\<T, TKey>> expression)	 	|把Query中排序替换为当前字段正序排序,如OrderBy(x=>x.Id)|
-| OrderByDescending\<TKey> (Expression\<Func\<T, TKey>> expression)	 	| 把Query中排序置为当前字段正序排序,如OrderByDescending(x=>x.Id)	|
-| OrderByCatch\<TKey> (Expression\<Func\<T, TKey>> expression)	 	| 把Query中排序连接当前字段正序排序|
-| OrderByDescendingCatch\<TKey> (Expression\<Func\<T, TKey>> expression)	 	| 把Query中排序连接当前字段倒序排序|
-| OrderByReset()	 	| 把Query中排序重置|
-| OrderByRandom()	 	| 把Query中排序置为随机排序|
-| Take(int count)	 	| 设定Query输出结果的数量|
-| Skip(int count)	 	| 设定Query输出结果需要跳过的数量|
-| Range(int from, int to)	 	| 设定Query输出结果的从from位到to位|
-| PageSize(int page, int size)	 	| 设定Query输出结果的分页结果,page:从1开始页数,size:每页数量|
-| RangeReset()	 	| 把Query中输出结果范围重置|
+| Where(Expression\<Func\<T, bool>> expression)| 把IQuery中查询条件置为当前查询条件,如Where(x=>x.Id>1)|
+| WhereWithAnd(Expression\<Func\<T, bool>> expression)| 把IQuery中查询条件以And方式连接当前查询条件 |
+| WhereWithOr(Expression\<Func\<T, bool>> expression)	| 把IQuery中查询条件以Or方式连接当前查询条件 |
+| WhereReset ()	 	|把IQuery中查询条件重置|
+| OrderBy\<TKey> (Expression\<Func\<T, TKey>> expression)	 	|把IQuery中排序替换为当前字段正序排序,如OrderBy(x=>x.Id)|
+| OrderByDescending\<TKey> (Expression\<Func\<T, TKey>> expression)	 	| 把IQuery中排序置为当前字段正序排序,如OrderByDescending(x=>x.Id)	|
+| OrderByCatch\<TKey> (Expression\<Func\<T, TKey>> expression)	 	| 把IQuery中排序连接当前字段正序排序|
+| OrderByDescendingCatch\<TKey> (Expression\<Func\<T, TKey>> expression)	 	| 把IQuery中排序连接当前字段倒序排序|
+| OrderByReset()	 	| 把IQuery中排序重置|
+| OrderByRandom()	 	| 把IQuery中排序置为随机排序|
+| Take(int count)	 	| 设定IQuery输出结果的数量|
+| Skip(int count)	 	| 设定IQuery输出结果需要跳过的数量|
+| Range(int from, int to)	 	| 设定IQuery输出结果的从from位到to位|
+| PageSize(int page, int size)	 	| 设定IQuery输出结果的分页结果,page:从1开始页数,size:每页数量|
+| RangeReset()	 	| 把IQuery中输出结果范围重置|
 | SetDistinct(bool distinct) | 设定是否使用Distinct方式输出结果|
 | ToList()	| 结果以List<T>的方式输出	|
 | ToArray()	| 结果以T[]的方式输出	|
 | First()	| 输出的查询结果的首个数据结果对象,如无数据则为null	|
 | ElementAt(int index)| 输出的查询结果的指定位数数据结果对象,如无数据则为null	|
-| Exists	| 判断该Query是否有数据	|
-| Count	| 返回该Query的数据长度,返回类型为int|
-| LongCount		| 返回该Query的数据长度,返回类型为long|
+| Exists	| 判断该IQuery是否有数据	|
+| Count	| 返回该IQuery的数据长度,返回类型为int|
+| LongCount		| 返回该IQuery的数据长度,返回类型为long|
 
 
 ####全查询
@@ -358,6 +421,24 @@ var users2 = context.Query<TeUser> ()
 				.ToList ();
 ```
 
+使用`IQuery<T>.Select(lambda)`查询时指定字段输出新的结构类,支持匿名类输出,使用Lambda表达式中的new方式定义新结构类.
+
+```csharp
+List<TeUserSimple> users = context.Query<TeUser> ()
+				.Select (x => new TeUserSimple () {
+					Id = x.Id,
+					Account = x.Account,
+					LevelId = x.LevelId,
+					RegTime = x.RegTime})
+				.ToList ();
+```
+查询单字段列表
+
+```csharp
+List<int> list = context.Query<TeUser> ().SelectField (x => x.Id).ToList ();
+```
+
+
 ###查询批量更新
 ***
 使用`IQuery<T>.Update(lambda)`对查询数据进行批量更新操作,以lambda表达式中的new方式定义数据的更新字段与更新内容,左侧为更新字段名,右侧为更新内容,内容可为原字段.
@@ -407,4 +488,178 @@ context.Query<TeDataLog> ().SelectInsert (x => new TeDataLogHistory () {
 				RequestUrl = x.RequestUrl,
 				CheckId = 3,
 });
+```
+
+<h2 id="aggregate">汇总统计数据</h2>
+使用`IQuery<T>.GroupBy<K>(lambda)`进行汇总统计数据,lambda表达式中的new方式定义数据的统计字段与汇总函数,输出类型K可以为匿名类. GroupBy函数返回`IAggregate<K>`接口,用于后续处理.
+
+主要汇总方法
+
+| 方法         	 	| 说明		|
+|:----------------	|:-----	|
+| Having(Expression\<Func\<K, bool>> expression)| 把IAggreate中过滤条件置为当前过滤条件,如Having(x=>x.Count>1)|
+| HavingWithAnd(Expression\<Func\<K, bool>> expression)| 把IAggreate中过滤条件以And方式连接当前过滤条件 |
+| HavingWithOr(Expression\<Func\<K, bool>> expression)	| 把IAggreate中查询条件以Or方式连接当前过滤条件 |
+| HavingReset ()	 	|把IAggreate中过滤条件重置|
+| OrderBy\<KKey> (Expression\<Func\<K, TKey>> expression)	 	|把IAggreate中排序替换为当前字段正序排序,如OrderBy(x=>x.Id)|
+| OrderByDescending\<KKey> (Expression\<Func\<K, TKey>> expression)	 	| 把IAggreate中排序置为当前字段正序排序,如OrderByDescending(x=>x.Id)	|
+| OrderByCatch\<KKey> (Expression\<Func\<K, TKey>> expression)	 	| 把IAggreate中排序连接当前字段正序排序|
+| OrderByDescendingCatch\<KKey> (Expression\<Func\<K, TKey>> expression)	 	| 把IAggreate中排序连接当前字段倒序排序|
+| OrderByReset()	 	| 把IAggreate中排序重置|
+| OrderByRandom()	 	| 把IAggreate中排序置为随机排序|
+| Take(int count)	 	| 设定IAggreate输出结果的数量|
+| Skip(int count)	 	| 设定IAggreate输出结果需要跳过的数量|
+| Range(int from, int to)	 	| 设定IAggreate输出结果的从from位到to位|
+| PageSize(int page, int size)	 	| 设定IAggreate输出结果的分页结果,page:从1开始页数,size:每页数量|
+| RangeReset()	 	| 把IAggreate中输出结果范围重置|
+| ToList()	| 结果以List<K>的方式输出	|
+| ToArray()	| 结果以K[]的方式输出	|
+| First()	| 输出的汇总结果的首个数据结果对象,如无数据则为null	|
+
+###汇总函数
+
+汇总函数由`Function`类的静态函数实现
+
+| 函数         	 					| 说明	|
+|:-------------------------------	|:-----|
+| Count（）							|数据行计数汇总,返回int类型结果|
+| LongCount（）						|数据行计数汇总,返回long类型结果|
+| CountCondition（condition）		|条件判断该数据行计数汇总,返回int类型结果|
+| LongCountCondition（condition）	|条件判断该数据行计数汇总,返回long类型结果|
+| Count (field) 						|指定字段计数汇总,返回int类型结果|
+| LongCount (field)					|指定字段计数汇总,返回long类型结果|
+| DistinctCount (field)				|指定字段去重复后计数汇总,返回int类型结果|
+| DistinctLongCount	(field)		|指定字段去重复后计数汇总,返回long类型结果|
+| Sum (field)							|指定字段数值累加汇总,返回汇总字段类型结果|
+| LongSum	(field)					|指定字段数值累加汇总,返回long类型结果|
+| DistinctSum	 (field)				|指定字段去重复后累加汇总,汇总字段类型结果|
+| DistinctLongSum (field)			|指定字段去重复后累加汇总, long类型结果|
+| Avg (field)							|指定字段数值平均值汇总,返回double类型结果|
+| DistinctAvg	 (field)				|指定字段去重复后数值平均值汇总,返回double类型结果|
+| Max (field)							|指定字段的最大值|
+| Min (field)							|指定字段的最小最|
+
+
+####数据行计数汇总
+
+```csharp
+//普通汇总
+List<LevelIdAgg> list = context.Query<TeUser> ()
+					.Where (x => x.Id >= 5)
+					.GroupBy (x => new LevelIdAgg () {
+								LevelId = x.LevelId,
+								Data = Function.Count ()
+					}).ToList ();
+//使用匿名类汇总
+var list = context.Query<TeUser> ()
+					.Where (x => x.Id >= 5)
+					.GroupBy (x => new {
+								LevelId = x.LevelId,
+								Data = Function.Count ()
+					}).ToList ();
+//条件判断汇总
+var list = context.Query<TeUser> ()
+					.Where (x => x.Id >= 5)
+					.GroupBy (x => new {
+								LevelId = x.LevelId,
+								Valid = Function.CountCondition (x.Status = 1),
+								Invalid = Function.CountCondition (x.Status != 1)
+					}).ToList ();
+
+```
+####指定字段计数汇总
+
+```csharp
+//统计指定字段
+List<LevelIdAgg> list = context.Query<TeUser> ()
+					 .GroupBy (x => new LevelIdAgg_T () {
+							LevelId = x.LevelId,
+							Data = Function.Count (x.Area)
+					}).ToList ();
+//条件判断统计指定字段
+var list = context.Query<TeUser> ()
+					.Where (x => x.Id >= 5)
+					.GroupBy (x => new {
+								LevelId = x.LevelId,
+								Valid = Function.Count (x.Status = 1 ? x.Area : null),
+								Invalid = Function.Count (x.Status != 1 ? x.Area : null)
+					}).ToList ();
+
+```
+
+###汇总数据过滤(Having)
+使用`IAggreate<K>.Having(lambda)`方法加入汇总条件,对汇总数据做二次过滤,查询参数为Lambda表达式,有Having,HavingWithAnd,HavingWithOr,HavingReset四个方法
+
+```csharp
+List<LevelIdAgg> list = context.Query<TeUser> ()
+			.GroupBy (x => new LevelIdAgg () {
+				LevelId = x.LevelId,
+				Data = Function.Sum (x.LoginTimes)
+			})
+			.Having (y => y.Data > 15)
+			.ToList ();
+```
+###汇总数据排序(OrderBy)
+使用`IAggreate<K>.OrderBy(lambda)`方法加入汇总条件,查询参数为Lambda表达式,有OrderBy, OrderByDescending,OrderByCatch,OrderByDescendingCatch, OrderByReset,OrderByRandom六个方法
+
+```csharp
+//汇总字段排序
+List<LevelIdAgg> list = context.Query<TeUser> ()
+			.GroupBy (x => new LevelIdAgg () {
+				LevelId = x.LevelId,
+				Data = Function.Count ()
+			})
+			.OrderBy (x => x.LevelId)
+			.ToList ();
+//汇总结果排序
+List<LevelIdAgg> list = context.Query<TeUser> ()
+			.GroupBy (x => new LevelIdAgg () {
+				LevelId = x.LevelId,
+				Data = Function.Count ()
+			})
+			.OrderBy (x => x.Data)
+			.ToList ();
+```
+
+###汇总字段扩展
+汇总数据时经常需要指定字段里的某部分数据进行提出汇总,例如从时间字段提出日期统计,可以使用字段扩展方式进行提出汇总.详见
+[字段扩展](#field_extend)
+
+####日期类统计
+
+```csharp
+//Date统计
+List<RegDateAgg> list = context.Query<TeUser> ()
+				.GroupBy (x => new RegDateAgg () {
+					RegDate = x.RegTime.Date,
+					Data = Function.Count ()
+				}).ToList ();
+//日期格式化统计
+List<RegDateFormatAgg> list = context.Query<TeUser> ()
+				.GroupBy (x => new RegDateFormatAgg () {
+					RegDateFormat = x.RegTime.ToString("yyyy-MM-dd"),
+					Data = Function.Count ()
+				}).ToList ();	
+//年统计
+List<NumDataAgg> list = context.Query<TeUser> ()
+				.GroupBy (x => new NumDataAgg () {
+					Name = x.RegTime.Year,
+					Data = Function.Count ()
+				}).ToList ();	
+```
+####字符串类统计
+
+```csharp
+//截取字符串统计
+List<StringDataAgg> list = context.Query<TeUser> ().
+				GroupBy (x => new StringDataAgg () {
+					Name = x.Account.Substring (0, 5),
+					Data = Function.Count ()
+				}).ToList ();
+//字符串长度统计
+List<NumDataAgg> list = context.Query<TeUser> ().
+				GroupBy (x => new NumDataAgg () {
+					Name = x.Account.Length,
+					Data = Function.Count ()
+				}).ToList ();
 ```

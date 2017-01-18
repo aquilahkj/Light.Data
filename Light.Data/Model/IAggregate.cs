@@ -70,10 +70,16 @@ namespace Light.Data
 		IAggregate<K> OrderByRandom ();
 
 		/// <summary>
-		/// Get data list.
+		/// To the list.
 		/// </summary>
 		/// <returns>The list.</returns>
 		List<K> ToList ();
+
+		/// <summary>
+		/// To the array.
+		/// </summary>
+		/// <returns>The array.</returns>
+		K [] ToArray ();
 
 		/// <summary>
 		/// Get first instance.
