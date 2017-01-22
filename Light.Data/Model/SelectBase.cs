@@ -72,6 +72,8 @@ namespace Light.Data
 
 		public abstract K First ();
 
+		public abstract K ElementAt (int index);
+
 		public abstract IEnumerator<K> GetEnumerator ();
 
 		public abstract List<K> ToList ();

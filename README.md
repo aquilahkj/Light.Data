@@ -144,7 +144,7 @@ BatchDelete<T>(IEnumerable<T> datas, int batchCount = 10)
 对增删改多个操作需要在同一事务中做操作,通过`DataContext`的`CreateTransDataContext`方法生成事务`TransDataContext`,并使用其事务方法进行事务操作
 
 * BeginTrans 开始事务,每次事务开始前需执行
-* CommitTrans 提交事务,在using作用域中如果只有一次提交,可不需执行
+* CommitTrans 提交事务,提交后该事务才完成
 * RollbackTrans 回滚事务,在using作用域逻辑上需要回滚才执行,抛异常时会自动回滚
 
 
@@ -157,6 +157,7 @@ using (TransDataContext trans = context.CreateTransDataContext ()) {
 		trans.Update(user1);
 		TeUser user2 = trans.SelectSingleFromId<TeUser> (4);
 		trans.Delete(user2);
+		trans.CommitTrans ();
 }
 //多次提交
 using (TransDataContext trans = context.CreateTransDataContext ()) {
@@ -178,6 +179,9 @@ using (TransDataContext trans = context.CreateTransDataContext ()) {
 		trans.Insert (user1);
 		if(user1.Id > 5){
 			trans.RollbackTrans ();
+		}
+		else{
+			trans.CommitTrans ();
 		}
 }
 ```
@@ -663,3 +667,4 @@ List<NumDataAgg> list = context.Query<TeUser> ().
 					Data = Function.Count ()
 				}).ToList ();
 ```
+

@@ -88,7 +88,19 @@ namespace Light.Data
 
 		public override K First ()
 		{
-			object item = _context.QueryEntityDataFirst (_mapping, _query, _order, 0, _level);
+			object item = _context.QueryEntityDataFirst (_mapping, _selector, _query, _order, 0, _level);
+			if (item != null) {
+				object obj = _dele.DynamicInvoke (item);
+				return obj as K;
+			}
+			else {
+				return null;
+			}
+		}
+
+		public override K ElementAt (int index)
+		{
+			object item = _context.QueryEntityDataFirst (_mapping, _selector, _query, _order, index, _level);
 			if (item != null) {
 				object obj = _dele.DynamicInvoke (item);
 				return obj as K;

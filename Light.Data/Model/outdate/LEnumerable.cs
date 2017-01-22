@@ -385,7 +385,7 @@ namespace Light.Data
 		/// <returns>instance.</returns>
 		public T Single ()
 		{
-			return _context.QueryEntityDataFirst (_mapping, _query, _order, 0, _level) as T;
+			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -395,7 +395,7 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.QueryEntityDataFirst (_mapping, _query, _order, index, _level) as T;
+			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>

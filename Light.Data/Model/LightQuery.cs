@@ -61,7 +61,7 @@ namespace Light.Data
 		internal LightQuery (DataContext dataContext)
 			: base (dataContext)
 		{
-			
+
 		}
 
 		#region LQuery<T> 成员
@@ -219,12 +219,12 @@ namespace Light.Data
 
 		public override T First ()
 		{
-			return _context.QueryEntityDataFirst (_mapping, _query, _order, 0, _level) as T;
+			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, 0, _level) as T;
 		}
 
 		public override T ElementAt (int index)
 		{
-			return _context.QueryEntityDataFirst (_mapping, _query, _order, index, _level) as T;
+			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, index, _level) as T;
 		}
 
 		public override bool Exists {
@@ -251,13 +251,13 @@ namespace Light.Data
 
 		#endregion
 
-		public override int Insert<K> () 
+		public override int Insert<K> ()
 		{
 			DataTableEntityMapping insertMapping = DataEntityMapping.GetTableMapping (typeof (K));
 			return this._context.SelectInsert (insertMapping, _mapping, _query, _order, _level);
 		}
 
-		public override int SelectInsert<K> (Expression<Func<T, K>> expression) 
+		public override int SelectInsert<K> (Expression<Func<T, K>> expression)
 		{
 			InsertSelector selector = LambdaExpressionExtend.CreateInsertSelector (expression);
 			return this._context.SelectInsert (selector, _mapping, _query, _order, _distinct, _level);
@@ -316,7 +316,7 @@ namespace Light.Data
 			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, lightQuery, onExpression);
 		}
 
-		public override IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression) 
+		public override IJoinTable<T, T1> Join<T1> (Expression<Func<T, T1, bool>> onExpression)
 		{
 			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
 			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, lightQuery, onExpression);
@@ -331,7 +331,7 @@ namespace Light.Data
 			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, queryBase, onExpression);
 		}
 
-		public override IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) 
+		public override IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
 		{
 			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
 			if (queryExpression != null) {
@@ -340,13 +340,13 @@ namespace Light.Data
 			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, lightQuery, onExpression);
 		}
 
-		public override IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression) 
+		public override IJoinTable<T, T1> LeftJoin<T1> (Expression<Func<T, T1, bool>> onExpression)
 		{
 			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
 			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, lightQuery, onExpression);
 		}
 
-		public override IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression) 
+		public override IJoinTable<T, T1> RightJoin<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
 		{
 			LightQuery<T1> lightQuery = new LightQuery<T1> (_context);
 			if (queryExpression != null) {
@@ -388,7 +388,7 @@ namespace Light.Data
 			return new LightJoinTable<T, T1> (this, JoinType.InnerJoin, aggregateBase, onExpression);
 		}
 
-		public override IJoinTable<T, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) 
+		public override IJoinTable<T, T1> LeftJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
 		{
 			AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
 			if (aggregateBase == null) {
@@ -397,7 +397,7 @@ namespace Light.Data
 			return new LightJoinTable<T, T1> (this, JoinType.LeftJoin, aggregateBase, onExpression);
 		}
 
-		public override IJoinTable<T, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression) 
+		public override IJoinTable<T, T1> RightJoin<T1> (IAggregate<T1> aggregate, Expression<Func<T, T1, bool>> onExpression)
 		{
 			AggregateBase<T1> aggregateBase = aggregate as AggregateBase<T1>;
 			if (aggregateBase == null) {

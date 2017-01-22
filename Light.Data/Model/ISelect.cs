@@ -22,6 +22,13 @@ namespace Light.Data
 		K First ();
 
 		/// <summary>
+		/// Elements at index.
+		/// </summary>
+		/// <returns>The <see cref="!:K"/>.</returns>
+		/// <param name="index">Index.</param>
+		K ElementAt (int index);
+
+		/// <summary>
 		/// Inner Join table with specified queryExpression and onExpression.
 		/// </summary>
 		/// <param name="queryExpression">Query expression.</param>

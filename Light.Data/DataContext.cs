@@ -799,7 +799,7 @@ namespace Light.Data
 				query = QueryExpression.And (query, info == primaryKeys [i]);
 				i++;
 			}
-			return QueryEntityDataFirst (mapping, query, null, 0, SafeLevel.None) as T;
+			return QueryEntityDataFirst (mapping, null, query, null, 0, SafeLevel.None) as T;
 		}
 
 		/// <summary>
@@ -859,7 +859,7 @@ namespace Light.Data
 			}
 			DataFieldInfo idfield = new DataFieldInfo (dtmapping.IdentityField);
 			QueryExpression query = idfield == id;
-			return QueryEntityDataFirst (dtmapping, query, null, 0, SafeLevel.None) as T;
+			return QueryEntityDataFirst (dtmapping, null, query, null, 0, SafeLevel.None) as T;
 		}
 
 		/// <summary>
@@ -997,11 +997,11 @@ namespace Light.Data
 			return target;
 		}
 
-		internal object QueryEntityDataFirst (DataEntityMapping mapping, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		internal object QueryEntityDataFirst (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, int index, SafeLevel level)
 		{
 			object target = null;
 			Region region = new Region (index, 1);
-			foreach (object obj in QueryEntityData (mapping, null, query, order, false, region, level)) {
+			foreach (object obj in QueryEntityData (mapping, selector, query, order, false, region, level)) {
 				target = obj;
 				break;
 			}
