@@ -83,7 +83,7 @@ namespace Light.Data
 					}
 					else {
 						throw new LightDataException (string.Format (RE.CanNotFindFieldInfoViaSpecialPath, path));
-				}
+					}
 				}
 			}
 			return selector;

@@ -57,6 +57,8 @@ namespace Light.Data
 			get;
 		}
 
+		public abstract IAggregateFunction<T> AggregateFunction ();
+
 		public abstract bool Exists {
 			get;
 		}

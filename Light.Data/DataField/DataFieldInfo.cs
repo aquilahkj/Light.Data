@@ -10,6 +10,7 @@ namespace Light.Data
 		/// <summary>
 		/// Create the specified name.
 		/// </summary>
+		/// <returns>The create.</returns>
 		/// <param name="name">Name.</param>
 		public static DataFieldInfo<T> Create (string name)
 		{
@@ -31,6 +32,11 @@ namespace Light.Data
 	/// </summary>
 	public partial class DataFieldInfo : BasicFieldInfo
 	{
+		/// <summary>
+		/// Creates the alias table info.
+		/// </summary>
+		/// <returns>The alias table info.</returns>
+		/// <param name="aliasTableName">Alias table name.</param>
 		public virtual DataFieldInfo CreateAliasTableInfo (string aliasTableName)
 		{
 			DataFieldInfo info = this.MemberwiseClone () as DataFieldInfo;
@@ -44,69 +50,54 @@ namespace Light.Data
 
 		}
 
+		//internal DataFieldInfo (Type type, string name)
+		//	: this (DataEntityMapping.GetEntityMapping (type), name)
+		//{
+
+		//}
+
+		//internal DataFieldInfo (DataEntityMapping mapping, string name)
+		//	: base (mapping, name)
+		//{
+		//}
+
 		internal DataFieldInfo (DataEntityMapping mapping, bool customName, string name)
 			: base (mapping, customName, name)
 		{
-			//TableMapping = mapping;
-			//DataField = TableMapping.FindDataEntityField (name);
-			//if (DataField == null) {
-			//	DataField = new CustomFieldMapping (name, mapping);
-			//}
 		}
 
 		internal DataFieldInfo (DataEntityMapping mapping, bool customName, string name, string aliasTableName)
 			: base (mapping, customName, name)
 		{
-			//TableMapping = mapping;
-			//DataField = TableMapping.FindDataEntityField (name);
-			//if (DataField == null) {
-			//	DataField = new CustomFieldMapping (name, mapping);
-			//}
 			_aliasTableName = aliasTableName;
 		}
 
 		internal DataFieldInfo (DataEntityMapping mapping, DataFieldMapping fieldMapping)
 			: base (mapping, fieldMapping)
 		{
-			//TableMapping = mapping;
-			//DataField = fieldMapping;
-			//_aliasTableName = aliasTableName;
 		}
 
 		internal DataFieldInfo (DataEntityMapping mapping, DataFieldMapping fieldMapping, string aliasTableName)
 			: base (mapping, fieldMapping)
 		{
-			//TableMapping = mapping;
-			//DataField = fieldMapping;
 			_aliasTableName = aliasTableName;
 		}
 
 		internal DataFieldInfo (DataFieldMapping fieldMapping)
 			: base (fieldMapping.EntityMapping, fieldMapping)
 		{
-			//TableMapping = fieldMapping.EntityMapping;
-			//DataField = fieldMapping;
 		}
 
 		internal DataFieldInfo (DataFieldMapping fieldMapping, string aliasTableName)
 			: base (fieldMapping.EntityMapping, fieldMapping)
 		{
-			//TableMapping = fieldMapping.EntityMapping;
-			//DataField = fieldMapping;
 			_aliasTableName = aliasTableName;
 		}
 
 		internal DataFieldInfo (DataEntityMapping mapping)
 			: base (mapping)
 		{
-			//TableMapping = mapping;
 		}
-
-		//internal DataFieldInfo (DataEntityMapping mapping, string aliasTableName)
-		//{
-		//	TableMapping = mapping;
-		//	_aliasTableName = aliasTableName;
-		//}
 
 		/// <summary>
 		/// Gets the position.
@@ -133,15 +124,15 @@ namespace Light.Data
 			}
 		}
 
+		/// <summary>
+		/// The name of the alias table.
+		/// </summary>
 		protected string _aliasTableName;
 
 		internal virtual string AliasTableName {
 			get {
 				return _aliasTableName;
 			}
-			//set {
-			//	_aliasTableName = value;
-			//}
 		}
 
 		internal virtual string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
@@ -154,7 +145,6 @@ namespace Light.Data
 				return factory.CreateDataFieldSql (FieldName);
 			}
 		}
-
 
 		/// <summary>
 		/// Tos the parameter.

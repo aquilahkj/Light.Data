@@ -24,6 +24,10 @@ namespace Light.Data
 		GtAll,
 		LtAll,
 		GtAny,
-		LtAny
+		LtAny,
+		GtEqAll,
+		LtEqAll,
+		GtEqAny,
+		LtEqAny
 	}
 }

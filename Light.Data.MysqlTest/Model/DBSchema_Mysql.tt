@@ -19,7 +19,7 @@
 	excludeTable.Add("QcConfiguration");
 	excludeTable.Add("QcDataLog");
 	var eccludePrefix="Bus_";
-
+	//DbSetting.EnumTypeTrans=false;
     var dbSchema= new DataBaseSchema("CM_TEST", connection);
     List<Table> tableList=dbSchema.GetTables();
 #>
@@ -460,7 +460,7 @@ ORDER BY
             	this._columnComment=this._columnName;
             }
             Match match=Regex.Match(this._columnComment,"^#EnumType:(?<type>\\w+)#",RegexOptions.Compiled);
-          	if (match.Success) {
+          	if (match.Success && DbSetting.EnumTypeTrans) {
           		string enumType=match.Groups["type"].Value;
 				this._dataType=enumType;
 			}
@@ -682,6 +682,12 @@ ORDER BY
     }
 
     #endregion
+
+    public static class DbSetting
+    {
+    	public static bool EnumTypeTrans=true;
+    }
+  
 
     public static class StringUtil
     {

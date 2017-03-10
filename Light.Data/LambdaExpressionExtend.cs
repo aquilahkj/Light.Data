@@ -115,7 +115,7 @@ namespace Light.Data
 					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 				}
 				//}
-				throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
+				//throw new LambdaParseException (LambdaParseMessage.ExpressionTypeInvalid);
 			}
 			catch (Exception ex) {
 				throw new LightDataException (string.Format (RE.ParseExpressionError, "select", expression, ex.Message), ex);
@@ -896,8 +896,8 @@ namespace Light.Data
 		private static SelectModel ParseSelectModel (MemberInitExpression expression, SingleParameterLambdaState state)
 		{
 			DataEntityMapping entityMapping = state.MainMapping;
-			SpecialCustomMapping arrgregateMapping = SpecialCustomMapping.GetAggregateMapping (expression.Type);
-			SelectModel model = new SelectModel (entityMapping, arrgregateMapping);
+			SpecialCustomMapping customMapping = SpecialCustomMapping.GetCustomMapping (expression.Type);
+			SelectModel model = new SelectModel (entityMapping, customMapping);
 			if (expression.Bindings != null && expression.Bindings.Count > 0) {
 				foreach (MemberBinding binding in expression.Bindings) {
 					MemberAssignment ass = binding as MemberAssignment;
@@ -934,7 +934,7 @@ namespace Light.Data
 		private static SelectModel ParseSelectModel (NewExpression expression, SingleParameterLambdaState state)
 		{
 			DataEntityMapping entityMapping = state.MainMapping;
-			DynamicCustomMapping arrgregateMapping = DynamicCustomMapping.GetAggregateMapping (expression.Type);
+			DynamicCustomMapping arrgregateMapping = DynamicCustomMapping.GetCustomMapping (expression.Type);
 			SelectModel model = new SelectModel (entityMapping, arrgregateMapping);
 			if (expression.Arguments != null && expression.Arguments.Count > 0) {
 				int index = 0;
@@ -969,7 +969,7 @@ namespace Light.Data
 		private static AggregateModel ParseAggregateModel (MemberInitExpression expression, SingleParameterLambdaState state)
 		{
 			DataEntityMapping entityMapping = state.MainMapping;
-			SpecialCustomMapping arrgregateMapping = SpecialCustomMapping.GetAggregateMapping (expression.Type);
+			SpecialCustomMapping arrgregateMapping = SpecialCustomMapping.GetCustomMapping (expression.Type);
 			AggregateModel model = new AggregateModel (entityMapping, arrgregateMapping);
 			if (expression.Bindings != null && expression.Bindings.Count > 0) {
 				foreach (MemberBinding binding in expression.Bindings) {
@@ -1007,7 +1007,7 @@ namespace Light.Data
 		private static AggregateModel ParseAggregateModel (NewExpression expression, SingleParameterLambdaState state)
 		{
 			DataEntityMapping entityMapping = state.MainMapping;
-			DynamicCustomMapping arrgregateMapping = DynamicCustomMapping.GetAggregateMapping (expression.Type);
+			DynamicCustomMapping arrgregateMapping = DynamicCustomMapping.GetCustomMapping (expression.Type);
 			AggregateModel model = new AggregateModel (entityMapping, arrgregateMapping);
 			if (expression.Arguments != null && expression.Arguments.Count > 0) {
 				int index = 0;
@@ -1538,7 +1538,9 @@ namespace Light.Data
 				}
 				return new LambdaMathFunctionDataFieldInfo (mainFieldInfo.TableMapping, mathFunction, argObjects);
 			}
-			throw new LambdaParseException (LambdaParseMessage.MethodExpressionMethodUnsupport, "Math", method.Name);
+			else {
+				throw new LambdaParseException (LambdaParseMessage.MethodExpressionMethodUnsupport, "Math", method.Name);
+			}
 		}
 
 		private static DataFieldInfo ParseStaticStringFunctionDataFieldInfo (MethodInfo method, DataFieldInfo mainFieldInfo, object [] argObjects, LambdaState state)
@@ -1631,8 +1633,6 @@ namespace Light.Data
 
 			ReadOnlyCollection<Expression> paramExpressions = expression.Arguments;
 			DataFieldInfo data = null;
-			//ParameterInfo [] infos = method.GetParameters ();
-
 			switch (method.Name) {
 			case "Exists": {
 					UnaryExpression unaryExpresion = paramExpressions [0] as UnaryExpression;
@@ -1649,6 +1649,89 @@ namespace Light.Data
 					data = new LambdaExistsDataFieldInfo (mstate.MainMapping, query, true);
 				}
 				break;
+			case "In": {
+					DataFieldInfo fieldInfo = null;
+					if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+					}
+					UnaryExpression unaryExpresion = paramExpressions [1] as UnaryExpression;
+					if (unaryExpresion == null) {
+						throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+					}
+					LambdaExpression lambdaExpresion = unaryExpresion.Operand as LambdaExpression;
+					if (lambdaExpresion == null) {
+						throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+					}
+					RelateParameterLambdaState mstate = new RelateParameterLambdaState (lambdaExpresion.Parameters [0], state);
+					DataFieldInfo selectFieldInfo = null;
+					if (!ParseDataFieldInfo (lambdaExpresion.Body, mstate, out selectFieldInfo)) {
+						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+					}
+
+					QueryExpression query = null;
+					if (paramExpressions.Count == 3) {
+						UnaryExpression unaryExpresion1 = paramExpressions [2] as UnaryExpression;
+						if (unaryExpresion1 == null) {
+							throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+						}
+						LambdaExpression lambdaExpresion1 = unaryExpresion1.Operand as LambdaExpression;
+						if (lambdaExpresion == null) {
+							throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+						}
+						query = ResolveQueryExpression (lambdaExpresion1.Body, mstate);
+						query.MutliQuery = state.MutliEntity;
+					}
+					data = new LambdaInQueryDataFieldInfo (mstate.MainMapping, fieldInfo, selectFieldInfo, query, true);
+				}
+				break;
+			case "GtAll":
+			case "LtAll":
+			case "GtAny":
+			case "LtAny":
+			case "GtEqAll":
+			case "LtEqAll":
+			case "GtEqAny":
+			case "LtEqAny": {
+					QueryCollectionPredicate predicate;
+					if (Enum.TryParse<QueryCollectionPredicate> (method.Name, out predicate)) {
+						DataFieldInfo fieldInfo = null;
+						if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
+							throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+						}
+						UnaryExpression unaryExpresion = paramExpressions [1] as UnaryExpression;
+						if (unaryExpresion == null) {
+							throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+						}
+						LambdaExpression lambdaExpresion = unaryExpresion.Operand as LambdaExpression;
+						if (lambdaExpresion == null) {
+							throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+						}
+						RelateParameterLambdaState mstate = new RelateParameterLambdaState (lambdaExpresion.Parameters [0], state);
+						DataFieldInfo selectFieldInfo = null;
+						if (!ParseDataFieldInfo (lambdaExpresion.Body, mstate, out selectFieldInfo)) {
+							throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
+						}
+
+						QueryExpression query = null;
+						if (paramExpressions.Count == 3) {
+							UnaryExpression unaryExpresion1 = paramExpressions [2] as UnaryExpression;
+							if (unaryExpresion1 == null) {
+								throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+							}
+							LambdaExpression lambdaExpresion1 = unaryExpresion1.Operand as LambdaExpression;
+							if (lambdaExpresion == null) {
+								throw new LambdaParseException (LambdaParseMessage.ExtendExpressionError);
+							}
+							query = ResolveQueryExpression (lambdaExpresion1.Body, mstate);
+							query.MutliQuery = state.MutliEntity;
+						}
+						data = new LambdaSubQueryDataFieldInfo (mstate.MainMapping, fieldInfo, selectFieldInfo, predicate, query);
+					}
+					else {
+						throw new LambdaParseException (LambdaParseMessage.MethodExpressionMethodUnsupport, "ExtendQuery", method.Name);
+					}
+				}
+				break;
 			case "IsNull": {
 					DataFieldInfo fieldInfo = null;
 					if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
@@ -1657,14 +1740,6 @@ namespace Light.Data
 					data = new LambdaNullDataFieldInfo (fieldInfo, true);
 				}
 				break;
-				//case "IsNotNull": {
-				//		DataFieldInfo fieldInfo = null;
-				//		if (!ParseDataFieldInfo (paramExpressions [0], state, out fieldInfo)) {
-				//			throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
-				//		}
-				//		data = new LambdaNullDataFieldInfo (fieldInfo, false);
-				//	}
-				//	break;
 			}
 			return data;
 		}

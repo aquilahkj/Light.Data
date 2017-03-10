@@ -419,6 +419,13 @@
     <Compile Include="Model\ISelectField.cs" />
     <Compile Include="Model\SelectFieldBase.cs" />
     <Compile Include="Model\LightSelectField.cs" />
+    <Compile Include="Model\IAggregateFunction.cs" />
+    <Compile Include="Model\LightAggregateFunction.cs" />
+    <Compile Include="Model\AggregateFunctionBase.cs" />
+    <Compile Include="DataField\LambdaInQueryDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaInQueryExpression.cs" />
+    <Compile Include="DataField\LambdaSubQueryDataFieldInfo.cs" />
+    <Compile Include="Expressions\LambdaSubQueryExpression.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

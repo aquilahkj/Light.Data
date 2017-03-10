@@ -87,6 +87,13 @@ namespace Light.Data
 		K First ();
 
 		/// <summary>
+		/// Elements at index.
+		/// </summary>
+		/// <returns>The <see cref="!:K"/>.</returns>
+		/// <param name="index">Index.</param>
+		K ElementAt (int index);
+
+		/// <summary>
 		/// Set take datas count.
 		/// </summary>
 		/// <param name="count">Count.</param>

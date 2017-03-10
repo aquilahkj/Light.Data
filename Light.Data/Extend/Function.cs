@@ -140,6 +140,22 @@ namespace Light.Data
 		/// Count the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
+		public static int Count (ushort field)
+		{
+			return 0;
+		}
+		/// <summary>
+		/// Count the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static int Count (ushort? field)
+		{
+			return 0;
+		}
+		/// <summary>
+		/// Count the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
 		public static int Count (int field)
 		{
 			return 0;
@@ -156,6 +172,22 @@ namespace Light.Data
 		/// Count the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
+		public static int Count (uint field)
+		{
+			return 0;
+		}
+		/// <summary>
+		/// Count the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static int Count (uint? field)
+		{
+			return 0;
+		}
+		/// <summary>
+		/// Count the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
 		public static int Count (long field)
 		{
 			return 0;
@@ -165,6 +197,22 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="field">Field.</param>
 		public static int Count (long? field)
+		{
+			return 0;
+		}
+		/// <summary>
+		/// Count the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static int Count (ulong field)
+		{
+			return 0;
+		}
+		/// <summary>
+		/// Count the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static int Count (ulong? field)
 		{
 			return 0;
 		}
@@ -545,6 +593,26 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The count.</returns>
 		/// <param name="field">Field.</param>
+		public static int DistinctCount (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static int DistinctCount (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
 		public static int DistinctCount (int field)
 		{
 			return 0;
@@ -565,6 +633,26 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The count.</returns>
 		/// <param name="field">Field.</param>
+		public static int DistinctCount (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static int DistinctCount (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
 		public static int DistinctCount (long field)
 		{
 			return 0;
@@ -576,6 +664,26 @@ namespace Light.Data
 		/// <returns>The count.</returns>
 		/// <param name="field">Field.</param>
 		public static int DistinctCount (long? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static int DistinctCount (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static int DistinctCount (ulong? field)
 		{
 			return 0;
 		}
@@ -992,6 +1100,26 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The count.</returns>
 		/// <param name="field">Field.</param>
+		public static long LongCount (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Longs the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static long LongCount (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Longs the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
 		public static long LongCount (int field)
 		{
 			return 0;
@@ -1003,6 +1131,27 @@ namespace Light.Data
 		/// <returns>The count.</returns>
 		/// <param name="field">Field.</param>
 		public static long LongCount (int? field)
+		{
+			return 0;
+		}
+
+
+		/// <summary>
+		/// Longs the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static long LongCount (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Longs the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static long LongCount (uint? field)
 		{
 			return 0;
 		}
@@ -1023,6 +1172,27 @@ namespace Light.Data
 		/// <returns>The count.</returns>
 		/// <param name="field">Field.</param>
 		public static long LongCount (long? field)
+		{
+			return 0;
+		}
+
+
+		/// <summary>
+		/// Longs the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static long LongCount (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Longs the count.
+		/// </summary>
+		/// <returns>The count.</returns>
+		/// <param name="field">Field.</param>
+		public static long LongCount (ulong? field)
 		{
 			return 0;
 		}
@@ -1439,6 +1609,26 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The long count.</returns>
 		/// <param name="field">Field.</param>
+		public static long DistinctLongCount (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long count.
+		/// </summary>
+		/// <returns>The long count.</returns>
+		/// <param name="field">Field.</param>
+		public static long DistinctLongCount (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long count.
+		/// </summary>
+		/// <returns>The long count.</returns>
+		/// <param name="field">Field.</param>
 		public static long DistinctLongCount (int field)
 		{
 			return 0;
@@ -1459,6 +1649,26 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The long count.</returns>
 		/// <param name="field">Field.</param>
+		public static long DistinctLongCount (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long count.
+		/// </summary>
+		/// <returns>The long count.</returns>
+		/// <param name="field">Field.</param>
+		public static long DistinctLongCount (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long count.
+		/// </summary>
+		/// <returns>The long count.</returns>
+		/// <param name="field">Field.</param>
 		public static long DistinctLongCount (long field)
 		{
 			return 0;
@@ -1470,6 +1680,26 @@ namespace Light.Data
 		/// <returns>The long count.</returns>
 		/// <param name="field">Field.</param>
 		public static long DistinctLongCount (long? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long count.
+		/// </summary>
+		/// <returns>The long count.</returns>
+		/// <param name="field">Field.</param>
+		public static long DistinctLongCount (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long count.
+		/// </summary>
+		/// <returns>The long count.</returns>
+		/// <param name="field">Field.</param>
+		public static long DistinctLongCount (ulong? field)
 		{
 			return 0;
 		}
@@ -1810,6 +2040,24 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Sum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static uint Sum (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Sum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static uint? Sum (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
 		/// Longs the sum.
 		/// </summary>
 		/// <returns>The sum.</returns>
@@ -1830,6 +2078,26 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Longs the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong LongSum (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Longs the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong? LongSum (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
 		/// Sum the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
@@ -1843,6 +2111,24 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="field">Field.</param>
 		public static int? Sum (int? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Sum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static uint Sum (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Sum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static uint? Sum (uint? field)
 		{
 			return 0;
 		}
@@ -1868,6 +2154,26 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Longs the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong LongSum (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Longs the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong? LongSum (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
 		/// Sum the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
@@ -1885,6 +2191,23 @@ namespace Light.Data
 			return 0;
 		}
 
+		/// <summary>
+		/// Sum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ulong Sum (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Sum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ulong? Sum (ulong? field)
+		{
+			return 0;
+		}
 		/// <summary>
 		/// Sum the specified field.
 		/// </summary>
@@ -2132,6 +2455,26 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Distincts the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static uint DistinctSum (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static uint? DistinctSum (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
 		/// Distincts the long sum.
 		/// </summary>
 		/// <returns>The long sum.</returns>
@@ -2147,6 +2490,26 @@ namespace Light.Data
 		/// <returns>The long sum.</returns>
 		/// <param name="field">Field.</param>
 		public static long? DistinctLongSum (short? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long sum.
+		/// </summary>
+		/// <returns>The long sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong DistinctLongSum (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long sum.
+		/// </summary>
+		/// <returns>The long sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong? DistinctLongSum (ushort? field)
 		{
 			return 0;
 		}
@@ -2172,6 +2535,26 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Distincts the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static uint DistinctSum (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static uint? DistinctSum (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
 		/// Distincts the long sum.
 		/// </summary>
 		/// <returns>The long sum.</returns>
@@ -2192,6 +2575,26 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Distincts the long sum.
+		/// </summary>
+		/// <returns>The long sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong DistinctLongSum (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the long sum.
+		/// </summary>
+		/// <returns>The long sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong? DistinctLongSum (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
 		/// Distincts the sum.
 		/// </summary>
 		/// <returns>The sum.</returns>
@@ -2207,6 +2610,26 @@ namespace Light.Data
 		/// <returns>The sum.</returns>
 		/// <param name="field">Field.</param>
 		public static long? DistinctSum (long? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong DistinctSum (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the sum.
+		/// </summary>
+		/// <returns>The sum.</returns>
+		/// <param name="field">Field.</param>
+		public static ulong? DistinctSum (ulong? field)
 		{
 			return 0;
 		}
@@ -2477,6 +2900,24 @@ namespace Light.Data
 		/// Avg the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
+		public static double Avg (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Avg the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static double? Avg (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Avg the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
 		public static double Avg (int field)
 		{
 			return 0;
@@ -2495,6 +2936,24 @@ namespace Light.Data
 		/// Avg the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
+		public static double Avg (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Avg the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static double? Avg (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Avg the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
 		public static double Avg (long field)
 		{
 			return 0;
@@ -2505,6 +2964,24 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="field">Field.</param>
 		public static double? Avg (long? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Avg the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static double Avg (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Avg the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static double? Avg (ulong? field)
 		{
 			return 0;
 		}
@@ -2549,7 +3026,7 @@ namespace Light.Data
 		/// Avg the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
-		public static double Avg (decimal field)
+		public static decimal Avg (decimal field)
 		{
 			return 0;
 		}
@@ -2558,7 +3035,7 @@ namespace Light.Data
 		/// Avg the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
-		public static double? Avg (decimal? field)
+		public static decimal? Avg (decimal? field)
 		{
 			return 0;
 		}
@@ -2714,6 +3191,26 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The avg.</returns>
 		/// <param name="field">Field.</param>
+		public static double DistinctAvg (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the avg.
+		/// </summary>
+		/// <returns>The avg.</returns>
+		/// <param name="field">Field.</param>
+		public static double? DistinctAvg (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the avg.
+		/// </summary>
+		/// <returns>The avg.</returns>
+		/// <param name="field">Field.</param>
 		public static double DistinctAvg (int field)
 		{
 			return 0;
@@ -2734,6 +3231,26 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The avg.</returns>
 		/// <param name="field">Field.</param>
+		public static double DistinctAvg (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the avg.
+		/// </summary>
+		/// <returns>The avg.</returns>
+		/// <param name="field">Field.</param>
+		public static double? DistinctAvg (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the avg.
+		/// </summary>
+		/// <returns>The avg.</returns>
+		/// <param name="field">Field.</param>
 		public static double DistinctAvg (long field)
 		{
 			return 0;
@@ -2745,6 +3262,27 @@ namespace Light.Data
 		/// <returns>The avg.</returns>
 		/// <param name="field">Field.</param>
 		public static double? DistinctAvg (long? field)
+		{
+			return 0;
+		}
+
+
+		/// <summary>
+		/// Distincts the avg.
+		/// </summary>
+		/// <returns>The avg.</returns>
+		/// <param name="field">Field.</param>
+		public static double DistinctAvg (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Distincts the avg.
+		/// </summary>
+		/// <returns>The avg.</returns>
+		/// <param name="field">Field.</param>
+		public static double? DistinctAvg (ulong? field)
 		{
 			return 0;
 		}
@@ -2794,7 +3332,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The avg.</returns>
 		/// <param name="field">Field.</param>
-		public static double DistinctAvg (decimal field)
+		public static decimal DistinctAvg (decimal field)
 		{
 			return 0;
 		}
@@ -2804,7 +3342,7 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>The avg.</returns>
 		/// <param name="field">Field.</param>
-		public static double? DistinctAvg (decimal? field)
+		public static decimal? DistinctAvg (decimal? field)
 		{
 			return 0;
 		}
@@ -2969,6 +3507,24 @@ namespace Light.Data
 		/// Max the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
+		public static ushort Max (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Max the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ushort? Max (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Max the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
 		public static int Max (int field)
 		{
 			return 0;
@@ -2987,6 +3543,24 @@ namespace Light.Data
 		/// Max the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
+		public static uint Max (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Max the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static uint? Max (uint? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Max the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
 		public static long Max (long field)
 		{
 			return 0;
@@ -2997,6 +3571,24 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="field">Field.</param>
 		public static long? Max (long? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Max the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ulong Max (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Max the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ulong? Max (ulong? field)
 		{
 			return 0;
 		}
@@ -3241,6 +3833,24 @@ namespace Light.Data
 		/// Minimum the specified field.
 		/// </summary>
 		/// <param name="field">Field.</param>
+		public static ushort Min (ushort field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Minimum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ushort? Min (ushort? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Minimum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
 		public static int Min (int field)
 		{
 			return 0;
@@ -3251,6 +3861,25 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="field">Field.</param>
 		public static int? Min (int? field)
+		{
+			return 0;
+		}
+
+
+		/// <summary>
+		/// Minimum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static uint Min (uint field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Minimum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static uint? Min (uint? field)
 		{
 			return 0;
 		}
@@ -3269,6 +3898,24 @@ namespace Light.Data
 		/// </summary>
 		/// <param name="field">Field.</param>
 		public static long? Min (long? field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Minimum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ulong Min (ulong field)
+		{
+			return 0;
+		}
+
+		/// <summary>
+		/// Minimum the specified field.
+		/// </summary>
+		/// <param name="field">Field.</param>
+		public static ulong? Min (ulong? field)
 		{
 			return 0;
 		}

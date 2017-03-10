@@ -14,7 +14,7 @@ namespace Light.Data
 
 		static Dictionary<Type, SpecialCustomMapping> _defaultMapping = new Dictionary<Type, SpecialCustomMapping> ();
 
-		public static SpecialCustomMapping GetAggregateMapping (Type type)
+		public static SpecialCustomMapping GetCustomMapping (Type type)
 		{
 			Dictionary<Type, SpecialCustomMapping> mappings = _defaultMapping;
 			SpecialCustomMapping mapping;
@@ -31,8 +31,8 @@ namespace Light.Data
 
 		private static SpecialCustomMapping CreateMapping (Type type)
 		{
-			SpecialCustomMapping aggregateMapping = new SpecialCustomMapping (type);
-			return aggregateMapping;
+			SpecialCustomMapping mapping = new SpecialCustomMapping (type);
+			return mapping;
 		}
 
 		#endregion

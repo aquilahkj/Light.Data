@@ -72,12 +72,15 @@ namespace Light.Data
 		public override List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			foreach (object item in _context.QuerySingleField (_fieldInfo, typeof (K), _query, _order, _distinct, _region, _level)) {
-				if (item != null) {
-					list.Add ((K)item);
-				}
-				else {
-					list.Add (default (K));
+			IEnumerable ie = _context.QuerySingleField (_fieldInfo, typeof (K), _query, _order, _distinct, _region, _level);
+			if (ie != null) {
+				foreach (object item in ie) {
+					if (item != null) {
+						list.Add ((K)item);
+					}
+					else {
+						list.Add (default (K));
+					}
 				}
 			}
 			return list;
@@ -85,13 +88,30 @@ namespace Light.Data
 
 		public override K First ()
 		{
-			object item = _context.QuerySingleFieldFirst (_fieldInfo, typeof (K), _query, _order, _distinct, 0, _level);
-			if (item != null) {
-				return (K)item;
+			return ElementAt (0);
+			//object item = _context.QuerySingleFieldFirst (_fieldInfo, typeof (K), _query, _order, _distinct, 0, _level);
+			//if (item != null) {
+			//	return (K)item;
+			//}
+			//else {
+			//	return default (K);
+			//}
+		}
+
+		public override K ElementAt (int index)
+		{
+			K target = default (K);
+			Region region = new Region (index, 1);
+			IEnumerable ie = _context.QuerySingleField (_fieldInfo, typeof (K), _query, _order, false, region, _level);
+			if (ie != null) {
+				foreach (object item in ie) {
+					if (item != null) {
+						target = (K)item;
+					}
+					break;
+				}
 			}
-			else {
-				return default (K);
-			}
+			return target;
 		}
 	}
 }

@@ -48,6 +48,10 @@ namespace Light.Data
 			_queryCollectionPredicateDict [QueryCollectionPredicate.LtAll] = "< all";
 			_queryCollectionPredicateDict [QueryCollectionPredicate.GtAny] = "> any";
 			_queryCollectionPredicateDict [QueryCollectionPredicate.LtAny] = "< any";
+			_queryCollectionPredicateDict [QueryCollectionPredicate.GtEqAll] = ">= all";
+			_queryCollectionPredicateDict [QueryCollectionPredicate.LtEqAll] = "<= all";
+			_queryCollectionPredicateDict [QueryCollectionPredicate.GtEqAny] = ">= any";
+			_queryCollectionPredicateDict [QueryCollectionPredicate.LtEqAny] = "<= any";
 
 			_joinCollectionPredicateDict [JoinType.InnerJoin] = "inner join";
 			_joinCollectionPredicateDict [JoinType.LeftJoin] = "left join";

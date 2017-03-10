@@ -799,7 +799,17 @@ namespace Light.Data
 				query = QueryExpression.And (query, info == primaryKeys [i]);
 				i++;
 			}
-			return QueryEntityDataFirst (mapping, null, query, null, 0, SafeLevel.None) as T;
+
+			Region region = new Region (0, 1);
+			T target = default (T);
+			IEnumerable ie = QueryEntityData (mapping, null, query, null, false, region, SafeLevel.None);
+			if (ie != null) {
+				foreach (T item in ie) {
+					target = item;
+					break;
+				}
+			}
+			return target;
 		}
 
 		/// <summary>
@@ -859,7 +869,17 @@ namespace Light.Data
 			}
 			DataFieldInfo idfield = new DataFieldInfo (dtmapping.IdentityField);
 			QueryExpression query = idfield == id;
-			return QueryEntityDataFirst (dtmapping, null, query, null, 0, SafeLevel.None) as T;
+
+			Region region = new Region (0, 1);
+			T target = default (T);
+			IEnumerable ie = QueryEntityData (dtmapping, null, query, null, false, region, SafeLevel.None);
+			if (ie != null) {
+				foreach (T item in ie) {
+					target = item;
+					break;
+				}
+			}
+			return target;
 		}
 
 		/// <summary>
@@ -986,49 +1006,49 @@ namespace Light.Data
 			return QueryDataDefineReader (model.OutputMapping, command, commandData.InnerPage ? null : region, level, commandData.State);
 		}
 
-		internal object QuerySingleFieldFirst (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, bool distinct, int index, SafeLevel level)
-		{
-			object target = null;
-			Region region = new Region (index, 1);
-			foreach (object obj in QuerySingleField (fieldInfo, outputType, query, order, false, region, level)) {
-				target = obj;
-				break;
-			}
-			return target;
-		}
+		//internal object QuerySingleFieldFirst (DataFieldInfo fieldInfo, Type outputType, QueryExpression query, OrderExpression order, bool distinct, int index, SafeLevel level)
+		//{
+		//	object target = null;
+		//	Region region = new Region (index, 1);
+		//	foreach (object obj in QuerySingleField (fieldInfo, outputType, query, order, false, region, level)) {
+		//		target = obj;
+		//		break;
+		//	}
+		//	return target;
+		//}
 
-		internal object QueryEntityDataFirst (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, int index, SafeLevel level)
-		{
-			object target = null;
-			Region region = new Region (index, 1);
-			foreach (object obj in QueryEntityData (mapping, selector, query, order, false, region, level)) {
-				target = obj;
-				break;
-			}
-			return target;
-		}
+		//internal object QueryEntityDataFirst (DataEntityMapping mapping, ISelector selector, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		//{
+		//	object target = null;
+		//	Region region = new Region (index, 1);
+		//	foreach (object obj in QueryEntityData (mapping, selector, query, order, false, region, level)) {
+		//		target = obj;
+		//		break;
+		//	}
+		//	return target;
+		//}
 
-		internal object SelectDynamicAggregateFirst (AggregateModel group, QueryExpression query, QueryExpression having, OrderExpression order, int index, SafeLevel level)
-		{
-			object target = null;
-			Region region = new Region (index, 1);
-			foreach (object obj in QueryDynamicAggregate (group, query, having, order, region, level)) {
-				target = obj;
-				break;
-			}
-			return target;
-		}
+		//internal object SelectDynamicAggregateFirst (AggregateModel group, QueryExpression query, QueryExpression having, OrderExpression order, int index, SafeLevel level)
+		//{
+		//	object target = null;
+		//	Region region = new Region (index, 1);
+		//	foreach (object obj in QueryDynamicAggregate (group, query, having, order, region, level)) {
+		//		target = obj;
+		//		break;
+		//	}
+		//	return target;
+		//}
 
-		internal object SelectJoinDataFirst (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, int index, SafeLevel level)
-		{
-			object target = null;
-			Region region = new Region (index, 1);
-			foreach (object obj in QueryJoinData (mapping, selector, models, query, order, false, region, level)) {
-				target = obj;
-				break;
-			}
-			return target;
-		}
+		//internal object SelectJoinDataFirst (DataMapping mapping, ISelector selector, IJoinModel [] models, QueryExpression query, OrderExpression order, int index, SafeLevel level)
+		//{
+		//	object target = null;
+		//	Region region = new Region (index, 1);
+		//	foreach (object obj in QueryJoinData (mapping, selector, models, query, order, false, region, level)) {
+		//		target = obj;
+		//		break;
+		//	}
+		//	return target;
+		//}
 
 		internal object AggregateCount (DataEntityMapping mapping, QueryExpression query, SafeLevel level)
 		{
@@ -1059,6 +1079,21 @@ namespace Light.Data
 				}
 				else {
 					return obj;
+				}
+			}
+		}
+
+		internal object Aggregate (DataFieldInfo field, TypeCode typeCode, AggregateType aggregateType, QueryExpression query, bool distinct, SafeLevel level)
+		{
+			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+			CommandData commandData = _dataBase.Factory.CreateAggregateFunctionCommand (field, aggregateType, query, distinct, state);
+			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
+				object obj = ExecuteScalar (command, level);
+				if (Object.Equals (obj, DBNull.Value)) {
+					return null;
+				}
+				else {
+					return Convert.ChangeType (obj, typeCode);
 				}
 			}
 		}

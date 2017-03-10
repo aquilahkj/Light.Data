@@ -48,20 +48,20 @@ namespace Light.Data.Demo
 
 		public static void Main (string [] args)
 		{
-			//Test ();
-			long eqw = 5;
-			object ds = eqw;
-			object pp = Enum.ToObject (typeof (TESTENUM), ds);
-
-
 			DataContext context = DataContext.Create ("mysql");
 			CommandOutput output = new CommandOutput ();
 			output.UseConsoleOutput = true;
 			output.OutputFullCommand = true;
 
 			context.SetCommanfOutput (output);
-			string fsasa = Environment.CurrentDirectory;
 
+
+
+			//var mycount = context.Query<TeUser> ().AggregateFunction ().Count (x => x.Account);
+			//var jgy = context.Query<TeUser> ().AggregateFunction ().Count (x => x.LastLoginTime);
+
+			//var dsum = context.Query<TeUser> ().Where (x => x.Area == null).AggregateFunction ().Sum (x => x.Area);
+			//var gsum = context.Query<TeUser> ().Where (x => x.Area == null).AggregateFunction ().Sum (x => x.Area.Value);
 			//var dgg = context.Query<TeUser> ().QueryFieldList (x => x.CheckPoint);
 
 			//var dggs = context.Query<TeUser> ().SetDistinct (true).QueryFieldList (x => x.LevelId);
@@ -121,6 +121,9 @@ namespace Light.Data.Demo
 
 			//List<TeUser> users1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
 
+			List<TeUser> users1 = context.Query<TeUser> ().Where (x => !ExtendQuery.In<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > 10)).ToList ();
+
+			List<TeUser> users2 = context.Query<TeUser> ().Where (x => ExtendQuery.GtAll<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > 10)).ToList ();
 
 			//var uddf = context.Query<TeUser> ().Where (x => x.Id > 10).Select (x => x.Id);
 
@@ -134,6 +137,14 @@ namespace Light.Data.Demo
 			//					Count = 10
 			//				}).ToList ();
 
+			var users22 = context.Query<TeUser> ().Where (x => x.Id > 2 && x.Gender == GenderType.Male)
+							.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
+							.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
+								 .Where ((x, y, z) => ExtendQuery.In<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > x.Id))
+							.Select ((x, y, z) => new SGroub {
+								Date = x.RegTime.Date,
+								Count = 10
+							}).ToList ();
 
 			//string [] arr = new [] { "1", "2", "3" };
 			//List<string> dd = new List<string> ();
@@ -187,16 +198,16 @@ namespace Light.Data.Demo
 			//	.Select ((x, y, z) => x).ToList ();
 			//int? r = 1;
 
-			var dfxx = context.Query<TeUser> ().GroupBy (x => new {
-				Count = Function.Sum (x.LoginTimes)
-			}).First ().Count;
+			//var dfxx = context.Query<TeUser> ().GroupBy (x => new {
+			//	Count = Function.Sum (x.LoginTimes)
+			//}).First ().Count;
 
 
-			var df = context.Query<TeUser> ().GroupBy (x => new {
-				Date = x.RegTime.Date,
-				Count = Function.Count (),
-				CountID = Function.DistinctCount (x.Gender == GenderType.Female ? x.Id as int? : null)
-			}).Having (x => x.Count + 10 > 11).OrderBy (x => x.Count).ToList ();
+			//var df = context.Query<TeUser> ().GroupBy (x => new {
+			//	Date = x.RegTime.Date,
+			//	Count = Function.Count (),
+			//	CountID = Function.DistinctCount (x.Gender == GenderType.Female ? x.Id as int? : null)
+			//}).Having (x => x.Count + 10 > 11).OrderBy (x => x.Count).ToList ();
 
 			//var dg1 = context.Query<TeDataLog> ().Insert<TeDataLogHistory> ();
 

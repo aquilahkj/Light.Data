@@ -101,13 +101,16 @@ namespace Light.Data
 		public override List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			foreach (object item in _context.QueryJoinData (_mapping, _selector, _models, _query, _order, _distinct, _region, _level)) {
-				if (item != null) {
-					object obj = _dele.DynamicInvoke (item as object []);
-					list.Add (obj as K);
-				}
-				else {
-					list.Add (null);
+			IEnumerable ie = _context.QueryJoinData (_mapping, _selector, _models, _query, _order, _distinct, _region, _level);
+			if (ie != null) {
+				foreach (object item in ie) {
+					if (item != null) {
+						object obj = _dele.DynamicInvoke (item as object []);
+						list.Add (obj as K);
+					}
+					else {
+						list.Add (null);
+					}
 				}
 			}
 			return list;
@@ -115,14 +118,24 @@ namespace Light.Data
 
 		public override K First ()
 		{
-			object item = _context.SelectJoinDataFirst (_mapping, _selector, _models, _query, _order, 0, _level);
-			if (item != null) {
-				object obj = _dele.DynamicInvoke (item as object []);
-				return obj as K;
+			return ElementAt (0);
+		}
+
+		public override K ElementAt (int index)
+		{
+			K target = default (K);
+			Region region = new Region (index, 1);
+			IEnumerable ie = _context.QueryJoinData (_mapping, _selector, _models, _query, _order, _distinct, region, _level);
+			if (ie != null) {
+				foreach (object item in ie) {
+					if (item != null) {
+						object obj = _dele.DynamicInvoke (item as object []);
+						target = obj as K;
+					}
+					break;
+				}
 			}
-			else {
-				return null;
-			}
+			return target;
 		}
 
 		//public override IEnumerator<K> GetEnumerator ()

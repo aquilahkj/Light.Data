@@ -138,8 +138,10 @@ namespace Light.Data
 		{
 			List<K> list = new List<K> ();
 			IEnumerable ie = _context.QueryDynamicAggregate (_model, _query, _having, _order, _region, _level);
-			foreach (K item in ie) {
-				list.Add (item);
+			if (ie != null) {
+				foreach (K item in ie) {
+					list.Add (item);
+				}
 			}
 			return list;
 		}
@@ -151,7 +153,21 @@ namespace Light.Data
 
 		public override K First ()
 		{
-			return _context.SelectDynamicAggregateFirst (_model, _query, _having, _order, 0, _level) as K;
+			return ElementAt (0);
+		}
+
+		public override K ElementAt (int index)
+		{
+			K target = default (K);
+			Region region = new Region (index, 1);
+			IEnumerable ie = _context.QueryDynamicAggregate (_model, _query, _having, _order, region, _level);
+			if (ie != null) {
+				foreach (K item in ie) {
+					target = item;
+					break;
+				}
+			}
+			return target;
 		}
 
 		public override IAggregate<K> Take (int count)

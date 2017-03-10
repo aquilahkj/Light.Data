@@ -58,6 +58,8 @@ namespace Light.Data
 
 		public abstract K First ();
 
+		public abstract K ElementAt (int index);
+
 		public abstract IAggregate<K> Having (Expression<Func<K, bool>> expression);
 
 		public abstract IAggregate<K> HavingReset ();

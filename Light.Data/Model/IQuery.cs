@@ -152,6 +152,12 @@ namespace Light.Data
 		}
 
 		/// <summary>
+		/// Create aggregate function.
+		/// </summary>
+		/// <returns>The function.</returns>
+		IAggregateFunction<T> AggregateFunction ();
+
+		/// <summary>
 		/// To the list.
 		/// </summary>
 		/// <returns>The list.</returns>

@@ -18,7 +18,7 @@ namespace Light.Data
 
 		static Dictionary<Type, DynamicCustomMapping> _defaultMapping = new Dictionary<Type, DynamicCustomMapping> ();
 
-		public static DynamicCustomMapping GetAggregateMapping (Type type)
+		public static DynamicCustomMapping GetCustomMapping (Type type)
 		{
 			Dictionary<Type, DynamicCustomMapping> mappings = _defaultMapping;
 			DynamicCustomMapping mapping;
@@ -35,8 +35,8 @@ namespace Light.Data
 
 		private static DynamicCustomMapping CreateMapping (Type type)
 		{
-			DynamicCustomMapping aggregateMapping = new DynamicCustomMapping (type);
-			return aggregateMapping;
+			DynamicCustomMapping mapping = new DynamicCustomMapping (type);
+			return mapping;
 		}
 
 		#endregion

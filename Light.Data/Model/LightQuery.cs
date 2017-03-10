@@ -215,16 +215,31 @@ namespace Light.Data
 			}
 		}
 
+		public override IAggregateFunction<T> AggregateFunction ()
+		{
+			LightAggregateFunction<T> aggregate = new LightAggregateFunction<T> (_context, _query, _distinct, _level);
+			return aggregate;
+		}
+
 		#endregion
 
 		public override T First ()
 		{
-			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, 0, _level) as T;
+			return ElementAt (0);
 		}
 
 		public override T ElementAt (int index)
 		{
-			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, index, _level) as T;
+			T target = default (T);
+			Region region = new Region (index, 1);
+			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, false, region, _level);
+			if (ie != null) {
+				foreach (T item in ie) {
+					target = item;
+					break;
+				}
+			}
+			return target;
 		}
 
 		public override bool Exists {
@@ -237,8 +252,10 @@ namespace Light.Data
 		{
 			List<T> list = new List<T> ();
 			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, _distinct, _region, _level);
-			foreach (T item in ie) {
-				list.Add (item);
+			if (ie != null) {
+				foreach (T item in ie) {
+					list.Add (item);
+				}
 			}
 			return list;
 		}
@@ -286,26 +303,6 @@ namespace Light.Data
 		{
 			return new LightAggregate<T, K> (this, expression);
 		}
-
-		//public override IEnumerable<K> QuerySingleField<K> (Expression<Func<T, K>> expression)
-		//{
-		//	DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-		//	IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, _distinct, _region, _level);
-		//	foreach (K item in ie) {
-		//		yield return item;
-		//	}
-		//}
-
-		//public override List<K> QuerySingleFieldList<K> (Expression<Func<T, K>> expression)
-		//{
-		//	List<K> list = new List<K> ();
-		//	DataFieldInfo fieldInfo = LambdaExpressionExtend.ResolveSingleField (expression);
-		//	IEnumerable ie = _context.QuerySingleFiled (fieldInfo, typeof (K), _query, _order, _distinct, _region, _level);
-		//	foreach (K item in ie) {
-		//		list.Add (item);
-		//	}
-		//	return list;
-		//}
 
 		public override IJoinTable<T, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<T, T1, bool>> onExpression)
 		{

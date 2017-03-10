@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -73,41 +74,50 @@ namespace Light.Data
 		public override List<K> ToList ()
 		{
 			List<K> list = new List<K> ();
-			foreach (object item in _context.QueryEntityData (_mapping, _selector, _query, _order, _distinct, _region, _level)) {
-				if (item != null) {
-					object obj = _dele.DynamicInvoke (item);
-					list.Add (obj as K);
-				}
-				else {
-					list.Add (null);
-				}
+			IEnumerable ie = _context.QueryEntityData (_mapping, _selector, _query, _order, _distinct, _region, _level);
+			if (ie != null) {
+				foreach (object item in ie) {
+					if (item != null) {
+						object obj = _dele.DynamicInvoke (item);
+						list.Add (obj as K);
+					}
+					else {
+						list.Add (null);
+					}
 
+				}
 			}
 			return list;
 		}
 
 		public override K First ()
 		{
-			object item = _context.QueryEntityDataFirst (_mapping, _selector, _query, _order, 0, _level);
-			if (item != null) {
-				object obj = _dele.DynamicInvoke (item);
-				return obj as K;
-			}
-			else {
-				return null;
-			}
+			return ElementAt (0);
+			//object item = _context.QueryEntityDataFirst (_mapping, _selector, _query, _order, 0, _level);
+			//if (item != null) {
+			//	object obj = _dele.DynamicInvoke (item);
+			//	return obj as K;
+			//}
+			//else {
+			//	return null;
+			//}
 		}
 
 		public override K ElementAt (int index)
 		{
-			object item = _context.QueryEntityDataFirst (_mapping, _selector, _query, _order, index, _level);
-			if (item != null) {
-				object obj = _dele.DynamicInvoke (item);
-				return obj as K;
+			K target = default (K);
+			Region region = new Region (index, 1);
+			IEnumerable ie = _context.QueryEntityData (_mapping, _selector, _query, _order, false, region, _level);
+			if (ie != null) {
+				foreach (object item in ie) {
+					if (item != null) {
+						object obj = _dele.DynamicInvoke (item);
+						target = obj as K;
+					}
+					break;
+				}
 			}
-			else {
-				return null;
-			}
+			return target;
 		}
 
 		public override IJoinTable<K, T1> Join<T1> (Expression<Func<T1, bool>> queryExpression, Expression<Func<K, T1, bool>> onExpression)

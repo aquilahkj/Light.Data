@@ -383,9 +383,10 @@ namespace Light.Data
 		/// Get single instance.
 		/// </summary>
 		/// <returns>instance.</returns>
-		public T Single ()
+		public T First ()
 		{
-			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, 0, _level) as T;
+			return ElementAt (0);
+			//return _context.QueryEntityDataFirst (_mapping, null, _query, _order, 0, _level) as T;
 		}
 
 		/// <summary>
@@ -395,7 +396,17 @@ namespace Light.Data
 		/// <param name="index">Index.</param>
 		public T ElementAt (int index)
 		{
-			return _context.QueryEntityDataFirst (_mapping, null, _query, _order, index, _level) as T;
+			T target = default (T);
+			Region region = new Region (index, 1);
+			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, false, region, _level);
+			if (ie != null) {
+				foreach (T item in ie) {
+					target = item;
+					break;
+				}
+			}
+			return target;
+			//return _context.QueryEntityDataFirst (_mapping, null, _query, _order, index, _level) as T;
 		}
 
 		/// <summary>
@@ -498,8 +509,10 @@ namespace Light.Data
 		{
 			List<T> list = new List<T> ();
 			IEnumerable ie = _context.QueryEntityData (_mapping, null, _query, _order, false, _region, _level);
-			foreach (T item in ie) {
-				list.Add (item);
+			if (ie != null) {
+				foreach (T item in ie) {
+					list.Add (item);
+				}
 			}
 			return list;
 		}

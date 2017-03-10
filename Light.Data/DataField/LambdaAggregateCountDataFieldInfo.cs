@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaAggregateCountDataFieldInfo : LambdaDataFieldInfo
 	{
-		QueryExpression _expression;
+		readonly QueryExpression _expression;
 
 		public LambdaAggregateCountDataFieldInfo ()
 			: base (DataEntityMapping.Default)
@@ -15,7 +14,6 @@ namespace Light.Data
 		{
 			_expression = expression;
 		}
-
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{

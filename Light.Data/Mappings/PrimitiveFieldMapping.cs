@@ -15,12 +15,12 @@ namespace Light.Data
 		const Single MinSingle = 0;
 
 		const Double MinDouble = 0;
-
-		readonly object _minValue = null;
+		 
+		readonly object _minValue;
 	
-		readonly object _defaultValue = null;
+		readonly object _defaultValue;
 
-		readonly DefaultTimeFunction _defaultTimeFunction = null;
+		readonly DefaultTimeFunction _defaultTimeFunction;
 
 		public PrimitiveFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue, bool isIdentity, bool isPrimaryKey)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
@@ -143,8 +143,8 @@ namespace Light.Data
 				return null;
 			}
 			else {
-				if (ObjectType != null && value.GetType () != ObjectType) {
-					return Convert.ChangeType (value, ObjectType);
+				if (value.GetType () != _objectType) {
+					return Convert.ChangeType (value, _objectType);
 				}
 				else {
 					return value;
@@ -192,8 +192,8 @@ namespace Light.Data
 				}
 			}
 			else {
-				if (ObjectType != null && value.GetType () != ObjectType) {
-					return Convert.ChangeType (value, ObjectType);
+				if (value.GetType () != _objectType) {
+					return Convert.ChangeType (value, _objectType);
 				}
 				else {
 					return value;

@@ -352,6 +352,18 @@ namespace Light.Data.MysqlTest
 		}
 
 		[Test ()]
+		public void TestCase_GroupBy_Sum_Null_First ()
+		{
+			context.TruncateTable<TeUser> ();
+
+			var fir = context.Query<TeUser> ().GroupBy (x => new {
+				SumData = Function.Sum (x.LevelId)
+			}).First();
+
+			Assert.IsNotNull (fir);
+		}
+
+		[Test ()]
 		public void TestCase_GroupBy_Avg ()
 		{
 

@@ -50,7 +50,6 @@ namespace Light.Data
 			_aliasName = alias;
 		}
 
-
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			if (isFullName) {
@@ -60,7 +59,6 @@ namespace Light.Data
 			else {
 				return factory.CreateDataFieldSql (FieldName);
 			}
-			//return _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 		}
 
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)

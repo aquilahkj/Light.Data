@@ -35,11 +35,24 @@ namespace Light.Data
 			}
 			else {
 				_dataField = TableMapping.FindDataEntityField (name);
-				if (DataField == null) {
+				if (_dataField == null) {
 					_dataField = new CustomFieldMapping (name, tableMapping);
 				}
 			}
 		}
+
+		//internal BasicFieldInfo (DataEntityMapping tableMapping, string name)
+		//{
+		//	if (tableMapping == null)
+		//		throw new System.ArgumentNullException (nameof (tableMapping));
+		//	if (name == null)
+		//		throw new System.ArgumentNullException (nameof (name));
+		//	_tableMapping = tableMapping;
+		//	_dataField = TableMapping.FindDataEntityField (name);
+		//	if (_dataField == null) {
+		//		throw new LightDataException (string.Format (RE.DataFieldIsNotExists, name));
+		//	}
+		//}
 
 
 		DataFieldMapping _dataField = null;
@@ -48,9 +61,6 @@ namespace Light.Data
 			get {
 				return _dataField;
 			}
-			//set {
-			//	_dataField = value;
-			//}
 		}
 
 		DataEntityMapping _tableMapping = null;
@@ -63,12 +73,9 @@ namespace Light.Data
 			get {
 				return _tableMapping;
 			}
-			//set {
-			//	_tableMapping = value;
-			//}
 		}
 
-		string _fieldName = null;
+		//string _fieldName = null;
 
 		/// <summary>
 		/// Gets the name of the field.

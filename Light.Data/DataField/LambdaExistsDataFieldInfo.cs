@@ -3,20 +3,20 @@ namespace Light.Data
 {
 	class LambdaExistsDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
-		bool _isExists;
+		bool _isTrue;
 
 		QueryExpression _expression;
 
-		public LambdaExistsDataFieldInfo (DataEntityMapping mapping, QueryExpression expression, bool isExists)
+		public LambdaExistsDataFieldInfo (DataEntityMapping mapping, QueryExpression expression, bool isTrue)
 			: base (mapping)
 		{
 			_expression = expression;
-			_isExists = isExists;
+			_isTrue = isTrue;
 		}
 
 		public void SetNot ()
 		{
-			_isExists = !_isExists;
+			_isTrue = !_isTrue;
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
@@ -26,8 +26,8 @@ namespace Light.Data
 				return sql;
 			}
 			string query = _expression.CreateSqlString (factory, true, state);
-
-			sql = factory.CreateExistsQuerySql (TableMapping.TableName, query, !_isExists);
+			string tableName = factory.CreateDataTableSql (TableMapping);
+			sql = factory.CreateExistsQuerySql (tableName, query, !_isTrue);
 
 			state.SetDataSql (this, isFullName, sql);
 			return sql;

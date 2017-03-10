@@ -1,17 +1,13 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class SpecialDataFieldInfo : LambdaDataFieldInfo, IAliasDataFieldInfo
 	{
-		DataFieldInfo _fieldInfo;
-
-		//string _aliasName;
+		readonly DataFieldInfo _fieldInfo;
 
 		public SpecialDataFieldInfo (DataFieldInfo fieldInfo, string name)
 			: base (fieldInfo.TableMapping, true, name)
 		{
 			_fieldInfo = fieldInfo;
-			//_aliasName = name;
 		}
 
 		public DataFieldInfo FieldInfo {
@@ -19,16 +15,6 @@ namespace Light.Data
 				return _fieldInfo;
 			}
 		}
-
-		//public string AliasName {
-		//	get {
-		//		return _aliasName;
-		//	}
-
-		//	//set {
-		//	//	_aliasName = value;
-		//	//}
-		//}
 
 		public override DataFieldInfo CreateAliasTableInfo (string aliasTableName)
 		{
@@ -40,7 +26,6 @@ namespace Light.Data
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
-			//return _fieldInfo.CreateSqlString (factory, isFullName, state);
 			if (isFullName) {
 				string tableName = this._aliasTableName ?? TableMapping.TableName;
 				return factory.CreateFullDataFieldSql (tableName, FieldName);
