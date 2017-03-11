@@ -1,15 +1,14 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class LambdaAggregateDataFieldInfo : LambdaDataFieldInfo
+	class LambdaAggregateFieldDataFieldInfo : LambdaAggregateDataFieldInfo
 	{
-		DataFieldInfo _baseFieldInfo;
+		readonly DataFieldInfo _baseFieldInfo;
 
-		AggregateType _type;
+		readonly AggregateType _type;
 
-		bool _distinct;
+		readonly bool _distinct;
 
-		public LambdaAggregateDataFieldInfo (DataFieldInfo fieldInfo, AggregateType type, bool distinct)
+		public LambdaAggregateFieldDataFieldInfo (DataFieldInfo fieldInfo, AggregateType type, bool distinct)
 			: base (fieldInfo.TableMapping)
 		{
 			_baseFieldInfo = fieldInfo;
