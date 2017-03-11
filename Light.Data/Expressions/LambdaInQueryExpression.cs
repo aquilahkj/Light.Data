@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaInQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		LambdaInQueryDataFieldInfo _fieldInfo;
+		readonly LambdaInQueryDataFieldInfo _fieldInfo;
 
 		public LambdaInQueryExpression (LambdaInQueryDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)

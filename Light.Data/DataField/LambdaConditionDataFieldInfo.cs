@@ -3,11 +3,11 @@ namespace Light.Data
 {
 	class LambdaConditionDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
-		object _ifTrue;
+		readonly object _ifTrue;
 
-		object _ifFalse;
+		readonly object _ifFalse;
 
-		QueryExpression _query;
+		readonly QueryExpression _query;
 
 		bool _isNot;
 

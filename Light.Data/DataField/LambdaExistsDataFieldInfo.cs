@@ -5,7 +5,7 @@ namespace Light.Data
 	{
 		bool _isTrue;
 
-		QueryExpression _expression;
+		readonly QueryExpression _expression;
 
 		public LambdaExistsDataFieldInfo (DataEntityMapping mapping, QueryExpression expression, bool isTrue)
 			: base (mapping)

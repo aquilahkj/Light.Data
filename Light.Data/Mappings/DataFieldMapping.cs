@@ -73,7 +73,6 @@ namespace Light.Data
 					type = arguments [0];
 					isNullable = true;
 				}
-
 			}
 
 			if (type.IsArray) {

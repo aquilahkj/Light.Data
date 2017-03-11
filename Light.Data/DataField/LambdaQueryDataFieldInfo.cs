@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaQueryDataFieldInfo : LambdaDataFieldInfo
 	{
-		QueryExpression _query;
+		readonly QueryExpression _query;
 
 		public LambdaQueryDataFieldInfo (QueryExpression query)
 			: base (query.TableMapping)

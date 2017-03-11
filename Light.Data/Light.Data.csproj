@@ -335,7 +335,7 @@
     <Compile Include="DataField\outdate\EnumSelectFieldInfo.cs" />
     <Compile Include="DataField\outdate\DataSelectFieldInfo.cs" />
     <Compile Include="DataField\outdate\DatePartDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaAggregateDataFieldInfo.cs" />
+    <Compile Include="DataField\LambdaAggregateFieldDataFieldInfo.cs" />
     <Compile Include="DataField\EnumDefine\MathOperator.cs" />
     <Compile Include="DataField\EnumDefine\StringFunction.cs" />
     <Compile Include="DataField\EnumDefine\DatePart.cs" />
@@ -426,6 +426,7 @@
     <Compile Include="Expressions\LambdaInQueryExpression.cs" />
     <Compile Include="DataField\LambdaSubQueryDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaSubQueryExpression.cs" />
+    <Compile Include="DataField\LambdaAggregateDataFieldInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

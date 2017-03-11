@@ -50,17 +50,6 @@ namespace Light.Data
 
 		}
 
-		//internal DataFieldInfo (Type type, string name)
-		//	: this (DataEntityMapping.GetEntityMapping (type), name)
-		//{
-
-		//}
-
-		//internal DataFieldInfo (DataEntityMapping mapping, string name)
-		//	: base (mapping, name)
-		//{
-		//}
-
 		internal DataFieldInfo (DataEntityMapping mapping, bool customName, string name)
 			: base (mapping, customName, name)
 		{

@@ -19,24 +19,6 @@ namespace Light.Data
 				return null;
 			}
 			else {
-				//string str = value as string;
-				//if (str != null) {
-				//	return Enum.Parse (ObjectType, str);
-				//}
-				//else {
-				//	Type type = value.GetType ();
-				//	TypeCode code = Type.GetTypeCode (type);
-				//	if (code != this._typeCode) {
-				//		value = Convert.ChangeType (value, this._typeCode);
-				//	}
-				//	return value;
-				//}
-				//Type type = value.GetType ();
-				//TypeCode code = Type.GetTypeCode (type);
-				//if (code != this._typeCode) {
-				//	value = Convert.ChangeType (value, this._typeCode);
-				//}
-				//value = Convert.ChangeType (value, _objectType);
 				value = Enum.ToObject (_objectType, value);
 				return value;
 			}

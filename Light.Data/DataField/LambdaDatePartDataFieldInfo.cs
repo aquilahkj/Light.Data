@@ -1,11 +1,10 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaDatePartDataFieldInfo : LambdaDataFieldInfo
 	{
-		DatePart _part;
+		readonly DatePart _part;
 
-		DataFieldInfo _baseFieldInfo;
+		readonly DataFieldInfo _baseFieldInfo;
 
 		internal LambdaDatePartDataFieldInfo (DataFieldInfo info, DatePart part)
 			: base (info.TableMapping)

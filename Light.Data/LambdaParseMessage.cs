@@ -13,6 +13,8 @@ namespace Light.Data
 
 		public const string ExpressionNotContainDataField = "expression not contain data field";
 
+		public const string ExpressionNotContainGroupByField = "expression not contain group by field";
+
 		public const string ExpressionNotAllowNoDataField = "expression {0} not contain data field";
 
 		public const string ExpressionFieldPathError = "expression field path {0} error";

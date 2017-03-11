@@ -3,13 +3,13 @@ namespace Light.Data
 {
 	class LambdaSubQueryDataFieldInfo : LambdaDataFieldInfo, IDataFieldInfoConvert
 	{
-		QueryExpression _expression;
+		readonly QueryExpression _expression;
 
-		DataFieldInfo _selectField;
+		readonly DataFieldInfo _selectField;
 
-		DataFieldInfo _field;
+		readonly DataFieldInfo _field;
 
-		QueryCollectionPredicate _predicate;
+		readonly QueryCollectionPredicate _predicate;
 
 		public LambdaSubQueryDataFieldInfo (DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryCollectionPredicate predicate, QueryExpression expression)
 			: base (mapping)

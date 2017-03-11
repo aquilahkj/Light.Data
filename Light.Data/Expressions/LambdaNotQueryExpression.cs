@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaNotQueryExpression : QueryExpression
 	{
-		QueryExpression _queryExpression;
+		readonly QueryExpression _queryExpression;
 
 		public LambdaNotQueryExpression (QueryExpression expression)
 			: base (expression.TableMapping)

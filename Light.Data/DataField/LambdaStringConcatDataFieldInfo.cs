@@ -5,7 +5,7 @@ namespace Light.Data
 {
 	class LambdaStringConcatDataFieldInfo : LambdaDataFieldInfo
 	{
-		object [] _values;
+		readonly object [] _values;
 
 		public LambdaStringConcatDataFieldInfo (DataEntityMapping mapping, params object [] values)
 			: base (mapping)

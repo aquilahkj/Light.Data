@@ -157,43 +157,6 @@ namespace Light.Data
 			return ds;
 		}
 
-		//internal override IEnumerable QueryDataReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
-		//{
-		//	ChecKStatus (true);
-		//	int start;
-		//	int size;
-		//	if (region != null) {
-		//		start = region.Start;
-		//		size = region.Size;
-		//	}
-		//	else {
-		//		start = 0;
-		//		size = int.MaxValue;
-		//	}
-		//	_transaction.SetupCommand (dbcommand);
-		//	OutputCommand ("QueryDataReader[Trans]", dbcommand, _transaction.Level, start, size);
-		//	using (IDataReader reader = dbcommand.ExecuteReader ()) {
-		//		int index = 0;
-		//		int count = 0;
-		//		bool over = false;
-		//		while (reader.Read ()) {
-		//			if (over) {
-		//				dbcommand.Cancel ();
-		//				break;
-		//			}
-		//			if (index >= start) {
-		//				count++;
-		//				object item = source.LoadData (this, reader, state);
-		//				if (count >= size) {
-		//					over = true;
-		//				}
-		//				yield return item;
-		//			}
-		//			index++;
-		//		}
-		//	}
-		//}
-
 		internal override IEnumerable QueryDataDefineReader (IDataDefine source, IDbCommand dbcommand, Region region, SafeLevel level, object state)
 		{
 			ChecKStatus (true);

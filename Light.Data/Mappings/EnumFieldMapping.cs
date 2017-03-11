@@ -17,8 +17,6 @@ namespace Light.Data
 			}
 		}
 
-		//bool auto;
-
 		public EnumFieldMapping (Type type, string fieldName, string indexName, DataMapping mapping, bool isNullable, string dbType, object defaultValue)
 			: base (type, fieldName, indexName, mapping, isNullable, dbType)
 		{
@@ -28,21 +26,6 @@ namespace Light.Data
 			object value = values.GetValue (0);
 			_minValue = Convert.ChangeType (value, _typeCode);
 
-			//_minValue = Convert.ChangeType (value, _typeCode);
-			//if (defaultValue != null) {
-			//	string str = defaultValue as String;
-			//	if (str != null) {
-			//		object dvalue = Enum.Parse (type, str, true);
-			//		_defaultValue = Convert.ChangeType (dvalue, _typeCode);
-			//	}
-			//	else if (defaultValue.GetType () == type) {
-			//		_defaultValue = Convert.ChangeType (defaultValue, _typeCode);
-			//	}
-			//}
-
-			//if (defaultValue != null && defaultValue.GetType () == type) {
-			//	_defaultValue = Convert.ChangeType (defaultValue, _typeCode);
-			//}
 			if (defaultValue != null) {
 				Type defaultValueType = defaultValue.GetType ();
 				if (defaultValueType == type) {
@@ -70,34 +53,6 @@ namespace Light.Data
 				return null;
 			}
 			else {
-				//if (auto) {
-				//	//string str = value as string;
-				//	//if (str != null) {
-				//	//	return Enum.Parse (ObjectType, str);
-				//	//}
-				//	//else {
-				//	Type type = value.GetType ();
-				//	TypeCode code = Type.GetTypeCode (type);
-				//	if (code != this._typeCode) {
-				//		value = Convert.ChangeType (value, this._typeCode);
-				//	}
-				//	return value;
-				//	//}
-				//}
-				//else {
-				//	Type type = value.GetType ();
-				//	TypeCode code = Type.GetTypeCode (type);
-				//	if (code != this._typeCode) {
-				//		value = Convert.ChangeType (value, this._typeCode);
-				//	}
-				//	return value;
-				//}
-				//Type type = value.GetType ();
-				//TypeCode code = Type.GetTypeCode (type);
-				//if (code != this._typeCode) {
-				//	value = Convert.ChangeType (value, this._typeCode);
-				//}
-				//value = Convert.ChangeType (value, _objectType);
 				value = Enum.ToObject (_objectType, value);
 				return value;
 			}

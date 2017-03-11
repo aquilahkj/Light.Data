@@ -6,11 +6,11 @@ namespace Light.Data
 {
 	class LambdaContainsDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
-		object _collection;
-
 		bool _isNot;
 
-		DataFieldInfo _baseFieldInfo;
+		readonly object _collection;
+
+		readonly DataFieldInfo _baseFieldInfo;
 
 		public LambdaContainsDataFieldInfo (DataFieldInfo info, object collection)
 			: base (info.TableMapping)

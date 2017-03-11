@@ -1,11 +1,10 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaDateFormatDataFieldInfo : LambdaDataFieldInfo
 	{
-		string _format;
+		readonly string _format;
 
-		DataFieldInfo _baseFieldInfo;
+		readonly DataFieldInfo _baseFieldInfo;
 
 		internal LambdaDateFormatDataFieldInfo (DataFieldInfo info, string format)
 			: base (info.TableMapping)

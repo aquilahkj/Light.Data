@@ -3,7 +3,7 @@ namespace Light.Data
 {
 	class LambdaNewArrayDataFieldInfo : LambdaDataFieldInfo
 	{
-		object [] _values;
+		readonly object [] _values;
 
 		public LambdaNewArrayDataFieldInfo (DataEntityMapping mapping, params object [] values)
 			: base (mapping)

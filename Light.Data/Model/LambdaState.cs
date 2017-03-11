@@ -30,17 +30,17 @@ namespace Light.Data
 			}
 		}
 
-		bool aggregateField;
+		//bool aggregateField;
 
-		public bool AggregateField {
-			get {
-				return aggregateField;
-			}
+		//public bool AggregateField {
+		//	get {
+		//		return aggregateField;
+		//	}
 
-			set {
-				aggregateField = value;
-			}
-		}
+		//	set {
+		//		aggregateField = value;
+		//	}
+		//}
 	}
 
 	enum LambdaPathType

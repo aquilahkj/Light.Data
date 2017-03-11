@@ -1,13 +1,14 @@
 ﻿using System;
+
 namespace Light.Data
 {
 	class LambdaBinaryQueryExpression : QueryExpression
 	{
-		QueryPredicate _predicate;
+		readonly QueryPredicate _predicate;
 
-		object _left;
+		readonly object _left;
 
-		object _right;
+		readonly object _right;
 
 		public LambdaBinaryQueryExpression (DataEntityMapping mapping, QueryPredicate predicate, object left, object right)
 			: base (mapping)
@@ -101,7 +102,6 @@ namespace Light.Data
 			else {
 				throw new LightDataException (RE.UnsupportBothConstantValue);
 			}
-
 			return sql;
 		}
 	}

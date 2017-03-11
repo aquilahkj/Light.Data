@@ -357,10 +357,11 @@ namespace Light.Data.MysqlTest
 			context.TruncateTable<TeUser> ();
 
 			var fir = context.Query<TeUser> ().GroupBy (x => new {
+				LevelId = x.LevelId,
 				SumData = Function.Sum (x.LevelId)
-			}).First();
+			}).First ();
 
-			Assert.IsNotNull (fir);
+			Assert.IsNull (fir);
 		}
 
 		[Test ()]

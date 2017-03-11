@@ -1,15 +1,14 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaInQueryDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
 		bool _isTrue;
 
-		QueryExpression _expression;
+		readonly QueryExpression _expression;
 
-		DataFieldInfo _selectField;
+		readonly DataFieldInfo _selectField;
 
-		DataFieldInfo _field;
+		readonly DataFieldInfo _field;
 
 		public LambdaInQueryDataFieldInfo (DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryExpression expression, bool isTrue)
 			: base (mapping)

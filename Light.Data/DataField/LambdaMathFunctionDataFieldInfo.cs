@@ -5,9 +5,9 @@ namespace Light.Data
 {
 	class LambdaMathFunctionDataFieldInfo : LambdaDataFieldInfo
 	{
-		MathFunction _function;
+		readonly MathFunction _function;
 
-		object [] _argsObjects;
+		readonly object [] _argsObjects;
 
 		public LambdaMathFunctionDataFieldInfo (DataEntityMapping mapping, MathFunction function, params object [] argsObjects)
 			: base (mapping)
@@ -83,7 +83,12 @@ namespace Light.Data
 				sql = factory.CreateFloorSql (objectList [0]);
 				break;
 			case MathFunction.Round:
-				sql = factory.CreateRoundSql (objectList [0], objectList [1] != null ? objectList [1] : 0);
+				if (objectList.Count == 2) {
+					sql = factory.CreateLogSql (objectList [0], objectList [1]);
+				}
+				else {
+					sql = factory.CreateRoundSql (objectList [0], 0);
+				}
 				break;
 			case MathFunction.Truncate:
 				sql = factory.CreateTruncateSql (objectList [0]);

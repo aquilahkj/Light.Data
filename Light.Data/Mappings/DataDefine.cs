@@ -13,7 +13,6 @@ namespace Light.Data
 
 		static Dictionary<Type, DataDefine> _defaultDefine = new Dictionary<Type, DataDefine> ();
 
-
 		public static DataDefine GetDefine (Type type)
 		{
 			Dictionary<Type, DataDefine> defines = _defaultDefine;
@@ -65,17 +64,17 @@ namespace Light.Data
 			return define;
 		}
 
-		Type _type;
+		protected Type _objectType;
 
 		public Type ObjectType {
 			get {
-				return _type;
+				return _objectType;
 			}
 		}
 
 		protected DataDefine (Type type, bool isNullable)
 		{
-			_type = type;
+			_objectType = type;
 			_isNullable = isNullable;
 		}
 
@@ -88,7 +87,5 @@ namespace Light.Data
 		}
 
 		public abstract object LoadData (DataContext context, IDataReader datareader, object state);
-
-		//		public abstract object LoadData (DataContext context, System.Data.DataRow datarow);
 	}
 }

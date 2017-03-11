@@ -1,11 +1,10 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaNullDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
 		bool _isNull;
 
-		DataFieldInfo _baseFieldInfo;
+		readonly DataFieldInfo _baseFieldInfo;
 
 		public LambdaNullDataFieldInfo (DataFieldInfo info, bool isNull)
 			: base (info.TableMapping)

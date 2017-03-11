@@ -54,9 +54,17 @@ namespace Light.Data.Demo
 			output.OutputFullCommand = true;
 
 			context.SetCommanfOutput (output);
-
-
-
+			for (int i = 0; i < 100000; i++) {
+				Console.WriteLine (i);
+				try {
+					var rt = context.Query<TeUser> ().Where (x => x.Area == null).GroupBy (x => new {
+						Count = Function.Sum (x.Area)
+					}).ToList ();
+				}
+				catch (Exception ex) {
+					Console.WriteLine (ex);
+				}
+			}
 			//var mycount = context.Query<TeUser> ().AggregateFunction ().Count (x => x.Account);
 			//var jgy = context.Query<TeUser> ().AggregateFunction ().Count (x => x.LastLoginTime);
 
@@ -121,9 +129,9 @@ namespace Light.Data.Demo
 
 			//List<TeUser> users1 = context.Query<TeUser> ().Where (x => ExtendQuery.Exists<TeUserLevel> (y => y.Id == x.LevelId)).ToList ();
 
-			List<TeUser> users1 = context.Query<TeUser> ().Where (x => !ExtendQuery.In<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > 10)).ToList ();
+			//List<TeUser> users1 = context.Query<TeUser> ().Where (x => !ExtendQuery.In<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > 10)).ToList ();
 
-			List<TeUser> users2 = context.Query<TeUser> ().Where (x => ExtendQuery.GtAll<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > 10)).ToList ();
+			//List<TeUser> users2 = context.Query<TeUser> ().Where (x => ExtendQuery.GtAll<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > 10)).ToList ();
 
 			//var uddf = context.Query<TeUser> ().Where (x => x.Id > 10).Select (x => x.Id);
 
@@ -137,14 +145,14 @@ namespace Light.Data.Demo
 			//					Count = 10
 			//				}).ToList ();
 
-			var users22 = context.Query<TeUser> ().Where (x => x.Id > 2 && x.Gender == GenderType.Male)
-							.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
-							.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
-								 .Where ((x, y, z) => ExtendQuery.In<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > x.Id))
-							.Select ((x, y, z) => new SGroub {
-								Date = x.RegTime.Date,
-								Count = 10
-							}).ToList ();
+			//var users22 = context.Query<TeUser> ().Where (x => x.Id > 2 && x.Gender == GenderType.Male)
+			//				.LeftJoin<TeUserLevel> (x => x.Status == 1, (x, y) => x.LevelId == y.Id)
+			//				.Join<TeUserExtend> ((x, y, z) => x.Id == z.UserId)
+			//					 .Where ((x, y, z) => ExtendQuery.In<TeUserLevel, int> (x.LevelId, u => u.Id, u => u.Id > x.Id))
+			//				.Select ((x, y, z) => new SGroub {
+			//					Date = x.RegTime.Date,
+			//					Count = 10
+			//				}).ToList ();
 
 			//string [] arr = new [] { "1", "2", "3" };
 			//List<string> dd = new List<string> ();

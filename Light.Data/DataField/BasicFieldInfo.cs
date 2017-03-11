@@ -41,21 +41,7 @@ namespace Light.Data
 			}
 		}
 
-		//internal BasicFieldInfo (DataEntityMapping tableMapping, string name)
-		//{
-		//	if (tableMapping == null)
-		//		throw new System.ArgumentNullException (nameof (tableMapping));
-		//	if (name == null)
-		//		throw new System.ArgumentNullException (nameof (name));
-		//	_tableMapping = tableMapping;
-		//	_dataField = TableMapping.FindDataEntityField (name);
-		//	if (_dataField == null) {
-		//		throw new LightDataException (string.Format (RE.DataFieldIsNotExists, name));
-		//	}
-		//}
-
-
-		DataFieldMapping _dataField = null;
+		readonly DataFieldMapping _dataField;
 
 		internal DataFieldMapping DataField {
 			get {
@@ -63,7 +49,7 @@ namespace Light.Data
 			}
 		}
 
-		DataEntityMapping _tableMapping = null;
+		readonly DataEntityMapping _tableMapping;
 
 		/// <summary>
 		/// Gets or sets the table mapping.
@@ -74,8 +60,6 @@ namespace Light.Data
 				return _tableMapping;
 			}
 		}
-
-		//string _fieldName = null;
 
 		/// <summary>
 		/// Gets the name of the field.

@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaConditionQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		LambdaConditionDataFieldInfo _fieldInfo;
+		readonly LambdaConditionDataFieldInfo _fieldInfo;
 
 		public LambdaConditionQueryExpression (LambdaConditionDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)

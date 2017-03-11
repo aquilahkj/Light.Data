@@ -134,21 +134,27 @@ namespace Light.Data
 		public override object ToProperty (object value)
 		{
 			if (Object.Equals (value, DBNull.Value) || Object.Equals (value, null)) {
-				//if (this._typeCode == TypeCode.String && !IsNullable) {
-				//	return string.Empty;
-				//}
-				//else {
-				//	return null;
-				//}
 				return null;
 			}
 			else {
-				if (value.GetType () != _objectType) {
-					return Convert.ChangeType (value, _objectType);
+				IConvertible ic = value as IConvertible;
+				if (ic != null) {
+					if (ic.GetTypeCode () != _typeCode) {
+						return Convert.ChangeType (value, _typeCode);
+					}
+					else {
+						return value;
+					}
 				}
 				else {
 					return value;
 				}
+				//if (value.GetType () != _objectType) {
+				//	return Convert.ChangeType (value, _objectType);
+				//}
+				//else {
+				//	return value;
+				//}
 			}
 		}
 
@@ -192,8 +198,20 @@ namespace Light.Data
 				}
 			}
 			else {
-				if (value.GetType () != _objectType) {
-					return Convert.ChangeType (value, _objectType);
+				//if (value.GetType () != _objectType) {
+				//	return Convert.ChangeType (value, _objectType);
+				//}
+				//else {
+				//	return value;
+				//}
+				IConvertible ic = value as IConvertible;
+				if (ic != null) {
+					if (ic.GetTypeCode () != _typeCode) {
+						return Convert.ChangeType (value, _typeCode);
+					}
+					else {
+						return value;
+					}
 				}
 				else {
 					return value;

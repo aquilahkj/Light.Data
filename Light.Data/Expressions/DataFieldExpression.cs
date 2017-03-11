@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
 	/// <summary>
 	/// Data field expression.

@@ -3,11 +3,11 @@ namespace Light.Data
 {
 	class LambdaMathCalculateDataFieldInfo : LambdaDataFieldInfo
 	{
-		MathOperator _opera;
+		readonly MathOperator _opera;
 
-		object _left;
+		readonly object _left;
 
-		object _right;
+		readonly object _right;
 
 		public LambdaMathCalculateDataFieldInfo (DataEntityMapping mapping, MathOperator opera, object left, object right)
 			: base (mapping)

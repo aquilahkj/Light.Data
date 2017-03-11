@@ -5,12 +5,11 @@ namespace Light.Data
 {
 	class LambdaStringFunctionDataFieldInfo : LambdaDataFieldInfo
 	{
+		readonly StringFunction _function;
 
-		StringFunction _function;
+		readonly object _callObject;
 
-		object _callObject;
-
-		object [] _argsObjects;
+		readonly object [] _argsObjects;
 
 		public LambdaStringFunctionDataFieldInfo (DataEntityMapping mapping, StringFunction function, object callObject, params object [] argsObjects)
 			: base (mapping)
@@ -97,7 +96,6 @@ namespace Light.Data
 			case StringFunction.Trim:
 				sql = factory.CreateTrimSql (obj);
 				break;
-
 			}
 			state.SetDataSql (this, isFullName, sql);
 			return sql;

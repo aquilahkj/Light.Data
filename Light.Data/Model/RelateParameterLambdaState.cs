@@ -9,7 +9,7 @@ namespace Light.Data
 
 		readonly RelationMap singleEntityMap;
 
-		LambdaState state;
+		readonly LambdaState state;
 
 		public RelateParameterLambdaState (ParameterExpression parameter, LambdaState state)
 		{

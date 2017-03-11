@@ -1,15 +1,13 @@
-﻿using System;
-
-namespace Light.Data
+﻿namespace Light.Data
 {
 	/// <summary>
 	/// Alias data field info.
 	/// </summary>
 	class AliasDataFieldInfo : DataFieldInfo, IAliasDataFieldInfo
 	{
-		DataFieldInfo _baseFieldInfo;
+		readonly DataFieldInfo _baseFieldInfo;
 
-		string _aliasName;
+		readonly string _aliasName;
 
 		/// <summary>
 		/// Gets the alias.
@@ -72,18 +70,8 @@ namespace Light.Data
 				field = factory.CreateDataFieldSql (FieldName);
 			}
 
-			//string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
 			return factory.CreateAliasFieldSql (field, this._aliasName);
 		}
-
-		//internal override string AliasTableName {
-		//	get {
-		//		return this._baseFieldInfo.AliasTableName;
-		//	}
-		//	set {
-		//		this._baseFieldInfo.AliasTableName = value;
-		//	}
-		//}
 	}
 }
 

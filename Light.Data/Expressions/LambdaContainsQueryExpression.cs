@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaContainsQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		LambdaContainsDataFieldInfo _fieldInfo;
+		readonly LambdaContainsDataFieldInfo _fieldInfo;
 
 		public LambdaContainsQueryExpression (LambdaContainsDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)

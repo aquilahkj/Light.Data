@@ -12,12 +12,6 @@
 		{
 		}
 
-		//protected LambdaDataFieldInfo (DataEntityMapping mapping, string name)
-		//	: base (mapping, name)
-		//{
-		//}
-
-
 		internal override string DBType {
 			get {
 				return string.Empty;
@@ -28,7 +22,6 @@
 		{
 			return value;
 		}
-
 	}
 }
 

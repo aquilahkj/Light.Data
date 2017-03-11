@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaNotDataFieldInfo : LambdaDataFieldInfo
 	{
-		DataFieldInfo _baseFieldInfo;
+		readonly DataFieldInfo _baseFieldInfo;
 
 		public LambdaNotDataFieldInfo (DataFieldInfo info)
 			: base (info.TableMapping)

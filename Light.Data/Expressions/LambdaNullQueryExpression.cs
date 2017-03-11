@@ -1,9 +1,8 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class LambdaNullQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		LambdaNullDataFieldInfo _fieldInfo;
+		readonly LambdaNullDataFieldInfo _fieldInfo;
 
 		public LambdaNullQueryExpression (LambdaNullDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)

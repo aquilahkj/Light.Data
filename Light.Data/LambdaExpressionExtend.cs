@@ -904,17 +904,21 @@ namespace Light.Data
 					if (ass != null) {
 						Expression innerExpression = ass.Expression;
 						DataFieldInfo fieldInfo;
-						state.AggregateField = false;
+						//state.AggregateField = false;
 						if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
 							if (state.MutliEntity) {
 								throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 							}
-							if (state.AggregateField) {
+							if (fieldInfo is LambdaAggregateDataFieldInfo) {
 								throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportAggregateField);
 							}
-							else {
-								model.AddSelectField (ass.Member.Name, fieldInfo);
-							}
+							model.AddSelectField (ass.Member.Name, fieldInfo);
+							//if (state.AggregateField) {
+							//	throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportAggregateField);
+							//}
+							//else {
+							//	model.AddSelectField (ass.Member.Name, fieldInfo);
+							//}
 						}
 						else {
 							throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
@@ -942,17 +946,21 @@ namespace Light.Data
 					MemberInfo member = expression.Members [index];
 					Expression innerExpression = arg;
 					DataFieldInfo fieldInfo;
-					state.AggregateField = false;
+					//state.AggregateField = false;
 					if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
 						if (state.MutliEntity) {
 							throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 						}
-						if (state.AggregateField) {
+						if (fieldInfo is LambdaAggregateDataFieldInfo) {
 							throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportAggregateField);
 						}
-						else {
-							model.AddSelectField (member.Name, fieldInfo);
-						}
+						model.AddSelectField (member.Name, fieldInfo);
+						//if (state.AggregateField) {
+						//	throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportAggregateField);
+						//}
+						//else {
+						//	model.AddSelectField (member.Name, fieldInfo);
+						//}
 						index++;
 					}
 					else {
@@ -972,22 +980,30 @@ namespace Light.Data
 			SpecialCustomMapping arrgregateMapping = SpecialCustomMapping.GetCustomMapping (expression.Type);
 			AggregateModel model = new AggregateModel (entityMapping, arrgregateMapping);
 			if (expression.Bindings != null && expression.Bindings.Count > 0) {
+				bool hasGroupByField = false;
 				foreach (MemberBinding binding in expression.Bindings) {
 					MemberAssignment ass = binding as MemberAssignment;
 					if (ass != null) {
 						Expression innerExpression = ass.Expression;
 						DataFieldInfo fieldInfo;
-						state.AggregateField = false;
+						//state.AggregateField = false;
 						if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
 							if (state.MutliEntity) {
 								throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 							}
-							if (state.AggregateField) {
+							if (fieldInfo is LambdaAggregateDataFieldInfo) {
 								model.AddAggregateField (ass.Member.Name, fieldInfo);
 							}
 							else {
+								hasGroupByField = true;
 								model.AddGroupByField (ass.Member.Name, fieldInfo);
 							}
+							//if (state.AggregateField) {
+							//	model.AddAggregateField (ass.Member.Name, fieldInfo);
+							//}
+							//else {
+							//	model.AddGroupByField (ass.Member.Name, fieldInfo);
+							//}
 						}
 						else {
 							throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
@@ -996,6 +1012,9 @@ namespace Light.Data
 					else {
 						throw new LambdaParseException (LambdaParseMessage.ExpressionBindingError, binding.Member);
 					}
+				}
+				if (!hasGroupByField) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainGroupByField);
 				}
 			}
 			else {
@@ -1011,26 +1030,38 @@ namespace Light.Data
 			AggregateModel model = new AggregateModel (entityMapping, arrgregateMapping);
 			if (expression.Arguments != null && expression.Arguments.Count > 0) {
 				int index = 0;
+				bool hasGroupByField = false;
 				foreach (Expression arg in expression.Arguments) {
 					MemberInfo member = expression.Members [index];
 					Expression innerExpression = arg;
 					DataFieldInfo fieldInfo;
-					state.AggregateField = false;
+					//state.AggregateField = false;
+
 					if (ParseDataFieldInfo (innerExpression, state, out fieldInfo)) {
 						if (state.MutliEntity) {
 							throw new LambdaParseException (LambdaParseMessage.ExpressionUnsupportRelateField);
 						}
-						if (state.AggregateField) {
+						if (fieldInfo is LambdaAggregateDataFieldInfo) {
 							model.AddAggregateField (member.Name, fieldInfo);
 						}
 						else {
+							hasGroupByField = true;
 							model.AddGroupByField (member.Name, fieldInfo);
 						}
+						//if (state.AggregateField) {
+						//	model.AddAggregateField (member.Name, fieldInfo);
+						//}
+						//else {
+						//	model.AddGroupByField (member.Name, fieldInfo);
+						//}
 						index++;
 					}
 					else {
 						throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainDataField);
 					}
+				}
+				if (!hasGroupByField) {
+					throw new LambdaParseException (LambdaParseMessage.ExpressionNotContainGroupByField);
 				}
 			}
 			else {
@@ -1772,38 +1803,38 @@ namespace Light.Data
 					switch (method.Name) {
 					case "Count":
 					case "LongCount":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, false);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.COUNT, false);
 						break;
 					case "DistinctCount":
 					case "DistinctLongCount":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.COUNT, true);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.COUNT, true);
 						break;
 					case "Sum":
 					case "LongSum":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, false);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.SUM, false);
 						break;
 					case "DistinctSum":
 					case "DistinctLongSum":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.SUM, true);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.SUM, true);
 						break;
 					case "Avg":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, false);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.AVG, false);
 						break;
 					case "DistinctAvg":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.AVG, true);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.AVG, true);
 						break;
 					case "Max":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MAX, false);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.MAX, false);
 
 						break;
 					case "Min":
-						data = new LambdaAggregateDataFieldInfo (fieldInfo, AggregateType.MIN, false);
+						data = new LambdaAggregateFieldDataFieldInfo (fieldInfo, AggregateType.MIN, false);
 						break;
 					}
 				}
 			}
 			CheckFieldInfo (data);
-			state.AggregateField = true;
+			//state.AggregateField = true;
 			return data;
 		}
 

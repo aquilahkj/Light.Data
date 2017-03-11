@@ -1,13 +1,12 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
 	class AggregateDataFieldInfo : LambdaDataFieldInfo, IAliasDataFieldInfo
 	{
-		DataFieldInfo _fieldInfo;
+		readonly DataFieldInfo _fieldInfo;
 
-		string _aggregateName;
+		readonly string _aggregateName;
 
-		bool _aggregate;
+		readonly bool _aggregate;
 
 		public AggregateDataFieldInfo (DataFieldInfo fieldInfo, string name, bool aggregate)
 			: base (fieldInfo.TableMapping, true, name)
@@ -27,10 +26,6 @@ namespace Light.Data
 			get {
 				return _aggregateName;
 			}
-
-			//set {
-			//	_aggregateName = value;
-			//}
 		}
 
 		public bool Aggregate {
@@ -50,13 +45,6 @@ namespace Light.Data
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
 		{
 			return _fieldInfo.CreateSqlString (factory, isFullName, state);
-			//if (isFullName) {
-			//	string tableName = this._aliasTableName ?? TableMapping.TableName;
-			//	return factory.CreateFullDataFieldSql (tableName, FieldName);
-			//}
-			//else {
-			//	return factory.CreateDataFieldSql (FieldName);
-			//}
 		}
 
 		public string CreateAliasDataFieldSql (CommandFactory factory, bool isFullName, CreateSqlState state)
