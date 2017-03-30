@@ -78,6 +78,8 @@ namespace Light.Data
 
 		public abstract List<K> ToList ();
 
+		public abstract K [] ToArray ();
+
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return this.GetEnumerator ();

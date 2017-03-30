@@ -246,22 +246,22 @@ namespace Light.Data
 			return queryString;
 		}
 
-		public virtual string GetHavingString (AggregateHavingExpression query, bool isFullField, CreateSqlState state)
-		{
-			string queryString = null;
-			if (query != null) {
-				if (_havingAlias) {
-					bool alias = state.UseFieldAlias;
-					state.UseFieldAlias = true;
-					queryString = string.Format (" having {0}", query.CreateSqlString (this, isFullField, state));
-					state.UseFieldAlias = alias;
-				}
-				else {
-					queryString = string.Format (" having {0}", query.CreateSqlString (this, isFullField, state));
-				}
-			}
-			return queryString;
-		}
+		//public virtual string GetHavingString (AggregateHavingExpression query, bool isFullField, CreateSqlState state)
+		//{
+		//	string queryString = null;
+		//	if (query != null) {
+		//		if (_havingAlias) {
+		//			bool alias = state.UseFieldAlias;
+		//			state.UseFieldAlias = true;
+		//			queryString = string.Format (" having {0}", query.CreateSqlString (this, isFullField, state));
+		//			state.UseFieldAlias = alias;
+		//		}
+		//		else {
+		//			queryString = string.Format (" having {0}", query.CreateSqlString (this, isFullField, state));
+		//		}
+		//	}
+		//	return queryString;
+		//}
 
 		public virtual string GetQueryString (QueryExpression query, bool isFullField, CreateSqlState state)
 		{
@@ -416,49 +416,49 @@ namespace Light.Data
 			return command;
 		}
 
-		public virtual CommandData CreateAggregateTableCommand (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, CreateSqlState state)
-		{
-			StringBuilder sql = new StringBuilder ();
-			string [] selectList = new string [groupbys.Count + functions.Count];
-			string [] groupbyList = new string [groupbys.Count];
-			int index = 0;
-			foreach (AggregateDataInfo groupbyInfo in groupbys) {
-				AggregateData data = groupbyInfo.Data;
-				if (!mapping.Equals (data.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
-				}
-				string groupbyField = data.CreateSqlString (this, false, state);
-				groupbyList [index] = groupbyField;
-				string selectField = CreateAliasFieldSql (groupbyField, groupbyInfo.Name);
-				selectList [index] = selectField;
-				index++;
-			}
-			foreach (AggregateDataInfo functionInfo in functions) {
-				AggregateData function = functionInfo.Data;
-				if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
-					throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
-				}
-				string aggField = function.CreateSqlString (this, false, state);
-				string selectField = CreateAliasFieldSql (aggField, functionInfo.Name);
-				selectList [index] = selectField;
-				index++;
-			}
-			string select = string.Join (",", selectList);
-			string groupby = string.Join (",", groupbyList);
-			sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
-			if (query != null) {
-				sql.AppendFormat (GetQueryString (query, false, state));
-			}
-			sql.AppendFormat (" group by {0}", groupby);
-			if (having != null) {
-				sql.AppendFormat (GetHavingString (having, false, state));
-			}
-			if (order != null) {
-				sql.AppendFormat (GetAggregateOrderString (order, false, state));
-			}
-			CommandData command = new CommandData (sql.ToString ());
-			return command;
-		}
+		//public virtual CommandData CreateAggregateTableCommand (DataEntityMapping mapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, CreateSqlState state)
+		//{
+		//	StringBuilder sql = new StringBuilder ();
+		//	string [] selectList = new string [groupbys.Count + functions.Count];
+		//	string [] groupbyList = new string [groupbys.Count];
+		//	int index = 0;
+		//	foreach (AggregateDataInfo groupbyInfo in groupbys) {
+		//		AggregateData data = groupbyInfo.Data;
+		//		if (!mapping.Equals (data.TableMapping)) {
+		//			throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+		//		}
+		//		string groupbyField = data.CreateSqlString (this, false, state);
+		//		groupbyList [index] = groupbyField;
+		//		string selectField = CreateAliasFieldSql (groupbyField, groupbyInfo.Name);
+		//		selectList [index] = selectField;
+		//		index++;
+		//	}
+		//	foreach (AggregateDataInfo functionInfo in functions) {
+		//		AggregateData function = functionInfo.Data;
+		//		if (function.TableMapping != null && !mapping.Equals (function.TableMapping)) {
+		//			throw new LightDataException (RE.DataMappingIsNotMatchAggregateField);
+		//		}
+		//		string aggField = function.CreateSqlString (this, false, state);
+		//		string selectField = CreateAliasFieldSql (aggField, functionInfo.Name);
+		//		selectList [index] = selectField;
+		//		index++;
+		//	}
+		//	string select = string.Join (",", selectList);
+		//	string groupby = string.Join (",", groupbyList);
+		//	sql.AppendFormat ("select {0} from {1}", select, CreateDataTableSql (mapping.TableName));
+		//	if (query != null) {
+		//		sql.AppendFormat (GetQueryString (query, false, state));
+		//	}
+		//	sql.AppendFormat (" group by {0}", groupby);
+		//	if (having != null) {
+		//		sql.AppendFormat (GetHavingString (having, false, state));
+		//	}
+		//	if (order != null) {
+		//		sql.AppendFormat (GetAggregateOrderString (order, false, state));
+		//	}
+		//	CommandData command = new CommandData (sql.ToString ());
+		//	return command;
+		//}
 
 		public virtual CommandData CreateExistsCommand (DataEntityMapping mapping, QueryExpression query, CreateSqlState state)
 		{

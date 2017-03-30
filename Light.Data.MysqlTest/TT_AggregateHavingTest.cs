@@ -473,7 +473,6 @@ namespace Light.Data.MysqlTest
 			List<LevelIdAggAvg> listEx;
 			List<LevelIdAggAvg> listAc;
 			Dictionary<int, LevelIdAggX> dict;
-			AggregateData function = AggregateFunction.Avg (TeUser.RefereeIdField >= 4 & TeUser.RefereeIdField <= 8, TeUser.LoginTimesField);
 
 			list = context.Query<TeUser> ().ToList ();
 			listEx = new List<LevelIdAggAvg> ();

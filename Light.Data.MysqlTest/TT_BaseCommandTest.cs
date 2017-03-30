@@ -9,28 +9,28 @@ namespace Light.Data.MysqlTest
 	[TestFixture ()]
 	public class TT_BaseCommandTest : BaseTest
 	{
-		[Test ()]
-		public void TestCase_SaveErase_Single ()
-		{
-			context.TruncateTable<TeUser> ();
+		//[Test ()]
+		//public void TestCase_SaveErase_Single ()
+		//{
+		//	context.TruncateTable<TeUser> ();
 
-			TeUser userInsert = CreateTestUser (true);
-			userInsert.Save ();
-			Assert.Greater (userInsert.Id, 0);
-			TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
-			Assert.NotNull (user1);
-			AssertExtend.AreTypeEqual (userInsert, user1);
-			user1.LastLoginTime = GetNow ();
-			user1.Status = 2;
-			user1.Save ();
-			Assert.AreEqual (userInsert.Id, user1.Id);
-			TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
-			Assert.NotNull (user2);
-			AssertExtend.AreTypeEqual (user1, user2);
-			user2.Erase ();
-			TeUser user3 = context.SelectSingleFromId<TeUser> (userInsert.Id);
-			Assert.Null (user3);
-		}
+		//	TeUser userInsert = CreateTestUser (true);
+		//	userInsert.Save ();
+		//	Assert.Greater (userInsert.Id, 0);
+		//	TeUser user1 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+		//	Assert.NotNull (user1);
+		//	AssertExtend.AreTypeEqual (userInsert, user1);
+		//	user1.LastLoginTime = GetNow ();
+		//	user1.Status = 2;
+		//	user1.Save ();
+		//	Assert.AreEqual (userInsert.Id, user1.Id);
+		//	TeUser user2 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+		//	Assert.NotNull (user2);
+		//	AssertExtend.AreTypeEqual (user1, user2);
+		//	user2.Erase ();
+		//	TeUser user3 = context.SelectSingleFromId<TeUser> (userInsert.Id);
+		//	Assert.Null (user3);
+		//}
 
 		[Test ()]
 		public void TestCase_CUD_Single ()

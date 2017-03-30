@@ -7,59 +7,8 @@ namespace Light.Data.MysqlTest
 {
     [Serializable]
     [DataTable("Te_AreaInfo")]
-    public partial class TeAreaInfo : DataTableEntity
+    public class TeAreaInfo 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeAreaInfo>.Create("Id");
-
-		static readonly DataFieldInfo nameField = DataFieldInfo<TeAreaInfo>.Create("Name");
-
-		static readonly DataFieldInfo v1Field = DataFieldInfo<TeAreaInfo>.Create("V1");
-
-		static readonly DataFieldInfo v2Field = DataFieldInfo<TeAreaInfo>.Create("V2");
-
-		static readonly DataFieldInfo v3Field = DataFieldInfo<TeAreaInfo>.Create("V3");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo NameField
-        {
-            get {
-                return nameField;
-            }
-        }
-
-		public static DataFieldInfo V1Field
-        {
-            get {
-                return v1Field;
-            }
-        }
-
-		public static DataFieldInfo V2Field
-        {
-            get {
-                return v2Field;
-            }
-        }
-
-		public static DataFieldInfo V3Field
-        {
-            get {
-                return v3Field;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -146,122 +95,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_Article")]
-    public partial class TeArticle : DataTableEntity
+    public class TeArticle 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeArticle>.Create("Id");
-
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeArticle>.Create("UserId");
-
-		static readonly DataFieldInfo titleField = DataFieldInfo<TeArticle>.Create("Title");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeArticle>.Create("Content");
-
-		static readonly DataFieldInfo publishTimeField = DataFieldInfo<TeArticle>.Create("PublishTime");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeArticle>.Create("Status");
-
-		static readonly DataFieldInfo readNumField = DataFieldInfo<TeArticle>.Create("ReadNum");
-
-		static readonly DataFieldInfo praiseNumField = DataFieldInfo<TeArticle>.Create("PraiseNum");
-
-		static readonly DataFieldInfo lastModifyTimeField = DataFieldInfo<TeArticle>.Create("LastModifyTime");
-
-		static readonly DataFieldInfo lastCommentTimeField = DataFieldInfo<TeArticle>.Create("LastCommentTime");
-
-		static readonly DataFieldInfo tagsField = DataFieldInfo<TeArticle>.Create("Tags");
-
-		static readonly DataFieldInfo columnIdField = DataFieldInfo<TeArticle>.Create("ColumnId");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo UserIdField
-        {
-            get {
-                return userIdField;
-            }
-        }
-
-		public static DataFieldInfo TitleField
-        {
-            get {
-                return titleField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-		public static DataFieldInfo PublishTimeField
-        {
-            get {
-                return publishTimeField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo ReadNumField
-        {
-            get {
-                return readNumField;
-            }
-        }
-
-		public static DataFieldInfo PraiseNumField
-        {
-            get {
-                return praiseNumField;
-            }
-        }
-
-		public static DataFieldInfo LastModifyTimeField
-        {
-            get {
-                return lastModifyTimeField;
-            }
-        }
-
-		public static DataFieldInfo LastCommentTimeField
-        {
-            get {
-                return lastCommentTimeField;
-            }
-        }
-
-		public static DataFieldInfo TagsField
-        {
-            get {
-                return tagsField;
-            }
-        }
-
-		public static DataFieldInfo ColumnIdField
-        {
-            get {
-                return columnIdField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -460,59 +295,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_ArticleColumn")]
-    public partial class TeArticleColumn : DataTableEntity
+    public class TeArticleColumn 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo columnIdField = DataFieldInfo<TeArticleColumn>.Create("ColumnId");
-
-		static readonly DataFieldInfo columnNameField = DataFieldInfo<TeArticleColumn>.Create("ColumnName");
-
-		static readonly DataFieldInfo parentIdField = DataFieldInfo<TeArticleColumn>.Create("ParentId");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeArticleColumn>.Create("Status");
-
-		static readonly DataFieldInfo remarkField = DataFieldInfo<TeArticleColumn>.Create("Remark");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo ColumnIdField
-        {
-            get {
-                return columnIdField;
-            }
-        }
-
-		public static DataFieldInfo ColumnNameField
-        {
-            get {
-                return columnNameField;
-            }
-        }
-
-		public static DataFieldInfo ParentIdField
-        {
-            get {
-                return parentIdField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo RemarkField
-        {
-            get {
-                return remarkField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private string columnId;
 
@@ -599,68 +383,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_ArticleComment")]
-    public partial class TeArticleComment : DataTableEntity
+    public class TeArticleComment 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeArticleComment>.Create("Id");
-
-		static readonly DataFieldInfo articleIdField = DataFieldInfo<TeArticleComment>.Create("ArticleId");
-
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeArticleComment>.Create("UserId");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeArticleComment>.Create("Content");
-
-		static readonly DataFieldInfo publishTimeField = DataFieldInfo<TeArticleComment>.Create("PublishTime");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeArticleComment>.Create("Status");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo ArticleIdField
-        {
-            get {
-                return articleIdField;
-            }
-        }
-
-		public static DataFieldInfo UserIdField
-        {
-            get {
-                return userIdField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-		public static DataFieldInfo PublishTimeField
-        {
-            get {
-                return publishTimeField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -763,77 +487,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_CheckValue")]
-    public partial class TeCheckValue : DataTableEntity
+    public class TeCheckValue 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeCheckValue>.Create("Id");
-
-		static readonly DataFieldInfo checkIdField = DataFieldInfo<TeCheckValue>.Create("CheckId");
-
-		static readonly DataFieldInfo checkRateField = DataFieldInfo<TeCheckValue>.Create("CheckRate");
-
-		static readonly DataFieldInfo checkTimeField = DataFieldInfo<TeCheckValue>.Create("CheckTime");
-
-		static readonly DataFieldInfo checkDateField = DataFieldInfo<TeCheckValue>.Create("CheckDate");
-
-		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeCheckValue>.Create("CheckData");
-
-		static readonly DataFieldInfo checkLevelField = DataFieldInfo<TeCheckValue>.Create("CheckLevel");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo CheckIdField
-        {
-            get {
-                return checkIdField;
-            }
-        }
-
-		public static DataFieldInfo CheckRateField
-        {
-            get {
-                return checkRateField;
-            }
-        }
-
-		public static DataFieldInfo CheckTimeField
-        {
-            get {
-                return checkTimeField;
-            }
-        }
-
-		public static DataFieldInfo CheckDateField
-        {
-            get {
-                return checkDateField;
-            }
-        }
-
-		public static DataFieldInfo CheckDataField
-        {
-            get {
-                return checkDataField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelField
-        {
-            get {
-                return checkLevelField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -952,122 +607,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_DataLog")]
-    public partial class TeDataLog : DataTableEntity
+    public class TeDataLog 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeDataLog>.Create("Id");
-
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeDataLog>.Create("UserId");
-
-		static readonly DataFieldInfo articleIdField = DataFieldInfo<TeDataLog>.Create("ArticleId");
-
-		static readonly DataFieldInfo recordTimeField = DataFieldInfo<TeDataLog>.Create("RecordTime");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeDataLog>.Create("Status");
-
-		static readonly DataFieldInfo actionField = DataFieldInfo<TeDataLog>.Create("Action");
-
-		static readonly DataFieldInfo requestUrlField = DataFieldInfo<TeDataLog>.Create("RequestUrl");
-
-		static readonly DataFieldInfo checkIdField = DataFieldInfo<TeDataLog>.Create("CheckId");
-
-		static readonly DataFieldInfo checkPointField = DataFieldInfo<TeDataLog>.Create("CheckPoint");
-
-		static readonly DataFieldInfo checkTimeField = DataFieldInfo<TeDataLog>.Create("CheckTime");
-
-		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLog>.Create("CheckData");
-
-		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLog>.Create("CheckLevelTypeInt");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo UserIdField
-        {
-            get {
-                return userIdField;
-            }
-        }
-
-		public static DataFieldInfo ArticleIdField
-        {
-            get {
-                return articleIdField;
-            }
-        }
-
-		public static DataFieldInfo RecordTimeField
-        {
-            get {
-                return recordTimeField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo ActionField
-        {
-            get {
-                return actionField;
-            }
-        }
-
-		public static DataFieldInfo RequestUrlField
-        {
-            get {
-                return requestUrlField;
-            }
-        }
-
-		public static DataFieldInfo CheckIdField
-        {
-            get {
-                return checkIdField;
-            }
-        }
-
-		public static DataFieldInfo CheckPointField
-        {
-            get {
-                return checkPointField;
-            }
-        }
-
-		public static DataFieldInfo CheckTimeField
-        {
-            get {
-                return checkTimeField;
-            }
-        }
-
-		public static DataFieldInfo CheckDataField
-        {
-            get {
-                return checkDataField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelTypeIntField
-        {
-            get {
-                return checkLevelTypeIntField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -1266,122 +807,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_DataLogHistory")]
-    public partial class TeDataLogHistory : DataTableEntity
+    public class TeDataLogHistory 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeDataLogHistory>.Create("Id");
-
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeDataLogHistory>.Create("UserId");
-
-		static readonly DataFieldInfo articleIdField = DataFieldInfo<TeDataLogHistory>.Create("ArticleId");
-
-		static readonly DataFieldInfo recordTimeField = DataFieldInfo<TeDataLogHistory>.Create("RecordTime");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeDataLogHistory>.Create("Status");
-
-		static readonly DataFieldInfo actionField = DataFieldInfo<TeDataLogHistory>.Create("Action");
-
-		static readonly DataFieldInfo requestUrlField = DataFieldInfo<TeDataLogHistory>.Create("RequestUrl");
-
-		static readonly DataFieldInfo checkIdField = DataFieldInfo<TeDataLogHistory>.Create("CheckId");
-
-		static readonly DataFieldInfo checkPointField = DataFieldInfo<TeDataLogHistory>.Create("CheckPoint");
-
-		static readonly DataFieldInfo checkTimeField = DataFieldInfo<TeDataLogHistory>.Create("CheckTime");
-
-		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLogHistory>.Create("CheckData");
-
-		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLogHistory>.Create("CheckLevelTypeInt");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo UserIdField
-        {
-            get {
-                return userIdField;
-            }
-        }
-
-		public static DataFieldInfo ArticleIdField
-        {
-            get {
-                return articleIdField;
-            }
-        }
-
-		public static DataFieldInfo RecordTimeField
-        {
-            get {
-                return recordTimeField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo ActionField
-        {
-            get {
-                return actionField;
-            }
-        }
-
-		public static DataFieldInfo RequestUrlField
-        {
-            get {
-                return requestUrlField;
-            }
-        }
-
-		public static DataFieldInfo CheckIdField
-        {
-            get {
-                return checkIdField;
-            }
-        }
-
-		public static DataFieldInfo CheckPointField
-        {
-            get {
-                return checkPointField;
-            }
-        }
-
-		public static DataFieldInfo CheckTimeField
-        {
-            get {
-                return checkTimeField;
-            }
-        }
-
-		public static DataFieldInfo CheckDataField
-        {
-            get {
-                return checkDataField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelTypeIntField
-        {
-            get {
-                return checkLevelTypeIntField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -1580,122 +1007,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_DataLogHistory2")]
-    public partial class TeDataLogHistory2 : DataTableEntity
+    public class TeDataLogHistory2 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeDataLogHistory2>.Create("Id");
-
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeDataLogHistory2>.Create("UserId");
-
-		static readonly DataFieldInfo articleIdField = DataFieldInfo<TeDataLogHistory2>.Create("ArticleId");
-
-		static readonly DataFieldInfo recordTimeField = DataFieldInfo<TeDataLogHistory2>.Create("RecordTime");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeDataLogHistory2>.Create("Status");
-
-		static readonly DataFieldInfo actionField = DataFieldInfo<TeDataLogHistory2>.Create("Action");
-
-		static readonly DataFieldInfo requestUrlField = DataFieldInfo<TeDataLogHistory2>.Create("RequestUrl");
-
-		static readonly DataFieldInfo checkIdField = DataFieldInfo<TeDataLogHistory2>.Create("CheckId");
-
-		static readonly DataFieldInfo checkPointField = DataFieldInfo<TeDataLogHistory2>.Create("CheckPoint");
-
-		static readonly DataFieldInfo checkTimeField = DataFieldInfo<TeDataLogHistory2>.Create("CheckTime");
-
-		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLogHistory2>.Create("CheckData");
-
-		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLogHistory2>.Create("CheckLevelTypeInt");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo UserIdField
-        {
-            get {
-                return userIdField;
-            }
-        }
-
-		public static DataFieldInfo ArticleIdField
-        {
-            get {
-                return articleIdField;
-            }
-        }
-
-		public static DataFieldInfo RecordTimeField
-        {
-            get {
-                return recordTimeField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo ActionField
-        {
-            get {
-                return actionField;
-            }
-        }
-
-		public static DataFieldInfo RequestUrlField
-        {
-            get {
-                return requestUrlField;
-            }
-        }
-
-		public static DataFieldInfo CheckIdField
-        {
-            get {
-                return checkIdField;
-            }
-        }
-
-		public static DataFieldInfo CheckPointField
-        {
-            get {
-                return checkPointField;
-            }
-        }
-
-		public static DataFieldInfo CheckTimeField
-        {
-            get {
-                return checkTimeField;
-            }
-        }
-
-		public static DataFieldInfo CheckDataField
-        {
-            get {
-                return checkDataField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelTypeIntField
-        {
-            get {
-                return checkLevelTypeIntField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -1894,77 +1207,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_RelateA")]
-    public partial class TeRelateA : DataTableEntity
+    public class TeRelateA 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateA>.Create("Id");
-
-		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateA>.Create("RelateBId");
-
-		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateA>.Create("RelateCId");
-
-		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateA>.Create("RelateDId");
-
-		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateA>.Create("RelateEId");
-
-		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateA>.Create("RelateFId");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateA>.Create("Content");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo RelateBIdField
-        {
-            get {
-                return relateBIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateCIdField
-        {
-            get {
-                return relateCIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateDIdField
-        {
-            get {
-                return relateDIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateEIdField
-        {
-            get {
-                return relateEIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateFIdField
-        {
-            get {
-                return relateFIdField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -2083,77 +1327,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_RelateB")]
-    public partial class TeRelateB : DataTableEntity
+    public class TeRelateB 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateB>.Create("Id");
-
-		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateB>.Create("RelateAId");
-
-		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateB>.Create("RelateCId");
-
-		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateB>.Create("RelateDId");
-
-		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateB>.Create("RelateEId");
-
-		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateB>.Create("RelateFId");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateB>.Create("Content");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo RelateAIdField
-        {
-            get {
-                return relateAIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateCIdField
-        {
-            get {
-                return relateCIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateDIdField
-        {
-            get {
-                return relateDIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateEIdField
-        {
-            get {
-                return relateEIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateFIdField
-        {
-            get {
-                return relateFIdField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -2272,77 +1447,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_RelateC")]
-    public partial class TeRelateC : DataTableEntity
+    public class TeRelateC 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateC>.Create("Id");
-
-		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateC>.Create("RelateAId");
-
-		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateC>.Create("RelateBId");
-
-		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateC>.Create("RelateDId");
-
-		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateC>.Create("RelateEId");
-
-		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateC>.Create("RelateFId");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateC>.Create("Content");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo RelateAIdField
-        {
-            get {
-                return relateAIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateBIdField
-        {
-            get {
-                return relateBIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateDIdField
-        {
-            get {
-                return relateDIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateEIdField
-        {
-            get {
-                return relateEIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateFIdField
-        {
-            get {
-                return relateFIdField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -2461,77 +1567,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_RelateD")]
-    public partial class TeRelateD : DataTableEntity
+    public class TeRelateD 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateD>.Create("Id");
-
-		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateD>.Create("RelateAId");
-
-		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateD>.Create("RelateBId");
-
-		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateD>.Create("RelateCId");
-
-		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateD>.Create("RelateEId");
-
-		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateD>.Create("RelateFId");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateD>.Create("Content");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo RelateAIdField
-        {
-            get {
-                return relateAIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateBIdField
-        {
-            get {
-                return relateBIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateCIdField
-        {
-            get {
-                return relateCIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateEIdField
-        {
-            get {
-                return relateEIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateFIdField
-        {
-            get {
-                return relateFIdField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -2650,77 +1687,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_RelateE")]
-    public partial class TeRelateE : DataTableEntity
+    public class TeRelateE 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateE>.Create("Id");
-
-		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateE>.Create("RelateAId");
-
-		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateE>.Create("RelateBId");
-
-		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateE>.Create("RelateCId");
-
-		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateE>.Create("RelateDId");
-
-		static readonly DataFieldInfo relateFIdField = DataFieldInfo<TeRelateE>.Create("RelateFId");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateE>.Create("Content");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo RelateAIdField
-        {
-            get {
-                return relateAIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateBIdField
-        {
-            get {
-                return relateBIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateCIdField
-        {
-            get {
-                return relateCIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateDIdField
-        {
-            get {
-                return relateDIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateFIdField
-        {
-            get {
-                return relateFIdField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -2839,77 +1807,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_RelateF")]
-    public partial class TeRelateF : DataTableEntity
+    public class TeRelateF 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeRelateF>.Create("Id");
-
-		static readonly DataFieldInfo relateAIdField = DataFieldInfo<TeRelateF>.Create("RelateAId");
-
-		static readonly DataFieldInfo relateBIdField = DataFieldInfo<TeRelateF>.Create("RelateBId");
-
-		static readonly DataFieldInfo relateCIdField = DataFieldInfo<TeRelateF>.Create("RelateCId");
-
-		static readonly DataFieldInfo relateDIdField = DataFieldInfo<TeRelateF>.Create("RelateDId");
-
-		static readonly DataFieldInfo relateEIdField = DataFieldInfo<TeRelateF>.Create("RelateEId");
-
-		static readonly DataFieldInfo contentField = DataFieldInfo<TeRelateF>.Create("Content");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo RelateAIdField
-        {
-            get {
-                return relateAIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateBIdField
-        {
-            get {
-                return relateBIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateCIdField
-        {
-            get {
-                return relateCIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateDIdField
-        {
-            get {
-                return relateDIdField;
-            }
-        }
-
-		public static DataFieldInfo RelateEIdField
-        {
-            get {
-                return relateEIdField;
-            }
-        }
-
-		public static DataFieldInfo ContentField
-        {
-            get {
-                return contentField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -3028,59 +1927,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_TagInfo")]
-    public partial class TeTagInfo : DataTableEntity
+    public class TeTagInfo 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo groupCodeField = DataFieldInfo<TeTagInfo>.Create("GroupCode");
-
-		static readonly DataFieldInfo tagCodeField = DataFieldInfo<TeTagInfo>.Create("TagCode");
-
-		static readonly DataFieldInfo tagNameField = DataFieldInfo<TeTagInfo>.Create("TagName");
-
-		static readonly DataFieldInfo remarkField = DataFieldInfo<TeTagInfo>.Create("Remark");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeTagInfo>.Create("Status");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo GroupCodeField
-        {
-            get {
-                return groupCodeField;
-            }
-        }
-
-		public static DataFieldInfo TagCodeField
-        {
-            get {
-                return tagCodeField;
-            }
-        }
-
-		public static DataFieldInfo TagNameField
-        {
-            get {
-                return tagNameField;
-            }
-        }
-
-		public static DataFieldInfo RemarkField
-        {
-            get {
-                return remarkField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private string groupCode;
 
@@ -3167,212 +2015,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_User")]
-    public partial class TeUser : DataTableEntity
+    public class TeUser 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeUser>.Create("Id");
-
-		static readonly DataFieldInfo accountField = DataFieldInfo<TeUser>.Create("Account");
-
-		static readonly DataFieldInfo passwordField = DataFieldInfo<TeUser>.Create("Password");
-
-		static readonly DataFieldInfo nickNameField = DataFieldInfo<TeUser>.Create("NickName");
-
-		static readonly DataFieldInfo genderField = DataFieldInfo<TeUser>.Create("Gender");
-
-		static readonly DataFieldInfo birthdayField = DataFieldInfo<TeUser>.Create("Birthday");
-
-		static readonly DataFieldInfo telephoneField = DataFieldInfo<TeUser>.Create("Telephone");
-
-		static readonly DataFieldInfo emailField = DataFieldInfo<TeUser>.Create("Email");
-
-		static readonly DataFieldInfo addressField = DataFieldInfo<TeUser>.Create("Address");
-
-		static readonly DataFieldInfo levelIdField = DataFieldInfo<TeUser>.Create("LevelId");
-
-		static readonly DataFieldInfo regTimeField = DataFieldInfo<TeUser>.Create("RegTime");
-
-		static readonly DataFieldInfo lastLoginTimeField = DataFieldInfo<TeUser>.Create("LastLoginTime");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeUser>.Create("Status");
-
-		static readonly DataFieldInfo hotRateField = DataFieldInfo<TeUser>.Create("HotRate");
-
-		static readonly DataFieldInfo areaField = DataFieldInfo<TeUser>.Create("Area");
-
-		static readonly DataFieldInfo deleteFlagField = DataFieldInfo<TeUser>.Create("DeleteFlag");
-
-		static readonly DataFieldInfo refereeIdField = DataFieldInfo<TeUser>.Create("RefereeId");
-
-		static readonly DataFieldInfo checkPointField = DataFieldInfo<TeUser>.Create("CheckPoint");
-
-		static readonly DataFieldInfo checkStatusField = DataFieldInfo<TeUser>.Create("CheckStatus");
-
-		static readonly DataFieldInfo checkLevelTypeField = DataFieldInfo<TeUser>.Create("CheckLevelType");
-
-		static readonly DataFieldInfo loginTimesField = DataFieldInfo<TeUser>.Create("LoginTimes");
-
-		static readonly DataFieldInfo markField = DataFieldInfo<TeUser>.Create("Mark");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo AccountField
-        {
-            get {
-                return accountField;
-            }
-        }
-
-		public static DataFieldInfo PasswordField
-        {
-            get {
-                return passwordField;
-            }
-        }
-
-		public static DataFieldInfo NickNameField
-        {
-            get {
-                return nickNameField;
-            }
-        }
-
-		public static DataFieldInfo GenderField
-        {
-            get {
-                return genderField;
-            }
-        }
-
-		public static DataFieldInfo BirthdayField
-        {
-            get {
-                return birthdayField;
-            }
-        }
-
-		public static DataFieldInfo TelephoneField
-        {
-            get {
-                return telephoneField;
-            }
-        }
-
-		public static DataFieldInfo EmailField
-        {
-            get {
-                return emailField;
-            }
-        }
-
-		public static DataFieldInfo AddressField
-        {
-            get {
-                return addressField;
-            }
-        }
-
-		public static DataFieldInfo LevelIdField
-        {
-            get {
-                return levelIdField;
-            }
-        }
-
-		public static DataFieldInfo RegTimeField
-        {
-            get {
-                return regTimeField;
-            }
-        }
-
-		public static DataFieldInfo LastLoginTimeField
-        {
-            get {
-                return lastLoginTimeField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo HotRateField
-        {
-            get {
-                return hotRateField;
-            }
-        }
-
-		public static DataFieldInfo AreaField
-        {
-            get {
-                return areaField;
-            }
-        }
-
-		public static DataFieldInfo DeleteFlagField
-        {
-            get {
-                return deleteFlagField;
-            }
-        }
-
-		public static DataFieldInfo RefereeIdField
-        {
-            get {
-                return refereeIdField;
-            }
-        }
-
-		public static DataFieldInfo CheckPointField
-        {
-            get {
-                return checkPointField;
-            }
-        }
-
-		public static DataFieldInfo CheckStatusField
-        {
-            get {
-                return checkStatusField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelTypeField
-        {
-            get {
-                return checkLevelTypeField;
-            }
-        }
-
-		public static DataFieldInfo LoginTimesField
-        {
-            get {
-                return loginTimesField;
-            }
-        }
-
-		public static DataFieldInfo MarkField
-        {
-            get {
-                return markField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -3731,68 +2375,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_UserExtend")]
-    public partial class TeUserExtend : DataTableEntity
+    public class TeUserExtend 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeUserExtend>.Create("Id");
-
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeUserExtend>.Create("UserId");
-
-		static readonly DataFieldInfo extend1Field = DataFieldInfo<TeUserExtend>.Create("Extend1");
-
-		static readonly DataFieldInfo extend2Field = DataFieldInfo<TeUserExtend>.Create("Extend2");
-
-		static readonly DataFieldInfo extend3Field = DataFieldInfo<TeUserExtend>.Create("Extend3");
-
-		static readonly DataFieldInfo extendAreaIdField = DataFieldInfo<TeUserExtend>.Create("ExtendAreaId");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo UserIdField
-        {
-            get {
-                return userIdField;
-            }
-        }
-
-		public static DataFieldInfo Extend1Field
-        {
-            get {
-                return extend1Field;
-            }
-        }
-
-		public static DataFieldInfo Extend2Field
-        {
-            get {
-                return extend2Field;
-            }
-        }
-
-		public static DataFieldInfo Extend3Field
-        {
-            get {
-                return extend3Field;
-            }
-        }
-
-		public static DataFieldInfo ExtendAreaIdField
-        {
-            get {
-                return extendAreaIdField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -3895,68 +2479,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_UserExtendProfile")]
-    public partial class TeUserExtendProfile : DataTableEntity
+    public class TeUserExtendProfile 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeUserExtendProfile>.Create("Id");
-
-		static readonly DataFieldInfo userIdField = DataFieldInfo<TeUserExtendProfile>.Create("UserId");
-
-		static readonly DataFieldInfo extend1Field = DataFieldInfo<TeUserExtendProfile>.Create("Extend1");
-
-		static readonly DataFieldInfo extend2Field = DataFieldInfo<TeUserExtendProfile>.Create("Extend2");
-
-		static readonly DataFieldInfo extend3Field = DataFieldInfo<TeUserExtendProfile>.Create("Extend3");
-
-		static readonly DataFieldInfo extendProfileIdField = DataFieldInfo<TeUserExtendProfile>.Create("ExtendProfileId");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo UserIdField
-        {
-            get {
-                return userIdField;
-            }
-        }
-
-		public static DataFieldInfo Extend1Field
-        {
-            get {
-                return extend1Field;
-            }
-        }
-
-		public static DataFieldInfo Extend2Field
-        {
-            get {
-                return extend2Field;
-            }
-        }
-
-		public static DataFieldInfo Extend3Field
-        {
-            get {
-                return extend3Field;
-            }
-        }
-
-		public static DataFieldInfo ExtendProfileIdField
-        {
-            get {
-                return extendProfileIdField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 
@@ -4059,50 +2583,8 @@ namespace Light.Data.MysqlTest
 
     [Serializable]
     [DataTable("Te_UserLevel")]
-    public partial class TeUserLevel : DataTableEntity
+    public class TeUserLevel 
     {
-    	#region "Static Field"
-		static readonly DataFieldInfo idField = DataFieldInfo<TeUserLevel>.Create("Id");
-
-		static readonly DataFieldInfo levelNameField = DataFieldInfo<TeUserLevel>.Create("LevelName");
-
-		static readonly DataFieldInfo statusField = DataFieldInfo<TeUserLevel>.Create("Status");
-
-		static readonly DataFieldInfo remarkField = DataFieldInfo<TeUserLevel>.Create("Remark");
-
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-		public static DataFieldInfo IdField
-        {
-            get {
-                return idField;
-            }
-        }
-
-		public static DataFieldInfo LevelNameField
-        {
-            get {
-                return levelNameField;
-            }
-        }
-
-		public static DataFieldInfo StatusField
-        {
-            get {
-                return statusField;
-            }
-        }
-
-		public static DataFieldInfo RemarkField
-        {
-            get {
-                return remarkField;
-            }
-        }
-
-    	#endregion
-
     	#region "Data Property"
 		private int id;
 

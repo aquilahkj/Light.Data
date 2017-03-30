@@ -17,6 +17,12 @@ namespace Light.Data
 		List<K> ToList ();
 
 		/// <summary>
+		/// Get data array.
+		/// </summary>
+		/// <returns>The array.</returns>
+		K [] ToArray ();
+
+		/// <summary>
 		/// Get first instance.
 		/// </summary>
 		K First ();

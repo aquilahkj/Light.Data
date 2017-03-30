@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data field match expression.
 	/// </summary>
-	public class DataFieldMatchExpression : DataFieldExpression
+	class DataFieldMatchExpression : DataFieldExpression
 	{
 		readonly DataFieldInfo leftField;
 
@@ -47,13 +47,14 @@ namespace Light.Data
 		/// <returns>The query expression.</returns>
 		protected override QueryExpression ConvertQueryExpression ()
 		{
-			QueryExpression expression;
-			if ((predicate == QueryPredicate.Eq || predicate == QueryPredicate.NotEq) && Object.Equals (rightField, null)) {
-				expression = new NullQueryExpression (leftField, predicate == QueryPredicate.Eq);
-			}
-			else {
-				expression = new DataFieldQueryExpression (leftField, predicate, rightField, false);
-			}
+			//QueryExpression expression;
+			//if ((predicate == QueryPredicate.Eq || predicate == QueryPredicate.NotEq) && Object.Equals (rightField, null)) {
+			//	expression = new NullQueryExpression (leftField, predicate == QueryPredicate.Eq);
+			//}
+			//else {
+			//	expression = new DataFieldQueryExpression (leftField, predicate, rightField, false);
+			//}
+			QueryExpression expression = new LambdaBinaryQueryExpression (leftField.TableMapping, QueryPredicate.Eq, leftField, rightField);
 			return expression;
 		}
 	}

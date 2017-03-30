@@ -5,7 +5,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data field info.
 	/// </summary>
-	public class DataFieldInfo<T> : DataFieldInfo where T : class, new()
+	class DataFieldInfo<T> : DataFieldInfo where T : class, new()
 	{
 		/// <summary>
 		/// Create the specified name.
@@ -30,7 +30,7 @@ namespace Light.Data
 	/// <summary>
 	/// Data field info.
 	/// </summary>
-	public partial class DataFieldInfo : BasicFieldInfo
+	partial class DataFieldInfo : BasicFieldInfo
 	{
 		/// <summary>
 		/// Creates the alias table info.

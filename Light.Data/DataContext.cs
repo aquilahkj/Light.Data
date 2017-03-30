@@ -220,18 +220,19 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>result.</returns>
 		/// <param name="data">Data.</param>
-		public int InsertOrUpdate (object data)
+		public int InsertOrUpdate<T> (T data)
+			where T : class, new()
 		{
 			bool exists = false;
-			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
 			CommandData commandData = _dataBase.Factory.CreateEntityExistsCommand (mapping, data, state);
 			Region region = new Region (0, 1);
 			using (IDbCommand command = commandData.CreateCommand (_dataBase, state)) {
-				//PrimitiveDataDefine pm = PrimitiveDataDefine.ParseDefine (typeof (Int32));
 				DataDefine define = DataDefine.GetDefine (typeof (Int32));
 				foreach (object obj in QueryDataDefineReader (define, command, region, SafeLevel.Default, null)) {
 					exists = true;
+					break;
 				}
 			}
 			int result;
@@ -249,8 +250,10 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>result.</returns>
 		/// <param name="data">Data.</param>
-		public int Insert (object data)
+		public int Insert<T> (T data)
+			where T : class, new()
 		{
+			//DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof(T));
 			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
 			return Insert (mapping, data);
 		}
@@ -288,9 +291,10 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>result.</returns>
 		/// <param name="data">Data.</param>
-		public int Update (object data)
+		public int Update<T> (T data)
+			where T : class, new()
 		{
-			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			return Update (mapping, data);
 		}
 
@@ -310,9 +314,10 @@ namespace Light.Data
 		/// </summary>
 		/// <returns>result.</returns>
 		/// <param name="data">Data.</param>
-		public int Delete (object data)
+		public int Delete<T> (T data)
+			where T : class, new()
 		{
-			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (data.GetType ());
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
 			return Delete (mapping, data);
 		}
 
@@ -375,7 +380,8 @@ namespace Light.Data
 		/// <param name="datas">Datas.</param>
 		/// <param name="batchCount">Batch count.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int BatchInsert<T> (IEnumerable<T> datas, int batchCount = 10) where T : class
+		public int BatchInsert<T> (IEnumerable<T> datas, int batchCount = 10)
+			where T : class, new()
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
@@ -395,7 +401,8 @@ namespace Light.Data
 		/// <param name="count">Count.</param>
 		/// <param name="batchCount">Batch count.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int BatchInsert<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) where T : class
+		public int BatchInsert<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10)
+			where T : class, new()
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
@@ -485,7 +492,8 @@ namespace Light.Data
 		/// <param name="datas">Datas.</param>
 		/// <param name="batchCount">Batch count.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int BatchUpdate<T> (IEnumerable<T> datas, int batchCount = 10) where T : class
+		public int BatchUpdate<T> (IEnumerable<T> datas, int batchCount = 10) 
+			where T : class, new()
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
@@ -505,7 +513,8 @@ namespace Light.Data
 		/// <param name="count">Count.</param>
 		/// <param name="batchCount">Batch count.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int BatchUpdate<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) where T : class
+		public int BatchUpdate<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) 
+			where T : class, new()
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
@@ -577,7 +586,8 @@ namespace Light.Data
 		/// <param name="datas">Datas.</param>
 		/// <param name="batchCount">Batch count.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int BatchDelete<T> (IEnumerable<T> datas, int batchCount = 10) where T : class
+		public int BatchDelete<T> (IEnumerable<T> datas, int batchCount = 10) 
+			where T : class, new()
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
@@ -597,7 +607,8 @@ namespace Light.Data
 		/// <param name="count">Count.</param>
 		/// <param name="batchCount">Batch count.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public int BatchDelete<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) where T : class
+		public int BatchDelete<T> (IEnumerable<T> datas, int index, int count, int batchCount = 10) 
+			where T : class, new()
 		{
 			if (datas == null) {
 				throw new ArgumentNullException (nameof (datas));
@@ -792,17 +803,19 @@ namespace Light.Data
 			if (!mapping.HasPrimaryKey) {
 				throw new LightDataException (RE.PrimaryKeyIsNotExist);
 			}
-			QueryExpression query = null;
+			QueryExpression queryExpression = null;
 			int i = 0;
 			foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
 				DataFieldInfo info = new DataFieldInfo (fieldMapping);
-				query = QueryExpression.And (query, info == primaryKeys [i]);
+				QueryExpression keyExpression = new LambdaBinaryQueryExpression (mapping, QueryPredicate.Eq, info, primaryKeys [i]);
+				queryExpression = QueryExpression.And (queryExpression, keyExpression);
+				//query = QueryExpression.And (query, info == primaryKeys [i]);
 				i++;
 			}
 
 			Region region = new Region (0, 1);
 			T target = default (T);
-			IEnumerable ie = QueryEntityData (mapping, null, query, null, false, region, SafeLevel.None);
+			IEnumerable ie = QueryEntityData (mapping, null, queryExpression, null, false, region, SafeLevel.None);
 			if (ie != null) {
 				foreach (T item in ie) {
 					target = item;
@@ -863,16 +876,16 @@ namespace Light.Data
 		private T SelectSingleFromIdObj<T> (object id)
 			where T : class, new()
 		{
-			DataTableEntityMapping dtmapping = DataEntityMapping.GetTableMapping (typeof (T));
-			if (dtmapping.IdentityField == null) {
+			DataTableEntityMapping mapping = DataEntityMapping.GetTableMapping (typeof (T));
+			if (mapping.IdentityField == null) {
 				throw new LightDataException (RE.DataTableNotIdentityField);
 			}
-			DataFieldInfo idfield = new DataFieldInfo (dtmapping.IdentityField);
-			QueryExpression query = idfield == id;
-
+			DataFieldInfo idfield = new DataFieldInfo (mapping.IdentityField);
+			//QueryExpression query = idfield == id;
+			QueryExpression queryExpression = new LambdaBinaryQueryExpression (mapping, QueryPredicate.Eq, idfield, id);
 			Region region = new Region (0, 1);
 			T target = default (T);
-			IEnumerable ie = QueryEntityData (dtmapping, null, query, null, false, region, SafeLevel.None);
+			IEnumerable ie = QueryEntityData (mapping, null, queryExpression, null, false, region, SafeLevel.None);
 			if (ie != null) {
 				foreach (T item in ie) {
 					target = item;
@@ -882,27 +895,27 @@ namespace Light.Data
 			return target;
 		}
 
-		/// <summary>
-		/// Create LEnumerable
-		/// </summary>
-		/// <returns>The LEnumerable.</returns>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public LEnumerable<T> LQuery<T> ()
-			where T : class, new()
-		{
-			return new LEnumerable<T> (this);
-		}
+		///// <summary>
+		///// Create LEnumerable
+		///// </summary>
+		///// <returns>The LEnumerable.</returns>
+		///// <typeparam name="T">The 1st type parameter.</typeparam>
+		//public LEnumerable<T> LQuery<T> ()
+		//	where T : class, new()
+		//{
+		//	return new LEnumerable<T> (this);
+		//}
 
-		/// <summary>
-		/// Create Aggregate.
-		/// </summary>
-		/// <returns>The aggregate.</returns>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public AggregateTable<T> LAggregate<T> ()
-			where T : class, new()
-		{
-			return new AggregateTable<T> (this);
-		}
+		///// <summary>
+		///// Create Aggregate.
+		///// </summary>
+		///// <returns>The aggregate.</returns>
+		///// <typeparam name="T">The 1st type parameter.</typeparam>
+		//public AggregateTable<T> LAggregate<T> ()
+		//	where T : class, new()
+		//{
+		//	return new AggregateTable<T> (this);
+		//}
 
 		/// <summary>
 		/// LQs the ueryable.
@@ -990,13 +1003,13 @@ namespace Light.Data
 			return QueryDataDefineReader (define, command, commandData.InnerPage ? null : region, level, null);
 		}
 
-		internal IEnumerable QueryDynamicAggregateEnumerable (DataEntityMapping mapping, DataMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
-		{
-			CreateSqlState state = new CreateSqlState (_dataBase.Factory);
-			CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (mapping, groupbys, functions, query, having, order, state);
-			IDbCommand command = commandData.CreateCommand (_dataBase, state);
-			return QueryDataDefineReader (amapping, command, null, level, commandData.State);
-		}
+		//internal IEnumerable QueryDynamicAggregateEnumerable (DataEntityMapping mapping, DataMapping amapping, List<AggregateDataInfo> groupbys, List<AggregateDataInfo> functions, QueryExpression query, AggregateHavingExpression having, OrderExpression order, SafeLevel level)
+		//{
+		//	CreateSqlState state = new CreateSqlState (_dataBase.Factory);
+		//	CommandData commandData = _dataBase.Factory.CreateAggregateTableCommand (mapping, groupbys, functions, query, having, order, state);
+		//	IDbCommand command = commandData.CreateCommand (_dataBase, state);
+		//	return QueryDataDefineReader (amapping, command, null, level, commandData.State);
+		//}
 
 		internal IEnumerable QueryDynamicAggregate (AggregateModel model, QueryExpression query, QueryExpression having, OrderExpression order, Region region, SafeLevel level)
 		{

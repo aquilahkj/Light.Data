@@ -86,6 +86,11 @@ namespace Light.Data
 			return list;
 		}
 
+		public override K [] ToArray ()
+		{
+			return ToList ().ToArray ();
+		}
+
 		public override K First ()
 		{
 			return ElementAt (0);

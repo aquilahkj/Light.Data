@@ -217,7 +217,6 @@
     <Compile Include="CommandOutputEventArgs.cs" />
     <Compile Include="CommandOutputEventHandle.cs" />
     <Compile Include="Expressions\DataFieldExpression.cs" />
-    <Compile Include="Expressions\DataFieldMatchExpression.cs" />
     <Compile Include="DataContextSetting.cs" />
     <Compile Include="CommandData.cs" />
     <Compile Include="DataField\AliasDataFieldInfo.cs" />
@@ -275,7 +274,6 @@
     <Compile Include="Model\LightSelect.cs" />
     <Compile Include="Model\JoinConnect.cs" />
     <Compile Include="Model\EntityJoinModel.cs" />
-    <Compile Include="Model\JoinTable.cs" />
     <Compile Include="Model\JoinType.cs" />
     <Compile Include="Model\SingleParameterLambdaState.cs" />
     <Compile Include="Model\AggregateType.cs" />
@@ -298,43 +296,6 @@
     <Compile Include="Expressions\LambdaConditionQueryExpression.cs" />
     <Compile Include="DataField\LambdaQueryDataFieldInfo.cs" />
     <Compile Include="CreateSqlState.cs" />
-    <Compile Include="Expressions\outdate\SingleParamAggregateExpression.cs" />
-    <Compile Include="Expressions\outdate\SingleParamQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\SubAggregateExpression.cs" />
-    <Compile Include="Expressions\outdate\SubQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\BetweenParamsAggregateExpression.cs" />
-    <Compile Include="Expressions\outdate\BetweenParamsQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\CollectionMatchQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\CollectionParamsAggregateExpression.cs" />
-    <Compile Include="Expressions\outdate\CollectionParamsQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\BooleanQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\AggregateHavingExpression.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Expressions\outdate\AggregateOrderExpression.cs" />
-    <Compile Include="Expressions\outdate\ExistsQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\NotAggregateExpression.cs" />
-    <Compile Include="Expressions\outdate\NullAggregateExpression.cs" />
-    <Compile Include="Expressions\outdate\NullQueryExpression.cs" />
-    <Compile Include="Expressions\outdate\DataFieldQueryExpression.cs" />
-    <Compile Include="DataField\outdate\DataFieldInfo.cs" />
-    <Compile Include="Functions\outdate\AggregateData.cs" />
-    <Compile Include="DataField\outdate\CastStringDataFielfInfo.cs" />
-    <Compile Include="DataField\outdate\ConcatStringDataFieldInfo.cs" />
-    <Compile Include="DataField\outdate\ConstantSelectFieldInfo.cs" />
-    <Compile Include="DataField\outdate\DateDataFieldInfo.cs" />
-    <Compile Include="DataField\outdate\LengthDataFieldInfo.cs" />
-    <Compile Include="DataField\outdate\MatchDataFieldInfo.cs" />
-    <Compile Include="DataField\outdate\MathCalculateDataFieldInfo.cs" />
-    <Compile Include="DataField\outdate\MathFunctionDataFieldInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DataField\outdate\SubStringDataFieldInfo.cs" />
-    <Compile Include="DataField\outdate\ExtendDataFieldInfo.cs" />
-    <Compile Include="DataField\outdate\SelectFieldInfo.cs" />
-    <Compile Include="DataField\outdate\EnumSelectFieldInfo.cs" />
-    <Compile Include="DataField\outdate\DataSelectFieldInfo.cs" />
-    <Compile Include="DataField\outdate\DatePartDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaAggregateFieldDataFieldInfo.cs" />
     <Compile Include="DataField\EnumDefine\MathOperator.cs" />
     <Compile Include="DataField\EnumDefine\StringFunction.cs" />
@@ -345,24 +306,9 @@
     <Compile Include="DataField\AggregateDataFieldInfo.cs" />
     <Compile Include="Model\AggregateLambdaState.cs" />
     <Compile Include="DataField\IAliasDataFieldInfo.cs" />
-    <Compile Include="Functions\outdate\MaxFunction.cs" />
-    <Compile Include="Functions\outdate\MinFunction.cs" />
-    <Compile Include="Functions\outdate\SumFunction.cs" />
-    <Compile Include="Functions\outdate\AggregateDataInfo.cs" />
-    <Compile Include="Functions\outdate\AggregateFunction.cs" />
-    <Compile Include="Functions\outdate\AvgFunction.cs" />
-    <Compile Include="Functions\outdate\ConditionAvgFunction.cs" />
-    <Compile Include="Functions\outdate\ConditionCountFunction.cs" />
-    <Compile Include="Functions\outdate\ConditionMaxFunction.cs" />
-    <Compile Include="Functions\outdate\ConditionMinFunction.cs" />
-    <Compile Include="Functions\outdate\ConditionSumFunction.cs" />
-    <Compile Include="Functions\outdate\CountAllFunction.cs" />
-    <Compile Include="Functions\outdate\CountFunction.cs" />
-    <Compile Include="Functions\outdate\FieldInfoAggregateData.cs" />
     <Compile Include="DataField\LambdaConstantDataFieldInfo.cs" />
     <Compile Include="Model\InsertSelector.cs" />
     <Compile Include="Model\MassUpdator.cs" />
-    <Compile Include="DataField\outdate\ConstantDataFieldInfo.cs" />
     <Compile Include="LambdaParseMessage.cs" />
     <Compile Include="Mappings\IJoinTableMapping.cs" />
     <Compile Include="Model\IJoinModel.cs" />
@@ -387,27 +333,10 @@
     <Compile Include="Model\T_IJoinTable.cs">
       <DependentUpon>T_IJoinTable.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\outdate\UpdateSetValue.cs" />
-    <Compile Include="Model\outdate\IJoinTable_1.cs" />
-    <Compile Include="Model\outdate\IJoinTable_2.cs" />
-    <Compile Include="Model\outdate\IJoinTable_3.cs" />
-    <Compile Include="Model\outdate\IJoinTable_4.cs" />
-    <Compile Include="Model\outdate\IJoinTable_5.cs" />
-    <Compile Include="Model\outdate\LightJoinTable_1.cs" />
-    <Compile Include="Model\outdate\LightJoinTable_2.cs" />
-    <Compile Include="Model\outdate\LightJoinTable_3.cs" />
-    <Compile Include="Model\outdate\LightJoinTable_4.cs" />
-    <Compile Include="Model\outdate\LightJoinTable_5.cs" />
-    <Compile Include="Model\outdate\LEnumerable.cs" />
     <Compile Include="DataField\LambdaNewArrayDataFieldInfo.cs" />
-    <Compile Include="Model\outdate\AggregateTable.cs" />
-    <Compile Include="Model\outdate\AggregateGroupData.cs" />
-    <Compile Include="Model\outdate\JoinCapsule.cs" />
     <Compile Include="Model\T_LightJoinSelect.cs">
       <DependentUpon>T_LightJoinSelect.tt</DependentUpon>
     </Compile>
-    <Compile Include="Expressions\outdate\_HavingExpression.cs" />
-    <Compile Include="Expressions\outdate\_SpecialOrderExpression.cs" />
     <Compile Include="Extend\Function.cs" />
     <Compile Include="Extend\ExtendQuery.cs" />
     <Compile Include="DataField\LambdaNullDataFieldInfo.cs" />
@@ -427,6 +356,7 @@
     <Compile Include="DataField\LambdaSubQueryDataFieldInfo.cs" />
     <Compile Include="Expressions\LambdaSubQueryExpression.cs" />
     <Compile Include="DataField\LambdaAggregateDataFieldInfo.cs" />
+    <Compile Include="Expressions\DataFieldMatchExpression.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -457,11 +387,7 @@
   <ItemGroup>
     <Folder Include="DataBase\" />
     <Folder Include="Model\" />
-    <Folder Include="Expressions\outdate\" />
-    <Folder Include="DataField\outdate\" />
-    <Folder Include="Functions\outdate\" />
     <Folder Include="DataField\EnumDefine\" />
-    <Folder Include="Model\outdate\" />
     <Folder Include="Extend\" />
   </ItemGroup>
   <ItemGroup>

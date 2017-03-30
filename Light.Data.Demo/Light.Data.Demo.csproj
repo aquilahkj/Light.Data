@@ -41,17 +41,9 @@
     <Compile Include="DBSchema.cs">
       <DependentUpon>DBSchema.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\TaskModel.cs" />
     <Compile Include="Mapping.cs">
       <DependentUpon>Mapping.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\VehicleModel.cs" />
-    <Compile Include="Model\DBSchema_Mysql.cs">
-      <DependentUpon>DBSchema_Mysql.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\DBSchema.cs" />
-    <Compile Include="Model\RelationSchema4.cs" />
-    <Compile Include="Model\RelationSchema3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -78,12 +70,5 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Mapping.cs</LastGenOutput>
     </None>
-    <None Include="Model\DBSchema_Mysql.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DBSchema_Mysql.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
   </ItemGroup>
 </Project>

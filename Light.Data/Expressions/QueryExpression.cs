@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Query expression.
 	/// </summary>
-	public class QueryExpression : LightExpression
+	class QueryExpression : LightExpression
 	{
 		QueryExpression _expression1;
 
@@ -94,33 +94,33 @@
 			return Catch (expression1, CatchOperatorsType.OR, expression2);
 		}
 
-		/// <summary>
-		/// Exists specified expression.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		public static QueryExpression Exists (QueryExpression expression)
-		{
-			return new ExistsQueryExpression (expression, false);
-		}
+		///// <summary>
+		///// Exists specified expression.
+		///// </summary>
+		///// <param name="expression">Expression.</param>
+		//public static QueryExpression Exists (QueryExpression expression)
+		//{
+		//	return new ExistsQueryExpression (expression, false);
+		//}
 
-		/// <summary>
-		/// Not exists specified expression.
-		/// </summary>
-		/// <returns>The exists.</returns>
-		/// <param name="expression">Expression.</param>
-		public static QueryExpression NotExists (QueryExpression expression)
-		{
-			return new ExistsQueryExpression (expression, true);
-		}
+		///// <summary>
+		///// Not exists specified expression.
+		///// </summary>
+		///// <returns>The exists.</returns>
+		///// <param name="expression">Expression.</param>
+		//public static QueryExpression NotExists (QueryExpression expression)
+		//{
+		//	return new ExistsQueryExpression (expression, true);
+		//}
 
-		/// <summary>
-		/// Not the specified expression.
-		/// </summary>
-		/// <param name="expression">Expression.</param>
-		public static QueryExpression Not (QueryExpression expression)
-		{
-			return new LambdaNotQueryExpression (expression);
-		}
+		///// <summary>
+		///// Not the specified expression.
+		///// </summary>
+		///// <param name="expression">Expression.</param>
+		//public static QueryExpression Not (QueryExpression expression)
+		//{
+		//	return new LambdaNotQueryExpression (expression);
+		//}
 
 		bool mutliQuery;
 

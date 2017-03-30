@@ -4,7 +4,7 @@ namespace Light.Data
 	/// <summary>
 	/// Basic field info.
 	/// </summary>
-	public abstract class BasicFieldInfo
+	abstract class BasicFieldInfo
 	{
 		internal BasicFieldInfo (DataEntityMapping tableMapping)
 		{

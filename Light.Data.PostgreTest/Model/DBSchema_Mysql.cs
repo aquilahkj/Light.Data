@@ -979,8 +979,6 @@ namespace Light.Data.PostgreTest
 
 		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLog>.Create("CheckLevelTypeInt");
 
-		static readonly DataFieldInfo checkLevelTypeStringField = DataFieldInfo<TeDataLog>.Create("CheckLevelTypeString");
-
     	#endregion
 
     	#region "Static DataFieldInfo"
@@ -1065,13 +1063,6 @@ namespace Light.Data.PostgreTest
         {
             get {
                 return checkLevelTypeIntField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelTypeStringField
-        {
-            get {
-                return checkLevelTypeStringField;
             }
         }
 
@@ -1270,22 +1261,6 @@ namespace Light.Data.PostgreTest
             	this.checkLevelTypeInt = value; 
             }
         }
-		private CheckLevelType? checkLevelTypeString;
-
-		/// <summary>
-		/// #EnumType:CheckLevelType#level
-		/// </summary>
-		/// <value></value>
-		[DataField("Check_LevelTypeString", IsNullable = true, DBType = "varchar")]
-        public CheckLevelType? CheckLevelTypeString
-        {
-            get { 
-            	return this.checkLevelTypeString; 
-            }
-            set { 
-            	this.checkLevelTypeString = value; 
-            }
-        }
 		#endregion
     }
 
@@ -1317,8 +1292,6 @@ namespace Light.Data.PostgreTest
 		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLogHistory>.Create("CheckData");
 
 		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLogHistory>.Create("CheckLevelTypeInt");
-
-		static readonly DataFieldInfo checkLevelTypeStringField = DataFieldInfo<TeDataLogHistory>.Create("CheckLevelTypeString");
 
     	#endregion
 
@@ -1404,13 +1377,6 @@ namespace Light.Data.PostgreTest
         {
             get {
                 return checkLevelTypeIntField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelTypeStringField
-        {
-            get {
-                return checkLevelTypeStringField;
             }
         }
 
@@ -1609,22 +1575,6 @@ namespace Light.Data.PostgreTest
             	this.checkLevelTypeInt = value; 
             }
         }
-		private CheckLevelType? checkLevelTypeString;
-
-		/// <summary>
-		/// #EnumType:CheckLevelType#level
-		/// </summary>
-		/// <value></value>
-		[DataField("Check_LevelTypeString", IsNullable = true, DBType = "varchar")]
-        public CheckLevelType? CheckLevelTypeString
-        {
-            get { 
-            	return this.checkLevelTypeString; 
-            }
-            set { 
-            	this.checkLevelTypeString = value; 
-            }
-        }
 		#endregion
     }
 
@@ -1656,8 +1606,6 @@ namespace Light.Data.PostgreTest
 		static readonly DataFieldInfo checkDataField = DataFieldInfo<TeDataLogHistory2>.Create("CheckData");
 
 		static readonly DataFieldInfo checkLevelTypeIntField = DataFieldInfo<TeDataLogHistory2>.Create("CheckLevelTypeInt");
-
-		static readonly DataFieldInfo checkLevelTypeStringField = DataFieldInfo<TeDataLogHistory2>.Create("CheckLevelTypeString");
 
     	#endregion
 
@@ -1743,13 +1691,6 @@ namespace Light.Data.PostgreTest
         {
             get {
                 return checkLevelTypeIntField;
-            }
-        }
-
-		public static DataFieldInfo CheckLevelTypeStringField
-        {
-            get {
-                return checkLevelTypeStringField;
             }
         }
 
@@ -1946,22 +1887,6 @@ namespace Light.Data.PostgreTest
             }
             set { 
             	this.checkLevelTypeInt = value; 
-            }
-        }
-		private CheckLevelType? checkLevelTypeString;
-
-		/// <summary>
-		/// #EnumType:CheckLevelType#level
-		/// </summary>
-		/// <value></value>
-		[DataField("Check_LevelTypeString", IsNullable = true, DBType = "varchar")]
-        public CheckLevelType? CheckLevelTypeString
-        {
-            get { 
-            	return this.checkLevelTypeString; 
-            }
-            set { 
-            	this.checkLevelTypeString = value; 
             }
         }
 		#endregion

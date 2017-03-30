@@ -52,6 +52,8 @@ namespace Light.Data
 
 		public abstract List<K> ToList ();
 
+		public abstract K [] ToArray ();
+
 		public abstract K First ();
 
 		public abstract K ElementAt (int index);

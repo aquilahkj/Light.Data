@@ -94,7 +94,9 @@ namespace Light.Data
 					//minfo.AliasTableName = malias;
 					DataFieldInfo rinfo = relation.RelateInfo;
 					//rinfo.AliasTableName = ralias;
-					expression = DataFieldExpression.And (expression, minfo == rinfo);
+					DataFieldMatchExpression keyExpression = new DataFieldMatchExpression (minfo, rinfo, QueryPredicate.Eq);
+					expression = DataFieldExpression.And (expression, keyExpression);
+					//expression = DataFieldExpression.And (expression, minfo == rinfo);
 				}
 				List<DataFieldInfo> infoList = new List<DataFieldInfo> ();
 				foreach (DataFieldMapping field in mapping.DataEntityFields) {

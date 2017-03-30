@@ -9,7 +9,7 @@ namespace Light.Data
 	/// <summary>
 	/// Command output.
 	/// </summary>
-	public class CommandOutput:ICommandOutput
+	public class CommandOutput : ICommandOutput
 	{
 		/// <summary>
 		/// Occurs when on command output.
@@ -89,7 +89,7 @@ namespace Light.Data
 		/// <param name="commandType">Command type.</param>
 		/// <param name="isTransaction">If set to <c>true</c> is transaction.</param>
 		/// <param name="level">Level.</param>
-		public void Output (string action, string command, DataParameter[] datas, CommandType commandType, bool isTransaction, SafeLevel level)
+		public void Output (string action, string command, DataParameter [] datas, CommandType commandType, bool isTransaction, SafeLevel level)
 		{
 			if (this.enable && (OnCommandOutput != null || this.useConsoleOutput)) {
 				StringBuilder sb = new StringBuilder ();
@@ -110,7 +110,7 @@ namespace Light.Data
 				if (this.outputFullCommand) {
 					if (datas != null && datas.Length > 0) {
 						string temp = command;
-						Dictionary<string,string> dict = new Dictionary<string, string> ();
+						Dictionary<string, string> dict = new Dictionary<string, string> ();
 						List<string> patterns = new List<string> ();
 						foreach (DataParameter data in datas) {
 							string value = null;

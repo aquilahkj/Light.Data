@@ -54,17 +54,17 @@ namespace Light.Data.Demo
 			output.OutputFullCommand = true;
 
 			context.SetCommanfOutput (output);
-			for (int i = 0; i < 100000; i++) {
-				Console.WriteLine (i);
-				try {
-					var rt = context.Query<TeUser> ().Where (x => x.Area == null).GroupBy (x => new {
-						Count = Function.Sum (x.Area)
-					}).ToList ();
-				}
-				catch (Exception ex) {
-					Console.WriteLine (ex);
-				}
-			}
+			//for (int i = 0; i < 100000; i++) {
+			//	Console.WriteLine (i);
+			//	try {
+			//		var rt = context.Query<TeUser> ().Where (x => x.Area == null).GroupBy (x => new {
+			//			Count = Function.Sum (x.Area)
+			//		}).ToList ();
+			//	}
+			//	catch (Exception ex) {
+			//		Console.WriteLine (ex);
+			//	}
+			//}
 			//var mycount = context.Query<TeUser> ().AggregateFunction ().Count (x => x.Account);
 			//var jgy = context.Query<TeUser> ().AggregateFunction ().Count (x => x.LastLoginTime);
 

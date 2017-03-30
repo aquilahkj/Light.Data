@@ -4,6 +4,12 @@
 	{
 		readonly LambdaNullDataFieldInfo _fieldInfo;
 
+		//public LambdaNullQueryExpression (DataFieldInfo info, bool isNull)
+		//	: base (info.TableMapping)
+		//{
+		//	this._fieldInfo = new LambdaNullDataFieldInfo (info, isNull);
+		//}
+
 		public LambdaNullQueryExpression (LambdaNullDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{

@@ -15,11 +15,9 @@
 <# 
 	var namespaceName="Light.Data.MysqlTest";
 	var connection="Server=localhost;Port=3306;Database=CM_TEST;Uid=root;Pwd=qwerty;";
-	var excludeTable=new HashSet<string>();
-	excludeTable.Add("QcConfiguration");
-	excludeTable.Add("QcDataLog");
-	var eccludePrefix="Bus_";
-	//DbSetting.EnumTypeTrans=false;
+	var tables=new HashSet<string>();
+
+	DbSetting.EnumTypeTrans=true;
     var dbSchema= new DataBaseSchema("CM_TEST", connection);
     List<Table> tableList=dbSchema.GetTables();
 #>
@@ -27,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Light.Data;
+using Mind.Intelligent.Base;
 
 namespace <#=namespaceName#>
 {
@@ -34,48 +33,15 @@ namespace <#=namespaceName#>
     foreach(Table table in tableList)
     {
     	string tableName=table.TableName;
-    	if(excludeTable.Contains(tableName))
-    	{
-    		continue;
-    	}
-    	if(!string.IsNullOrEmpty(eccludePrefix) && tableName.StartsWith(eccludePrefix))
+    	if(tables.Count>0 && !tables.Contains(tableName))
     	{
     		continue;
     	}
 #>
     [Serializable]
     [DataTable("<#=tableName#>")]
-    public partial class <#=StringUtil.ToPascalCase(tableName)#> : DataTableEntity
+    public class <#=StringUtil.ToPascalCase(tableName)#> 
     {
-    	#region "Static Field"
-<#
-        foreach(Column c in table.Columns.Values)
-        {
-#>
-		static readonly DataFieldInfo <#=StringUtil.ToCamelCase(c.ColumnName)#>Field = DataFieldInfo<<#=StringUtil.ToPascalCase(tableName)#>>.Create("<#=StringUtil.ToPascalCase(c.ColumnName)#>");
-
-<#
-        }
-#>
-    	#endregion
-
-    	#region "Static DataFieldInfo"
-<#
-        foreach(Column c in table.Columns.Values)
-        {
-#>
-		public static DataFieldInfo <#=StringUtil.ToPascalCase(c.ColumnName)#>Field
-        {
-            get {
-                return <#=StringUtil.ToCamelCase(c.ColumnName)#>Field;
-            }
-        }
-
-<#
-        }
-#>
-    	#endregion
-
     	#region "Data Property"
 <#
         foreach(Column c in table.Columns.Values)
@@ -462,6 +428,10 @@ ORDER BY
             Match match=Regex.Match(this._columnComment,"^#EnumType:(?<type>\\w+)#",RegexOptions.Compiled);
           	if (match.Success && DbSetting.EnumTypeTrans) {
           		string enumType=match.Groups["type"].Value;
+          		if(this._dataType=="string")
+          		{
+          			this._dbType="varchar";
+          		}
 				this._dataType=enumType;
 			}
 			else if(columnType.Contains("unsigned"))
@@ -684,10 +654,10 @@ ORDER BY
     #endregion
 
     public static class DbSetting
-    {
-    	public static bool EnumTypeTrans=true;
+   	{
+    		public static bool EnumTypeTrans=true;
     }
-  
+
 
     public static class StringUtil
     {
@@ -714,6 +684,7 @@ ORDER BY
 			return sb.ToString();
         }
 
+      
         public static string ToCamelCase(string name)
         {
            	StringBuilder sb = new StringBuilder();

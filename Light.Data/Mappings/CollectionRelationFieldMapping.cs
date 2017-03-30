@@ -49,7 +49,9 @@ namespace Light.Data
 			for (int i = 0; i < masterFieldMappings.Length; i++) {
 				DataFieldInfo info = this.relateInfos [i];
 				DataFieldMapping field = this.masterFieldMappings [i];
-				expression = QueryExpression.And (expression, info == field.Handler.Get (source));
+				QueryExpression keyExpression = new LambdaBinaryQueryExpression (relateEntityMapping, QueryPredicate.Eq, info, field.Handler.Get (source));
+				expression = QueryExpression.And (expression, keyExpression);
+				//expression = QueryExpression.And (expression, info == field.Handler.Get (source));
 			}
 
 			object target = null;

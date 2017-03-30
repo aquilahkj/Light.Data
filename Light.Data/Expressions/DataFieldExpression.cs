@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Data field expression.
 	/// </summary>
-	public class DataFieldExpression : LightExpression
+	class DataFieldExpression : LightExpression
 	{
 		DataFieldExpression _expression1;
 
