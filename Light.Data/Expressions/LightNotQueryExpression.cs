@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-	class LambdaNotQueryExpression : QueryExpression
+	class LightNotQueryExpression : QueryExpression
 	{
 		readonly QueryExpression _queryExpression;
 
-		public LambdaNotQueryExpression (QueryExpression expression)
+		public LightNotQueryExpression (QueryExpression expression)
 			: base (expression.TableMapping)
 		{
 			_queryExpression = expression;

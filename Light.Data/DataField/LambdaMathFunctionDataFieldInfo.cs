@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LambdaMathFunctionDataFieldInfo : LambdaDataFieldInfo
+	class LambdaMathFunctionDataFieldInfo : LightDataFieldInfo
 	{
 		readonly MathFunction _function;
 

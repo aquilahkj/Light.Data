@@ -1,6 +1,6 @@
 ﻿namespace Light.Data
 {
-	class LambdaAggregateFieldDataFieldInfo : LambdaAggregateDataFieldInfo
+	class LightAggregateFieldDataFieldInfo : LightAggregateDataFieldInfo
 	{
 		readonly DataFieldInfo _baseFieldInfo;
 
@@ -8,7 +8,7 @@
 
 		readonly bool _distinct;
 
-		public LambdaAggregateFieldDataFieldInfo (DataFieldInfo fieldInfo, AggregateType type, bool distinct)
+		public LightAggregateFieldDataFieldInfo (DataFieldInfo fieldInfo, AggregateType type, bool distinct)
 			: base (fieldInfo.TableMapping)
 		{
 			_baseFieldInfo = fieldInfo;

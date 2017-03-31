@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-	class LambdaNotDataFieldInfo : LambdaDataFieldInfo
+	class LightDateDataFieldInfo : LightDataFieldInfo
 	{
 		readonly DataFieldInfo _baseFieldInfo;
 
-		public LambdaNotDataFieldInfo (DataFieldInfo info)
+		public LightDateDataFieldInfo (DataFieldInfo info)
 			: base (info.TableMapping)
 		{
 			_baseFieldInfo = info;
@@ -17,9 +17,8 @@
 				return sql;
 			}
 
-			sql = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
-			sql = factory.CreateNotSql (sql);
-
+			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
+			sql = factory.CreateDateSql (field);
 			state.SetDataSql (this, isFullName, sql);
 			return sql;
 		}

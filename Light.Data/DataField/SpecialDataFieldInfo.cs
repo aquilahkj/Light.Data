@@ -1,6 +1,6 @@
 ﻿namespace Light.Data
 {
-	class SpecialDataFieldInfo : LambdaDataFieldInfo, IAliasDataFieldInfo
+	class SpecialDataFieldInfo : LightDataFieldInfo, IAliasDataFieldInfo
 	{
 		readonly DataFieldInfo _fieldInfo;
 

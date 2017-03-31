@@ -807,7 +807,7 @@ namespace Light.Data
 			int i = 0;
 			foreach (DataFieldMapping fieldMapping in mapping.PrimaryKeyFields) {
 				DataFieldInfo info = new DataFieldInfo (fieldMapping);
-				QueryExpression keyExpression = new LambdaBinaryQueryExpression (mapping, QueryPredicate.Eq, info, primaryKeys [i]);
+				QueryExpression keyExpression = new LightBinaryQueryExpression (mapping, QueryPredicate.Eq, info, primaryKeys [i]);
 				queryExpression = QueryExpression.And (queryExpression, keyExpression);
 				//query = QueryExpression.And (query, info == primaryKeys [i]);
 				i++;
@@ -882,7 +882,7 @@ namespace Light.Data
 			}
 			DataFieldInfo idfield = new DataFieldInfo (mapping.IdentityField);
 			//QueryExpression query = idfield == id;
-			QueryExpression queryExpression = new LambdaBinaryQueryExpression (mapping, QueryPredicate.Eq, idfield, id);
+			QueryExpression queryExpression = new LightBinaryQueryExpression (mapping, QueryPredicate.Eq, idfield, id);
 			Region region = new Region (0, 1);
 			T target = default (T);
 			IEnumerable ie = QueryEntityData (mapping, null, queryExpression, null, false, region, SafeLevel.None);

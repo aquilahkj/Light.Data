@@ -1,6 +1,6 @@
 ﻿namespace Light.Data
 {
-	class LambdaInQueryDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+	class LightInQueryDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
 		bool _isTrue;
 
@@ -10,7 +10,7 @@
 
 		readonly DataFieldInfo _field;
 
-		public LambdaInQueryDataFieldInfo (DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryExpression expression, bool isTrue)
+		public LightInQueryDataFieldInfo (DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryExpression expression, bool isTrue)
 			: base (mapping)
 		{
 			_field = field;
@@ -49,7 +49,7 @@
 
 		public QueryExpression ConvertToExpression ()
 		{
-			return new LambdaInQueryExpression (this);
+			return new LightInQueryExpression (this);
 		}
 	}
 }

@@ -187,9 +187,6 @@
     <Compile Include="Mappings\EnumFieldType.cs" />
     <Compile Include="Mappings\IDataDefine.cs" />
     <Compile Include="Mappings\PrimitiveDataDefine.cs" />
-    <Compile Include="Mappings\AggregateTableMapping.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Mappings\CustomFieldMapping.cs" />
     <Compile Include="Mappings\DataEntityMapping.cs" />
     <Compile Include="Mappings\DataFieldMapping.cs" />
@@ -241,25 +238,25 @@
     <Compile Include="Attributes\ExtendParamAttribute.cs" />
     <Compile Include="Config\ExtendParamCollection.cs" />
     <Compile Include="LambdaExpressionExtend.cs" />
-    <Compile Include="Expressions\LambdaNotQueryExpression.cs" />
-    <Compile Include="Expressions\LambdaMatchQuerryExpression.cs" />
-    <Compile Include="DataField\LambdaStringMatchDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightNotQueryExpression.cs" />
+    <Compile Include="Expressions\LightMatchQuerryExpression.cs" />
+    <Compile Include="DataField\LightStringMatchDataFieldInfo.cs" />
+    <Compile Include="DataField\LightDataFieldInfo.cs" />
     <Compile Include="LambdaParseException.cs" />
     <Compile Include="DataField\IDataFieldInfoConvert.cs" />
     <Compile Include="DataField\LambdaMathFunctionDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaStringConcatDataFieldInfo.cs" />
+    <Compile Include="DataField\LightStringConcatDataFieldInfo.cs" />
     <Compile Include="DataField\LambdaMathCalculateDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaNotDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaBinaryQueryExpression.cs" />
+    <Compile Include="DataField\LightNotDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightBinaryQueryExpression.cs" />
     <Compile Include="DataField\LambdaStringFunctionDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaContainsDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaContainsQueryExpression.cs" />
+    <Compile Include="DataField\LightContainsDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightContainsQueryExpression.cs" />
     <Compile Include="DataField\LambdaDatePartDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaDateFormatDataFieldInfo.cs" />
+    <Compile Include="DataField\LightDateFormatDataFieldInfo.cs" />
     <Compile Include="DateTimeFormater.cs" />
-    <Compile Include="DataField\LambdaDateDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaStringLengthDataFieldInfo.cs" />
+    <Compile Include="DataField\LightDateDataFieldInfo.cs" />
+    <Compile Include="DataField\LightStringLengthDataFieldInfo.cs" />
     <Compile Include="Model\ISelector.cs" />
     <Compile Include="Model\JoinSelector.cs" />
     <Compile Include="Model\RelationItem.cs" />
@@ -292,21 +289,21 @@
     <Compile Include="Mappings\DynamicFieldMapping.cs" />
     <Compile Include="Mappings\DynamicPrimitiveFieldMapping.cs" />
     <Compile Include="Mappings\DynamicEnumFieldMapping.cs" />
-    <Compile Include="DataField\LambdaConditionDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaConditionQueryExpression.cs" />
-    <Compile Include="DataField\LambdaQueryDataFieldInfo.cs" />
+    <Compile Include="DataField\LightConditionDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightConditionQueryExpression.cs" />
+    <Compile Include="DataField\LightQueryDataFieldInfo.cs" />
     <Compile Include="CreateSqlState.cs" />
-    <Compile Include="DataField\LambdaAggregateFieldDataFieldInfo.cs" />
+    <Compile Include="DataField\LightAggregateFieldDataFieldInfo.cs" />
     <Compile Include="DataField\EnumDefine\MathOperator.cs" />
     <Compile Include="DataField\EnumDefine\StringFunction.cs" />
     <Compile Include="DataField\EnumDefine\DatePart.cs" />
     <Compile Include="DataField\EnumDefine\MathFunction.cs" />
-    <Compile Include="DataField\LambdaAggregateCountDataFieldInfo.cs" />
+    <Compile Include="DataField\LightAggregateCountDataFieldInfo.cs" />
     <Compile Include="Model\AggregateModel.cs" />
     <Compile Include="DataField\AggregateDataFieldInfo.cs" />
     <Compile Include="Model\AggregateLambdaState.cs" />
     <Compile Include="DataField\IAliasDataFieldInfo.cs" />
-    <Compile Include="DataField\LambdaConstantDataFieldInfo.cs" />
+    <Compile Include="DataField\LightConstantDataFieldInfo.cs" />
     <Compile Include="Model\InsertSelector.cs" />
     <Compile Include="Model\MassUpdator.cs" />
     <Compile Include="LambdaParseMessage.cs" />
@@ -333,30 +330,33 @@
     <Compile Include="Model\T_IJoinTable.cs">
       <DependentUpon>T_IJoinTable.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataField\LambdaNewArrayDataFieldInfo.cs" />
+    <Compile Include="DataField\LightNewArrayDataFieldInfo.cs" />
     <Compile Include="Model\T_LightJoinSelect.cs">
       <DependentUpon>T_LightJoinSelect.tt</DependentUpon>
     </Compile>
     <Compile Include="Extend\Function.cs" />
     <Compile Include="Extend\ExtendQuery.cs" />
-    <Compile Include="DataField\LambdaNullDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaNullQueryExpression.cs" />
+    <Compile Include="DataField\LightNullDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightNullQueryExpression.cs" />
     <Compile Include="Model\RelateParameterLambdaState.cs" />
     <Compile Include="Model\ExistsSelector.cs" />
-    <Compile Include="DataField\LambdaExistsDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaExistsQueryExpression.cs" />
+    <Compile Include="DataField\LightExistsDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightExistsQueryExpression.cs" />
     <Compile Include="Model\ISelectField.cs" />
     <Compile Include="Model\SelectFieldBase.cs" />
     <Compile Include="Model\LightSelectField.cs" />
     <Compile Include="Model\IAggregateFunction.cs" />
     <Compile Include="Model\LightAggregateFunction.cs" />
     <Compile Include="Model\AggregateFunctionBase.cs" />
-    <Compile Include="DataField\LambdaInQueryDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaInQueryExpression.cs" />
-    <Compile Include="DataField\LambdaSubQueryDataFieldInfo.cs" />
-    <Compile Include="Expressions\LambdaSubQueryExpression.cs" />
-    <Compile Include="DataField\LambdaAggregateDataFieldInfo.cs" />
+    <Compile Include="DataField\LightInQueryDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightInQueryExpression.cs" />
+    <Compile Include="DataField\LightSubQueryDataFieldInfo.cs" />
+    <Compile Include="Expressions\LightSubQueryExpression.cs" />
+    <Compile Include="DataField\LightAggregateDataFieldInfo.cs" />
     <Compile Include="Expressions\DataFieldMatchExpression.cs" />
+    <Compile Include="Mappings\outdate\AggregateTableMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -389,6 +389,7 @@
     <Folder Include="Model\" />
     <Folder Include="DataField\EnumDefine\" />
     <Folder Include="Extend\" />
+    <Folder Include="Mappings\outdate\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Model\T_LightJoinTable.tt">

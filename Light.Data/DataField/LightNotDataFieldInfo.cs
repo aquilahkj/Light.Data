@@ -1,13 +1,13 @@
 ﻿namespace Light.Data
 {
-	class LambdaQueryDataFieldInfo : LambdaDataFieldInfo
+	class LightNotDataFieldInfo : LightDataFieldInfo
 	{
-		readonly QueryExpression _query;
+		readonly DataFieldInfo _baseFieldInfo;
 
-		public LambdaQueryDataFieldInfo (QueryExpression query)
-			: base (query.TableMapping)
+		public LightNotDataFieldInfo (DataFieldInfo info)
+			: base (info.TableMapping)
 		{
-			_query = query;
+			_baseFieldInfo = info;
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
@@ -17,7 +17,8 @@
 				return sql;
 			}
 
-			sql = _query.CreateSqlString (factory, isFullName, state);
+			sql = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
+			sql = factory.CreateNotSql (sql);
 
 			state.SetDataSql (this, isFullName, sql);
 			return sql;

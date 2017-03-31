@@ -1,12 +1,11 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class LambdaConstantDataFieldInfo : LambdaDataFieldInfo
+	class LightConstantDataFieldInfo : LightDataFieldInfo
 	{
-		object _value;
+		readonly object _value;
 
-		public LambdaConstantDataFieldInfo (object value)
-			:base(DataEntityMapping.Default)
+		public LightConstantDataFieldInfo (object value)
+			: base (DataEntityMapping.Default)
 		{
 			_value = value;
 		}

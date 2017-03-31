@@ -1,18 +1,13 @@
 ﻿namespace Light.Data
 {
-	class LambdaContainsQueryExpression : QueryExpression, ISupportNotDefine
+	class LightSubQueryExpression : QueryExpression
 	{
-		readonly LambdaContainsDataFieldInfo _fieldInfo;
+		readonly LightSubQueryDataFieldInfo _fieldInfo;
 
-		public LambdaContainsQueryExpression (LambdaContainsDataFieldInfo fieldInfo)
+		public LightSubQueryExpression (LightSubQueryDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
 			this._fieldInfo = fieldInfo;
-		}
-
-		public void SetNot ()
-		{
-			this._fieldInfo.SetNot ();
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
@@ -21,4 +16,3 @@
 		}
 	}
 }
-

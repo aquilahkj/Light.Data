@@ -1,13 +1,16 @@
 ﻿namespace Light.Data
 {
-	class LambdaStringLengthDataFieldInfo : LambdaDataFieldInfo
+	class LightDateFormatDataFieldInfo : LightDataFieldInfo
 	{
+		readonly string _format;
+
 		readonly DataFieldInfo _baseFieldInfo;
 
-		public LambdaStringLengthDataFieldInfo (DataFieldInfo info)
+		internal LightDateFormatDataFieldInfo (DataFieldInfo info, string format)
 			: base (info.TableMapping)
 		{
 			_baseFieldInfo = info;
+			_format = format;
 		}
 
 		internal override string CreateSqlString (CommandFactory factory, bool isFullName, CreateSqlState state)
@@ -18,7 +21,7 @@
 			}
 
 			string field = _baseFieldInfo.CreateSqlString (factory, isFullName, state);
-			sql = factory.CreateLengthSql (field);
+			sql = factory.CreateDateTimeFormatSql (field, _format);
 			state.SetDataSql (this, isFullName, sql);
 			return sql;
 		}

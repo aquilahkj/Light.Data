@@ -1,8 +1,8 @@
 ﻿namespace Light.Data
 {
-	class LambdaNullQueryExpression : QueryExpression, ISupportNotDefine
+	class LightNullQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		readonly LambdaNullDataFieldInfo _fieldInfo;
+		readonly LightNullDataFieldInfo _fieldInfo;
 
 		//public LambdaNullQueryExpression (DataFieldInfo info, bool isNull)
 		//	: base (info.TableMapping)
@@ -10,7 +10,7 @@
 		//	this._fieldInfo = new LambdaNullDataFieldInfo (info, isNull);
 		//}
 
-		public LambdaNullQueryExpression (LambdaNullDataFieldInfo fieldInfo)
+		public LightNullQueryExpression (LightNullDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
 			this._fieldInfo = fieldInfo;

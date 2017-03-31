@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Light.Data
 {
-	class LambdaSubQueryDataFieldInfo : LambdaDataFieldInfo, IDataFieldInfoConvert
+	class LightSubQueryDataFieldInfo : LightDataFieldInfo, IDataFieldInfoConvert
 	{
 		readonly QueryExpression _expression;
 
@@ -11,7 +11,7 @@ namespace Light.Data
 
 		readonly QueryCollectionPredicate _predicate;
 
-		public LambdaSubQueryDataFieldInfo (DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryCollectionPredicate predicate, QueryExpression expression)
+		public LightSubQueryDataFieldInfo (DataEntityMapping mapping, DataFieldInfo field, DataFieldInfo selectField, QueryCollectionPredicate predicate, QueryExpression expression)
 			: base (mapping)
 		{
 			_field = field;
@@ -44,7 +44,7 @@ namespace Light.Data
 
 		public QueryExpression ConvertToExpression ()
 		{
-			return new LambdaSubQueryExpression (this);
+			return new LightSubQueryExpression (this);
 		}
 	}
 }

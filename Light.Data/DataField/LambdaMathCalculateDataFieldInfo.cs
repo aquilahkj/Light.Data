@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Light.Data
 {
-	class LambdaMathCalculateDataFieldInfo : LambdaDataFieldInfo
+	class LambdaMathCalculateDataFieldInfo : LightDataFieldInfo
 	{
 		readonly MathOperator _opera;
 

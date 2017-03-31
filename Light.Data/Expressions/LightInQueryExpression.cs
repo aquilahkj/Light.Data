@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-	class LambdaConditionQueryExpression : QueryExpression, ISupportNotDefine
+	class LightInQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		readonly LambdaConditionDataFieldInfo _fieldInfo;
+		readonly LightInQueryDataFieldInfo _fieldInfo;
 
-		public LambdaConditionQueryExpression (LambdaConditionDataFieldInfo fieldInfo)
+		public LightInQueryExpression (LightInQueryDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
 			this._fieldInfo = fieldInfo;
@@ -21,4 +21,3 @@
 		}
 	}
 }
-

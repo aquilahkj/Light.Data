@@ -1,19 +1,19 @@
 ﻿using System;
 namespace Light.Data
 {
-	class LambdaStringMatchDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+	class LightStringMatchDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
-		bool _starts;
-
-		bool _ends;
-
 		bool _isNot;
 
-		object _left;
+		readonly bool _starts;
 
-		object _right;
+		readonly bool _ends;
 
-		public LambdaStringMatchDataFieldInfo (DataEntityMapping mapping, bool starts, bool ends, object left, object right)
+		readonly object _left;
+
+		readonly object _right;
+
+		public LightStringMatchDataFieldInfo (DataEntityMapping mapping, bool starts, bool ends, object left, object right)
 			: base (mapping)
 		{
 			_starts = starts;
@@ -62,7 +62,7 @@ namespace Light.Data
 
 		public QueryExpression ConvertToExpression ()
 		{
-			return new LambdaMatchQuerryExpression (this);
+			return new LightMatchQuerryExpression (this);
 		}
 	}
 }

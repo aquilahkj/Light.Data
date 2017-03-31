@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LambdaContainsDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+	class LightContainsDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
 		bool _isNot;
 
@@ -12,7 +12,7 @@ namespace Light.Data
 
 		readonly DataFieldInfo _baseFieldInfo;
 
-		public LambdaContainsDataFieldInfo (DataFieldInfo info, object collection)
+		public LightContainsDataFieldInfo (DataFieldInfo info, object collection)
 			: base (info.TableMapping)
 		{
 			if (collection == null)
@@ -50,7 +50,7 @@ namespace Light.Data
 
 		public QueryExpression ConvertToExpression ()
 		{
-			return new LambdaContainsQueryExpression (this);
+			return new LightContainsQueryExpression (this);
 		}
 	}
 }

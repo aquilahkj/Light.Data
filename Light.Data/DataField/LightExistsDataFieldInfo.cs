@@ -1,13 +1,12 @@
-﻿using System;
-namespace Light.Data
+﻿namespace Light.Data
 {
-	class LambdaExistsDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+	class LightExistsDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
 		bool _isTrue;
 
 		readonly QueryExpression _expression;
 
-		public LambdaExistsDataFieldInfo (DataEntityMapping mapping, QueryExpression expression, bool isTrue)
+		public LightExistsDataFieldInfo (DataEntityMapping mapping, QueryExpression expression, bool isTrue)
 			: base (mapping)
 		{
 			_expression = expression;
@@ -35,7 +34,7 @@ namespace Light.Data
 
 		public QueryExpression ConvertToExpression ()
 		{
-			return new LambdaExistsQueryExpression (this);
+			return new LightExistsQueryExpression (this);
 		}
 	}
 }

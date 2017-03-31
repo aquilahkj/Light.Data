@@ -4,11 +4,11 @@ namespace Light.Data
 	/// <summary>
 	/// Lambda match expression.
 	/// </summary>
-	class LambdaMatchQuerryExpression : QueryExpression, ISupportNotDefine
+	class LightMatchQuerryExpression : QueryExpression, ISupportNotDefine
 	{
-		LambdaStringMatchDataFieldInfo _fieldInfo;
+		LightStringMatchDataFieldInfo _fieldInfo;
 
-		public LambdaMatchQuerryExpression (LambdaStringMatchDataFieldInfo fieldInfo)
+		public LightMatchQuerryExpression (LightStringMatchDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
 			this._fieldInfo = fieldInfo;

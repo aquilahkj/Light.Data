@@ -1,11 +1,11 @@
 ﻿using System;
 namespace Light.Data
 {
-	class LambdaNewArrayDataFieldInfo : LambdaDataFieldInfo
+	class LightNewArrayDataFieldInfo : LightDataFieldInfo
 	{
 		readonly object [] _values;
 
-		public LambdaNewArrayDataFieldInfo (DataEntityMapping mapping, params object [] values)
+		public LightNewArrayDataFieldInfo (DataEntityMapping mapping, params object [] values)
 			: base (mapping)
 		{
 			if (values == null)

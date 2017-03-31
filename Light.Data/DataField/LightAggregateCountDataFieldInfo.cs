@@ -1,15 +1,15 @@
 ﻿namespace Light.Data
 {
-	class LambdaAggregateCountDataFieldInfo : LambdaAggregateDataFieldInfo
+	class LightAggregateCountDataFieldInfo : LightAggregateDataFieldInfo
 	{
 		readonly QueryExpression _expression;
 
-		public LambdaAggregateCountDataFieldInfo ()
+		public LightAggregateCountDataFieldInfo ()
 			: base (DataEntityMapping.Default)
 		{
 		}
 
-		public LambdaAggregateCountDataFieldInfo (QueryExpression expression)
+		public LightAggregateCountDataFieldInfo (QueryExpression expression)
 			: base (DataEntityMapping.Default)
 		{
 			_expression = expression;

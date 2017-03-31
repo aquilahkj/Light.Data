@@ -1,10 +1,10 @@
 ﻿namespace Light.Data
 {
-	class LambdaExistsQueryExpression : QueryExpression, ISupportNotDefine
+	class LightExistsQueryExpression : QueryExpression, ISupportNotDefine
 	{
-		readonly LambdaExistsDataFieldInfo _fieldInfo;
+		readonly LightExistsDataFieldInfo _fieldInfo;
 
-		public LambdaExistsQueryExpression (LambdaExistsDataFieldInfo fieldInfo)
+		public LightExistsQueryExpression (LightExistsDataFieldInfo fieldInfo)
 			: base (fieldInfo.TableMapping)
 		{
 			this._fieldInfo = fieldInfo;

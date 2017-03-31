@@ -1,13 +1,13 @@
 ﻿namespace Light.Data
 {
-	abstract class LambdaDataFieldInfo : DataFieldInfo
+	abstract class LightDataFieldInfo : DataFieldInfo
 	{
-		protected LambdaDataFieldInfo (DataEntityMapping mapping)
+		protected LightDataFieldInfo (DataEntityMapping mapping)
 			: base (mapping)
 		{
 		}
 
-		protected LambdaDataFieldInfo (DataEntityMapping mapping, bool customName, string name)
+		protected LightDataFieldInfo (DataEntityMapping mapping, bool customName, string name)
 			: base (mapping, customName, name)
 		{
 		}

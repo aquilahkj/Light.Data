@@ -54,7 +54,7 @@ namespace Light.Data
 			//else {
 			//	expression = new DataFieldQueryExpression (leftField, predicate, rightField, false);
 			//}
-			QueryExpression expression = new LambdaBinaryQueryExpression (leftField.TableMapping, QueryPredicate.Eq, leftField, rightField);
+			QueryExpression expression = new LightBinaryQueryExpression (leftField.TableMapping, QueryPredicate.Eq, leftField, rightField);
 			return expression;
 		}
 	}

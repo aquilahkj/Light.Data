@@ -2,7 +2,7 @@
 
 namespace Light.Data
 {
-	class LambdaBinaryQueryExpression : QueryExpression
+	class LightBinaryQueryExpression : QueryExpression
 	{
 		readonly QueryPredicate _predicate;
 
@@ -10,7 +10,7 @@ namespace Light.Data
 
 		readonly object _right;
 
-		public LambdaBinaryQueryExpression (DataEntityMapping mapping, QueryPredicate predicate, object left, object right)
+		public LightBinaryQueryExpression (DataEntityMapping mapping, QueryPredicate predicate, object left, object right)
 			: base (mapping)
 		{
 			_predicate = predicate;

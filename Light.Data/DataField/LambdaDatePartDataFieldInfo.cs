@@ -1,6 +1,6 @@
 ﻿namespace Light.Data
 {
-	class LambdaDatePartDataFieldInfo : LambdaDataFieldInfo
+	class LambdaDatePartDataFieldInfo : LightDataFieldInfo
 	{
 		readonly DatePart _part;
 

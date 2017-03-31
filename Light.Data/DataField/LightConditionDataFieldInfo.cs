@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Light.Data
 {
-	class LambdaConditionDataFieldInfo : LambdaDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
+	class LightConditionDataFieldInfo : LightDataFieldInfo, ISupportNotDefine, IDataFieldInfoConvert
 	{
 		readonly object _ifTrue;
 
@@ -11,7 +11,7 @@ namespace Light.Data
 
 		bool _isNot;
 
-		public LambdaConditionDataFieldInfo (QueryExpression query, object ifTrue, object ifFalse)
+		public LightConditionDataFieldInfo (QueryExpression query, object ifTrue, object ifFalse)
 			: base (query.TableMapping)
 		{
 			_query = query;
@@ -65,7 +65,7 @@ namespace Light.Data
 
 		public QueryExpression ConvertToExpression ()
 		{
-			return new LambdaConditionQueryExpression (this);
+			return new LightConditionQueryExpression (this);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace Light.Data
 {
-	class AggregateDataFieldInfo : LambdaDataFieldInfo, IAliasDataFieldInfo
+	class AggregateDataFieldInfo : LightDataFieldInfo, IAliasDataFieldInfo
 	{
 		readonly DataFieldInfo _fieldInfo;
 

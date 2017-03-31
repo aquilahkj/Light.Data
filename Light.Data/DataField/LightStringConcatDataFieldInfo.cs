@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Light.Data
 {
-	class LambdaStringConcatDataFieldInfo : LambdaDataFieldInfo
+	class LightStringConcatDataFieldInfo : LightDataFieldInfo
 	{
 		readonly object [] _values;
 
-		public LambdaStringConcatDataFieldInfo (DataEntityMapping mapping, params object [] values)
+		public LightStringConcatDataFieldInfo (DataEntityMapping mapping, params object [] values)
 			: base (mapping)
 		{
 			if (values == null)
